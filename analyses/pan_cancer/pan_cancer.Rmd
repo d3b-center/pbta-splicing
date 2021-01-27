@@ -1,20 +1,21 @@
 ---
 title: "Pan cancer analysis"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
 ---
 
 Load required libraries
-
 ```{r}
 library("limma")
 library("gplots")
 library("ConsensusClusterPlus")
-
 ```
 
 Import files and tables (subset of 30 samples/histology)
 PCA plot
-
 ```{r}
 ## filter for inclusion threshold 10, PSI, 80% prev per hist type
 file= "/Users/naqvia/Desktop/pan_cancer_rmats/test_matrix.thr10hist30histprev2.psi.tsv"
@@ -30,23 +31,22 @@ legend(par("usr")[2], par("usr")[4], c("ATRT","Cran","EWS","Embr","Epend","Gangl
 ```
 
 Heatmap with hiearchical clustering
-
 ```{r}
 rnames <- psi_tab[,1]
 row.names(psi_tab) <- psi_tab$Splice_ID
 mat_hm <- data.matrix(psi_tab[,2:ncol(psi_tab)])
 
-heatmap.2(((mat_hm)),
-          notecol="black",      # change font color of cell labels to black
-          dendrogram="col",
-          col=redgreen)
+#heatmap.2(((mat_hm)),
+ #         notecol="black",      # change font color of cell labels to black
+ #        dendrogram="col",
+ #       col=redgreen)
 ```
 
 Consensus clustering
 ```{r}
 
 d=mat_hm
-d[1:5,1:5]
+# d[1:5,1:5]
 
 ## reduce the dataset to the top 1,000 most variable genes, measured by median absolute deviation
 mads=apply(d,1,mad)
@@ -66,4 +66,7 @@ d[is.nan(d)] <- 0
 title="/Users/naqvia/Desktop/pan_cancer_rmats"
 results= ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
                      title="PSI Clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = "average", plot="png")
+
+ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
+                     title="PSI Clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = "average")
 ```
