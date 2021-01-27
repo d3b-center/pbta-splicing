@@ -1762,16 +1762,17 @@ summary {
 <p>Load required libraries</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShcImxpbW1hXCIpXG5saWJyYXJ5KFwiZ3Bsb3RzXCIpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShcImxpbW1hXCIpXG5saWJyYXJ5KFwiZ3Bsb3RzXCIpXG5saWJyYXJ5KFwiQ29uc2Vuc3VzQ2x1c3RlclBsdXNcIilcbmBgYCJ9 -->
 <pre class="r"><code>library(&quot;limma&quot;)
-library(&quot;gplots&quot;)</code></pre>
+library(&quot;gplots&quot;)
+library(&quot;ConsensusClusterPlus&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Import files and tables (subset of 30 samples/histology) PCA plot</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgZmlsdGVyIGZvciBpbmNsdXNpb24gdGhyZXNob2xkIDEwLCBQU0ksIDgwJSBwcmV2IHBlciBoaXN0IHR5cGVcbmZpbGU9IFwiL1VzZXJzL25hcXZpYS9EZXNrdG9wL3Bhbl9jYW5jZXJfcm1hdHMvdGVzdF9tYXRyaXgudGhyMTBoaXN0MzBoaXN0cHJldjIucHNpLnRzdlwiXG5wc2lfdGFiIDwtIHJlYWQudGFibGUoZmlsZSwgcm93Lm5hbWVzID0gMSwgc2VwID0gXCJcXHRcIixoZWFkZXIgPSBUUlVFKVxuXG4jIyBjYXB0dXJlIHBhciBzZXR0aW5ncywgdGhlbiBhZGQgc3BhY2UgdG8gdGhlIHJpZ2h0XG5vcGFyIDwtIHBhcihuby5yZWFkb25seSA9IFRSVUUpXG5wYXIoeHBkID0gVFJVRSwgbWFyID0gcGFyKCkkbWFyICsgYygwLCAwLCAwLCA1KSlcblxueD1wbG90TURTKGxvZyhwc2lfdGFiKSwgeGxhYiA9IFwiUEMxXCIsIHlsYWI9XCJQQzJcIiwgY2V4LmxhYj0gMSwgY2V4ID0gMSwgY29sID0gYyggYyhyZXAoXCJibHVlXCIsIDMwKSksYyhyZXAoXCJwdXJwbGVcIiwzMCkpLCBjKHJlcChcImJsYWNrXCIsMSApKSxjKHJlcChcImJsYWNrXCIsMSkpLCBjKHJlcChcInZpb2xldFwiLDMwKSksIGMocmVwKFwiZ3JleVwiLDMwKSksYyhyZXAoXCJkYXJrcmVkXCIsMzApKSwgYyhyZXAoXCJyZWRcIiwzMCkpLCBjKHJlcChcImRhcmtncmVlblwiLDMwKSksYyhyZXAoXCJncmV5XCIsMikpKSwgcGNoPTE2KVxubGVnZW5kKHBhcihcInVzclwiKVsyXSwgcGFyKFwidXNyXCIpWzRdLCBjKFwiQVRSVFwiLFwiQ3JhblwiLFwiRVdTXCIsXCJFbWJyXCIsXCJFcGVuZFwiLFwiR2FuZ2xcIiwgXCJIR0FUXCIsIFwiTEdBVFwiLCBcIk1lZHVsbG9cIiwgXCJPbGlnXCIpLGNvbCA9IGMoXCJibHVlXCIsXCJwdXJwbGVcIixcImJsYWNrXCIsXCJibGFja1wiLFwidmlvbGV0XCIsXCJncmV5XCIsXCJkYXJrcmVkXCIsXCJyZWRcIixcImRhcmtncmVlblwiLFwiZ3JleVwiKSwgcGNoID0gMTYsIGJ0eSA9IFwiblwiKSBcblxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgZmlsdGVyIGZvciBpbmNsdXNpb24gdGhyZXNob2xkIDEwLCBQU0ksIDgwJSBwcmV2IHBlciBoaXN0IHR5cGVcbmZpbGU9IFwiL1VzZXJzL25hcXZpYS9EZXNrdG9wL3Bhbl9jYW5jZXJfcm1hdHMvdGVzdF9tYXRyaXgudGhyMTBoaXN0MzBoaXN0cHJldjIucHNpLnRzdlwiXG5wc2lfdGFiIDwtIHJlYWQudGFibGUoZmlsZSwgcm93Lm5hbWVzID0gMSwgc2VwID0gXCJcXHRcIixoZWFkZXIgPSBUUlVFKVxuXG4jIyBjYXB0dXJlIHBhciBzZXR0aW5ncywgdGhlbiBhZGQgc3BhY2UgdG8gdGhlIHJpZ2h0XG5vcGFyIDwtIHBhcihuby5yZWFkb25seSA9IFRSVUUpXG5wYXIoeHBkID0gVFJVRSwgbWFyID0gcGFyKCkkbWFyICsgYygwLCAwLCAwLCA1KSlcblxueD1wbG90TURTKGxvZyhwc2lfdGFiKSwgeGxhYiA9IFwiUEMxXCIsIHlsYWI9XCJQQzJcIiwgY2V4LmxhYj0gMSwgY2V4ID0gMSwgY29sID0gYyggYyhyZXAoXCJibHVlXCIsIDMwKSksYyhyZXAoXCJwdXJwbGVcIiwzMCkpLCBjKHJlcChcImJsYWNrXCIsMSApKSxjKHJlcChcImJsYWNrXCIsMSkpLCBjKHJlcChcInZpb2xldFwiLDMwKSksIGMocmVwKFwiZ3JleVwiLDMwKSksYyhyZXAoXCJkYXJrcmVkXCIsMzApKSwgYyhyZXAoXCJyZWRcIiwzMCkpLCBjKHJlcChcImRhcmtncmVlblwiLDMwKSksYyhyZXAoXCJncmV5XCIsMikpKSwgcGNoPTE2KVxubGVnZW5kKHBhcihcInVzclwiKVsyXSwgcGFyKFwidXNyXCIpWzRdLCBjKFwiQVRSVFwiLFwiQ3JhblwiLFwiRVdTXCIsXCJFbWJyXCIsXCJFcGVuZFwiLFwiR2FuZ2xcIiwgXCJIR0FUXCIsIFwiTEdBVFwiLCBcIk1lZHVsbG9cIiwgXCJPbGlnXCIpLGNvbCA9IGMoXCJibHVlXCIsXCJwdXJwbGVcIixcImJsYWNrXCIsXCJibGFja1wiLFwidmlvbGV0XCIsXCJncmV5XCIsXCJkYXJrcmVkXCIsXCJyZWRcIixcImRhcmtncmVlblwiLFwiZ3JleVwiKSwgcGNoID0gMTYsIGJ0eSA9IFwiblwiKVxuXG5gYGAifQ== -->
 <pre class="r"><code>## filter for inclusion threshold 10, PSI, 80% prev per hist type
 file= &quot;/Users/naqvia/Desktop/pan_cancer_rmats/test_matrix.thr10hist30histprev2.psi.tsv&quot;
 psi_tab &lt;- read.table(file, row.names = 1, sep = &quot;\t&quot;,header = TRUE)
@@ -1781,7 +1782,7 @@ opar &lt;- par(no.readonly = TRUE)
 par(xpd = TRUE, mar = par()$mar + c(0, 0, 0, 5))
 
 x=plotMDS(log(psi_tab), xlab = &quot;PC1&quot;, ylab=&quot;PC2&quot;, cex.lab= 1, cex = 1, col = c( c(rep(&quot;blue&quot;, 30)),c(rep(&quot;purple&quot;,30)), c(rep(&quot;black&quot;,1 )),c(rep(&quot;black&quot;,1)), c(rep(&quot;violet&quot;,30)), c(rep(&quot;grey&quot;,30)),c(rep(&quot;darkred&quot;,30)), c(rep(&quot;red&quot;,30)), c(rep(&quot;darkgreen&quot;,30)),c(rep(&quot;grey&quot;,2))), pch=16)
-legend(par(&quot;usr&quot;)[2], par(&quot;usr&quot;)[4], c(&quot;ATRT&quot;,&quot;Cran&quot;,&quot;EWS&quot;,&quot;Embr&quot;,&quot;Epend&quot;,&quot;Gangl&quot;, &quot;HGAT&quot;, &quot;LGAT&quot;, &quot;Medullo&quot;, &quot;Olig&quot;),col = c(&quot;blue&quot;,&quot;purple&quot;,&quot;black&quot;,&quot;black&quot;,&quot;violet&quot;,&quot;grey&quot;,&quot;darkred&quot;,&quot;red&quot;,&quot;darkgreen&quot;,&quot;grey&quot;), pch = 16, bty = &quot;n&quot;) 
+legend(par(&quot;usr&quot;)[2], par(&quot;usr&quot;)[4], c(&quot;ATRT&quot;,&quot;Cran&quot;,&quot;EWS&quot;,&quot;Embr&quot;,&quot;Epend&quot;,&quot;Gangl&quot;, &quot;HGAT&quot;, &quot;LGAT&quot;, &quot;Medullo&quot;, &quot;Olig&quot;),col = c(&quot;blue&quot;,&quot;purple&quot;,&quot;black&quot;,&quot;black&quot;,&quot;violet&quot;,&quot;grey&quot;,&quot;darkred&quot;,&quot;red&quot;,&quot;darkgreen&quot;,&quot;grey&quot;), pch = 16, bty = &quot;n&quot;)
 </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -1789,25 +1790,25 @@ legend(par(&quot;usr&quot;)[2], par(&quot;usr&quot;)[4], c(&quot;ATRT&quot;,&quo
 <p>Heatmap with hiearchical clustering</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm5hbWVzIDwtIHBzaV90YWJbLDFdXG5yb3cubmFtZXMocHNpX3RhYikgPC0gcHNpX3RhYiRTcGxpY2VfSURcbm1hdF9obSA8LSBkYXRhLm1hdHJpeChwc2lfdGFiWywyOm5jb2wocHNpX3RhYildKVxuXG5oZWF0bWFwLjIoKChtYXRfaG0pKSxcbiAgICAgICAgICBub3RlY29sPVwiYmxhY2tcIiwgICAgICAjIGNoYW5nZSBmb250IGNvbG9yIG9mIGNlbGwgbGFiZWxzIHRvIGJsYWNrXG4gICAgICAgICAgZGVuZHJvZ3JhbT1cImNvbFwiLFxuICAgICAgICAgIGNvbD1yZWRncmVlbilcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm5hbWVzIDwtIHBzaV90YWJbLDFdXG5yb3cubmFtZXMocHNpX3RhYikgPC0gcHNpX3RhYiRTcGxpY2VfSURcbm1hdF9obSA8LSBkYXRhLm1hdHJpeChwc2lfdGFiWywyOm5jb2wocHNpX3RhYildKVxuXG4jaGVhdG1hcC4yKCgobWF0X2htKSksXG4gIyAgICAgICAgIG5vdGVjb2w9XCJibGFja1wiLCAgICAgICMgY2hhbmdlIGZvbnQgY29sb3Igb2YgY2VsbCBsYWJlbHMgdG8gYmxhY2tcbiAjICAgICAgICBkZW5kcm9ncmFtPVwiY29sXCIsXG4gIyAgICAgICBjb2w9cmVkZ3JlZW4pXG5gYGAifQ== -->
 <pre class="r"><code>rnames &lt;- psi_tab[,1]
 row.names(psi_tab) &lt;- psi_tab$Splice_ID
 mat_hm &lt;- data.matrix(psi_tab[,2:ncol(psi_tab)])
 
-heatmap.2(((mat_hm)),
-          notecol=&quot;black&quot;,      # change font color of cell labels to black
-          dendrogram=&quot;col&quot;,
-          col=redgreen)</code></pre>
+#heatmap.2(((mat_hm)),
+ #         notecol=&quot;black&quot;,      # change font color of cell labels to black
+ #        dendrogram=&quot;col&quot;,
+ #       col=redgreen)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Consensus clustering</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5kPW1hdF9obVxuZFsxOjUsMTo1XVxuXG4jIyByZWR1Y2UgdGhlIGRhdGFzZXQgdG8gdGhlIHRvcCAxLDAwMCBtb3N0IHZhcmlhYmxlIGdlbmVzLCBtZWFzdXJlZCBieSBtZWRpYW4gYWJzb2x1dGUgZGV2aWF0aW9uXG5tYWRzPWFwcGx5KGQsMSxtYWQpXG5kPWRbcmV2KG9yZGVyKG1hZHMpKVsxOjEwMDBdLF1cblxuIyMgdGhlIGRlZmF1bHQgc2V0dGluZ3Mgb2YgdGhlIGFnZ2xvbWVyYXRpdmUgaGllcmFyY2hpY2FsIGNsdXN0ZXJpbmcgYWxnb3JpdGhtIHVzaW5nIFBlYXJzb24gY29ycmVsYXRpb24gZGlzdGFuY2UsIHNvIGl0IGlzIGFwcHJvcHJpYXRlIHRvIGdlbmUgbWVkaWFuIGNlbnRlciBkIHVzaW5nXG5kID0gc3dlZXAoZCwxLCBhcHBseShkLDEsbWVkaWFuLG5hLnJtPVQpKVxuXG5cbiMjIHJlbW92ZSBOQXMgXG5pcy5uYShkKSA8LSBzYXBwbHkoZCwgaXMuaW5maW5pdGUpXG5kW2lzLm5hKGQpXSA8LSAwXG5kW2lzLm5hbihkKV0gPC0gMFxuXG5cbiMjIFJ1biBDb25zZW5zdXNDbHVzdGVyUGx1c1xudGl0bGU9XCIvVXNlcnMvbmFxdmlhL0Rlc2t0b3AvcGFuX2NhbmNlcl9ybWF0c1wiXG5yZXN1bHRzPSBDb25zZW5zdXNDbHVzdGVyUGx1cygoZCksbWF4Sz0xMCxyZXBzPTEwMCxwSXRlbT0wLjgsXG4gICAgICAgICAgICAgICAgICAgICB0aXRsZT1cIlBTSSBDbHVzdGVyaW5nXCIsY2x1c3RlckFsZz1cImhjXCIsZGlzdGFuY2U9XCJzcGVhcm1hblwiLHNlZWQ9MTIzLGlubmVyTGlua2FnZSA9IFwiYXZlcmFnZVwiLCBmaW5hbExpbmthZ2UgPSBcImF2ZXJhZ2VcIiwgcGxvdD1cInBuZ1wiKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5kPW1hdF9obVxuIyBkWzE6NSwxOjVdXG5cbiMjIHJlZHVjZSB0aGUgZGF0YXNldCB0byB0aGUgdG9wIDEsMDAwIG1vc3QgdmFyaWFibGUgZ2VuZXMsIG1lYXN1cmVkIGJ5IG1lZGlhbiBhYnNvbHV0ZSBkZXZpYXRpb25cbm1hZHM9YXBwbHkoZCwxLG1hZClcbmQ9ZFtyZXYob3JkZXIobWFkcykpWzE6MTAwMF0sXVxuXG4jIyB0aGUgZGVmYXVsdCBzZXR0aW5ncyBvZiB0aGUgYWdnbG9tZXJhdGl2ZSBoaWVyYXJjaGljYWwgY2x1c3RlcmluZyBhbGdvcml0aG0gdXNpbmcgUGVhcnNvbiBjb3JyZWxhdGlvbiBkaXN0YW5jZSwgc28gaXQgaXMgYXBwcm9wcmlhdGUgdG8gZ2VuZSBtZWRpYW4gY2VudGVyIGQgdXNpbmdcbmQgPSBzd2VlcChkLDEsIGFwcGx5KGQsMSxtZWRpYW4sbmEucm09VCkpXG5cblxuIyMgcmVtb3ZlIE5Bc1xuaXMubmEoZCkgPC0gc2FwcGx5KGQsIGlzLmluZmluaXRlKVxuZFtpcy5uYShkKV0gPC0gMFxuZFtpcy5uYW4oZCldIDwtIDBcblxuXG4jIyBSdW4gQ29uc2Vuc3VzQ2x1c3RlclBsdXNcbnRpdGxlPVwiL1VzZXJzL25hcXZpYS9EZXNrdG9wL3Bhbl9jYW5jZXJfcm1hdHNcIlxucmVzdWx0cz0gQ29uc2Vuc3VzQ2x1c3RlclBsdXMoKGQpLG1heEs9MTAscmVwcz0xMDAscEl0ZW09MC44LFxuICAgICAgICAgICAgICAgICAgICAgdGl0bGU9XCJQU0kgQ2x1c3RlcmluZ1wiLGNsdXN0ZXJBbGc9XCJoY1wiLGRpc3RhbmNlPVwic3BlYXJtYW5cIixzZWVkPTEyMyxpbm5lckxpbmthZ2UgPSBcImF2ZXJhZ2VcIiwgZmluYWxMaW5rYWdlID0gXCJhdmVyYWdlXCIsIHBsb3Q9XCJwbmdcIilcblxuQ29uc2Vuc3VzQ2x1c3RlclBsdXMoKGQpLG1heEs9MTAscmVwcz0xMDAscEl0ZW09MC44LFxuICAgICAgICAgICAgICAgICAgICAgdGl0bGU9XCJQU0kgQ2x1c3RlcmluZ1wiLGNsdXN0ZXJBbGc9XCJoY1wiLGRpc3RhbmNlPVwic3BlYXJtYW5cIixzZWVkPTEyMyxpbm5lckxpbmthZ2UgPSBcImF2ZXJhZ2VcIiwgZmluYWxMaW5rYWdlID0gXCJhdmVyYWdlXCIpXG5gYGAifQ== -->
 <pre class="r"><code>
 d=mat_hm
-d[1:5,1:5]
+# d[1:5,1:5]
 
 ## reduce the dataset to the top 1,000 most variable genes, measured by median absolute deviation
 mads=apply(d,1,mad)
@@ -1817,7 +1818,7 @@ d=d[rev(order(mads))[1:1000],]
 d = sweep(d,1, apply(d,1,median,na.rm=T))
 
 
-## remove NAs 
+## remove NAs
 is.na(d) &lt;- sapply(d, is.infinite)
 d[is.na(d)] &lt;- 0
 d[is.nan(d)] &lt;- 0
@@ -1826,13 +1827,14 @@ d[is.nan(d)] &lt;- 0
 ## Run ConsensusClusterPlus
 title=&quot;/Users/naqvia/Desktop/pan_cancer_rmats&quot;
 results= ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
-                     title=&quot;PSI Clustering&quot;,clusterAlg=&quot;hc&quot;,distance=&quot;spearman&quot;,seed=123,innerLinkage = &quot;average&quot;, finalLinkage = &quot;average&quot;, plot=&quot;png&quot;)</code></pre>
+                     title=&quot;PSI Clustering&quot;,clusterAlg=&quot;hc&quot;,distance=&quot;spearman&quot;,seed=123,innerLinkage = &quot;average&quot;, finalLinkage = &quot;average&quot;, plot=&quot;png&quot;)
+
+ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
+                     title=&quot;PSI Clustering&quot;,clusterAlg=&quot;hc&quot;,distance=&quot;spearman&quot;,seed=123,innerLinkage = &quot;average&quot;, finalLinkage = &quot;average&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUGFuIGNhbmNlciBhbmFseXNpcyIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKTG9hZCByZXF1aXJlZCBsaWJyYXJpZXMKCmBgYHtyfQpsaWJyYXJ5KCJsaW1tYSIpCmxpYnJhcnkoImdwbG90cyIpCmxpYnJhcnkoIkNvbnNlbnN1c0NsdXN0ZXJQbHVzIikKCmBgYAoKSW1wb3J0IGZpbGVzIGFuZCB0YWJsZXMgKHN1YnNldCBvZiAzMCBzYW1wbGVzL2hpc3RvbG9neSkKUENBIHBsb3QKCmBgYHtyfQojIyBmaWx0ZXIgZm9yIGluY2x1c2lvbiB0aHJlc2hvbGQgMTAsIFBTSSwgODAlIHByZXYgcGVyIGhpc3QgdHlwZQpmaWxlPSAiL1VzZXJzL25hcXZpYS9EZXNrdG9wL3Bhbl9jYW5jZXJfcm1hdHMvdGVzdF9tYXRyaXgudGhyMTBoaXN0MzBoaXN0cHJldjIucHNpLnRzdiIKcHNpX3RhYiA8LSByZWFkLnRhYmxlKGZpbGUsIHJvdy5uYW1lcyA9IDEsIHNlcCA9ICJcdCIsaGVhZGVyID0gVFJVRSkKCiMjIGNhcHR1cmUgcGFyIHNldHRpbmdzLCB0aGVuIGFkZCBzcGFjZSB0byB0aGUgcmlnaHQKb3BhciA8LSBwYXIobm8ucmVhZG9ubHkgPSBUUlVFKQpwYXIoeHBkID0gVFJVRSwgbWFyID0gcGFyKCkkbWFyICsgYygwLCAwLCAwLCA1KSkKCng9cGxvdE1EUyhsb2cocHNpX3RhYiksIHhsYWIgPSAiUEMxIiwgeWxhYj0iUEMyIiwgY2V4LmxhYj0gMSwgY2V4ID0gMSwgY29sID0gYyggYyhyZXAoImJsdWUiLCAzMCkpLGMocmVwKCJwdXJwbGUiLDMwKSksIGMocmVwKCJibGFjayIsMSApKSxjKHJlcCgiYmxhY2siLDEpKSwgYyhyZXAoInZpb2xldCIsMzApKSwgYyhyZXAoImdyZXkiLDMwKSksYyhyZXAoImRhcmtyZWQiLDMwKSksIGMocmVwKCJyZWQiLDMwKSksIGMocmVwKCJkYXJrZ3JlZW4iLDMwKSksYyhyZXAoImdyZXkiLDIpKSksIHBjaD0xNikKbGVnZW5kKHBhcigidXNyIilbMl0sIHBhcigidXNyIilbNF0sIGMoIkFUUlQiLCJDcmFuIiwiRVdTIiwiRW1iciIsIkVwZW5kIiwiR2FuZ2wiLCAiSEdBVCIsICJMR0FUIiwgIk1lZHVsbG8iLCAiT2xpZyIpLGNvbCA9IGMoImJsdWUiLCJwdXJwbGUiLCJibGFjayIsImJsYWNrIiwidmlvbGV0IiwiZ3JleSIsImRhcmtyZWQiLCJyZWQiLCJkYXJrZ3JlZW4iLCJncmV5IiksIHBjaCA9IDE2LCBidHkgPSAibiIpIAoKYGBgCgpIZWF0bWFwIHdpdGggaGllYXJjaGljYWwgY2x1c3RlcmluZwoKYGBge3J9CnJuYW1lcyA8LSBwc2lfdGFiWywxXQpyb3cubmFtZXMocHNpX3RhYikgPC0gcHNpX3RhYiRTcGxpY2VfSUQKbWF0X2htIDwtIGRhdGEubWF0cml4KHBzaV90YWJbLDI6bmNvbChwc2lfdGFiKV0pCgpoZWF0bWFwLjIoKChtYXRfaG0pKSwKICAgICAgICAgIG5vdGVjb2w9ImJsYWNrIiwgICAgICAjIGNoYW5nZSBmb250IGNvbG9yIG9mIGNlbGwgbGFiZWxzIHRvIGJsYWNrCiAgICAgICAgICBkZW5kcm9ncmFtPSJjb2wiLAogICAgICAgICAgY29sPXJlZGdyZWVuKQpgYGAKCkNvbnNlbnN1cyBjbHVzdGVyaW5nCmBgYHtyfQoKZD1tYXRfaG0KZFsxOjUsMTo1XQoKIyMgcmVkdWNlIHRoZSBkYXRhc2V0IHRvIHRoZSB0b3AgMSwwMDAgbW9zdCB2YXJpYWJsZSBnZW5lcywgbWVhc3VyZWQgYnkgbWVkaWFuIGFic29sdXRlIGRldmlhdGlvbgptYWRzPWFwcGx5KGQsMSxtYWQpCmQ9ZFtyZXYob3JkZXIobWFkcykpWzE6MTAwMF0sXQoKIyMgdGhlIGRlZmF1bHQgc2V0dGluZ3Mgb2YgdGhlIGFnZ2xvbWVyYXRpdmUgaGllcmFyY2hpY2FsIGNsdXN0ZXJpbmcgYWxnb3JpdGhtIHVzaW5nIFBlYXJzb24gY29ycmVsYXRpb24gZGlzdGFuY2UsIHNvIGl0IGlzIGFwcHJvcHJpYXRlIHRvIGdlbmUgbWVkaWFuIGNlbnRlciBkIHVzaW5nCmQgPSBzd2VlcChkLDEsIGFwcGx5KGQsMSxtZWRpYW4sbmEucm09VCkpCgoKIyMgcmVtb3ZlIE5BcyAKaXMubmEoZCkgPC0gc2FwcGx5KGQsIGlzLmluZmluaXRlKQpkW2lzLm5hKGQpXSA8LSAwCmRbaXMubmFuKGQpXSA8LSAwCgoKIyMgUnVuIENvbnNlbnN1c0NsdXN0ZXJQbHVzCnRpdGxlPSIvVXNlcnMvbmFxdmlhL0Rlc2t0b3AvcGFuX2NhbmNlcl9ybWF0cyIKcmVzdWx0cz0gQ29uc2Vuc3VzQ2x1c3RlclBsdXMoKGQpLG1heEs9MTAscmVwcz0xMDAscEl0ZW09MC44LAogICAgICAgICAgICAgICAgICAgICB0aXRsZT0iUFNJIENsdXN0ZXJpbmciLGNsdXN0ZXJBbGc9ImhjIixkaXN0YW5jZT0ic3BlYXJtYW4iLHNlZWQ9MTIzLGlubmVyTGlua2FnZSA9ICJhdmVyYWdlIiwgZmluYWxMaW5rYWdlID0gImF2ZXJhZ2UiLCBwbG90PSJwbmciKQpgYGAKCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUGFuIGNhbmNlciBhbmFseXNpcyIKb3V0cHV0OgogIGh0bWxfZG9jdW1lbnQ6CiAgICBkZl9wcmludDogcGFnZWQKICBodG1sX25vdGVib29rOiBkZWZhdWx0CiAgcGRmX2RvY3VtZW50OiBkZWZhdWx0Ci0tLQoKTG9hZCByZXF1aXJlZCBsaWJyYXJpZXMKYGBge3J9CmxpYnJhcnkoImxpbW1hIikKbGlicmFyeSgiZ3Bsb3RzIikKbGlicmFyeSgiQ29uc2Vuc3VzQ2x1c3RlclBsdXMiKQpgYGAKCkltcG9ydCBmaWxlcyBhbmQgdGFibGVzIChzdWJzZXQgb2YgMzAgc2FtcGxlcy9oaXN0b2xvZ3kpClBDQSBwbG90CmBgYHtyfQojIyBmaWx0ZXIgZm9yIGluY2x1c2lvbiB0aHJlc2hvbGQgMTAsIFBTSSwgODAlIHByZXYgcGVyIGhpc3QgdHlwZQpmaWxlPSAiL1VzZXJzL25hcXZpYS9EZXNrdG9wL3Bhbl9jYW5jZXJfcm1hdHMvdGVzdF9tYXRyaXgudGhyMTBoaXN0MzBoaXN0cHJldjIucHNpLnRzdiIKcHNpX3RhYiA8LSByZWFkLnRhYmxlKGZpbGUsIHJvdy5uYW1lcyA9IDEsIHNlcCA9ICJcdCIsaGVhZGVyID0gVFJVRSkKCiMjIGNhcHR1cmUgcGFyIHNldHRpbmdzLCB0aGVuIGFkZCBzcGFjZSB0byB0aGUgcmlnaHQKb3BhciA8LSBwYXIobm8ucmVhZG9ubHkgPSBUUlVFKQpwYXIoeHBkID0gVFJVRSwgbWFyID0gcGFyKCkkbWFyICsgYygwLCAwLCAwLCA1KSkKCng9cGxvdE1EUyhsb2cocHNpX3RhYiksIHhsYWIgPSAiUEMxIiwgeWxhYj0iUEMyIiwgY2V4LmxhYj0gMSwgY2V4ID0gMSwgY29sID0gYyggYyhyZXAoImJsdWUiLCAzMCkpLGMocmVwKCJwdXJwbGUiLDMwKSksIGMocmVwKCJibGFjayIsMSApKSxjKHJlcCgiYmxhY2siLDEpKSwgYyhyZXAoInZpb2xldCIsMzApKSwgYyhyZXAoImdyZXkiLDMwKSksYyhyZXAoImRhcmtyZWQiLDMwKSksIGMocmVwKCJyZWQiLDMwKSksIGMocmVwKCJkYXJrZ3JlZW4iLDMwKSksYyhyZXAoImdyZXkiLDIpKSksIHBjaD0xNikKbGVnZW5kKHBhcigidXNyIilbMl0sIHBhcigidXNyIilbNF0sIGMoIkFUUlQiLCJDcmFuIiwiRVdTIiwiRW1iciIsIkVwZW5kIiwiR2FuZ2wiLCAiSEdBVCIsICJMR0FUIiwgIk1lZHVsbG8iLCAiT2xpZyIpLGNvbCA9IGMoImJsdWUiLCJwdXJwbGUiLCJibGFjayIsImJsYWNrIiwidmlvbGV0IiwiZ3JleSIsImRhcmtyZWQiLCJyZWQiLCJkYXJrZ3JlZW4iLCJncmV5IiksIHBjaCA9IDE2LCBidHkgPSAibiIpCgpgYGAKCkhlYXRtYXAgd2l0aCBoaWVhcmNoaWNhbCBjbHVzdGVyaW5nCmBgYHtyfQpybmFtZXMgPC0gcHNpX3RhYlssMV0Kcm93Lm5hbWVzKHBzaV90YWIpIDwtIHBzaV90YWIkU3BsaWNlX0lECm1hdF9obSA8LSBkYXRhLm1hdHJpeChwc2lfdGFiWywyOm5jb2wocHNpX3RhYildKQoKI2hlYXRtYXAuMigoKG1hdF9obSkpLAogIyAgICAgICAgIG5vdGVjb2w9ImJsYWNrIiwgICAgICAjIGNoYW5nZSBmb250IGNvbG9yIG9mIGNlbGwgbGFiZWxzIHRvIGJsYWNrCiAjICAgICAgICBkZW5kcm9ncmFtPSJjb2wiLAogIyAgICAgICBjb2w9cmVkZ3JlZW4pCmBgYAoKQ29uc2Vuc3VzIGNsdXN0ZXJpbmcKYGBge3J9CgpkPW1hdF9obQojIGRbMTo1LDE6NV0KCiMjIHJlZHVjZSB0aGUgZGF0YXNldCB0byB0aGUgdG9wIDEsMDAwIG1vc3QgdmFyaWFibGUgZ2VuZXMsIG1lYXN1cmVkIGJ5IG1lZGlhbiBhYnNvbHV0ZSBkZXZpYXRpb24KbWFkcz1hcHBseShkLDEsbWFkKQpkPWRbcmV2KG9yZGVyKG1hZHMpKVsxOjEwMDBdLF0KCiMjIHRoZSBkZWZhdWx0IHNldHRpbmdzIG9mIHRoZSBhZ2dsb21lcmF0aXZlIGhpZXJhcmNoaWNhbCBjbHVzdGVyaW5nIGFsZ29yaXRobSB1c2luZyBQZWFyc29uIGNvcnJlbGF0aW9uIGRpc3RhbmNlLCBzbyBpdCBpcyBhcHByb3ByaWF0ZSB0byBnZW5lIG1lZGlhbiBjZW50ZXIgZCB1c2luZwpkID0gc3dlZXAoZCwxLCBhcHBseShkLDEsbWVkaWFuLG5hLnJtPVQpKQoKCiMjIHJlbW92ZSBOQXMKaXMubmEoZCkgPC0gc2FwcGx5KGQsIGlzLmluZmluaXRlKQpkW2lzLm5hKGQpXSA8LSAwCmRbaXMubmFuKGQpXSA8LSAwCgoKIyMgUnVuIENvbnNlbnN1c0NsdXN0ZXJQbHVzCnRpdGxlPSIvVXNlcnMvbmFxdmlhL0Rlc2t0b3AvcGFuX2NhbmNlcl9ybWF0cyIKcmVzdWx0cz0gQ29uc2Vuc3VzQ2x1c3RlclBsdXMoKGQpLG1heEs9MTAscmVwcz0xMDAscEl0ZW09MC44LAogICAgICAgICAgICAgICAgICAgICB0aXRsZT0iUFNJIENsdXN0ZXJpbmciLGNsdXN0ZXJBbGc9ImhjIixkaXN0YW5jZT0ic3BlYXJtYW4iLHNlZWQ9MTIzLGlubmVyTGlua2FnZSA9ICJhdmVyYWdlIiwgZmluYWxMaW5rYWdlID0gImF2ZXJhZ2UiLCBwbG90PSJwbmciKQoKQ29uc2Vuc3VzQ2x1c3RlclBsdXMoKGQpLG1heEs9MTAscmVwcz0xMDAscEl0ZW09MC44LAogICAgICAgICAgICAgICAgICAgICB0aXRsZT0iUFNJIENsdXN0ZXJpbmciLGNsdXN0ZXJBbGc9ImhjIixkaXN0YW5jZT0ic3BlYXJtYW4iLHNlZWQ9MTIzLGlubmVyTGlua2FnZSA9ICJhdmVyYWdlIiwgZmluYWxMaW5rYWdlID0gImF2ZXJhZ2UiKQpgYGAK</div>
 
 
 
