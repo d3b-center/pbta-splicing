@@ -4,7 +4,6 @@ output: html_notebook
 ---
 
 Load required libraries
-
 ```{r}
 library("limma")
 library("gplots")
