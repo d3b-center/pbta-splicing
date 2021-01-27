@@ -1,0 +1,108 @@
+---
+title: "Pan cancer analysis"
+output: html_notebook
+---
+
+Load required libraries
+
+```{r}
+library("limma")
+library("gplots")
+```
+
+Import files and tables (subset of 30 samples/histology)
+
+```{r}
+## filter for inclusion threshold 10, PSI, 80% prev per hist type
+file= "/Users/naqvia/Desktop/pan_cancer_rmats/test_matrix.thr10hist30histprev2.psi.tsv"
+psi_tab <- read.table(file, row.names = 1, sep = "\t",header = TRUE)
+x=plotMDS((psi_tab), xlab = "PC1", ylab="PC2", cex.lab= 1, cex = 1, col = c( c(rep("blue", 30)),c(rep("purple",30)), c(rep("black",1 )),c(rep("black",1)), c(rep("violet",30)), c(rep("grey",30)),c(rep("darkred",30)), c(rep("red",30)), c(rep("darkgreen",30)),c(rep("grey",2))),
+          main = "Pan-cancer Clustering", pch=16)
+
+legend('bottomleft',c("ATRT","Cran","EWS","Embr","Epend","Gangl", "HGAT", "LGAT", "Medullo", "Olig"),col = c("blue","purple","black","black","violet","grey","darkred","red","darkgreen","grey"), pch = 16, bty = "n") 
+
+
+
+```
+
+
+__DATA__
+library("limma")
+library("gplots")
+
+file = "/Users/naqvia/Desktop/pan_cancer_rmats/test_matrix.tsv"
+psi_tab <- read.table(file, row.names = 1, sep = "\t",header = TRUE)
+
+x=plotMDS((psi_tab), cex.lab= 1, cex = .5, top = 10000, pch=16)
+
+
+x=plotMDS(log(psi_tab), cex.lab= 1, cex = 2, xlab = "PC1", ylab="PC2", col = c( c(rep("blue", 14)),c(rep("red",4)), c(rep("darkred",33 )),c(rep("blue",64)), c(rep("red",7)), c(rep("darkred", 34))), main = "PCA of HGG vs DMG Expr", pch=c(rep(16,51), c(rep(17,105))))
+#legend("bottomleft", legend=c("HGGs-H3 WT PolyA","DMG-H3 WT PolyA","DMG-H3 K28 PolyA","HGGs-H3 WT Non-PolyA","DMG-H3 WT Non-PolyA","DMG-H3 K28 Non-PolyA" ),col = c("blue","red","darkred","blue","red","darkred"), pch = c(16,16,16,17,17,17), horiz=TRUE, cex=0.5)
+pc <- princomp(log(corrected_mat_psi), scores=TRUE)
+plot(pc,type="lines")
+
+
+## filter for inclusion threshold 10, PSI, histology prev 80%
+file= "/Users/naqvia/Desktop/pan_cancer_rmats/test_matrix.thr10hist80perchistprev2.psi.tsv"
+psi_tab <- read.table(file, row.names = 1, sep = "\t",header = TRUE)
+
+x=plotMDS(log(psi_tab+.01), xlab = "PC1", ylab="PC2", cex.lab= 1, cex = 1, col = c( c(rep("blue", 30)),c(rep("purple",30)), c(rep("black",1 )),c(rep("black",1)), c(rep("violet",30)), c(rep("grey",30)),c(rep("darkred",30)), c(rep("red",30)), c(rep("darkgreen",30)),c(rep("grey",2))),
+          main = "Pan-cancer Clustering", pch=16)
+
+
+
+
+
+## filter for inclusion threshold 10, PSI, histology prev 30, 80% prev per hist type/pan_cancer_splicing.thr10.80hist.30report.txt
+file= "/Users/naqvia/Desktop/pan_cancer_rmats/pan_cancer_splicing.thr10.80hist.30report.txt"
+psi_tab <- read.table(file, row.names = 1, sep = "\t",header = TRUE)
+x=plotMDS((psi_tab), xlab = "PC1", ylab="PC2", cex.lab= 1, cex = 1, col = c( c(rep("blue", 30)),c(rep("purple",30)), c(rep("black",1 )),c(rep("black",1)), c(rep("violet",30)), c(rep("grey",30)),c(rep("darkred",30)), c(rep("red",30)), c(rep("darkgreen",30)),c(rep("grey",2))),
+          main = "Pan-cancer Clustering", pch=16, top=10000)
+
+
+
+## heatmap
+heatmap_dat <- read.table(file, row.names = 1, sep = "\t",header = TRUE)
+rnames <- psi_tab[,1]
+row.names(psi_tab) <- psi_tab$Splice_ID
+mat_hm <- data.matrix(psi_tab[,2:ncol(psi_tab)])
+
+heatmap.2(((d)),
+          notecol="black",      # change font color of cell labels to black
+          dendrogram="col",
+          col=redgreen)
+
+##consensus clustering used in paper
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("ConsensusClusterPlus")
+library("ConsensusClusterPlus")
+
+d=as.matrix(psi_tab)
+d=mat_hm
+
+d[1:5,1:5]
+mads=apply(d,1,mad)
+d=d[rev(order(mads))[1:1000],]
+d = sweep(d,1, apply(d,1,median,na.rm=T))
+
+
+is.na(d) <- sapply(d, is.infinite)
+d[is.na(d)] <- 0
+d[is.nan(d)] <- 0
+
+
+rcc = ConsensusClusterPlus(d,maxK=4,reps=50,pItem=0.8,pFeature=1,title="example",distance="pearson",clusterAlg="hc")
+
+results = ConsensusClusterPlus(d,maxK=6,reps=50,pItem=0.8,pFeature=1,
+                             title=title,clusterAlg="hc",distance="pearson",seed=1262118388.71279)
+
+title="/Users/naqvia/Desktop/pan_cancer_rmats"
+
+results= ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
+                     title="PSI Clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = "average", plot="png")
+
+
+
+
