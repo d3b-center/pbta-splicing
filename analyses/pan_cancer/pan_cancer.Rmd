@@ -30,27 +30,19 @@ legend(par("usr")[2], par("usr")[4], c("ATRT","Cran","EWS","Embr","Epend","Gangl
 
 ```
 
-Heatmap with hiearchical clustering
+
+Consensus clustering
 ```{r}
 rnames <- psi_tab[,1]
 row.names(psi_tab) <- psi_tab$Splice_ID
 mat_hm <- data.matrix(psi_tab[,2:ncol(psi_tab)])
-
-#heatmap.2(((mat_hm)),
- #         notecol="black",      # change font color of cell labels to black
- #        dendrogram="col",
- #       col=redgreen)
-```
-
-Consensus clustering
-```{r}
 
 d=mat_hm
 # d[1:5,1:5]
 
 ## reduce the dataset to the top 1,000 most variable genes, measured by median absolute deviation
 mads=apply(d,1,mad)
-d=d[rev(order(mads))[1:1000],]
+d=d[rev(order(mads))[1:5000],]
 
 ## the default settings of the agglomerative hierarchical clustering algorithm using Pearson correlation distance, so it is appropriate to gene median center d using
 d = sweep(d,1, apply(d,1,median,na.rm=T))
@@ -61,12 +53,19 @@ is.na(d) <- sapply(d, is.infinite)
 d[is.na(d)] <- 0
 d[is.nan(d)] <- 0
 
-
 ## Run ConsensusClusterPlus
-title="/Users/naqvia/Desktop/pan_cancer_rmats"
-results= ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
-                     title="PSI Clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = "average", plot="png")
+#title="/Users/naqvia/Desktop/pan_cancer_rmats"
+#results= ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
+  #                   title="PSI Clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = #"average", plot="png")
 
 ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
-                     title="PSI Clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = "average")
+                     title="clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = "average")
+```
+Heatmap with hierarchical clustering
+```{r}
+
+heatmap.2(((d)),
+         notecol="black",      # change font color of cell labels to black
+        dendrogram="col",
+        col=redgreen)
 ```
