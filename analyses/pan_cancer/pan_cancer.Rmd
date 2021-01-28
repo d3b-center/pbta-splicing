@@ -54,12 +54,45 @@ d[is.na(d)] <- 0
 d[is.nan(d)] <- 0
 
 ## Run ConsensusClusterPlus
-#title="/Users/naqvia/Desktop/pan_cancer_rmats"
-#results= ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
-  #                   title="PSI Clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = #"average", plot="png")
+title="/Users/naqvia/Desktop/pan_cancer_rmats"
+results= ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
+                    title="PSI Clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = "average", plot="png")
 
 ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
                      title="clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = "average")
+
+## do all of the samples 
+file = "/Users/naqvia/Desktop/pan_cancer_rmats/test_matrix.thr10histTotalhistprev2.psi.csv"
+psi_tab <- read.csv(file, row.names = 1,header = TRUE)
+
+rnames <- psi_tab[,1]
+row.names(psi_tab) <- psi_tab$Splice_ID
+mat_hm <- data.matrix(psi_tab[,2:ncol(psi_tab)])
+
+d=mat_hm
+
+## reduce the dataset to the top 1,000 most variable genes, measured by median absolute deviation
+mads=apply(d,1,mad)
+d=d[rev(order(mads))[1:5000],]
+
+## the default settings of the agglomerative hierarchical clustering algorithm using Pearson correlation distance, so it is appropriate to gene median center d using
+d = sweep(d,1, apply(d,1,median,na.rm=T))
+
+
+## remove NAs
+is.na(d) <- sapply(d, is.infinite)
+d[is.na(d)] <- 0
+d[is.nan(d)] <- 0
+
+ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
+                     title="clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = "average")
+
+##save to file
+title="/Users/naqvia/Desktop/pan_cancer_rmats"
+results= ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
+                     title="Total Samples PSI Clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = "average", plot="png")
+
+
 ```
 Heatmap with hierarchical clustering
 ```{r}
@@ -69,3 +102,34 @@ heatmap.2(((d)),
         dendrogram="col",
         col=redgreen)
 ```
+
+##Splicing index plot
+```{r}
+library(ggplot2)
+library(dplyr)
+library(hrbrthemes)
+library(viridis)
+
+file = "/Users/naqvia/Desktop/AS-DMG/analyses/pan_cancer/results/splicing_index.v2.txt"
+splice_index = read.table(file,header=TRUE, row.names=1, sep = "\t")
+
+e <- ggplot(splice_index, aes(x = hist, y = splice_index))
+
+
+e + geom_violin(trim = FALSE) + 
+  stat_summary(
+    fun.data = "mean_sdl",  fun.args = list(mult = 1), 
+    geom = "pointrange", color = "black"
+  )
+
+e + geom_violin(aes(fill = hist), trim = FALSE) + 
+  geom_boxplot(width = 0.2) +
+  #scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) +
+  geom_point(color="black", size=1, position = position_jitter(w=0.02)) +
+  theme(legend.position = "none") + theme_Publication()
+
+
+
+
+```
+
