@@ -1,2 +1,2 @@
-# AS-DMG
+# pbta-splicing-hgat
 Aberrant splicing in DMG
