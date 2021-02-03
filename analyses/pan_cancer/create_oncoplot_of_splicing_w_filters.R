@@ -4,7 +4,7 @@ library(maftools)
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
-dataDir = "/Users/naqvia/Desktop/create_oncoprint/"
+dataDir = "~/Desktop/AS-DMG/data/"
 file_fus <- "reformattted_fusions_for_oncoprint.total.onlywithWGS.txt"
 fus_tab  = read.delim(paste0(dataDir, file_fus), sep = "\t", header=TRUE)
 
@@ -82,7 +82,7 @@ combine_tab     <- bind_rows(psi_tab_filtered_samples, maf_tab_filtered_samples,
 
 
 ## create and prepare maf object
-maf = read.maf(maf = combine_tab, clinicalData = clin_tab, vc_nonSyn = c(  "Frame_Shift_Del",
+maf_obj = read.maf(maf = combine_tab, clinicalData = clin_tab, vc_nonSyn = c("Frame_Shift_Del",
                                                                            "Frame_Shift_Ins",
                                                                            "Splice_Site",
                                                                            "Translation_Start_Site",
@@ -90,16 +90,14 @@ maf = read.maf(maf = combine_tab, clinicalData = clin_tab, vc_nonSyn = c(  "Fram
                                                                            "Nonstop_Mutation",
                                                                            "In_Frame_Del",
                                                                            "In_Frame_Ins",
-                                                                           "Missense_Mutation", 
-                                                                           "Fusion", 
+                                                                           "Missense_Mutation",
+                                                                           "Fusion",
                                                                            "Splicing"))
-
 
 
 col2hex(c('mediumseagreen', 'orange', 'green2', 'hotpink',
           'lightslateblue', 'midnightblue', 'gray33', 'turquoise3',
-          'lightpink', 'lightsalmon', 'khaki1',
-          'purple', 'black'))
+          'lightpink','purple', 'black'))
 
 colores = c("Missense_Mutation" = "#35978f", 
             "Nonsense_Mutation" = "#000000",
@@ -110,8 +108,6 @@ colores = c("Missense_Mutation" = "#35978f",
             "Nonstop_Mutation" = "#545454",
             "In_Frame_Del" = "#CAE1FF",
             "In_Frame_Ins" = "#FFE4E1",
-            "Stop_Codon_Ins" = "#CC79A7",
-            "Start_Codon_Del" = "#56B4E9",
             "Fusion" = "#7B68EE",
             "Splicing" = "#f46d43")
 
@@ -124,9 +120,7 @@ mut.labels = c("Missense Mutation",
                "Nonstop Mutation",
                "Inframe Deletion",
                "Inframe Insertion",
-               "Stop Codon Insertion",
-               "Start Codon Deletion",
-               "RNA Fusion",
+               "Fusion",
                "Splicing")
 
 
