@@ -9,6 +9,10 @@ my ($histology,$rmats) = ($ARGV[0], $ARGV[1]);
 my (@broad_hist, @bs_id, @splicing_events);
 my (%histology_ids, %inc_levels, %bs_id_hist, %hist_check, %hist_count);
 
+my @ctrl_files =</Users/naqvia/Desktop/pan_cancer_rmats/*single_normals.SE.MATS.JC.txt>;
+
+my %ctrl_inc_levels;
+
 
 # annotate histology file #
   # hash with BS and disease
@@ -23,6 +27,12 @@ while(<FIL>)
 
   ##filter for specific histologies
   #print $broad_hist,"\n";
+  next if $broad_hist =~/Embryonal/;
+  next if $broad_hist =~/EWS/;
+  next if $broad_hist =~/Oligodendroglioma/;
+
+
+
   push @broad_hist, $broad_hist;
   push @bs_ids, $bs_id;
 
@@ -33,6 +43,68 @@ while(<FIL>)
   push @{$histology_ids{$broad_hist}}, $bs_id;
 }
 close(FIL);
+
+## store "healthy" psi values/gene
+my %ctrl_psi;
+my %ctrl_event_filter;
+my $ctrl_splice_totals = 0;
+
+foreach my $file(@ctrl_files)
+{
+  open(CTRL_SE,$file) || die("Cannot Open File $file");
+  while(<CTRL_SE>)
+  {
+    #print $_,"HELL\n";
+    my @cols = split "\t";
+    my $gene         = $cols[2];
+    my $chr          = $cols[3];
+    my $exonStart    = $cols[5]+1;
+    my $exonEnd      = $cols[6];
+    my $upstreamES   = $cols[7];
+    my $upstreamEE   = $cols[8];
+    my $downstreamES = $cols[9];
+    my $downstreamEE = $cols[10];
+    my $inc_level    = $cols[20];
+
+    my $ctrl_IJC     = $cols[12];
+    my $ctrl_SJC     = $cols[13];
+
+    my $inc_from_len  = $cols[16];
+    my $skip_from_len = $cols[17];
+
+    my $pval = $cols[18];
+    my $thr_diff = $cols[-1];
+
+    #next unless ($inc_level >=.10);
+
+    ## only look thsoe with >=10 reads
+    next unless ($ctrl_IJC >=10);
+    next unless ($ctrl_SJC >=10);
+
+    ## create unique ID for splicing change
+    $gene=~s/\"//g;
+    my $splice_id= $gene."_".$exonStart."-".$exonEnd."_".$upstreamES."-".$upstreamEE."_".$downstreamES."-".$downstreamEE;
+
+    #print "ctrl_splice_id: ".$spliced_id,"\n";
+    push @{$ctrl_inc_levels{$splice_id}}, $inc_level;
+
+    #$splice_totals_per_sample{$bs_id}++;
+
+    #next unless ($inc_level>=.10);
+
+    #$splice_filtered_totals_per_sample{$bs_id}++;
+    #$inc_levels{$splice_id}{$bs_id} = $inc_level;
+
+    #my $hist_of_sample = $bs_id_hist{$bs_id};
+    #$hist_check{$splice_id}{$hist_of_sample}++;
+    push @splicing_events, $splice_id;
+    $ctrl_event_filter{$splice_id}=1;;
+    $ctrl_splice_totals++;
+
+  }
+  close(CTRL_SE);
+}
+
 
 # store each library (using file name)
 # for each line, make unique splice id
@@ -45,11 +117,6 @@ while(<FIL>)
   chomp;
   my $file = $_;
   my $sample = "";
-  if($file=~/vs\_(BS\_\w+)\./)
-  {
-    #print "samp*".$1,"*\n";
-    $sample = $1;
-  }
 
   my $bs_id = "";
   if($file=~/\.(BS\_\w+)\./)
@@ -76,17 +143,46 @@ while(<FIL>)
     ## create unique ID for splicing change
     $gene=~s/\"//g;
     my $splice_id= $gene."_".$exonStart."-".$exonEnd."_".$upstreamES."-".$upstreamEE."_".$downstreamES."-".$downstreamEE;
-    $splice_totals_per_sample{$bs_id}++;
 
-    next unless ($inc_level>=.10);
+    ##skip if not in healthy samples
+    #print "splicing\n";
 
-    $splice_filtered_totals_per_sample{$bs_id}++;
-    $inc_levels{$splice_id}{$bs_id} = $inc_level;
+    next unless $ctrl_event_filter{$splice_id};
 
-    my $hist_of_sample = $bs_id_hist{$bs_id};
-    $hist_check{$splice_id}{$hist_of_sample}++;
-    push @splicing_events, $splice_id;
+    #$splice_totals_per_sample{$bs_id}++;
 
+    #next unless ($inc_level>=.10);
+
+    #$splice_filtered_totals_per_sample{$bs_id}++;
+
+    ## compute avg psi in healthy
+    my $total_ctrl_psi_per_event = 0;
+    my $ctrl_count = 0;
+    #print "ctrl_psi_array: ",@{$ctrl_inc_levels{$splice_id}},"\n";
+
+    foreach my $psi (@{$ctrl_inc_levels{$splice_id}})
+    {
+      #print "ctrl_psi:",$psi,"\n";
+      $total_ctrl_psi_per_event = $total_ctrl_psi_per_event + $psi;
+      $ctrl_count++;
+    }
+
+    my $avg_ctrl_inc = ($total_ctrl_psi_per_event / $ctrl_count);
+    my $dpsi = $avg_ctrl_inc-$inc_level;
+
+    #print $splice_id,"\tdpsi: ",$dpsi,"\n";
+
+    if(abs($dpsi)>=.10)
+    {
+      $splice_filtered_totals_per_sample{$bs_id}++;
+      #print $splice_id,"\tdpsi: ",$dpsi,"\t",$bs_id,"\n";
+    }
+
+    $inc_levels{$splice_id}{$bs_id} = $dpsi;
+
+    #my $hist_of_sample = $bs_id_hist{$bs_id};
+    #$hist_check{$splice_id}{$hist_of_sample}++;
+    #push @splicing_events, $splice_id;
 
   }
   close(SE_FIL);
@@ -99,18 +195,19 @@ my @bs_ids_uniq          = do { my %seen; grep { !$seen{$_}++ } @bs_ids };
 my @splicing_events_uniq = do { my %seen; grep { !$seen{$_}++ } @splicing_events };
 
 ##make table for plotting of splice_index
-print "sample\ttotal_splice_events\tfiltered_splice_events\tsplice_index\n";
+print "sample\ttotal_splice_events\tfiltered_splice_events\tsplice_index\thist\n";
 foreach my $sample(@bs_ids_uniq)
 {
-  next unless $splice_totals_per_sample{$sample} > 0;
+  #next unless $splice_filtered_totals_per_sample{$sample} > 0;
+  #if($splice_filtered_totals_per_sample{$sample} < 1){ print "flag\t", $sample };
+  next unless $splice_filtered_totals_per_sample{$sample} > 0;
+
   print $sample,"\t";
-  print $splice_totals_per_sample{$sample},"\t";
+  print $ctrl_splice_totals,"\t";
   print $splice_filtered_totals_per_sample{$sample},"\t";
 
-  my $splice_index = $splice_filtered_totals_per_sample{$sample}/$splice_totals_per_sample{$sample};
+  my $splice_index = $ctrl_splice_totals/$splice_filtered_totals_per_sample{$sample};
   print $splice_index,"\t";
   print $bs_id_hist{$sample},"\n";
 
 }
-
-__DATA__
