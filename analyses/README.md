@@ -11,7 +11,6 @@ Note that _nearly all_ modules use the harmonized clinical data file (`pbta-hist
 | Module | Input Files | Brief Description | Output Files Consumed by Other Analyses |
 |--------|-------|-------------------|--------------|
 | [`pan_cancer`](https://github.com/naqvia/pbta-splicing-hgat/tree/main/analyses/pan_cancer) | `pbta-histologies.RNA-Seq.initial.tsv` <br> `rmats_output.gz` <br> | -Consensus clustering of samples into cluster for downstream analyses (eg. survival). <br> -Generates splicing index table and plot to assess aberrant splicing (compared to n=9 healthy samples). <br> -Oncoplot generation to help visualize mutations, fusions and splicing. | N/A
-
 | [`global patterns of aberrant splicing`](https://github.com/naqvia/pbta-splicing-hgat/tree/main/analyses/global_patterns) | `pbta-histologies.RNA-Seq.initial.tsv` <br> `rmats_output.gz` <br> `majiq_output.gz` | Generate tables and plots to assess global patterns of aberrant splicing, including splicing types, splicing index, and splicing heterogeneity | N/A
 
 | [`PCA clustering`](https://github.com/naqvia/pbta-splicing-hgat/tree/main/analyses/pca_clustering) | `rsem.gz` <br> `rmats_output.gz` | Generate PCA plots given two conditions based on splicing and gene_expr | N/A
