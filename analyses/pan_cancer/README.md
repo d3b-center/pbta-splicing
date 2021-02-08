@@ -14,7 +14,7 @@ The code was written to be updated as consensus, filtered, and/or prioritized da
 To run this module from the command line as intended, use:
 
 **Consensus clustering.**
-Preprocessing and create matrix of inclusion/psi levels
+<br>Preprocessing and create matrix of inclusion/psi levels
 ```
 ./create_matrix_of_PSI.pl pbta-histologies.tsv filtered_samples_files.txt
 ```
@@ -44,7 +44,7 @@ input:  tables generated from `generate_splicing_index_tab.pl` run
 output: CDF plot of aberrant splicing index (`splicing_index_cdf_current_pdf`)
 
 
-**Oncoplot with mutations, fusions, and splicing for HGATs.** 
+**Oncoplot with mutations, fusions, and splicing for HGATs.**
 Preprocessing and create matrix of inclusion/psi levels
 ```
 ./create_matrix_of_PSI_HGATs.pl pbta-histologies.RNA-Seq.initial.tsv filtered_samples_files.txt
