@@ -37,7 +37,7 @@ Output files:
 plots/*png
 ```
 
-**Compute splicing index clustering:**
+### Compute splicing index clustering:
 <br>Genrate splicing index plot, similar to TMB
 
 ```
@@ -69,7 +69,7 @@ Output files:
 plots/splicing_index_cdf_current.pdf
 ```
 
-**Oncoplot with mutations, fusions, and splicing for HGATs:**
+### Oncoplot with mutations, fusions, and splicing for HGATs:
 <br>Preprocessing and create matrix of inclusion/psi levels
 ```
 ./create_matrix_of_PSI_HGATs.pl pbta-histologies.RNA-Seq.initial.tsv filtered_samples_files.txt
