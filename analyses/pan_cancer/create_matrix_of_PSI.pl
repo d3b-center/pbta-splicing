@@ -1,10 +1,11 @@
 #!/usr/bin/perl
-
-#
+################################################################################
 # create_matrix_of_PSI.pl
+# create tsv file of PSI for each sample, to be used for consensus clustering
+# written by Ammar Naqvi
 #
-# ./create_matrix_of_PSI.pl pbta-histologies.tsv filtered_samples_files.txt
-
+# usage: ./create_matrix_of_PSI.pl <histology file> <rMATs_file_paths.txt>
+################################################################################
 my ($histology,$rmats) = ($ARGV[0], $ARGV[1]);
 my (@broad_hist, @bs_id, @splicing_events);
 my (%histology_ids, %inc_levels, %bs_id_hist, %hist_check, %hist_count);
@@ -18,6 +19,7 @@ open(FIL, $histology) || die("Cannot Open File $histology");
 while(<FIL>)
 {
   chomp;
+  next if ($_=~/Kids/);
   my @cols = split "\t";
   my $broad_hist = $cols[35];
   my $bs_id = $cols[0];
@@ -74,7 +76,7 @@ while(<FIL>)
     my $downstreamEE = $cols[10];
     my $inc_level    = $cols[20];
 
-    next unless ($inc_level>=.10);
+    next unless ($inc_level >=.10);
     #$inc_level    = $cols[12];
 
     $gene=~s/\"//g;
@@ -84,6 +86,8 @@ while(<FIL>)
     $inc_levels{$splice_id}{$bs_id} = $inc_level;
     my $hist_of_sample = $bs_id_hist{$bs_id};
 
+    ##store number of events per histology
+    #print $hist_of_sample,":hist\n";
     $hist_check{$splice_id}{$hist_of_sample}++;
     push @splicing_events, $splice_id;
 
@@ -116,22 +120,29 @@ my @splicing_events_uniq = do { my %seen; grep { !$seen{$_}++ } @splicing_events
 # die;
 
 
-
-print "Splice_ID";
+my $out_file = "results/pan_cancer_splicing.thr10.report_all.v2.txt";
+open(OUT,">",$out_file) || die("Cannot Open File");
+print OUT "Splice_ID";
 
   foreach my $hist (sort @broad_hist_uniq)
   {
     my $i = 1;
     foreach my $sample (@{$histology_ids{$hist}})
     {
-      last if($i>30);
-      print "\t";
-      print $hist."_".$i;
+    #  last if($i>30);
+      print OUT "\t";
+
+      ##print histology name (renamed)
+      #print $hist."_".$i;
+
+      ##print sample name
+      print OUT $sample;
       $i++;
 
     }
   }
-print "\n";
+print OUT "\n";
+
 
 
 
@@ -140,15 +151,21 @@ foreach my $event (@splicing_events_uniq)
 {
   ## @{$histology_ids{$broad_hist}}
   my $thresh_for_hist_prev = 1;
+  #print "event:",$event,"\n";
   foreach my $hist (sort @broad_hist_uniq){
-      ##must be recurrent in 80%
-      my $hist_prev_thr = .90*($hist_count{$hist});
-      if($hist_check{$event}{$hist} < $hist_prev_thr) {
-        $thresh_for_hist_prev = 0;
+
+      ##threshold for prevalence per sample (%)
+      #my $hist_prev_thr = .20*($hist_count{$hist});
+      my $hist_prev_thr = 2;
+      my $prev_in_hist = 0;
+      if($hist_check{$event}{$hist}) { $prev_in_hist = $hist_check{$event}{$hist} };
+      #print $prev_in_hist,"CHECK\t",$hist_prev_thr,"\n";
+      if($prev_in_hist < $hist_prev_thr) {
+        #$thresh_for_hist_prev = 0;
       }
   }
   next if ($thresh_for_hist_prev == 0);
-  print $event;
+  print OUT $event;
 
   foreach my $hist (sort @broad_hist_uniq)
   {
@@ -157,25 +174,26 @@ foreach my $event (@splicing_events_uniq)
     foreach my $sample (@{$histology_ids{$hist}})
     {
 
-      last if($i>30); ## for testing purposes
+    #  last if($i>30); ## for testing purposes
 
-      print "\t";
+      print OUT "\t";
       #print $sample;
       if($inc_levels{$event}{$sample}>0)
       {
         #print $sample.":".$inc_levels{$event}{$sample};
-        print $inc_levels{$event}{$sample};
+        print OUT $inc_levels{$event}{$sample};
       }
       else
       {
         # print $sample.":0";
-        print "0.01";
+        print OUT "0";
       }
       $i++;
     }
   }
-  print "\n";
+  print OUT "\n";
 }
+
 __DATA__
 28612	"ENSG00000079308.19"	"TNS1"	chr2	-	217813214	217813304	217812367	217812445	217813684	217813816	28612	365	17			239	149	NA	NA	0.93		NA
 
