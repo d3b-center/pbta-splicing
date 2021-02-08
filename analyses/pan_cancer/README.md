@@ -28,6 +28,9 @@ results/pan_cancer_splicing.thr10.report_all.txt
 plots/*png
 ```
 
+![](plots/all_of_samples_cc/consensus007.pngtmb-cdf-pbta-tcga.png)
+
+
 ### Compute splicing index clustering:
 <br>**Genrate splicing index plot, similar to TMB**
 
@@ -50,6 +53,8 @@ Output files:
 plots/splicing_index_cdf_current.pdf
 ```
 
+![](plots/splicing_index_cdf_current.pdf)
+
 ### Oncoplot with mutations, fusions, and splicing for HGATs:
 <br>**Preprocessing and create matrix of inclusion/psi levels**
 ```
@@ -70,6 +75,7 @@ Output files:
 ```
 plots/oncoplot*pdf
 ```
+![](plots/oncoplot_of_hgat_variants.pdf)
 
 ## Folder content
 
