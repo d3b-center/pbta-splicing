@@ -3,7 +3,6 @@
 ## Work in progress
 
 This module is a work in progress.
-The code was written to be updated as consensus, filtered, and/or prioritized data becomes available.
 
 ## Usage
 
@@ -26,7 +25,7 @@ Output files:
 results/pan_cancer_splicing.thr10.report_all.txt
 ```
 
-<br>Run consensus clustering method and compute clusters
+Run consensus clustering method and compute clusters
 ```
 Rscript consensus_clustering.R
 ```
@@ -59,7 +58,6 @@ Output files:
 results/splicing_index.wdPSI.txt
 ```
 
-<br>Plot CDF of splicing index
 ```
 Rscript splicing_index.R
 ```
@@ -91,7 +89,6 @@ Output files:
 results/hgat.diffsplicing.psi.txt
 ```
 
-<br>Create oncoplot with splicing, mutations, and RNA fusions
 ```
 Rscript create_oncoplot_of_splicing_w_filters.R
 ```
