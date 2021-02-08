@@ -28,7 +28,7 @@ results/pan_cancer_splicing.thr10.report_all.txt
 plots/*png
 ```
 
-![](plots/all_of_samples_cc/consensus007.pngtmb-cdf-pbta-tcga.png)
+![](plots/all_of_samples_cc/consensus007.png)
 
 
 ### Compute splicing index clustering:
