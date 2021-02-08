@@ -8,7 +8,7 @@ This module is a work in progress.
 ### Consensus clustering:
 <br>**Preprocessing and create matrix of inclusion/psi levels**
 ```
-./create_matrix_of_PSI.pl pbta-histologies.tsv filtered_samples_files.txt
+./create_matrix_of_PSI.pl <pbta-histologies.RNA-Seq> <filtered_samples_files.txt>
 ```
 
 <br>**Run consensus clustering method and compute clusters**
@@ -17,7 +17,7 @@ Rscript consensus_clustering.R
 ```
 Input files:
 ```
-data/pbta-histologies.tsv
+data/pbta-histologies.RNA-Seq
 data/filtered_samples_files.txt
 tables generated from `create_matrix_of_PSI.pl` run
 ```
@@ -32,7 +32,7 @@ plots/*png
 <br>**Genrate splicing index plot, similar to TMB**
 
 ```
-/generate_splicing_index_tab.pl pbta-histologies.RNA-Seq.initial.tsv filtered_samples_files.txt
+/generate_splicing_index_tab.pl <pbta-histologies.RNA-Seq.initial.tsv> <filtered_samples_files.txt>
 ```
 ```
 Rscript splicing_index.R
@@ -53,7 +53,7 @@ plots/splicing_index_cdf_current.pdf
 ### Oncoplot with mutations, fusions, and splicing for HGATs:
 <br>**Preprocessing and create matrix of inclusion/psi levels**
 ```
-./create_matrix_of_PSI_HGATs.pl pbta-histologies.RNA-Seq.initial.tsv filtered_samples_files.txt
+./create_matrix_of_PSI_HGATs.pl <pbta-histologies.RNA-Seq.initial.tsv> <filtered_samples_files.txt>
 ```
 ```
 Rscript create_oncoplot_of_splicing_w_filters.R
