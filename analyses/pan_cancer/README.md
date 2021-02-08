@@ -4,21 +4,38 @@
 
 This module is a work in progress.
 The code was written to be updated as consensus, filtered, and/or prioritized data becomes available.
+
 **The plots included as PNGs should be regarded as proof of concept, rather than for interpretation.**
 
-In particular, the following are likely to change:
 
-* The plot will use consensus copy number calls ([#128](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/128)).
 
 ## Usage
 
-To run the Rscript in this module from the command line as intended, use:
+To run this module from the command line as intended, use:
+
+Preprocessing and create matrix of inclusion/psi levels
+```
+./create_matrix_of_PSI.pl pbta-histologies.tsv filtered_samples_files.txt
+```
+input:  histology file, file paths for rMATS output
+output: matrix of psi/inclusion levels for each splice change in each sample
+
+Run consensus clustering method and compute clusters
+```
+Rscript consensus_clustering.R
+```
+input:  tables generated from `create_matrix_of_PSI.pl` run
+output: clustering plots
+
+Genrate splicing index plot, similar to TMB
 
 ```
-bash run-oncoprint.sh
+./create_matrix_of_PSI.pl pbta-histologies.tsv filtered_samples_files.txt
+/generate_splicing_index_tab.pl pbta-histologies.tsv filtered_samples_files.txt
+Rscript consensus_clustering.R
 ```
-
-`run-oncoprint.sh` is designed to be run as if it was called from this module directory even when called from outside of this directory.
+input:  histology file, file paths for rMATS output, results/splicing_index.wdPSI.txt
+output: matrix of psi/inclusion levels for each splice change in each sample
 
 ## Folder content
 
