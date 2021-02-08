@@ -53,7 +53,7 @@ Output files:
 plots/splicing_index_cdf_current.pdf
 ```
 
-![](plots/splicing_index_cdf_current.pdf)
+![](plots/splicing_index_cdf_current.png)
 
 ### Oncoplot with mutations, fusions, and splicing for HGATs:
 <br>**Preprocessing and create matrix of inclusion/psi levels**
