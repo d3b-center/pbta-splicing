@@ -26,7 +26,7 @@ Output files:
 results/pan_cancer_splicing.thr10.report_all.txt
 ```
 
-Run consensus clustering method and compute clusters
+<br>Run consensus clustering method and compute clusters
 ```
 Rscript consensus_clustering.R
 ```
@@ -59,6 +59,7 @@ Output files:
 results/splicing_index.wdPSI.txt
 ```
 
+<br>Plot CDF of splicing index
 ```
 Rscript splicing_index.R
 ```
@@ -90,7 +91,7 @@ Output files:
 results/hgat.diffsplicing.psi.txt
 ```
 
-<br>Create oncoplot
+<br>Create oncoplot with splicing, mutations, and RNA fusions
 ```
 Rscript create_oncoplot_of_splicing_w_filters.R
 ```
