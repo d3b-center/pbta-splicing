@@ -1,15 +1,29 @@
-## Analysis Modules
-This directory contains various analysis modules in the pbta-splicing-hgat project.
-See the README of an individual analysis modules for more information about that module.
+# OpenPBTA Oncoprint
 
-### Modules at a glance
-The table below is intended to help project organizers quickly get an idea of what files (and therefore types of data) are consumed by each analysis module, what the module does, and what output files it produces that can be consumed by other analysis modules.
-This is in service of documenting interdependent analyses.
+## Work in progress
 
-Note that _nearly all_ modules use the harmonized clinical data file (`pbta-histologies.tsv`) even when it is not explicitly included in the table below.
+This module is a work in progress.
+The code was written to be updated as consensus, filtered, and/or prioritized data becomes available.
+**The plots included as PNGs should be regarded as proof of concept, rather than for interpretation.**
 
-| Module | Input Files | Brief Description | Output Files Consumed by Other Analyses |
-|--------|-------|-------------------|--------------|
-| [`chromosomal-instability`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/chromosomal-instability) | `pbta-histologies.tsv` <br> `pbta-sv-manta.tsv.gz` <br> `pbta-cnv-cnvkit.seg.gz` | Evaluates chromosomal instability by calculating chromosomal breakpoint densities and by creating circular plot visuals | N/A
-| [`cnv-chrom-plot`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/cnv-chrom) | `pbta-cnv-consensus-gistic.zip` <br> `analyses/copy_number_consensus_call/results/pbta-cnv-consensus.seg` | Plots genome wide visualizations relating to copy number results | N/A
-| [`cnv-comparison`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/cnv-comparison) | Earlier version of SEG files | *Deprecated*; compared earlier version of the CNV methods. | N/A
+In particular, the following are likely to change:
+
+* The plot will use consensus copy number calls ([#128](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/128)).
+
+## Usage
+
+To run the Rscript in this module from the command line as intended, use:
+
+```
+bash run-oncoprint.sh
+```
+
+`run-oncoprint.sh` is designed to be run as if it was called from this module directory even when called from outside of this directory.
+
+## Folder content
+
+* `00-map-to-sample_id.R` prepares MAF, focal CN (the output of the `focal-cn-file-preparation` module), and standardized fusion files for use with `01-plot-oncoprint.R`.
+  * The `Tumor_Sample_Barcode` column in the output corresponds to the `sample_id` column in the histologies file
+  * We remove ambiguous `sample_id` -- i.e., where there are more than two tumor biospecimens that map to the same sample identifier.
+  * Filtering via an [independent specimen file](https://alexslemonade.github.io/OpenPBTA-manuscript/#selection-of-independent-samples) is optional, but highly recommended.
+* `01-plot-oncoprint.R` takes the files from above and optionally a gene list and creates an oncoprint.
