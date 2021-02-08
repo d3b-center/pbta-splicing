@@ -1,13 +1,9 @@
-# OpenPBTA Oncoprint
+# Pan Cancer
 
 ## Work in progress
 
 This module is a work in progress.
 The code was written to be updated as consensus, filtered, and/or prioritized data becomes available.
-
-**The plots included as PNGs should be regarded as proof of concept, rather than for interpretation.**
-
-
 
 ## Usage
 
