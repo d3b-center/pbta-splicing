@@ -13,12 +13,13 @@ The code was written to be updated as consensus, filtered, and/or prioritized da
 
 To run this module from the command line as intended, use:
 
+**Consensus clustering.**
 Preprocessing and create matrix of inclusion/psi levels
 ```
 ./create_matrix_of_PSI.pl pbta-histologies.tsv filtered_samples_files.txt
 ```
 input:  histology file, file paths for rMATS output
-output: matrix of psi/inclusion levels for each splice change in each sample
+output: matrix of psi/inclusion levels for each splice change in each sample (pan_cancer_splicing.thr10.report_all.txt)
 
 Run consensus clustering method and compute clusters
 ```
@@ -27,15 +28,37 @@ Rscript consensus_clustering.R
 input:  tables generated from `create_matrix_of_PSI.pl` run
 output: clustering plots
 
+**Compute splicing index clustering.**
 Genrate splicing index plot, similar to TMB
 
 ```
-./create_matrix_of_PSI.pl pbta-histologies.tsv filtered_samples_files.txt
-/generate_splicing_index_tab.pl pbta-histologies.tsv filtered_samples_files.txt
-Rscript consensus_clustering.R
+/generate_splicing_index_tab.pl pbta-histologies.RNA-Seq.initial.tsv filtered_samples_files.txt
 ```
-input:  histology file, file paths for rMATS output, results/splicing_index.wdPSI.txt
-output: matrix of psi/inclusion levels for each splice change in each sample
+input:  histology file, file paths for rMATS output,
+output: matrix of psi/inclusion levels for each splice change in each sample (`splicing_index.wdPSI.txt`)
+
+```
+Rscript splicing_index.R
+```
+input:  tables generated from `generate_splicing_index_tab.pl` run
+output: CDF plot of aberrant splicing index (`splicing_index_cdf_current_pdf`)
+
+
+**Oncoplot with mutations, fusions, and splicing for HGATs.** 
+Preprocessing and create matrix of inclusion/psi levels
+```
+./create_matrix_of_PSI_HGATs.pl pbta-histologies.RNA-Seq.initial.tsv filtered_samples_files.txt
+```
+input:  histology file, file paths for rMATS output
+output: matrix of psi/inclusion levels for each splice change in each sample compared back to healthy controls (`hgat.diffsplicing.psi.txt`)
+
+```
+Rscript create_oncoplot_of_splicing_w_filters.R
+```
+input:  tables generated from `create_matrix_of_PSI_HGATs.pl` run
+output: oncoplots based on gene lists (`oncoplot*pdf`)
+
+
 
 ## Folder content
 
