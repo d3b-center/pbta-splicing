@@ -40,25 +40,26 @@ plots/splicing_index_cdf_DMG.pdf
 <br>**Genrate barplot showing aberrant splicing heterogeneity**
 
 ```
-/generate_splicing_index_DMG_tab.pl <pbta-histologies.RNA-Seq.initial.tsv> <filtered_samples_files.txt>
+./generate_heterog_tab.pl <pbta-histologies.RNA-Seq.initial.tsv> <filtered_samples_files.txt>
 ```
+
 ```
-Rscript splicing_index.R
+Rscript plot_heterog.R
 ```
 
 Input files:
 ```
 data/pbta-histologies.tsv
 data/filtered_samples_files.txt
-results/splicing_index_DMG.wdPSI.txt
+results/aberrant_splicing_report.txt
 ```
 
 Output files:
 ```
-plots/splicing_index_cdf_DMG.pdf
+plots/splicing_heterog.pdf
 ```
 
-![](plots/splicing_index_cdf_current.png)
+![](plots/splicing_heterog.png)
 
 
 
