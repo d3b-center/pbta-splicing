@@ -75,7 +75,7 @@ Output files:
 ```
 plots/oncoplot*pdf
 ```
-![](plots/oncoplot_of_hgat_variants.pdf)
+![](plots/oncoplot_hgats_top20.png)
 
 ## Folder content
 
