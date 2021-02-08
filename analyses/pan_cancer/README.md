@@ -13,51 +13,100 @@ The code was written to be updated as consensus, filtered, and/or prioritized da
 
 To run this module from the command line as intended, use:
 
-**Consensus clustering.**
+**Consensus clustering:**
 <br>Preprocessing and create matrix of inclusion/psi levels
 ```
 ./create_matrix_of_PSI.pl pbta-histologies.tsv filtered_samples_files.txt
 ```
-input:  histology file, file paths for rMATS output
-<br>output: matrix of psi/inclusion levels for each splice change in each sample (pan_cancer_splicing.thr10.report_all.txt)
+
+Input files:
+```
+data/pbta-histologies.tsv
+data/filtered_samples_files.txt
+```
+
+Output files:
+```
+results/pan_cancer_splicing.thr10.report_all.txt
+```
 
 Run consensus clustering method and compute clusters
 ```
 Rscript consensus_clustering.R
 ```
-input:  tables generated from `create_matrix_of_PSI.pl` run
-<br>output: clustering plots
 
-**Compute splicing index clustering.**
+Input files:
+```
+tables generated from `create_matrix_of_PSI.pl` run
+```
+
+Output files:
+```
+plots/*png
+```
+
+**Compute splicing index clustering:**
 <br>Genrate splicing index plot, similar to TMB
 
 ```
 /generate_splicing_index_tab.pl pbta-histologies.RNA-Seq.initial.tsv filtered_samples_files.txt
 ```
-input:  histology file, file paths for rMATS output,
-<br>output: matrix of psi/inclusion levels for each splice change in each sample (`splicing_index.wdPSI.txt`)
+
+Input files:
+```
+data/pbta-histologies.tsv
+data/filtered_samples_files.txt
+```
+
+Output files:
+```
+results/splicing_index.wdPSI.txt
+```
 
 ```
 Rscript splicing_index.R
 ```
-input:  tables generated from `generate_splicing_index_tab.pl` run
-<br>output: CDF plot of aberrant splicing index (`splicing_index_cdf_current_pdf`)
 
-**Oncoplot with mutations, fusions, and splicing for HGATs.**
+Input files:
+```
+results/splicing_index.wdPSI.txt
+```
+
+Output files:
+```
+plots/splicing_index_cdf_current.pdf
+```
+
+**Oncoplot with mutations, fusions, and splicing for HGATs:**
 <br>Preprocessing and create matrix of inclusion/psi levels
 ```
 ./create_matrix_of_PSI_HGATs.pl pbta-histologies.RNA-Seq.initial.tsv filtered_samples_files.txt
 ```
-input:  histology file, file paths for rMATS output
-<br>output: matrix of psi/inclusion levels for each splice change in each sample compared back to healthy controls (`hgat.diffsplicing.psi.txt`)
+
+Input files:
+```
+data/pbta-histologies.tsv
+data/filtered_samples_files.txt
+```
+
+Output files:
+```
+results/hgat.diffsplicing.psi.txt
+```
 
 ```
 Rscript create_oncoplot_of_splicing_w_filters.R
 ```
-input:  tables generated from `create_matrix_of_PSI_HGATs.pl` run
-<br>output: oncoplots based on gene lists (`oncoplot*pdf`)
 
+Input files:
+```
+results/hgat.diffsplicing.psi.txt
+```
 
+Output files:
+```
+plots/oncoplot*pdf
+```
 
 ## Folder content
 
