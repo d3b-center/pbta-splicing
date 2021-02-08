@@ -1,11 +1,11 @@
 # Pan Cancer
 
-## Work in progress
+### Work in progress
 
 This module is a work in progress.
 
 ## Usage
-### Consensus clustering:**
+### Consensus clustering:
 <br>Preprocessing and create matrix of inclusion/psi levels
 ```
 ./create_matrix_of_PSI.pl pbta-histologies.tsv filtered_samples_files.txt
