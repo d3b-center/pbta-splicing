@@ -1,8 +1,8 @@
 # Pan Cancer
 
-### Work in progress
+Module authors: Ammar Naqvi (@naqvia)
 
-This module is a work in progress.
+The purpose of this module is to obtain a global view of alternative splicing by assessing total aberrant splicing indices per histology and assessing splicing changes with genomic mutations and RNA- fusions.
 
 ## Usage
 ### Consensus clustering:
@@ -75,9 +75,7 @@ plots/oncoplot*pdf
 
 * `create_matrix_of_PSI.pl` prepares, filters, and constructs data table for downstream clustering analysis and output file to `results/pan_cancer_splicing.thr10.report_all.txt`
 * `consensus_clustering.R` takes the files from above and generates clustering in `plots/consensus*png`
-
 * `generate_splicing_index_tab.pl` generates ggplot data table for splicing index, outputs file to `results/splicing_index.wdPSI.txt`
 * `Rscript splicing_index.R` takes the files from above and generates CDF plot (similar to TMB) in `plots/splicing_index_cdf_current.pdf`
-
 * `create_matrix_of_PSI_HGATs.pl` prepares, filters, and constructs data table woth healthy comparisons of dPSI for downstream , outputs file to `results/hgat.diffsplicing.psi.txt`
 * `Rscript create_oncoplot_of_splicing_w_filters.R` takes the files from above and generates oncoplot with given gene lists in `plots/oncoplot_of_hgat*.pdf`
