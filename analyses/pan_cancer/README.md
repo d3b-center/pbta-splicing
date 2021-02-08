@@ -11,29 +11,20 @@ This module is a work in progress.
 ./create_matrix_of_PSI.pl pbta-histologies.tsv filtered_samples_files.txt
 ```
 
+<br>Run consensus clustering method and compute clusters
+```
+Rscript consensus_clustering.R
+```
 Input files:
 ```
 data/pbta-histologies.tsv
 data/filtered_samples_files.txt
-```
-
-Output files:
-```
-results/pan_cancer_splicing.thr10.report_all.txt
-```
-
-Run consensus clustering method and compute clusters
-```
-Rscript consensus_clustering.R
-```
-
-Input files:
-```
 tables generated from `create_matrix_of_PSI.pl` run
 ```
 
 Output files:
 ```
+results/pan_cancer_splicing.thr10.report_all.txt
 plots/*png
 ```
 
