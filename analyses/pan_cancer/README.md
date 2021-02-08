@@ -5,9 +5,6 @@
 This module is a work in progress.
 
 ## Usage
-
-To run this module from the command line as intended, use:
-
 **Consensus clustering:**
 <br>Preprocessing and create matrix of inclusion/psi levels
 ```
