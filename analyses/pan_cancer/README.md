@@ -73,8 +73,11 @@ plots/oncoplot*pdf
 
 ## Folder content
 
-* `00-map-to-sample_id.R` prepares MAF, focal CN (the output of the `focal-cn-file-preparation` module), and standardized fusion files for use with `01-plot-oncoprint.R`.
-  * The `Tumor_Sample_Barcode` column in the output corresponds to the `sample_id` column in the histologies file
-  * We remove ambiguous `sample_id` -- i.e., where there are more than two tumor biospecimens that map to the same sample identifier.
-  * Filtering via an [independent specimen file](https://alexslemonade.github.io/OpenPBTA-manuscript/#selection-of-independent-samples) is optional, but highly recommended.
-* `01-plot-oncoprint.R` takes the files from above and optionally a gene list and creates an oncoprint.
+* `create_matrix_of_PSI.pl` prepares, filters, and constructs data table for downstream clustering analysis and output file to `results/pan_cancer_splicing.thr10.report_all.txt`
+* `consensus_clustering.R` takes the files from above and generates clustering in `plots/consensus*png`
+
+* `generate_splicing_index_tab.pl` generates ggplot data table for splicing index, outputs file to `results/splicing_index.wdPSI.txt`
+* `Rscript splicing_index.R` takes the files from above and generates CDF plot (similar to TMB) in `plots/splicing_index_cdf_current.pdf`
+
+* `create_matrix_of_PSI_HGATs.pl` prepares, filters, and constructs data table woth healthy comparisons of dPSI for downstream , outputs file to `results/hgat.diffsplicing.psi.txt`
+* `Rscript create_oncoplot_of_splicing_w_filters.R` takes the files from above and generates oncoplot with given gene lists in `plots/oncoplot_of_hgat*.pdf`
