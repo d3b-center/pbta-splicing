@@ -28,8 +28,7 @@ results/pan_cancer_splicing.thr10.report_all.txt
 plots/*png
 ```
 
-![](plots/all_of_samples_cc/consensus007.png)
-![](plots/cc_k7_heatmap_version.png)
+![](plots/cc_k6_heatmap_version.png)
 
 
 
