@@ -29,7 +29,7 @@ plots/*png
 ```
 
 ![](plots/all_of_samples_cc/consensus007.png)
-![](plots/cc_k7_heatmap_version)
+![](plots/cc_k7_heatmap_version.png)
 
 
 
