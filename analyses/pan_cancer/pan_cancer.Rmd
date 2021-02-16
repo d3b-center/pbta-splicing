@@ -12,6 +12,9 @@ Load required libraries
 library("limma")
 library("gplots")
 library("ConsensusClusterPlus")
+
+# Get `magrittr` pipe
+`%>%` <- dplyr::`%>%`
 ```
 Publication theme for plots
 ```{r}
@@ -100,7 +103,6 @@ ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
                      title="clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = "average")
 
 ## do all of the samples // pan_cancer_splicing.thr10.report_all.txt
-#file = "/Users/naqvia/Desktop/pan_cancer_rmats/test_matrix.thr10histTotalhistprev2.psi.csv"
 file = "/Users/naqvia//Desktop/AS-DMG/data/pan_cancer_splicing.thr10.report_all.txt"
 psi_tab <- read.delim(file, row.names = 1,sep = "\t", header = TRUE)
 
@@ -135,15 +137,67 @@ d[is.nan(d)] <- 0
 #results= ConsensusClusterPlus((d),maxK=7,reps=100,pItem=0.8,
 #                     title="Total Samples PSI Clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = "average", plot="png")
 
+##save to variable in order to be used below, k=6
+results = ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
+                     title="clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = "average")
 
 ```
-Heatmap with hierarchical clustering
+Heatmap version so you can print labels with histologies 
 ```{r}
+library("pheatmap")
 
-heatmap.2(((d)),
-         notecol="black",      # change font color of cell labels to black
-        dendrogram="col",
-        col=redgreen)
+# choose a cluster that seems best and assign to n_cluster
+CC_group <- results[[6]]$consensusClass %>%
+  as.data.frame()
+colnames(CC_group) <- "CC"
+
+# read in consensus clustering matrix
+CC_consensus_mat <- results[[6]]$consensusMatrix
+colnames(CC_consensus_mat) <- rownames(CC_group)
+rownames(CC_consensus_mat) <- rownames(CC_group)
+
+
+clin_file = "~/Desktop/AS-DMG/data/pbta-histologies.RNA-Seq.tsv"
+clin_tab = read.delim(clin_file, sep = "\t", header=TRUE)
+
+clin_file = "~/Downloads/compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv"
+clin_tab = read.delim(clin_file, sep = "\t", header=TRUE)
+
+hist_sample <- cbind(data.frame(clin_tab$Kids_First_Biospecimen_ID), data.frame(clin_tab$short_histology), data.frame(clin_tab$integrated_diagnosis), data.frame(clin_tab$tumor_descriptor))
+library(randomcoloR)
+
+## n is total num of histology (short)
+anno_palette <- distinctColorPalette(10)
+
+names(anno_palette)<- unique(clin_tab$short_histology)
+
+hist_sample$clin_tab.short_histology <- as.factor(hist_sample$clin_tab.short_histology )
+
+
+
+names(anno_palette)<- levels(hist_sample$clin_tab.short_histology)
+rownames(hist_sample)<- hist_sample$clin_tab.Kids_First_Biospecimen_ID
+
+##remove colum
+hist_sample = subset(hist_sample, select = -c(clin_tab.Kids_First_Biospecimen_ID))
+
+pheatmap::pheatmap(
+  CC_consensus_mat,
+  #color = colorRampPalette(brewer.pal(n = 9, name = "Blues"))(9),
+  annotation_col=hist_sample, 
+  #annotation_colors=anno_palette,
+  cluster_rows = results[[6]]$consensusTree,
+  cluster_cols = results[[6]]$consensusTree, 
+  show_rownames = F,
+  show_colnames = F
+  #filename = "cc_test/png",
+  #fontsize = 10, cellwidth = 10, cellheight = 10
+)
+
+## save cluster members
+CC_group <- results[[6]]$consensusClass %>%
+    as.data.frame()
+
 ```
 
 ##Splicing index plot
