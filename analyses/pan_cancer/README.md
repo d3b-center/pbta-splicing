@@ -30,6 +30,13 @@ plots/*png
 
 ![](plots/cc_k6_heatmap_version.png)
 
+![](plots/C1_vs_other.surv.png)
+![](plots/C2_vs_other.surv.png)
+![](plots/C3_vs_other.surv.png)
+![](plots/C4_vs_other.surv.png)
+![](plots/C5_vs_other.surv.png)
+![](plots/C6_vs_other.surv.png)
+
 
 
 ### Compute splicing index clustering:
