@@ -29,7 +29,7 @@ plots/*png
 ```
 
 ![](plots/cc_k6_heatmap_version.png)
-
+<br>
 ![](plots/C1_vs_other.surv.png)
 ![](plots/C2_vs_other.surv.png)
 ![](plots/C3_vs_other.surv.png)
