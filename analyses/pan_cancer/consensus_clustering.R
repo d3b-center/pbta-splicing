@@ -6,6 +6,12 @@
 # usage: Rscript consensus_clustering.R
 ################################################################################
 
+library("randomcoloR")
+library("pheatmap")
+
+# Get `magrittr` pipe
+`%>%` <- dplyr::`%>%`
+
 ## do all of the samples // pan_cancer_splicing.thr10.report_all.txt
 dataDir = "~/Desktop/AS-DMG/data/"
 file_fus <- "pan_cancer_splicing.thr10.report_all.txt"
@@ -32,7 +38,7 @@ d[is.na(d)] <- 0
 d[is.nan(d)] <- 0
 
 ## k= 7 clusters
-results = ConsensusClusterPlus((d),maxK=7,reps=100,pItem=0.8,
+results = ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
                      title="clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = "average")
 
 ##save to file
@@ -43,12 +49,12 @@ results = ConsensusClusterPlus((d),maxK=7,reps=100,pItem=0.8,
 
 
 # choose a cluster that seems best and assign to n_cluster
-CC_group <- results[[7]]$consensusClass %>%
+CC_group <- results[[6]]$consensusClass %>%
   as.data.frame()
 colnames(CC_group) <- "CC"
 
 # read in consensus clustering matrix
-CC_consensus_mat <- results[[7]]$consensusMatrix
+CC_consensus_mat <- results[[6]]$consensusMatrix
 colnames(CC_consensus_mat) <- rownames(CC_group)
 rownames(CC_consensus_mat) <- rownames(CC_group)
 
@@ -57,7 +63,6 @@ clin_file = "~/Desktop/AS-DMG/data/pbta-histologies.RNA-Seq.tsv"
 clin_tab = read.delim(clin_file, sep = "\t", header=TRUE)
 
 hist_sample <- cbind(data.frame(clin_tab$Kids_First_Biospecimen_ID), data.frame(clin_tab$short_histology))
-library(randomcoloR)
 
 ## n is total num of histology (short)
 anno_palette <- distinctColorPalette(43)
