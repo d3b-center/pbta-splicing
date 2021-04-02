@@ -1,3 +1,12 @@
+################################################################################
+# upsetR_of_clusters.R
+# script that takes in "results/CC_memberships_expr" and CC_memberships_psi data 
+#files and computes cluster membership/groupings overlap
+# written by Ammar Naqvi
+#
+# usage: Rscript upsetR_of_clusters.R
+################################################################################
+
 library(UpSetR)
 library(ggplot2)
 library(gplots)
