@@ -92,19 +92,19 @@ combine_tab     <- bind_rows(psi_tab_filtered_samples, maf_tab_filtered_samples,
 
 
 ## create and prepare maf object
-maf = read.maf(maf = combine_tab, clinicalData = clin_tab, removeDuplicatedVariants = FALSE, vc_nonSyn = c("Frame_Shift_Del",
-                                                                           "Frame_Shift_Ins",
-                                                                           "Splice_Site",
-                                                                           "Translation_Start_Site",
-                                                                           "Nonsense_Mutation",
-                                                                           "Nonstop_Mutation",
-                                                                           "In_Frame_Del",
-                                                                           "In_Frame_Ins",
-                                                                           "Missense_Mutation",
-                                                                           "Fusion",
-                                                                           "Splicing"))
+#maf = read.maf(maf = combine_tab, clinicalData = clin_tab, removeDuplicatedVariants = FALSE, vc_nonSyn = c("Frame_Shift_Del",
+#                                                                           "Frame_Shift_Ins",
+#                                                                           "Splice_Site",
+#                                                                           "Translation_Start_Site",
+#                                                                           "Nonsense_Mutation",
+#                                                                           "Nonstop_Mutation",
+#                                                                           "In_Frame_Del",
+#                                                                           "In_Frame_Ins",
+#                                                                           "Missense_Mutation",
+#                                                                           "Fusion",
+#                                                                           "Splicing"))
 
-  maf = read.maf(maf = combine_tab, clinicalData = clin_tab, removeDuplicatedVariants = FALSE, vc_nonSyn = c("Frame_Shift_Del",
+maf = read.maf(maf = combine_tab, clinicalData = clin_tab, removeDuplicatedVariants = FALSE, vc_nonSyn = c("Frame_Shift_Del",
                                                                                                              "Frame_Shift_Ins",
                                                                                                              "Splice_Site",
                                                                                                              "Translation_Start_Site",
@@ -117,11 +117,11 @@ maf = read.maf(maf = combine_tab, clinicalData = clin_tab, removeDuplicatedVaria
                                                                                                              "Splicing",
                                                                                                              "Multi_Hit"))
 
-maf2 = read.maf(maf = combine_tab, clinicalData = clin_tab, removeDuplicatedVariants = FALSE,
-                vc_nonSyn = c("Frame_Shift_Del", "Frame_Shift_Ins", "Splice_Site", "Translation_Start_Site","Nonsense_Mutation", 
-                              "Nonstop_Mutation", "In_Frame_Del","In_Frame_Ins", "Missense_Mutation",  
-                              "Stop_Codon_Ins", "Start_Codon_Del", "Fusion", "Multi_Hit", "Hom_Deletion",
-                              "Hem_Deletion", "Amplification", "Multi_Hit_Fusion", "Splicing"))
+#maf2 = read.maf(maf = combine_tab, clinicalData = clin_tab, removeDuplicatedVariants = FALSE,
+#                vc_nonSyn = c("Frame_Shift_Del", "Frame_Shift_Ins", "Splice_Site", "Translation_Start_Site","Nonsense_Mutation", 
+#                              "Nonstop_Mutation", "In_Frame_Del","In_Frame_Ins", "Missense_Mutation",  
+#                              "Stop_Codon_Ins", "Start_Codon_Del", "Fusion", "Multi_Hit", "Hom_Deletion",
+#                              "Hem_Deletion", "Amplification", "Multi_Hit_Fusion", "Splicing"))
 
 
 maf_total = read.maf(maf = combine_tab, clinicalData = clin_tab, removeDuplicatedVariants = FALSE, cnTable = cn_tab_filtered, 
@@ -130,36 +130,36 @@ maf_total = read.maf(maf = combine_tab, clinicalData = clin_tab, removeDuplicate
                                    "Stop_Codon_Ins", "Start_Codon_Del", "Fusion", "Multi_Hit", "Del", "Amp",  "Splicing"))
 
 
-col2hex=c('mediumseagreen', 'orange', 'green2', 'hotpink',
-          'lightslateblue', 'midnightblue', 'gray33', 'turquoise3',
-          'lightpink','purple', 'black', 'brown')
-
-
-colores = c("Missense_Mutation" = "#35978f", 
-            "Nonsense_Mutation" = "#000000",
-            "Frame_Shift_Del" = "#56B4E9", 
-            "Frame_Shift_Ins" = "#FFBBFF", 
-            "Splice_Site" = "#F0E442",
-            "Translation_Start_Site" = "#191970",
-            "Nonstop_Mutation" = "#545454",
-            "In_Frame_Del" = "#CAE1FF",
-            "In_Frame_Ins" = "#FFE4E1",
-            "Fusion" = "#7B68EE",
-            "Splicing" = "#f46d43",
-            "Multi_Hit" = "#545454")
-
-mut.labels = c("Missense Mutation", 
-               "Nonsense Mutation",
-               "Frameshift Deletion", 
-               "Frameshift Insertion", 
-               "Splice Site Mutation",
-               "Translation Start Site",
-               "Nonstop Mutation",
-               "Inframe Deletion",
-               "Inframe Insertion",
-               "Fusion",
-               "Splicing",
-               "Multi-hit")
+# col2hex=c('mediumseagreen', 'orange', 'green2', 'hotpink',
+#           'lightslateblue', 'midnightblue', 'gray33', 'turquoise3',
+#           'lightpink','purple', 'black', 'brown')
+# 
+# 
+# colores = c("Missense_Mutation" = "#35978f", 
+#             "Nonsense_Mutation" = "#000000",
+#             "Frame_Shift_Del" = "#56B4E9", 
+#             "Frame_Shift_Ins" = "#FFBBFF", 
+#             "Splice_Site" = "#F0E442",
+#             "Translation_Start_Site" = "#191970",
+#             "Nonstop_Mutation" = "#545454",
+#             "In_Frame_Del" = "#CAE1FF",
+#             "In_Frame_Ins" = "#FFE4E1",
+#             "Fusion" = "#7B68EE",
+#             "Splicing" = "#f46d43",
+#             "Multi_Hit" = "#545454")
+# 
+# mut.labels = c("Missense Mutation", 
+#                "Nonsense Mutation",
+#                "Frameshift Deletion", 
+#                "Frameshift Insertion", 
+#                "Splice Site Mutation",
+#                "Translation Start Site",
+#                "Nonstop Mutation",
+#                "Inframe Deletion",
+#                "Inframe Insertion",
+#                "Fusion",
+#                "Splicing",
+#                "Multi-hit")
 
 
 #col2hex_2=c('mediumseagreen', 'orange', 'green2', 'hotpink',
@@ -203,7 +203,6 @@ mut_labels = c("Missense Mutation",
                "Amp",
                "Del",
                "Splicing")
-
 
 ## plot maf object
 plotmafSummary(maf = maf)
@@ -263,6 +262,6 @@ oncoplot(maf = maf_total,clinicalFeatures = c("molecular_subtype"), showTumorSam
          sortByAnnotation = T, fontSize = 1, 
          showTitle = T, colors = colores, logColBar = T, removeNonMutated= T)
 
-
-
-
+##look for occurrences of splicing
+added_brain_list <- c(gene_list_brain$V1, "CLK1")
+somaticInteractions(maf = maf_total , genes = added, pvalue = c(0.05, 0.1))
