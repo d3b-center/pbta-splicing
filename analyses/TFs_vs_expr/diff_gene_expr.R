@@ -1,6 +1,8 @@
 library("sva")
 library("EnhancedVolcano")
 library("DESeq2")
+library("DESeq")
+
 library("ggplot2")
 library("Hmisc")
 library("corrplot")
@@ -11,6 +13,50 @@ library(Hmisc)
 library(corrplot)
 
 
+# /Users/naqvia/Desktop/AS-DMG/analyses/CLK1_specific/CLK1_AS_tpm.tsv
+gene_tpms <- read.delim("/Users/naqvia/Desktop/AS-DMG/analyses/CLK1_specific/CLK1_AS_tpm.tsv", sep = "\t", row.names=1,header=TRUE)
+filtered_counts <- gene_tpms[rowSums(gene_tpms>=1) > 6, ]
+
+#keep <- rowSums( counts(dds) >= X ) >= Y
+#keep <- rowSums(counts(dds)) >= 10
+#dds <- dds[keep,]
+
+## construct metadata
+design = data.frame(row.names = colnames(filtered_counts),
+                    condition = c(rep("Pos",4), rep("Neg",4)),  
+                    libType   = c(rep("paired-end",8)))
+
+singleSamples = design$libType == "paired-end"
+new_countTable = (filtered_counts[ , singleSamples ])
+condition = design$condition[ singleSamples ]
+
+cds = newCountDataSet( (new_countTable), condition )
+cds = estimateSizeFactors( cds )
+sizeFactors( cds )
+
+cds = estimateDispersions(cds) 
+cds = estimateDispersions(cds, fitType = "local") 
+
+res = nbinomTest( cds, "Pos", "Neg")
+res$Significant <- ifelse(res$pval< 0.05, "P-val < 0.05", "Not Sig")
+
+## plot 
+EnhancedVolcano(res,
+                lab = (res$id),
+                x = 'log2FoldChange',
+                y = 'pval',
+                ylim = c(0,5),
+                xlim =c(-4,4),
+                title = 'DMG versus Healthy',
+                pCutoff = 0.05,
+                FCcutoff = 1,
+                pointSize = 2.0,
+                labSize = 3.0)
+
+write_delim(res, "/Users/naqvia/Desktop/AS-DMG/analyses/CLK1_specific/res_pos_vs_neg.tsv", delim= "\t");
+
+--
+  
 
 gene_tpms <- read.delim("/Users/naqvia/Desktop/DIPG/normals_vs_DMG.txt", sep = ",", row.names=1,header=TRUE)
 batch <- c(rep(1, 33), rep(2, 22), rep(1,9))
@@ -73,6 +119,10 @@ res <- cor(tab)
 corrplot(res, type = "upper", order = "hclust", tl.col = "black", tl.cex = 0.5,tl.srt = 100)
 
 res2<-rcorr(as.matrix(tab))
+
+write.table(res2$P, file = "/Users/naqvia/Desktop/DIPG/NFIC_pval_univ.txt", sep = "\t",row.names = TRUE, col.names = TRUE)
+write.table(res2$r, file = "/Users/naqvia/Desktop/DIPG/NFIC_rcorr_univ.txt", sep = "\t",row.names = TRUE, col.names = TRUE)
+
 
 ## Plot corr. matrix with insignificant correlations are leaved blank
 corrplot(res2$r, type="lower", order="hclust", 
