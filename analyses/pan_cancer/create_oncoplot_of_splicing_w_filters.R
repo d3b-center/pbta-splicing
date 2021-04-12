@@ -127,7 +127,7 @@ maf = read.maf(maf = combine_tab, clinicalData = clin_tab, removeDuplicatedVaria
 maf_total = read.maf(maf = combine_tab, clinicalData = clin_tab, removeDuplicatedVariants = FALSE, cnTable = cn_tab_filtered, 
                      vc_nonSyn = c("Frame_Shift_Del", "Frame_Shift_Ins", "Splice_Site", "Translation_Start_Site","Nonsense_Mutation", 
                                    "Nonstop_Mutation", "In_Frame_Del","In_Frame_Ins", "Missense_Mutation",  
-                                   "Stop_Codon_Ins", "Start_Codon_Del", "Fusion", "Multi_Hit", "Del", "Amp",  "Splicing"))
+                                   "Stop_Codon_Ins", "Start_Codon_Del", "Fusion", "Multi_Hit", "Del", "Amp","Splicing"))
 
 
 # col2hex=c('mediumseagreen', 'orange', 'green2', 'hotpink',
@@ -207,9 +207,9 @@ mut_labels = c("Missense Mutation",
 ## plot maf object
 plotmafSummary(maf = maf)
 
-oncoplot(maf = maf_total,clinicalFeatures = c("molecular_subtype"), showTumorSampleBarcodes = F, drawRowBar = T, top=30 , 
+oncoplot(maf = maf_total,clinicalFeatures = c("molecular_subtype"), showTumorSampleBarcodes = F, drawRowBar = T, top=20 , 
          annotationFontSize = 1, gene_mar = 3, barcode_mar = 3,
-         sortByAnnotation = F, fontSize = .5, #legendFontSize = 2,
+         sortByAnnotation = T, fontSize = .3, #legendFontSize = 2,
          showTitle = F, colors = colores, logColBar = T, removeNonMutated= T)
 
 # brain cancer-specific
@@ -264,4 +264,6 @@ oncoplot(maf = maf_total,clinicalFeatures = c("molecular_subtype"), showTumorSam
 
 ##look for occurrences of splicing
 added_brain_list <- c(gene_list_brain$V1, "CLK1")
-somaticInteractions(maf = maf_total , genes = added, pvalue = c(0.05, 0.1))
+
+somaticInteractions(maf = maf_total , top=20, countType = "all", fontSize = .6, showCounts = FALSE)
+co_occur_tab = somaticInteractions(maf = maf_total , countType = "all", fontSize = .6, showCounts = FALSE)
