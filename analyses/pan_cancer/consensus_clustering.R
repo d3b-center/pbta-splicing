@@ -10,25 +10,30 @@ library("randomcoloR")
 library("pheatmap")
 library("ConsensusClusterPlus")
 library("ggplot2")
+library("dplyr")
+library("vroom")
+library("ggplot2")
+
+# Get `magrittr` pipe
+`%>%` <- dplyr::`%>%`
 
 suppressPackageStartupMessages(library("tidyverse"))
 suppressPackageStartupMessages(library("optparse"))
 suppressPackageStartupMessages(library("reshape2"))
 suppressPackageStartupMessages(library("rlist"))
 
-
-# Get `magrittr` pipe
-`%>%` <- dplyr::`%>%`
-
 ## do all of the samples // pan_cancer_splicing.thr10.report_all.txt
 dataDir = "~/Desktop/AS-DMG/analyses/pan_cancer/results/"
 
 ##results/pan_cancer_splicing.thr10.report_select.txt
-file_psi <- "pan_cancer_splicing.thr10.report_select.txt"
+#file_psi <- "pan_cancer_splicing.thr10.report_select.txt"
 
 ##removing duplicates, cell lines, and second malignancies
 file_psi <- "pan_cancer_splicing.thr10.report_select.remDup.txt"
-psi_tab  = read.delim(paste0(dataDir, file_psi), sep = "\t", row.names=1, header=TRUE)
+
+## temp for gene expr
+file_psi <- "/Users/naqvia/Desktop/AS-DMG/analyses/pan_cancer/results/pan_cancer_expr_tpm_report_select.remDup.txt"
+psi_tab  = read.delim(file_psi, sep = "\t", row.names=1, header=TRUE)
 
 rnames <- psi_tab[,1]
 row.names(psi_tab) <- psi_tab$Splice_ID
@@ -79,7 +84,6 @@ results = ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
 #                     title="Total Samples PSI Clustering",clusterAlg="hc",distance="spearman",seed=123,innerLinkage = "average", finalLinkage = "average", plot="png")
 
 
-
 # choose a cluster that seems best and assign to n_cluster
 CC_group <- results[[6]]$consensusClass %>%
   as.data.frame()
@@ -124,10 +128,10 @@ hist_sample = subset(hist_sample, select = -c(clin_tab.Kids_First_Biospecimen_ID
 pheatmap::pheatmap(
   CC_consensus_mat,
   #color = colorRampPalette(brewer.pal(n = 9, name = "Blues"))(9),
-  annotation_col=hist_sample, 
+  annotation_col=hist_sample,
   #annotation_colors=anno_palette,
   cluster_rows = results[[6]]$consensusTree,
-  cluster_cols = results[[6]]$consensusTree, 
+  cluster_cols = results[[6]]$consensusTree,
   show_rownames = F,
   show_colnames = F
   #filename = "cc_test/png",
@@ -143,9 +147,9 @@ cluster_members  = read.delim(paste0(dataDir, cluster_members), sep = "\t", head
 ggplot(cluster_members, aes("", Counts, fill = Hist)) +
   geom_bar(width = 1, size = 1, color = "white", stat = "identity") +
   coord_polar("y") +
-  geom_text(aes(label = paste0(round(Counts), "%")), 
+  geom_text(aes(label = paste0(round(Counts), "%")),
             position = position_stack(vjust = 0.5)) +
-  labs(x = NULL, y = NULL, fill = NULL, 
+  labs(x = NULL, y = NULL, fill = NULL,
        title = "market share") +
   guides(fill = guide_legend(reverse = TRUE)) +
   #scale_fill_manual(values = c("#ffd700", "#bcbcbc", "#ffa500", "#254290")) +
@@ -168,22 +172,44 @@ cluster_mem      = read.delim(cluster_mem_file, sep = "\t",header=TRUE)
 # Stacked
 cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
-ggplot(cluster_mem, aes(fill=Hist, y=Counts, x=Cluster)) + 
-  geom_bar(position="stack", stat="identity") + scale_fill_brewer(palette="Accent") + theme_Publication()
+ggplot(cluster_mem, aes(fill=Hist, y=Counts, x=Cluster)) +
+  geom_bar(position="stack", stat="identity") + scale_fill_brewer(palette="Dark2") + theme_Publication()
 
 ##stacked barplot of cluster memberships
 
-cluster_mem_hgat_file = "/Users/naqvia/Desktop/AS-DMG/analyses/pan_cancer/results/cluster_hist_makeup.hgats.v2.txt"
+cluster_mem_hgat_file = "/Users/naqvia/Desktop/AS-DMG/analyses/pan_cancer/results/cluster_hist_makeup.hgats.v3.txt"
 cluster_mem_hgat      = read.delim(cluster_mem_hgat_file, sep = "\t",header=TRUE)
 
 # Stacked
-cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+cbbPalette_hgg <- c("#800000", "#8B0000", "#A52A2A", "#B22222", "#DC143C", "#FF0000", "#FF6347", "#FF7F50","#CD5C5C","#F08080","#E9967A","#FA8072");
 
-ggplot(cluster_mem_hgat, aes(fill=Subtype, y=Counts, x=Cluster)) + 
-  geom_bar(position="stack", stat="identity") + scale_fill_brewer(palette="Spectral") + theme_Publication()
+ggplot(cluster_mem_hgat, aes(fill=Subtype, x=Cluster)) +
+  geom_bar(stat="count", position="stack") + scale_fill_manual(values=c(cbbPalette_hgg)) + theme_Publication()
+
+cluster_mem_hgat %>%
+  ggplot() +
+  geom_bar(aes(x = Cluster, fill = Subtype)) +
+  scale_fill_manual(values=c(cbbPalette_hgg)) +
+  theme_Publication()
 
 
-  theme_Publication <- function(base_size=15, base_family="Helvetica") {
+cluster_mem_lgat_file = "/Users/naqvia/Desktop/AS-DMG/analyses/pan_cancer/results/cluster_hist_makeup.lgats.v3.txt"
+cluster_mem_lgat      = read.delim(cluster_mem_lgat_file, sep = "\t",header=TRUE)
+
+# Stacked
+cbbPalette_lgg <- c("#191970", "#000080", "#00008B", "#0000CD", "#0000FF", "#4169E1", "#87CEFA", "#87CEEB","#ADD8E6","#1E90FF","#00BFFF","#6495ED", "#4682B4", "#5F9EA0");
+
+ggplot(cluster_mem_lgat, aes(fill=Subtype, x=Cluster)) +
+  geom_bar(position="stack", stat="count") + scale_fill_manual(values=c(cbbPalette_lgg)) + theme_Publication()
+
+cluster_mem_lgat %>%
+  ggplot() +
+  geom_bar(aes(x = Cluster, fill = Subtype)) +
+  scale_fill_manual(values=c(cbbPalette_lgg)) +
+  theme_Publication()
+
+
+theme_Publication <- function(base_size=15, base_family="Helvetica") {
     library(grid)
     library(ggthemes)
     (theme_foundation(base_size=base_size, base_family=base_family)
@@ -196,7 +222,7 @@ ggplot(cluster_mem_hgat, aes(fill=Subtype, y=Counts, x=Cluster)) +
               axis.title = element_text(face = "bold",size = rel(1)),
               axis.title.y = element_text(angle=90,vjust =2),
               axis.title.x = element_text(vjust = -0.2),
-              axis.text = element_text(), 
+              axis.text = element_text(),
               axis.line = element_line(colour="black"),
               axis.ticks = element_line(),
               panel.grid.major = element_line(colour="#f0f0f0"),
@@ -214,4 +240,3 @@ ggplot(cluster_mem_hgat, aes(fill=Subtype, y=Counts, x=Cluster)) +
               strip.text = element_text(face="bold")
       ))
   }
-
