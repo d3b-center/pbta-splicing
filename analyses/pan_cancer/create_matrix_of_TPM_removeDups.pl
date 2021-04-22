@@ -135,7 +135,7 @@ while(<FIL>)
   #my $file = $_;
   if($_=~/gene_id/)
   {
-    #print "line: ",$_,"\n";
+    #print "line:",$_,"\n";
     @samples = split "\t";
     shift @samples;
     shift @samples;
@@ -143,13 +143,19 @@ while(<FIL>)
   }
   else{
       my @tpm = split "\t";
+      #print "line:",$_,"\n";
+
       shift @tpm;
       my $gene = shift @tpm;
+      $gene=~s/\"//g;
+
       my $k = 0;
       foreach my $tpm(@tpm)
       {
         my $sample = $samples[$k];
-        #print $gene,"\t",$sample,"\t",$samples[0],"\n";
+        $sample=~s/\"//g;
+
+        #print $gene,"\t",$sample,"\t",$tpm,"\n";
         $tpm_counts{$gene}{$sample} = $tpm;
         my $hist_of_sample = $bs_id_hist{$sample};
 
@@ -179,10 +185,14 @@ while(<FIL>)
       my @tpm = split "\t";
       shift @tpm;
       my $gene = shift @tpm;
+      $gene=~s/\"//g;
+
       my $k = 0;
       foreach my $tpm(@tpm)
       {
         my $sample = $samples[$k];
+        $sample=~s/\"//g;
+
         $tpm_counts{$gene}{$sample} = $tpm;
         my $hist_of_sample = $bs_id_hist{$sample};
 
