@@ -5,14 +5,8 @@ Module authors: Ammar Naqvi (@naqvia)
 The purpose of this module is to identify splicing events that result in loss/gain of functional sites (as-defined by Uniprot)
 
 ## Usage
-### Make summary table of strong splicing events:
-<br>**Create summary table of all strong aberrant splicing events**
-```
-./ perl extract_recurrent_splicing_events.pl <pbta-histologies.tsv>
-```
-
-### Make filtered tables that overlap functional sites:
-<br>**Run shell script to call bedtools and make final tabs for plotting**
+### Make summary table of strong splicing events and relevant filtered tables that overlap functional sites:
+<br>**Run shell script to make final tables to be used for plotting below**
 ```
 ./make_final_tabs.sh
 ```
