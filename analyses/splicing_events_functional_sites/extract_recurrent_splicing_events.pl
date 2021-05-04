@@ -3,13 +3,13 @@
 ######################################################################################
 # extract_recurrent_splicing_events.pl
 # descr: extract and append splicing ids from rMATS to be used to overlap with Uniprot
-# usage: perl extract_recurrent_splicing_events.pl ../../data/pbta-histologies.tsv
+# usage: perl extract_recurrent_splicing_events.pl <pbta-histologies.tsv>
 ######################################################################################
 
 ## input argument for histology file from OpenPBTA project
 my $histology = $ARGV[0];
 
-## directory of rMATS tsv files (SE type)
+## directory of rMATS tsv files (SE type)/ will change to merge file
 my @rmats_tsv = </Users/naqvia/Desktop/rmats_run/SE/*control-BS*JC.txt>;
 
 ## data structures to store values
@@ -19,6 +19,7 @@ my %splicing_event_counts;
 my %inc_levels;
 my (%chr,%num_exons,%str);
 
+## output to terminal
 print "processing histology...\n";
 
 ## open histology file and annotate DMG samples
@@ -38,7 +39,7 @@ while(<FIL>)
 }
 close(FIL);
 
-## process rMATS output
+## process rMATS output (may take awhile)
 print "processing rMAT files...\n";
 foreach my $file(@rmats_tsv)
 {
@@ -56,39 +57,41 @@ foreach my $file(@rmats_tsv)
   {
     chomp;
     my @cols = split "\t";
-    my $gene         = $cols[2];
 
-    ## exon coordinates
+    ## get gene name
+    my $gene         = $cols[2];
+    $gene=~s/\"//g; # remove quotation marks
+
+    ## retrieve exon coordinates
     my $chr          = $cols[3];
     my $str          = $cols[4];
-    my $exonStart    = $cols[5]+1;
+    my $exonStart    = $cols[5]+1; ## its 0-based so add 1
     my $exonEnd      = $cols[6];
     my $upstreamES   = $cols[7];
     my $upstreamEE   = $cols[8];
     my $downstreamES = $cols[9];
     my $downstreamEE = $cols[10];
 
-    ## inclusion level and junction count info
+    ## retrieve inclusion level and junction count info
     my $inc_level    = $cols[20];
     my $ctrl_IJC      = $cols[12];
     my $ctrl_SJC      = $cols[13];
     my $tumor_IJC     = $cols[14];
     my $tumor_SJC     = $cols[15];
 
-    #lengths of exons
+    #get lengths of exons
     my $inc_len  = $cols[16];
     my $skip_len = $cols[17];
 
-    ## p-value and dPSI values
+    ## get p-value and dPSI values
     my $pval = $cols[18];
     my $thr_diff = $cols[-1];
 
-    ## only look at strong changes, remove any dPSI < .10 and p-val >0.05, and IJC < 10 reads
+    ## only look at strong changes, remove any dPSI < .10 and p-val >0.05, and tumor junction reads > 10 reads
     next unless (abs($thr_diff) >= .10);
     next unless ($pval<=0.05);
     next unless ( ($tumor_IJC >=10) || ($tumor_SJC >=10) );
 
-    $gene=~s/\"//g;
 
     ## annotate and re-name splice event IDs
     #print $gene."_".$exonStart."-".$exonEnd."_".$upstreamES."-".$upstreamEE."_".$downstreamES."-".$downstreamEE,"\t",$inc_level,"*\n";
@@ -123,6 +126,7 @@ my @samples_uniq = do { my %seen; grep { !$seen{$_}++ } @samples };
 my @splicing_events_uniq = do { my %seen; grep { !$seen{$_}++ } @splicing_events };
 
 ## write to files for summary tables (with a bed version for downstream analyses)
+##print to one tsv table and a bed table
 open(TAB, ">splicing_events.dpsi10.jc10.rec2.tsv");
 open(BED, ">splicing_events.dpsi10.jc10.rec2.bed");
 
@@ -136,15 +140,20 @@ foreach my $event (@splicing_events_uniq)
   my $avg_dpsi = &average(\@{$splicing_event_deltapsis{$event}});
 	my $std_dpsi = &stdev(\@{$splicing_event_deltapsis{$event}});
 
+  ## get the gene name and exon coords
   my ($gene,$exon_coord) = split/\_/,$event;
 
+  ## only keep recurring events
   next unless $splicing_event_counts{$event} > 2;
+
   print TAB $gene,"\t",$event,"\t",$avg_dpsi,"\t",$std_dpsi,"\t";
   print TAB $splicing_event_counts{$event};
 
   print TAB "\t",$chr{$event},":",$exon_coord,"\t",$str{$event},"\n";
 
   print BED $chr{$event},"\t";
+
+  ## get exon coords for bed to intersect w Uniprot later
   if($event=~/(\w+)\_(\d+\-\d+)/)
   {
     #$lsv_coord = $1;
@@ -157,7 +166,7 @@ foreach my $event (@splicing_events_uniq)
 close(TAB);
 close(BED);
 
-## calculate stdev given an array of PSI values
+## functions to calculate stdev given an array of PSI values
 sub stdev{
         my($data) = @_;
         if(@$data == 1){
