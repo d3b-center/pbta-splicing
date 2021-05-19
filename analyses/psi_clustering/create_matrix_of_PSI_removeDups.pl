@@ -6,7 +6,7 @@
 #
 # usage: ./create_matrix_of_PSI.pl <histology file> <rMATs_file_paths.txt>
 ################################################################################
-my ($histology,$rmats, $abridged) = ($ARGV[0], $ARGV[1], $ARGV[2]);
+my ($histology,$rmats, $abridged) = ($ARGV[0], $ARGV[1], $ARGV[2]); ## args: histology, rmats path, and abridged histology
 my (@broad_hist, @bs_id, @splicing_events);
 my (%histology_ids, %inc_levels, %bs_id_hist, %hist_check, %hist_count);
 
