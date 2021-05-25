@@ -13,36 +13,59 @@ my @ctrl_files =</Users/naqvia/Desktop/pan_cancer_rmats/*single_normals.SE.MATS.
 
 my %ctrl_inc_levels;
 
+## annotate normals/ctrl files
+my %ctrl_path;
+
+open(FIL,"input/ctrl_names.txt") || die("Cannot Open File");
+while(<FIL>)
+{
+  chomp;
+  my ($ctrl_name, $file_path) = split;
+  #print "*".$file_path,"*\t*",$ctrl_name,"*\n";
+
+  next if($ctrl_name=~/control-FB/);
+  next if($ctrl_name=~/SRR4787052/);
+
+  #print $file_path,"\t",$ctrl_name,"\n";
+  $ctrl_path{$file_path} = $ctrl_name;
+}
+close(FIL);
+
 
 # annotate histology file #
   # hash with BS and disease
   # make arrays of each histology of BS IDs
-open(FIL, $histology) || die("Cannot Open File $histology");
-while(<FIL>)
-{
-  chomp;
-  my @cols = split "\t";
-  my $broad_hist = $cols[35];
-  my $bs_id = $cols[0];
+  open(FIL, $histology) || die("Cannot Open File $histology");
+  while(<FIL>)
+  {
+    chomp;
+    my @cols = split "\t";
+    my $broad_hist = $cols[35];
+    my $bs_id      = $cols[0];
+    my $CNS_region = $cols[1];
 
-  ##filter for specific histologies
-  #print $broad_hist,"\n";
-  next if $broad_hist =~/Embryonal/;
-  next if $broad_hist =~/EWS/;
-  next if $broad_hist =~/Oligodendroglioma/;
+    next if $_=~/Kids_First_Biospecimen_ID/;
 
+    ##filter for specific histologies
+    #print $broad_hist,"\n";
+    next if $broad_hist =~/Embryonal/;
+    next if $broad_hist =~/EWS/;
+    next if $broad_hist =~/Oligodendroglioma/;
 
+    push @broad_hist, $broad_hist;
+    push @bs_ids, $bs_id;
 
-  push @broad_hist, $broad_hist;
-  push @bs_ids, $bs_id;
+    $bs_id_hist{$bs_id} = $broad_hist;
+    $cns_regions{$bs_id} = $CNS_region;
 
-  $bs_id_hist{$bs_id} = $broad_hist;
-  $hist_count{$broad_hist}++;
+    #print "cns: ",$CNS_region,"\n";
+    $hist_count{$broad_hist}++;
 
-  #print "bs_id:".$bs_id,"\n";
-  push @{$histology_ids{$broad_hist}}, $bs_id;
-}
-close(FIL);
+    #print "bs_id:".$bs_id,"\n";
+    push @{$histology_ids{$broad_hist}}, $bs_id;
+  }
+  close(FIL);
+
 
 ## store "healthy" psi values/gene
 my %ctrl_psi;
@@ -51,9 +74,14 @@ my $ctrl_splice_totals = 0;
 
 foreach my $file(@ctrl_files)
 {
+  my @fields = split/\//,$file;
+  my $file_name = $fields[-1];
+  next unless $ctrl_path{$file_name};
+
   open(CTRL_SE,$file) || die("Cannot Open File $file");
   while(<CTRL_SE>)
   {
+    chomp;
     #print $_,"HELL\n";
     my @cols = split "\t";
     my $gene         = $cols[2];
@@ -83,22 +111,20 @@ foreach my $file(@ctrl_files)
 
     ## create unique ID for splicing change
     $gene=~s/\"//g;
+
     my $splice_id= $gene."_".$exonStart."-".$exonEnd."_".$upstreamES."-".$upstreamEE."_".$downstreamES."-".$downstreamEE;
 
     #print "ctrl_splice_id: ".$spliced_id,"\n";
     push @{$ctrl_inc_levels{$splice_id}}, $inc_level;
 
-    #$splice_totals_per_sample{$bs_id}++;
+    ##store control
+    my $ctrl_name = $ctrl_path{$file_name};
+    #print "ctrl_name :",$ctrl_name,"\n";
+    $ctrl_inc_levels{$ctrl_name}{$splice_id} = $inc_level;
 
-    #next unless ($inc_level>=.10);
-
-    #$splice_filtered_totals_per_sample{$bs_id}++;
-    #$inc_levels{$splice_id}{$bs_id} = $inc_level;
-
-    #my $hist_of_sample = $bs_id_hist{$bs_id};
-    #$hist_check{$splice_id}{$hist_of_sample}++;
     push @splicing_events, $splice_id;
-    $ctrl_event_filter{$splice_id}=1;;
+  #  print "splicing event CTRL: ".$splice_id,"\n";
+    $ctrl_event_filter{$splice_id}=1;
     $ctrl_splice_totals++;
 
   }
@@ -145,16 +171,13 @@ while(<FIL>)
     $gene=~s/\"//g;
     my $splice_id= $gene."_".$exonStart."-".$exonEnd."_".$upstreamES."-".$upstreamEE."_".$downstreamES."-".$downstreamEE;
 
+
+
+
+    my $splice_id= $gene."_".$exonStart."-".$exonEnd."_".$upstreamES."-".$upstreamEE."_".$downstreamES."-".$downstreamEE;
+
     ##skip if not in healthy samples
-    #print "splicing\n";
-
     next unless $ctrl_event_filter{$splice_id};
-
-    #$splice_totals_per_sample{$bs_id}++;
-
-    #next unless ($inc_level>=.10);
-
-    #$splice_filtered_totals_per_sample{$bs_id}++;
 
     ## compute avg psi in healthy
     my $total_ctrl_psi_per_event = 0;
@@ -169,23 +192,42 @@ while(<FIL>)
     }
 
     my $avg_ctrl_inc = ($total_ctrl_psi_per_event / $ctrl_count);
-    my $dpsi = $avg_ctrl_inc-$inc_level;
+    my $dpsi = 0;
+
+    ## compare with approp controls, if not, compare to average of all ctrls
+    if( ($bs_id_hist{$bs_id}=~/HGAT/) && ($cns_regions{$bs_id} =~/Midline/) )
+    {
+      $dpsi = $ctrl_inc_levels{"control-BS"}{$splice_id} - $inc_level;
+      #print $_,"***",$dpsi,":",$ctrl_inc_levels{"control-BS"}{$splice_id},":",$inc_level,"\n";
+    }
+    elsif($bs_id_hist{$bs_id}=~/Medu/)
+    {
+      $dpsi = $ctrl_inc_levels{"control-BC"}{$splice_id} - $inc_level;
+    }
+    else{
+      $dpsi = $avg_ctrl_inc-$inc_level;
+    }
 
     #print $splice_id,"\tdpsi: ",$dpsi,"\n";
     $ctrl_splice_totals_per_sample{$bs_id}++;
-
     if(abs($dpsi)>=.10)
     {
+      #print "ctrl avg: ",$avg_ctrl_inc,"\t",$inc_level,"\t";
+
+      #print "TRUE\t";
       $splice_filtered_totals_per_sample{$bs_id}++;
       #print $splice_id,"\tdpsi: ",$dpsi,"\t",$bs_id,"\n";
+      $inc_levels{$splice_id}{$bs_id} = $dpsi;
+
+      ## store frequency in histology type
+      my $hist = $bs_id_hist{$bs_id};
+      #print $hist,"\n";
+      $splicing_event_freq_hist{$hist}{$splice_id}++;
+
     }
-
-    $inc_levels{$splice_id}{$bs_id} = $dpsi;
-
     #my $hist_of_sample = $bs_id_hist{$bs_id};
     #$hist_check{$splice_id}{$hist_of_sample}++;
     #push @splicing_events, $splice_id;
-
   }
   close(SE_FIL);
 }
