@@ -15,12 +15,12 @@ library(viridis)
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
-dataDir = "~/Desktop/AS-DMG/analyses/pan_cancer/results/"
+dataDir = "/Users/naqvia/Desktop/pbta-splicing/analyses/splicing_index/results/"
 
 ## more accurate version -- dPSI version
-file <- "splicing_index.wdPSI_per_sample.txt"
+file <- "splicing_index.wdPSI10_per_sample.txt"
 
-file <- "splicing_index.wdPSI_per_sample.DMG_only.txt"
+#file <- "splicing_index.wdPSI_per_sample.DMG_only.txt"
 splice_index  = read.delim(paste0(dataDir, file), sep = "\t", header=TRUE,row.names=1)
 
 
@@ -40,13 +40,13 @@ e + geom_violin(aes(fill = hist), trim = FALSE) +
   geom_point(color="black", size=1, position = position_jitter(w=0.02)) +
   theme(legend.position = "none") + theme_Publication()
 
-plots_dir <- "/Users/naqvia/Desktop/AS-DMG/analyses/pan_cancer/plots/"
+#plots_dir <- "/Users/naqvia/Desktop/AS-DMG/analyses/pan_cancer/plots/"
 
 # Save plot as PNG
 #png(file.path(plots_dir, "splice_index_initial_v2.png"))
 
-dev.copy(png,'/Users/naqvia/Desktop/AS-DMG/analyses/pan_cancer/plots/splice_index_initial_v2.png', width=1550, height=1494, res=120)
-dev.off()
+#dev.copy(png,'/Users/naqvia/Desktop/AS-DMG/analyses/pan_cancer/plots/splice_index_initial_v2.png', width=1550, height=1494, res=120)
+#dev.off()
 
 ## Make CDF plot for splicing index
 splice_index <- splice_index %>%
@@ -76,12 +76,6 @@ si_cdf <- splice_index %>%
   ) %>%
   dplyr::ungroup() %>%
   dplyr::mutate(group = reorder(group, group_median))
-
-# Set y_lim as min and max if it was not set
-#if (is.na(y_lim)) {
-# y_lim = c(min(df$number),
-#           max(df$number))
-#}
 
 si_cdf %>%
   # Now we will plot these as cumulative distribution plots
@@ -113,9 +107,9 @@ si_cdf %>%
     strip.text = ggplot2::element_text(size = 14, angle = 90, hjust = .5),
     strip.background = ggplot2::element_rect(fill = NA, color = NA)
   ) + theme_Publication()
-  ggplot2::ggtitle("Splicing Index")
-dev.copy(png,'/Users/naqvia/Desktop/AS-DMG/analyses/pan_cancer/plots/splice_index_CDF_v2.png', width=1550, height=1494, res=120)
-dev.off()
+  #ggplot2::ggtitle("Splicing Index")
+#dev.copy(png,'/Users/naqvia/Desktop/AS-DMG/analyses/pan_cancer/plots/splice_index_CDF_v2.png', width=1550, height=1494, res=120)
+#dev.off()
 
 
 ##theme for all plots
