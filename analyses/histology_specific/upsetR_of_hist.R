@@ -29,4 +29,4 @@ listInput <- list("ATRT" =list_1$V2,
 
 upset(fromList(listInput), 
       mainbar.y.label = "", sets.x.label = "Clusters", order.by = "freq",
-      mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 2, line.size = 1.5, nsets = 7)
+      mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 2, line.size = 1, nsets = 7)
