@@ -18,7 +18,10 @@ library(viridis)
 dataDir = "/Users/naqvia/Desktop/pbta-splicing/analyses/splicing_index/results/"
 
 ## more accurate version -- dPSI version
-file <- "splicing_index.wdPSI10_per_sample.txt"
+file <- "splicing_index.wdPSI20_per_sample.txt"
+
+## HGGS only
+file <- "splicing_index.wdPSI10_per_sample.hgg_only.txt"
 
 #file <- "splicing_index.wdPSI_per_sample.DMG_only.txt"
 splice_index  = read.delim(paste0(dataDir, file), sep = "\t", header=TRUE,row.names=1)
@@ -104,12 +107,76 @@ si_cdf %>%
     axis.text.x = ggplot2::element_blank(),
     axis.ticks.x = ggplot2::element_blank(),
     strip.placement = "outside",
-    strip.text = ggplot2::element_text(size = 14, angle = 90, hjust = .5),
+    strip.text = ggplot2::element_text(size = 14, angle = 180, hjust = .5),
     strip.background = ggplot2::element_rect(fill = NA, color = NA)
   ) + theme_Publication()
   #ggplot2::ggtitle("Splicing Index")
 #dev.copy(png,'/Users/naqvia/Desktop/AS-DMG/analyses/pan_cancer/plots/splice_index_CDF_v2.png', width=1550, height=1494, res=120)
 #dev.off()
+
+file <- "splicing_index.wdPSI10_per_sample.cluster.txt"
+
+#file <- "splicing_index.wdPSI_per_sample.DMG_only.txt"
+splice_index  = read.delim(paste0(dataDir, file), sep = "\t", header=TRUE,row.names=1)
+
+splice_index <- splice_index %>%
+  as.data.frame(stringsAsFactors = FALSE)
+
+
+# Set up the data.frame for plotting
+si_cdf <- splice_index %>%
+  
+  # We only really need these two variables from data.frame
+  dplyr::transmute(
+    group = group,
+    number = as.numeric(splice_index)
+  ) %>%
+  
+  # Group by specified column
+  dplyr::group_by(group) %>%
+  
+  # Only keep groups with the specified minimum number of samples
+  dplyr::filter(dplyr::n() > 1) %>%
+  
+  # Calculate group median
+  dplyr::mutate(
+    group_median = median(number, na.rm = TRUE),
+    group_rank = rank(number, ties.method = "first") / dplyr::n(),
+    sample_size = paste0("n = ", dplyr::n())
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(group = reorder(group, group_median))
+
+si_cdf %>%
+  # Now we will plot these as cumulative distribution plots
+  ggplot2::ggplot(ggplot2::aes(
+    x = group_rank,
+    y = number
+  )) +
+  
+  ggplot2::geom_point(color = "black") +
+  
+  # Add summary line for median
+  ggplot2::geom_segment(
+    x = 0, xend = 1, color = "blue",
+    ggplot2::aes(y = group_median, yend = group_median)
+  ) +
+  
+  # Separate by histology
+  ggplot2::facet_wrap(~ group + sample_size, nrow = 1, strip.position = "bottom") +
+  ggplot2::theme_classic() +
+  ggplot2::xlab("Cluster") +
+  ggplot2::ylab("Splicing Index") +
+  
+  # Making it pretty
+  #ggplot2::theme(legend.position = "none") +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_blank(),
+    axis.ticks.x = ggplot2::element_blank(),
+    strip.placement = "outside",
+    strip.text = ggplot2::element_text(size = 14, angle = 90, hjust = .5),
+    strip.background = ggplot2::element_rect(fill = NA, color = NA)
+  ) + theme_Publication()
 
 
 ##theme for all plots
