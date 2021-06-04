@@ -43,7 +43,7 @@ close(FIL);
     my $broad_hist = $cols[35];
     my $bs_id      = $cols[0];
     my $CNS_region = $cols[1];
-
+    my $cluster = $cols[-1];
     next if $_=~/Kids_First_Biospecimen_ID/;
 
     ##filter for specific histologies
@@ -56,6 +56,7 @@ close(FIL);
     push @bs_ids, $bs_id;
 
     $bs_id_hist{$bs_id} = $broad_hist;
+    $bs_id_hist{$bs_id} = $cluster; ## group by cluster
     $cns_regions{$bs_id} = $CNS_region;
 
     #print "cns: ",$CNS_region,"\n";
@@ -210,7 +211,7 @@ while(<FIL>)
 
     #print $splice_id,"\tdpsi: ",$dpsi,"\n";
     $ctrl_splice_totals_per_sample{$bs_id}++;
-    if(abs($dpsi)>=.10)
+    if(abs($dpsi)>=.20)
     {
       #print "ctrl avg: ",$avg_ctrl_inc,"\t",$inc_level,"\t";
 
