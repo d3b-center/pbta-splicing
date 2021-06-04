@@ -30,3 +30,15 @@ listInput <- list("ATRT" =list_1$V2,
 upset(fromList(listInput), 
       mainbar.y.label = "", sets.x.label = "Clusters", order.by = "freq",
       mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 2, line.size = 1, nsets = 7)
+
+list_1 = read.table("/Users/naqvia/Desktop/pbta-splicing/analyses/histology_specific/results/perc_hist_as.30prev.Clu1.tsv", sep = "\t")
+list_2 = read.table("/Users/naqvia/Desktop/pbta-splicing/analyses/histology_specific/results/perc_hist_as.30prev.Clu2.tsv", sep = "\t")
+list_3 = read.table("/Users/naqvia/Desktop/pbta-splicing/analyses/histology_specific/results/perc_hist_as.30prev.Clu3.tsv", sep = "\t")
+
+listInput <- list("Cluster1" =list_1$V2, 
+                  "Cluster2" =list_2$V2,
+                  "Cluster3" =list_3$V2)
+
+upset(fromList(listInput), 
+      mainbar.y.label = "", sets.x.label = "Clusters", order.by = "freq",
+      mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 2, line.size = 1, nsets = 3)

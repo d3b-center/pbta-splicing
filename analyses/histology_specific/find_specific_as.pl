@@ -9,6 +9,7 @@ my @ctrl_files =</Users/naqvia/Desktop/pan_cancer_rmats/*single_normals.SE.MATS.
 
 my %ctrl_inc_levels;
 my %cns_regions;
+my %cluster_group;
 
 # annotate histology file #
   # hash with BS and disease
@@ -21,6 +22,7 @@ while(<FIL>)
   my $broad_hist = $cols[35];
   my $bs_id      = $cols[0];
   my $CNS_region = $cols[1];
+  my $cluster = $cols[-1];
 
   next if $_=~/Kids_First_Biospecimen_ID/;
 
@@ -35,6 +37,7 @@ while(<FIL>)
 
   $bs_id_hist{$bs_id} = $broad_hist;
   $cns_regions{$bs_id} = $CNS_region;
+  $cluster_group{$bs_id} = $cluster;
 
   #print "cns: ",$CNS_region,"\n";
   $hist_count{$broad_hist}++;
@@ -171,14 +174,7 @@ while(<FIL>)
     my $splice_id= $gene."_".$exonStart."-".$exonEnd."_".$upstreamES."-".$upstreamEE."_".$downstreamES."-".$downstreamEE;
 
     ##skip if not in healthy samples
-    #print "splicing\n";
-    #print $_,"HELL\n";
-    #print "splicing event TUMOR: ".$splice_id,"\n";
-
     next unless $ctrl_event_filter{$splice_id};
-    #$splice_totals_per_sample{$bs_id}++;
-    #next unless ($inc_level>=.10);
-    #$splice_filtered_totals_per_sample{$bs_id}++;
 
     ## compute avg psi in healthy
     my $total_ctrl_psi_per_event = 0;
@@ -204,6 +200,7 @@ while(<FIL>)
     elsif($bs_id_hist{$bs_id}=~/Medu/)
     {
       $dpsi = $ctrl_inc_levels{"control-BC"}{$splice_id} - $inc_level;
+      print "Medullo_sample\t",$dpsi,"\t",$splice_id,"\n";
     }
     else{
       $dpsi = $avg_ctrl_inc-$inc_level;
@@ -288,10 +285,10 @@ foreach my $sample(@bs_ids_uniq)
 
 }
 
-perl find_specific_as.pl ../../data/pbta-histologies.RNA-Seq.initial.tsv ~/Desktop/pan_cancer_rmats/filtered_samples_files.v2.txt | grep ATRT > results/perc_hist_as.ATRT.tsv
-perl find_specific_as.pl ../../data/pbta-histologies.RNA-Seq.initial.tsv ~/Desktop/pan_cancer_rmats/filtered_samples_files.v2.txt | grep Craniopharyn > results/perc_hist_as.Cran.tsv
-perl find_specific_as.pl ../../data/pbta-histologies.RNA-Seq.initial.tsv ~/Desktop/pan_cancer_rmats/filtered_samples_files.v2.txt | grep Epend > results/perc_hist_as.Epend.tsv
-perl find_specific_as.pl ../../data/pbta-histologies.RNA-Seq.initial.tsv ~/Desktop/pan_cancer_rmats/filtered_samples_files.v2.txt | grep -i gang  > results/perc_hist_as.Gang.tsv
-perl find_specific_as.pl ../../data/pbta-histologies.RNA-Seq.initial.tsv ~/Desktop/pan_cancer_rmats/filtered_samples_files.v2.txt | grep -i hgat  > results/perc_hist_as.HGAT.tsv
-perl find_specific_as.pl ../../data/pbta-histologies.RNA-Seq.initial.tsv ~/Desktop/pan_cancer_rmats/filtered_samples_files.v2.txt | grep -i lgat  > results/perc_hist_as.LGAT.tsv
-perl find_specific_as.pl ../../data/pbta-histologies.RNA-Seq.initial.tsv ~/Desktop/pan_cancer_rmats/filtered_samples_files.v2.txt | grep -i Medu  > results/perc_hist_as.medul.tsv
+perl find_specific_as.pl ../../data/pbta-histologies.RNA-Seq.initial.tsv ~/Desktop/pan_cancer_rmats/filtered_samples_files.v2.txt | grep ATRT > results/perc_hist_as.30prev.ATRT.tsv
+perl find_specific_as.pl ../../data/pbta-histologies.RNA-Seq.initial.tsv ~/Desktop/pan_cancer_rmats/filtered_samples_files.v2.txt | grep Craniopharyn > results/perc_hist_as.30prev.Cran.tsv
+perl find_specific_as.pl ../../data/pbta-histologies.RNA-Seq.initial.tsv ~/Desktop/pan_cancer_rmats/filtered_samples_files.v2.txt | grep Epend > results/perc_hist_as.30prev.Epend.tsv
+perl find_specific_as.pl ../../data/pbta-histologies.RNA-Seq.initial.tsv ~/Desktop/pan_cancer_rmats/filtered_samples_files.v2.txt | grep -i gang  > results/perc_hist_as.30prev.Gang.tsv
+perl find_specific_as.pl ../../data/pbta-histologies.RNA-Seq.initial.tsv ~/Desktop/pan_cancer_rmats/filtered_samples_files.v2.txt | grep -i hgat  > results/perc_hist_as.30prev.HGAT.tsv
+perl find_specific_as.pl ../../data/pbta-histologies.RNA-Seq.initial.tsv ~/Desktop/pan_cancer_rmats/filtered_samples_files.v2.txt | grep -i lgat  > results/perc_hist_as.30prev.LGAT.tsv
+perl find_specific_as.pl ../../data/pbta-histologies.RNA-Seq.initial.tsv ~/Desktop/pan_cancer_rmats/filtered_samples_files.v2.txt | grep -i Medu  > results/perc_hist_as.30prev.medul.tsv
