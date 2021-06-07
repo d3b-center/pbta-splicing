@@ -4,7 +4,7 @@
 # create tsv file of PSI for each sample, to be used for consensus clustering
 # written by Ammar Naqvi
 #
-# usage: ./create_matrix_of_PSI.pl <histology file> <rMATs_file_paths.txt>
+# usage: ./create_matrix_of_PSI_removeDups.pl <histology file> <rMATs_file_paths.txt>
 ################################################################################
 my ($histology,$rmats, $abridged) = ($ARGV[0], $ARGV[1], $ARGV[2]); ## args: histology, rmats path, and abridged histology
 my (@broad_hist, @bs_id, @splicing_events);
@@ -203,7 +203,7 @@ my @splicing_events_uniq = do { my %seen; grep { !$seen{$_}++ } @splicing_events
 # die;
 
 
-my $out_file = "results/pan_cancer_splicing.thr10.report_select.remDup.txt";
+my $out_file = "results/pan_cancer_splicing.thr10.report_select.remDup.v2.txt";
 open(OUT,">",$out_file) || die("Cannot Open File");
 print OUT "Splice_ID";
 
