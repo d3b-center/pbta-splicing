@@ -22,14 +22,18 @@ suppressPackageStartupMessages(library("rlist"))
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
-
 ## input psi matrix (removing duplicates, cell lines, and second malignancies)
-dataDir = "/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering/input/"
+dataDir = "/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering/results/"
 file_psi <- "/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering/results/pan_cancer_splicing.thr10.report_select.remDup.v2.txt"
+
+df = read.table(args[1], header=TRUE)
+
+print(df)
+
 
 ## temp for gene expr
 #file_psi <- "/Users/naqvia/Desktop/AS-DMG/analyses/pan_cancer/results/pan_cancer_expr_tpm_report_select.remDup.txt"
-psi_tab  = read.delim(file_psi, sep = "\t", row.names=1, header=TRUE)
+psi_tab  = read.delim(file_psi, sep = "\t", header=TRUE)
 
 rnames <- psi_tab[,1]
 row.names(psi_tab) <- psi_tab$Splice_ID
@@ -56,76 +60,53 @@ results = ConsensusClusterPlus((d),maxK=10,reps=100,pItem=0.8,
 # choose a cluster that seems best and assign to n_cluster
 CC_group <- results[[3]]$consensusClass %>%
   as.data.frame()
-colnames(CC_group) <- "CC"
-
-write.table(CC_group, file = "/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering/results/CC_groups_remDup.v2.txt", row.names=TRUE, sep="\t")
+colnames(CC_group) <- "Cluster"
 
 
+## write cluster file for vtest
+cluster_tab <- rownames_to_column(CC_group,var="Kids_First_Biospecimen_ID")
+write.table(cluster_tab, file = "/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering/results/CC_groups.txt", quote=FALSE,row.names=FALSE, sep="\t")
 
 ## run script to add clustering info to histology files // input/pbta-histologies_w_clusters.tsv // not working
-#system("/Users/naqvia/Desktop/AS-DMG/analyses/psi_clustering/combine_clin_cluster.pl /Users/naqvia/Desktop/AS-DMG/analyses/psi_clustering/results/CC_groups_remDup.txt /Users/naqvia/Desktop/AS-DMG/analyses/psi_clustering/input/pbta-histologies.RNA-Seq.initial.tsv")
+# system("/Users/naqvia/Desktop/AS-DMG/analyses/psi_clustering/combine_clin_cluster.pl /Users/naqvia/Desktop/AS-DMG/analyses/psi_clustering/results/CC_groups_remDup.txt /Users/naqvia/Desktop/AS-DMG/analyses/psi_clustering/input/pbta-histologies.RNA-Seq.initial.tsv")
 
 # read in consensus clustering matrix
 CC_consensus_mat <- results[[3]]$consensusMatrix
 colnames(CC_consensus_mat) <- rownames(CC_group)
 rownames(CC_consensus_mat) <- rownames(CC_group)
 
-clin_file = "/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering/input/pbta-histologies_w_clusters.v2.tsv"
-cluster_mem = read.delim(clin_file, sep = "\t", header=TRUE)
+clin_file = "/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering/input/pbta-histologies.RNA-Seq.initial.tsv"
+clin_tab = read.delim(clin_file, sep = "\t", header=TRUE)
 
-hist_sample <- cbind(data.frame(clin_tab$Kids_First_Biospecimen_ID), data.frame(clin_tab$short_histology), data.frame(clin_tab$molecular_subtype), data.frame(clin_tab$Cluster))
+#clin_file = "/Users/naqvia/Desktop/AS-DMG/analyses/psi_clustering/input/pbta-histologies.tsv"
+#clin_tab = read.delim(clin_file, sep = "\t", header=TRUE)
 
-## specificy colors 
-anno_palette <- cluster_mem$Color
+## add cluster membership info for BS IDS
+clin_tab <- clin_tab %>% left_join(rownames_to_column(CC_group,var="Kids_First_Biospecimen_ID"),by="Kids_First_Biospecimen_ID")
+
+## make table with ID, Short histology and cluster info
+hist_sample <- cbind(data.frame(clin_tab$Kids_First_Biospecimen_ID), data.frame(clin_tab$short_histology),data.frame(clin_tab$Cluster))
+
+## specificy colors // not working
+#anno_palette <- cluster_mem$Color
+
+## convert to factors
 hist_sample$clin_tab.short_histology <- as.factor(hist_sample$clin_tab.short_histology )
+hist_sample$clin_tab.Cluster <- as.factor(hist_sample$clin_tab.Cluster )
+
 rownames(hist_sample)<- hist_sample$clin_tab.Kids_First_Biospecimen_ID
 
 ##remove colum
 hist_sample = subset(hist_sample, select = -c(clin_tab.Kids_First_Biospecimen_ID))
 
+setwd("/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering")
 pheatmap::pheatmap(
   CC_consensus_mat,
-  #color = cluster_mem$Color,
   annotation_col=hist_sample,
-  #annotation_col= cluster_mem$Color,
-  #annotation_colors=anno_palette,
+  annotation_colors=anno_palette,
   cluster_rows = results[[3]]$consensusTree,
   cluster_cols = results[[3]]$consensusTree,
   show_rownames = F,
-  show_colnames = F
+  show_colnames = F,
+  filename = "plots/CC_heatmap.png"
 )
-
-
-
-
-theme_Publication <- function(base_size=15, base_family="Helvetica") {
-    library(grid)
-    library(ggthemes)
-    (theme_foundation(base_size=base_size, base_family=base_family)
-      + theme(plot.title = element_text(face = "bold",
-                                        size = rel(1.2), hjust = 0.5),
-              text = element_text(),
-              panel.background = element_rect(colour = NA),
-              plot.background = element_rect(colour = NA),
-              panel.border = element_rect(colour = NA),
-              axis.title = element_text(face = "bold",size = rel(1)),
-              axis.title.y = element_text(angle=90,vjust =2),
-              axis.title.x = element_text(vjust = -0.2),
-              axis.text = element_text(),
-              axis.line = element_line(colour="black"),
-              axis.ticks = element_line(),
-              panel.grid.major = element_line(colour="#f0f0f0"),
-              panel.grid.minor = element_blank(),
-              legend.key = element_rect(colour = NA),
-              legend.position = "right",
-              legend.direction = "vertical",
-              legend.key.size= unit(0.5, "cm"),
-              # legend.margin = unit(0.5, "cm"),
-              legend.margin = margin(5,5,5,5),
-              legend.title = element_text(face="bold"),
-              #plot.margin=unit(c(10,5,5,5),"mm"),
-              plot.margin=unit(c(10,5,5,10),"mm"),
-              strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0"),
-              strip.text = element_text(face="bold")
-      ))
-  }
