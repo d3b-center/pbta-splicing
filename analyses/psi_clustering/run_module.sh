@@ -24,6 +24,11 @@ perl create_matrix_of_PSI_removeDups.pl input/pbta-histologies.RNA-Seq.filtered.
 echo "run clustering method, save in plots folder..."
 Rscript consensus_clustering.R results/pan_cancer_splicing.thr10.report_select.remDup.v2.txt
 
+## stacked barplots of cluster memberships, results in plots folder // not done yet
+echo "make stacked barplots of cluster memberships, results in plots folder..."
+Rscript stacked_barplots.R results/pan_cancer_splicing.thr10.report_select.remDup.v2.txt
+
+
 ## find cluster contributors, files saved in results folder
 echo "find cluster contributors, files saved in results folder..."
 python vtest_calc.py -i results/pan_cancer_splicing.thr10.report_select.remDup.v2.txt -c results/CC_groups.txt -t CC -o plots/vtest_res. -v results/vtest_calc.tsv
