@@ -37,7 +37,7 @@ while(<FIL>)
   {
     $progr_patientIDs{$patient_id} = $bs_id;
   }
-  elsif($_=~/Recu/)
+  elsif($_=~/Recurrence/)
   {
     $recur_patientIDs{$patient_id} = $bs_id;
   }
@@ -66,59 +66,66 @@ while(<FIL>)
   next if($broad_hist=~/EWS/);
   next if($broad_hist=~/Embryonal/);
 
+  ## if patient has more than one RNA-seq dataset
   if($patient_id_count{$patient_id} > 1)
   {
-    #print $bs_id,"\tdouble",$patient_id,"\t";
-    #print $broad_hist,"\n";
 
+    ## prioritize and keep only initial RNA-seq set
     if($init_patientIDs{$patient_id})
     {
       my $bs_id_to_check = $init_patientIDs{$patient_id};
       next unless ($bs_id=~/$bs_id_to_check/);
 
-      print $bs_id,"\t",$patient_id,"\t";
-      print $broad_hist,"\n";
+      #print $bs_id,"\t",$patient_id,"\t";
+      #print $broad_hist,"\n";
     }
+
+    ## if no initial, is it progressive? if so, prioritize/keep that only
     elsif($progr_patientIDs{$patient_id})
     {
       my $bs_id_to_check = $progr_patientIDs{$patient_id};
       next unless ($bs_id=~/$bs_id_to_check/);
 
-      print $bs_id,"\t",$patient_id,"\t";
-      print $broad_hist,"\n";
+      #print $bs_id,"\t",$patient_id,"\t";
+      #print $broad_hist,"\n";
     }
+
+    ## if no initial or progressive? prioritize/keep recurrence tumors  only
     elsif($recur_patientIDs{$patient_id})
     {
       my $bs_id_to_check = $recur_patientIDs{$patient_id};
       next unless ($bs_id=~/$bs_id_to_check/);
 
-      print $bs_id,"\t",$patient_id,"\t";
-      print $broad_hist,"\n";
+      #print $bs_id,"\t",$patient_id,"\t";
+      #print $broad_hist,"\n";
     }
+
+    ## if unknown, just keep it
     elsif($unavail_patientIDs{$patient_id})
     {
       my $bs_id_to_check = $unavail_patientIDs{$patient_id};
       next unless ($bs_id=~/$bs_id_to_check/);
 
-      print $bs_id,"\t",$patient_id,"\t";
-      print $broad_hist,"\n";
+      #print $bs_id,"\t",$patient_id,"\t";
+      #print $broad_hist,"\n";
     }
-    else{ print $_,"***\n"; }
+    else{
+      #print $_,"***\n";
+    }
   }
 
-
-
+  ## make an array and store histology information and BS IDs
   push @broad_hist, $broad_hist;
   push @bs_ids, $bs_id;
 
   $bs_id_hist{$bs_id} = $broad_hist;
-  $hist_count{$broad_hist}++;
 
-  #print "bs_id:".$bs_id,"\n";
+  ## store total number of histologies
+  $hist_count{$broad_hist}++;
   push @{$histology_ids{$broad_hist}}, $bs_id;
 }
+
 close(FIL);
-#die;
 
 # store each library (using file name)
 # for each line, make unique splice id
@@ -141,7 +148,6 @@ while(<FIL>)
   if($file=~/\.(BS\_\w+)\./)
   {
     $bs_id = $1;
-
   }
 
   open(SE_FIL,$file) || die("Cannot Open File $file");
@@ -151,7 +157,7 @@ while(<FIL>)
     my @cols = split "\t";
     my $gene         = $cols[2];
     my $chr          = $cols[3];
-    my $exonStart    = $cols[5]+1;
+    my $exonStart    = $cols[5];
     my $exonEnd      = $cols[6];
     my $upstreamES   = $cols[7];
     my $upstreamEE   = $cols[8];
@@ -159,18 +165,24 @@ while(<FIL>)
     my $downstreamEE = $cols[10];
     my $inc_level    = $cols[20];
 
+    ## inclusion threshold of 10% (default)
     next unless ($inc_level >=.10);
     #$inc_level    = $cols[12];
 
+    ## remove quotation marks from gene names
     $gene=~s/\"//g;
 
+    ## construct a unique splicing event name for each event
     #print $gene."_".$exonStart."-".$exonEnd."_".$upstreamES."-".$upstreamEE."_".$downstreamES."-".$downstreamEE,"\t",$inc_level,"*\n";
     my $splice_id= $gene."_".$exonStart."-".$exonEnd."_".$upstreamES."-".$upstreamEE."_".$downstreamES."-".$downstreamEE;
+
+    ## store inclusion levels of splicing event and BS ID#
     $inc_levels{$splice_id}{$bs_id} = $inc_level;
+
+    ## get histology for BS ID#
     my $hist_of_sample = $bs_id_hist{$bs_id};
 
-    ##store number of events per histology
-    #print $hist_of_sample,":hist\n";
+    ## store number of events per histology
     $hist_check{$splice_id}{$hist_of_sample}++;
     push @splicing_events, $splice_id;
 
@@ -188,48 +200,29 @@ my @splicing_events_uniq = do { my %seen; grep { !$seen{$_}++ } @splicing_events
   # order by disease library
   # print splice id, inc level
 
-#   foreach my $hist (sort @broad_hist_uniq)
-#   {
-#     my $i = 1;
-#     foreach my $sample (@{$histology_ids{$hist}})
-#     {
-#       #last if($i>10);
-#       print $hist,"\n";
-#       $i++;
-#
-#     }
-#   }
-#   print "\n";
-# die;
-
-
 my $out_file = "results/pan_cancer_splicing.thr10.report_select.remDup.v2.txt";
 open(OUT,">",$out_file) || die("Cannot Open File");
+
+## save and print header info for output file
 print OUT "Splice_ID";
-
-  foreach my $hist (sort @broad_hist_uniq)
+foreach my $hist (sort @broad_hist_uniq)
+{
+  my $i = 1;
+  foreach my $sample (@{$histology_ids{$hist}})
   {
-    my $i = 1;
-    foreach my $sample (@{$histology_ids{$hist}})
-    {
-    #  last if($i>30);
-      print OUT "\t";
+  #  last if($i>30);
+    print OUT "\t";
+    ##print histology name (renamed)
+    #print $hist."_".$i;
+    ##print sample name
+    print OUT $sample;
+    $i++;
 
-      ##print histology name (renamed)
-      #print $hist."_".$i;
-
-      ##print sample name
-      print OUT $sample;
-      $i++;
-
-    }
   }
+}
 print OUT "\n";
 
-
-
-
-
+## print each event and threshold value to output file
 foreach my $event (@splicing_events_uniq)
 {
   ## @{$histology_ids{$broad_hist}}
@@ -239,7 +232,7 @@ foreach my $event (@splicing_events_uniq)
 
       ##threshold for prevalence per sample (%)
       #my $hist_prev_thr = .20*($hist_count{$hist});
-      my $hist_prev_thr = 2;
+      my $hist_prev_thr = 2;  ## must be recurrent event in histology (n>=2)
       my $prev_in_hist = 0;
       if($hist_check{$event}{$hist}) { $prev_in_hist = $hist_check{$event}{$hist} };
       #print $prev_in_hist,"CHECK\t",$hist_prev_thr,"\n";
