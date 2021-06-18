@@ -22,7 +22,7 @@ perl create_matrix_of_PSI_removeDups.pl input/pbta-histologies.RNA-Seq.filtered.
 
 ## run clustering method, save in plots folder
 echo "run clustering method, save in plots folder..."
-Rscript consensus_clustering.R
+Rscript consensus_clustering.R results/pan_cancer_splicing.thr10.report_select.remDup.v2.txt
 
 ## find cluster contributors, files saved in results folder
 echo "find cluster contributors, files saved in results folder..."
