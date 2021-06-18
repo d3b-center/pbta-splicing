@@ -7,7 +7,6 @@ import pyreadr
 import argparse
 import sys
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--geneexpfile', required = True,
                     help = 'path to the geneexpfile file with cohort participant id as row names')
@@ -25,18 +24,18 @@ args = parser.parse_args()
 clusteringtype = args.clustertype
 clusters = pd.read_csv(args.clusterfile, sep="\t")
 clusters = clusters.rename(columns={
-    "Sample.Names": "cohort_participant_id"})[["cohort_participant_id", clusteringtype]]
+    "Sample.Names": "Kids_First_Biospecimen_ID"})[["Kids_First_Biospecimen_ID", clusteringtype]]
 
 # Reading in geneexpfile file
 gene_features = pd.read_table(args.geneexpfile, sep="\t").T
 
 gene_features = gene_features.reset_index().rename(columns={
-    "index": "cohort_participant_id"}).set_index("cohort_participant_id")
+    "index": "Kids_First_Biospecimen_ID"}).set_index("Kids_First_Biospecimen_ID")
 
-#print (gene_features)
+print (gene_features)
 
 ## Merging cluster labels and geneexpfile scores
-gene_with_cluster = clusters.merge(gene_features, on='cohort_participant_id')
+gene_with_cluster = clusters.merge(gene_features, on='Kids_First_Biospecimen_ID')
 gene_with_cluster = gene_with_cluster.iloc[:,1:] # Removing sample name
 
 gene_with_cluster = gene_with_cluster.astype(float)
