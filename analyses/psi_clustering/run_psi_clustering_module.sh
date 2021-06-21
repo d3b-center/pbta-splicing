@@ -40,4 +40,4 @@ Rscript stacked_barplots.R results/CC_groups.txt input/pbta-histologies.RNA-Seq.
 
 ## find cluster contributors, files saved in results folder
 echo "find cluster contributors, files saved in results folder..."
-#python vtest_calc.py -i results/pan_cancer_splicing.thr10.report_select.remDup.v2.txt -c results/CC_groups.txt -t CC -o plots/vtest_res. -v results/vtest_calc.tsv
+python vtest_calc.py -i results/pan_cancer_splicing.thr10.report_select.remDup.v2.txt -c results/CC_groups.txt -t CC -o plots/vtest_res. -v results/vtest_calc.tsv
