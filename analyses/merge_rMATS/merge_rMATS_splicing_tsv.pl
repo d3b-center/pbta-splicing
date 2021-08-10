@@ -58,7 +58,8 @@ foreach my $SE (@SE_dir)
 
       ## ignore non-signficant results
       my $pval = $cols[18];
-      next unless $pval <= 0.05;
+      my $fdr  = $cols[19];
+      next unless ( ($pval <= 0.05) && ($fdr <= 0.05) );
       #print join " ", @header,":HEADER\n";
       #print "\n";
       print "SE\t";
@@ -125,7 +126,9 @@ foreach my $MXE (@MXE_dir)
     else{
       my @cols = split "\t";
       my $pval = $cols[20];
-      next unless $pval <= 0.05;
+      my $fdr  = $cols[21];
+      next unless ( ($pval <= 0.05) && ($fdr <= 0.05) );
+      #next unless $pval <= 0.05;
       print "MXE\t";
       print $sample,"\t",$ctrl_sample,"\t";
 
@@ -194,7 +197,9 @@ foreach my $A5SS (@A5SS_dir)
     else{
       my @cols = split "\t";
       my $pval = $cols[18];
-      next unless $pval <= 0.05;
+      my $fdr  = $cols[19];
+      next unless ( ($pval <= 0.05) && ($fdr <= 0.05) );
+      #next unless $pval <= 0.05;
 
       print "A5SS\t";
       print $sample,"\t",$ctrl_sample,"\t";
@@ -257,7 +262,9 @@ foreach my $A3SS (@A3SS_dir)
     else{
       my @cols = split "\t";
       my $pval = $cols[18];
-      next unless $pval <= 0.05;
+      my $fdr  = $cols[19];
+      next unless ( ($pval <= 0.05) && ($fdr <= 0.05) );
+      #next unless $pval <= 0.05;
 
       print "A3SS\t";
       print $sample,"\t",$ctrl_sample,"\t";
@@ -320,7 +327,9 @@ foreach my $RI (@RI_dir)
     else{
       my @cols = split "\t";
       my $pval = $cols[18];
-      next unless $pval <= 0.05;
+      my $fdr  = $cols[19];
+      next unless ( ($pval <= 0.05) && ($fdr <= 0.05) );
+      #next unless $pval <= 0.05;
 
       print "RI\t";
       print $sample,"\t",$ctrl_sample,"\t";
