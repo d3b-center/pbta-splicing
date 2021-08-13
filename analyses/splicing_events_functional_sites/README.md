@@ -8,7 +8,7 @@ The purpose of this module is to identify splicing events that result in loss/ga
 ### Make summary table of strong splicing events and relevant filtered tables that overlap functional sites:
 <br>**Run shell script to make final tables to be used for plotting below**
 ```
-./make_final_tabs.sh
+./run_module.sh
 ```
 
 ### Plot filtered tables that overlap functional sites using ggplot:
@@ -51,5 +51,5 @@ dominant_events_lsvs.total.rec2.neg.intersectUnip.ggplot.txt
 ## Folder content
 
 * `extract_recurrent_splicing_events.pl` processing output from rMATS with filters and constructs data table for all downstream analysis and output file to `results/splicing_events.dpsi10.jc10.tsv` and `splicing_events.dpsi10.jc10.bed`
-* `make_final_tabs.sh` takes the files from above and generates table with uniprot overlaps to be used for plotting
+* `run_module.sh` takes the files from above and generates table with uniprot overlaps to be used for plotting
 * `splicing_functional_sites.R` generates ggplot violin plots of average dPSI per event identidied overlapping a functional site, outputting to `plots/*png`

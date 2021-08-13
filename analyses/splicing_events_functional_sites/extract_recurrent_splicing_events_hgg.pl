@@ -213,14 +213,14 @@ my @splicing_events_uniq = do { my %seen; grep { !$seen{$_}++ } @splicing_events
 
 ## write to files for summary tables (with a bed version for downstream analyses)
 ##print to one tsv table and a bed table
-open(TAB, ">splicing_events.total.tsv");
-open(BED, ">splicing_events.total.bed");
+open(TAB, ">results/splicing_events.total.tsv");
+open(BED, ">results/splicing_events.total.bed");
 
 print "writing output...\n";
 foreach my $event (@splicing_events_uniq)
 {
-  print "event: ",$event,"\t";
-  print join "\t",@{$splicing_event_deltapsis{$event}},"\n";
+  #print "event: ",$event,"\t";
+  #print join "\t",@{$splicing_event_deltapsis{$event}},"\n";
 
   ## compute avg and stdevs of each lsv dPSI
   my $avg_dpsi = &average(\@{$splicing_event_deltapsis{$event}});
