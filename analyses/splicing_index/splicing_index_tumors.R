@@ -1,10 +1,10 @@
 ################################################################################
-# splicing_index.R
-# script that takes in "results/splicing_index.wdPSI_per_sample.txt" data file 
+# splicing_index_tumors.R
+# script that takes in "results/splicing_index.wdPSI_per_sample.txt" data file
 # and computes relative proportion of aberrant splicing changes in samples
 # written by Ammar Naqvi
 #
-# usage: Rscript splicing_index.R
+# usage: Rscript splicing_index_tumors.R
 ################################################################################
 
 library(ggplot2)
@@ -31,13 +31,13 @@ splice_index  = read.delim(paste0(dataDir, file), sep = "\t", header=TRUE,row.na
 e <- ggplot(splice_index, aes(x = hist, y = splice_index))
 
 
-e + geom_violin(trim = FALSE) + 
+e + geom_violin(trim = FALSE) +
   stat_summary(
-    fun.data = "mean_sdl",  fun.args = list(mult = 1), 
+    fun.data = "mean_sdl",  fun.args = list(mult = 1),
     geom = "pointrange", color = "black"
   )
 
-e + geom_violin(aes(fill = hist), trim = FALSE) + 
+e + geom_violin(aes(fill = hist), trim = FALSE) +
   geom_boxplot(width = 0.2) +
   #scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) +
   geom_point(color="black", size=1, position = position_jitter(w=0.02)) +
@@ -58,19 +58,19 @@ splice_index <- splice_index %>%
 
 # Set up the data.frame for plotting
 si_cdf <- splice_index %>%
-  
+
   # We only really need these two variables from data.frame
   dplyr::transmute(
     group = hist,
     number = as.numeric(splice_index)
   ) %>%
-  
+
   # Group by specified column
   dplyr::group_by(group) %>%
-  
+
   # Only keep groups with the specified minimum number of samples
   dplyr::filter(dplyr::n() > 1) %>%
-  
+
   # Calculate group median
   dplyr::mutate(
     group_median = median(number, na.rm = TRUE),
@@ -86,21 +86,21 @@ si_cdf %>%
     x = group_rank,
     y = number
   )) +
-  
+
   ggplot2::geom_point(color = "black") +
-  
+
   # Add summary line for median
   ggplot2::geom_segment(
     x = 0, xend = 1, color = "blue",
     ggplot2::aes(y = group_median, yend = group_median)
   ) +
-  
+
   # Separate by histology
   ggplot2::facet_wrap(~ group + sample_size, nrow = 1, strip.position = "bottom") +
   ggplot2::theme_classic() +
   ggplot2::xlab("Histology") +
   ggplot2::ylab("Splicing Index") +
-  
+
   # Making it pretty
   #ggplot2::theme(legend.position = "none") +
   ggplot2::theme(
@@ -125,19 +125,19 @@ splice_index <- splice_index %>%
 
 # Set up the data.frame for plotting
 si_cdf <- splice_index %>%
-  
+
   # We only really need these two variables from data.frame
   dplyr::transmute(
     group = group,
     number = as.numeric(splice_index)
   ) %>%
-  
+
   # Group by specified column
   dplyr::group_by(group) %>%
-  
+
   # Only keep groups with the specified minimum number of samples
   dplyr::filter(dplyr::n() > 1) %>%
-  
+
   # Calculate group median
   dplyr::mutate(
     group_median = median(number, na.rm = TRUE),
@@ -153,21 +153,21 @@ si_cdf %>%
     x = group_rank,
     y = number
   )) +
-  
+
   ggplot2::geom_point(color = "black") +
-  
+
   # Add summary line for median
   ggplot2::geom_segment(
     x = 0, xend = 1, color = "blue",
     ggplot2::aes(y = group_median, yend = group_median)
   ) +
-  
+
   # Separate by histology
   ggplot2::facet_wrap(~ group + sample_size, nrow = 1, strip.position = "bottom") +
   ggplot2::theme_classic() +
   ggplot2::xlab("Cluster") +
   ggplot2::ylab("Splicing Index") +
-  
+
   # Making it pretty
   #ggplot2::theme(legend.position = "none") +
   ggplot2::theme(
@@ -193,7 +193,7 @@ theme_Publication <- function(base_size=15, base_family="Helvetica") {
             axis.title = element_text(face = "bold",size = rel(1)),
             axis.title.y = element_text(angle=90,vjust =2),
             axis.title.x = element_text(vjust = -0.2),
-            axis.text = element_text(), 
+            axis.text = element_text(),
             axis.line = element_line(colour="black"),
             axis.ticks = element_line(),
             panel.grid.major = element_line(colour="#f0f0f0"),
@@ -224,19 +224,19 @@ splice_index <- splice_index %>%
 
 # Set up the data.frame for plotting
 si_cdf <- splice_index %>%
-  
+
   # We only really need these two variables from data.frame
   dplyr::transmute(
     group = Histology,
     number = as.numeric(SI)
   ) %>%
-  
+
   # Group by specified column
   dplyr::group_by(group) %>%
-  
+
   # Only keep groups with the specified minimum number of samples
   dplyr::filter(dplyr::n() > 1) %>%
-  
+
   # Calculate group median
   dplyr::mutate(
     group_median = median(number, na.rm = TRUE),
@@ -252,21 +252,21 @@ si_cdf %>%
     x = group_rank,
     y = number
   )) +
-  
+
   ggplot2::geom_point(color = "black") +
-  
+
   # Add summary line for median
   ggplot2::geom_segment(
     x = 0, xend = 1, color = "blue",
     ggplot2::aes(y = group_median, yend = group_median)
   ) +
-  
+
   # Separate by histology
   ggplot2::facet_wrap(~ group + sample_size, nrow = 1, strip.position = "bottom") +
   ggplot2::theme_classic() +
   ggplot2::xlab("Histology") +
   ggplot2::ylab("Splicing Index") +
-  
+
   # Making it pretty
   #ggplot2::theme(legend.position = "none") +
   ggplot2::theme(
@@ -292,7 +292,7 @@ theme_Publication <- function(base_size=15, base_family="Helvetica") {
             axis.title = element_text(face = "bold",size = rel(1)),
             axis.title.y = element_text(angle=90,vjust =2),
             axis.title.x = element_text(vjust = -0.2),
-            axis.text = element_text(), 
+            axis.text = element_text(),
             axis.line = element_line(colour="black"),
             axis.ticks = element_line(),
             panel.grid.major = element_line(colour="#f0f0f0"),
@@ -310,6 +310,3 @@ theme_Publication <- function(base_size=15, base_family="Helvetica") {
             strip.text = element_text(face="bold")
     ))
 }
-
-
-
