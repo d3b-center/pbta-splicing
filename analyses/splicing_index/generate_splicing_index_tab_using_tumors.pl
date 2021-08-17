@@ -1,15 +1,15 @@
 #!/usr/bin/perl
 
 use Statistics::Lite qw(:all);
+############################################################################################################
+# generate_splicing_index_tab_using_tumors.pl
 #
-# generate_splicing_index_tab.pl
-#
-# ./generate_splicing_index_tab.pl pbta-histologies.tsv filtered_samples_files.v2.txt
-
+# ./generate_splicing_index_tab_using_tumors.pl ../psi_clustering/input/pbta-histologies.RNA-Seq.initial.tsv
+#                                   ~/Desktop/AS-DMG/analyses/merge_rMATS/merge_rMATS_splicing.SE.single.tsv
+############################################################################################################
 my ($histology,$rmats_tsv) = ($ARGV[0], $ARGV[1]);
 my (@broad_hist, @bs_id, @splicing_events);
 my (%histology_ids, %inc_levels, %bs_id_hist, %hist_check, %hist_count);
-
 my @splicing_events;
 my %splicing_psi;
 
@@ -48,13 +48,13 @@ my %splicing_psi;
   }
   close(FIL);
 
-  #Exon-specific
-  #For every alternatively spliced exon
-  #-------------------------------------
+#Exon-specific
+# For every alternatively spliced exon
+#-------------------------------------
   #1. Compute mean of exon inclusion (PSI)
   #2. Compute STD
 
-  #-Look at each tumor --> is it 2 standard deviations from the mean?
+#-Look at each tumor --> is it 2 standard deviations from the mean?
   #--Yes --> aberrant
   #--No  --> non-aberrant
 
@@ -62,6 +62,7 @@ my %splicing_psi;
 # for each line, make unique splice id
   # gene + chr + SE + UEx + DEx   (make array)
   # store total splicing events and those that pass threshold for each sample
+
 my (%splice_totals_per_sample, %splice_totals);
 ## process rMATS output (may take awhile) from merged input file
 print "processing rMATs results...\n";
@@ -76,11 +77,6 @@ while(<FIL>)
   my @cols  = split "\t";
   my $bs_id = $cols[1];
   my $ctrl  = $cols[2];
-
-  #next unless $hgg_midline_samples{$sample};
-  #next unless $ctrl =~/control\-BS/;
-  #print "$sample\n";
-  #print "bs_id: ",$bs_id,"\n";
 
   ## get gene name
   my $gene         = $cols[4];
@@ -98,10 +94,6 @@ while(<FIL>)
 
   ## retrieve inclusion level and junction count info
   my $inc_level = $cols[33];
-
-  #next unless $inc_level >= .10;
-  #next unless $inc_level < 1.0;
-
   my $IJC        = $cols[25];
   my $SJC        = $cols[26];
 
@@ -111,10 +103,8 @@ while(<FIL>)
   my $thr_diff = $cols[-1];
 
   ## only look at strong changes,  tumor junction reads > 10 reads
-  #next unless ( ( ($IJC + $SJC) >=10) ) ;
-       ## only look thsoe with >=10 reads
-       next unless ($IJC >=10);
-       next unless ($SJC >=10);
+  next unless ($IJC >=10);
+  next unless ($SJC >=10);
 
   ## create unique ID for splicing change
   my $splice_id = $gene.":".$exonStart."-".$exonEnd."_".$upstreamES."-".$upstreamEE."_".$downstreamES."-".$downstreamEE;
@@ -136,23 +126,17 @@ my @bs_ids_uniq          = do { my %seen; grep { !$seen{$_}++ } @bs_ids };
 my @splicing_events_uniq = do { my %seen; grep { !$seen{$_}++ } @splicing_events };
 
 print "calculate mean and sd for each splicing event...\n";
-
-#print @splicing_events_uniq,"\n";
-#calculate mean and sd for each splicing event
+## calculate mean and sd for each splicing event
 my (%std_dev_psi, %count_psi, %mean_psi);
 foreach my $splice_event(@splicing_events_uniq)
 {
   my $mean     = mean  (@{$splicing_psi{$splice_event}});
   my $count    = count (@{$splicing_psi{$splice_event}});
   my $std_dev  = stddev(@{$splicing_psi{$splice_event}});
-  #my $std_devp = stddevp(@{$splicing_psi{$splice_event}});
 
   $std_dev_psi{$splice_event} = $std_dev;
   $count_psi{$splice_event}   = $count;
   $mean_psi{$splice_event}    = $mean;
-
-  #print "SE: ".$splice_event,"\t",$mean,"\t",$count,"\t",$std_dev,"\n";
-  #print join "+", @{$splicing_psi{$splice_event}},"\n\n";
 }
 
 #-Look at each tumor --> is it 2 standard deviations from the mean?
@@ -174,13 +158,11 @@ foreach my $sample(@bs_ids_uniq)
     {
       $absplice_totals_per_sample_pos{$sample}++;
     }
-    # < 2 z-scores
+    # < -2 z-scores
     if($psi_tumor < ($mean_psi - ($std_psi + $std_psi)) )
     {
       $absplice_totals_per_sample_neg{$sample}++;
     }
-
-
   }
 }
 
@@ -192,37 +174,15 @@ foreach my $sample(@bs_ids_uniq)
 {
   next unless $splice_totals_per_sample{$sample};
 
-    print TAB $sample,"\t";
-    print TAB $splice_totals_per_sample{$sample},"\t";
-    print TAB $absplice_totals_per_sample_neg{$sample},"\t",$absplice_totals_per_sample_pos{$sample},"\t";
-    my $total_absplice_totals_per_sample = $absplice_totals_per_sample_neg{$sample}+$absplice_totals_per_sample_pos{$sample};
-    print TAB $total_absplice_totals_per_sample,"\t";
+  print TAB $sample,"\t";
+  print TAB $splice_totals_per_sample{$sample},"\t";
+  print TAB $absplice_totals_per_sample_neg{$sample},"\t",$absplice_totals_per_sample_pos{$sample},"\t";
 
-    my $splice_index = $total_absplice_totals_per_sample/$splice_totals_per_sample{$sample};
+  my $total_absplice_totals_per_sample = $absplice_totals_per_sample_neg{$sample}+$absplice_totals_per_sample_pos{$sample};
+  my $splice_index = $total_absplice_totals_per_sample/$splice_totals_per_sample{$sample};
 
-
-    print TAB $splice_index,"\t";
-    print TAB $bs_id_hist{$sample},"\n";
-    #print $splice_totals{$sample},"\t";
-    #print $absplice_totals_per_sample{$sample};
-
-
+  print TAB $total_absplice_totals_per_sample,"\t";
+  print TAB $splice_index,"\t";
+  print TAB $bs_id_hist{$sample},"\n";
 }
-
 close(TAB);
-
-__DATA__
-##make table for plotting of splice_index
-print "sample\ttotal_splice_events\tfiltered_splice_events\tsplice_index\thist\n";
-foreach my $sample(@bs_ids_uniq)
-{
-
-  print $sample,"\t";
-  print $ctrl_splice_totals_per_sample{$sample},"\t";
-  print $splice_filtered_totals_per_sample{$sample},"\t";
-
-  my $splice_index = $splice_filtered_totals_per_sample{$sample}/$ctrl_splice_totals_per_sample{$sample};
-  print $splice_index,"\t";
-  print $bs_id_hist{$sample},"\n";
-
-}
