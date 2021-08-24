@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib as plt
 import matplotlib.pyplot as plt
-import pyreadr
+#import pyreadr
 import argparse
 import sys
 
@@ -24,19 +24,25 @@ args = parser.parse_args()
 clusteringtype = args.clustertype
 clusters = pd.read_csv(args.clusterfile, sep="\t")
 clusters = clusters.rename(columns={
-    "Sample.Names": "Kids_First_Biospecimen_ID"})[["Kids_First_Biospecimen_ID", clusteringtype]]
+    "Kids_First_Biospecimen_ID": "Kids_First_Biospecimen_ID"})[["Kids_First_Biospecimen_ID", clusteringtype]]
 
 # Reading in geneexpfile file
 gene_features = pd.read_table(args.geneexpfile, sep="\t").T
 
+
+#print (gene_features)
+
 gene_features = gene_features.reset_index().rename(columns={
     "index": "Kids_First_Biospecimen_ID"}).set_index("Kids_First_Biospecimen_ID")
 
-print (gene_features)
+#print (gene_features)
 
 ## Merging cluster labels and geneexpfile scores
 gene_with_cluster = clusters.merge(gene_features, on='Kids_First_Biospecimen_ID')
 gene_with_cluster = gene_with_cluster.iloc[:,1:] # Removing sample name
+#gene_with_cluster = gene_with_cluster.iloc[:,1:] # Removing sample name
+
+#print (gene_with_cluster)
 
 gene_with_cluster = gene_with_cluster.astype(float)
 gene_with_cluster[clusteringtype] = gene_with_cluster[clusteringtype].astype(int)
@@ -76,34 +82,45 @@ vt_sign_values_plotinput_top5.index = range(len(vt_sign_values_plotinput_top5))
 
 
 vt_sign_values_plotinput_bottom5 = vt_sign_values_plotinput_reformatted.groupby(["cluster"]).apply(
-    lambda x: x.sort_values(["vt_score"]).head())
+    lambda x: x.sort_values(["vt_score"]).head(10))
 vt_sign_values_plotinput_bottom5.index = range(len(vt_sign_values_plotinput_bottom5))
 
-# Plotting top 5 features for every cluster
-width_in_inches = 12
-height_in_inches = 8
+# Plotting top 10 features for every cluster
+width_in_inches = 6
+height_in_inches = 10
 colors = ["rosybrown", "darkgray", "brown", "peru", "coral", "mediumpurple", "silver", "honeydew", "wheat",
          "lightcyan", "olive", "darkseagreen", "slategray", "teal", "skyblue", "lavender", "plum", "goldenrod",
          "khaki", "lightpink", "palevioletred", "y", "lightblue", "lemonchiffon", "seagreen"]
+
 customPalette = sns.set_palette(sns.color_palette(colors))
 plt.figure(figsize=(width_in_inches, height_in_inches))
 sns.stripplot(x="cluster", y="vt_score",hue="feature", data=vt_sign_values_plotinput_top5,
-              size=15, palette=customPalette, edgecolor='black', linewidth=0.6)
-plt.legend(bbox_to_anchor=(1.05, 1))
-plt.title("Top 5 features for every cluster")
+              size=8, palette="bright",edgecolor='black', linewidth=0.5,jitter=0.3)
+
+gfg = sns.stripplot(x="cluster", y="vt_score",hue="feature", data=vt_sign_values_plotinput_top5,
+                            size=8, palette="bright",edgecolor='black', linewidth=0.5,jitter=0.3)
+
+plt.legend(bbox_to_anchor=(1, 1))
+plt.setp(gfg.get_legend().get_texts(), fontsize='8')
+plt.title("Top 10 splicing events for every cluster")
 plt.savefig(args.output_prefix+"_top10features.png", bbox_inches = "tight")
 
-
-# PLotting bottom 5 features for every cluster
-width_in_inches = 12
-height_in_inches = 8
+# Plotting bottom 5 features for every cluster
+width_in_inches = 6
+height_in_inches = 10
 colors = ["rosybrown", "seagreen", "brown", "peru", "coral", "mediumpurple", "silver", "honeydew", "wheat",
          "lightcyan", "olive", "darkseagreen", "slategray", "teal", "skyblue", "lavender", "plum", "goldenrod",
          "khaki", "lightpink", "palevioletred", "y", "lightblue", "lemonchiffon"]
+
 customPalette = sns.set_palette(sns.color_palette(colors))
 plt.figure(figsize=(width_in_inches, height_in_inches))
 sns.stripplot(x="cluster", y="vt_score",hue="feature", data=vt_sign_values_plotinput_bottom5,
-              size=15, palette=customPalette, edgecolor='black', linewidth=0.6)
-plt.legend(bbox_to_anchor=(1.45, 1))
-plt.title("Bottom 5 features for every cluster")
-plt.savefig(args.output_prefix+"_bottom5.png", bbox_inches = "tight")
+              size=8, palette="bright", edgecolor='black', linewidth=0.5,jitter=0.3)
+
+gfg = sns.stripplot(x="cluster", y="vt_score",hue="feature", data=vt_sign_values_plotinput_top5,
+                            size=8, palette="bright",edgecolor='black', linewidth=0.5,jitter=0.3)
+
+plt.setp(gfg.get_legend().get_texts(), fontsize='8')
+plt.legend(bbox_to_anchor=(1, 1))
+plt.title("Bottom 10 splicing events for every cluster")
+plt.savefig(args.output_prefix+"_bottom10features.png", bbox_inches = "tight")
