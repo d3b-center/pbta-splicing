@@ -22,6 +22,8 @@ args <- commandArgs(trailing = TRUE)
 ## input psi matrix (removing duplicates, cell lines, and second malignancies) made by ./create_matrix_of_PSI_removeDups.pl
 dataDir = "/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering/results/"
 file_psi <- args[1]
+file_psi <- "/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering/results/pan_cancer_splicing_SE.txt"
+
 psi_tab  = read.delim(file_psi, sep = "\t", header=TRUE)
 rnames <- psi_tab[,1]
 row.names(psi_tab) <- psi_tab$Splice_ID
@@ -30,7 +32,7 @@ d=mat_hm
 
 ## reduce the dataset to the top 5% most variable genes, measured by median absolute deviation
 mads=apply(d,1,mad)
-d=d[rev(order(mads))[1:5417],] ## top 5% .05*108352
+d=d[rev(order(mads))[1:5640],] ## top 5% .05*108352
 
 ## the default settings of the agglomerative hierarchical clustering algorithm using Pearson correlation distance, so it is appropriate to gene median center d using
 d = sweep(d,1, apply(d,1,median,na.rm=T))
@@ -61,7 +63,7 @@ CC_consensus_mat <- results[[3]]$consensusMatrix
 colnames(CC_consensus_mat) <- rownames(CC_group)
 rownames(CC_consensus_mat) <- rownames(CC_group)
 
-clin_file = "/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering/input/pbta-histologies.RNA-Seq.initial.tsv"
+clin_file = "/Users/naqvia/Desktop/pbta-splicing/data/v19_plus_20210311_pnoc_rna.tsv"
 clin_tab = read.delim(clin_file, sep = "\t", header=TRUE)
 
 ## add cluster membership info for BS IDS
@@ -86,7 +88,7 @@ setwd("/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering")
 pheatmap::pheatmap(
   CC_consensus_mat,
   annotation_col=hist_sample,
-  annotation_colors=anno_palette,
+  #annotation_colors=anno_palette,
   cluster_rows = results[[3]]$consensusTree,
   cluster_cols = results[[3]]$consensusTree,
   show_rownames = F,
