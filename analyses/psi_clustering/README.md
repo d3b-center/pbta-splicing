@@ -8,7 +8,7 @@ The purpose of this module is to clustering based on PSI values
 ### script to run analysis
 <br>**Run shell script to make final tables to be used for plotting below**
 ```
-./run_module.sh
+./run_module.sh ../../data/v19_plus_20210311_pnoc_rna.tsv ../../data/merge_rMATS_splicing.SE.single.tsv
 ```
 Input files:
 ```
