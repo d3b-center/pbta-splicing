@@ -1,9 +1,25 @@
 #!/bin/sh
 
+set -e
+set -o pipefail
+
+# This script should always run as if it were being called from
+# the directory it lives in.
+script_directory="$(perl -e 'use File::Basename;
+  use Cwd "abs_path";
+  print dirname(abs_path(@ARGV[0]));' -- "$0")"
+cd "$script_directory" || exit
+
+echo $script_directory
+input_file="$script_directory"/"$1"
+
+echo "input file:" $input_file
+
 echo "process rMATS with .20 dPSI and 10 junction read counts...";
 
 ## Process rMATS files given histologies file. Keep only HGG midlines samples and storng splicing events
-perl extract_recurrent_splicing_events_hgg.pl ../../data/v19_plus_20210311_pnoc_rna.tsv
+# ../../data/v19_plus_20210311_pnoc_rna.tsv
+perl extract_recurrent_splicing_events_hgg.pl $input_file
 
 echo "bedtools intersect...";
 
