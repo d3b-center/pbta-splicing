@@ -22,34 +22,13 @@ echo "process rMATS with .20 dPSI and 10 junction read counts...";
 perl extract_recurrent_splicing_events_hgg.pl $input_file
 
 echo "bedtools intersect...";
-
-## Cross reference splicing events with Unipro database (*hg38.col.bed)
-bedtools intersect -wo -a results/splicing_events.total.pos.bed -b input/unipMod.hg38.col.bed       |sort -u > results/splicing_events.total.pos.intersectUnipMod.wo.txt
-bedtools intersect -wo -a results/splicing_events.total.pos.bed -b input/unipOther.hg38.col.bed     |sort -u > results/splicing_events.total.pos.intersectUnipOther.wo.txt
-bedtools intersect -wo -a results/splicing_events.total.pos.bed -b input/unipDisulfBond.hg38col.bed |sort -u > results/splicing_events.total.pos.intersectUnipDisulfBond.wo.txt
-bedtools intersect -wo -a results/splicing_events.total.pos.bed -b input/unipLocSignal.hg38.col.bed |sort -u > results/splicing_events.total.pos.intersectUnipLocSignal.wo.txt
-bedtools intersect -wo -a results/splicing_events.total.pos.bed -b input/unipDomain.hg38.col.bed    |sort -u > results/splicing_events.total.pos.intersectUnipDomain.wo.txt
-
-bedtools intersect -wo -a results/splicing_events.total.neg.bed -b input/unipMod.hg38.col.bed       |sort -u > results/splicing_events.total.neg.intersectUnipMod.wo.txt
-bedtools intersect -wo -a results/splicing_events.total.neg.bed -b input/unipOther.hg38.col.bed     |sort -u > results/splicing_events.total.neg.intersectUnipOther.wo.txt
-bedtools intersect -wo -a results/splicing_events.total.neg.bed -b input/unipDisulfBond.hg38col.bed |sort -u > results/splicing_events.total.neg.intersectUnipDisulfBond.wo.txt
-bedtools intersect -wo -a results/splicing_events.total.neg.bed -b input/unipLocSignal.hg38.col.bed |sort -u > results/splicing_events.total.neg.intersectUnipLocSignal.wo.txt
-bedtools intersect -wo -a results/splicing_events.total.neg.bed -b input/unipDomain.hg38.col.bed    |sort -u > results/splicing_events.total.neg.intersectUnipDomain.wo.txt
+./bedtools_intersect.sh
 
 echo "make tab for ggplot ...";
-
-## Generate for ggplot for all events corresponding to functional sites
-echo "SpliceID\tdPSI\tUniprot" > results/splicing_events.total.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.pos.intersectUnipMod.wo.txt |  awk '{print $4"\t"$5"\tModifications"}'|sort -u >> results/splicing_events.total.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.pos.intersectUnipOther.wo.txt | awk '{print $4"\t"$5"\tOther"}' |sort -u >> results/splicing_events.total.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.pos.intersectUnipDisulfBond.wo.txt | awk '{print $4"\t"$5"\tDisulfBond"}' |sort -u  >> results/splicing_events.total.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.pos.intersectUnipLocSignal.wo.txt | awk '{print $4"\t"$5"\tLocSignal"}' |sort -u  >> results/splicing_events.total.pos.intersectUnip.ggplot.txt
-
-echo "SpliceID\tdPSI\tUniprot" > results/splicing_events.total.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.neg.intersectUnipMod.wo.txt |  awk '{print $4"\t"$5"\tModifications"}'|sort -u >> results/splicing_events.total.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.neg.intersectUnipOther.wo.txt | awk '{print $4"\t"$5"\tOther"}' |sort -u >> results/splicing_events.total.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.neg.intersectUnipDisulfBond.wo.txt | awk '{print $4"\t"$5"\tDisulfBond"}' |sort -u  >> results/splicing_events.total.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.neg.intersectUnipLocSignal.wo.txt | awk '{print $4"\t"$5"\tLocSignal"}' |sort -u  >> results/splicing_events.total.neg.intersectUnip.ggplot.txt
+./generate_ggplot_tab.sh
 
 ## Remove intermediatery files / off for now
 rm results/splicing_events.total.*intersectUnipMod.wo.txt
+
+## make plots
+Rscript splicing_functional_sites.R results/splicing_events.total.pos.intersectUnip.ggplot.txt results/splicing_events.total.neg.intersectUnip.ggplot.txt
