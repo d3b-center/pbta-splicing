@@ -8,14 +8,13 @@ The purpose of this module is to compute the splicing index of each tumor (propo
 ### script to run analysis
 <br>**Run shell script to make final tables to be used for plotting below**
 ```
-./SI_run.sh
+./run_module.sh ../../data/v19_plus_20210311_pnoc_rna.tsv ../../data/merge_rMATS_splicing.SE.single.tsv
 ```
 Input files:
 ```
-input/pbta-histologies.tsv
-input/filtered_samples_files.v2.txt
+../../data/v19_plus_20210311_pnoc_rna.tsv
+../../data/merge_rMATS_splicing.SE.single.tsv
 ```
-
 Output files:
 ```
 results/splicing_index.wdPSI10_per_sample.txt
@@ -26,5 +25,5 @@ results/splicing_index.wdPSI10_per_sample.txt
 
 
 ## Folder content
-* `SI_run.sh` shell script to pre-process histology file and run analysis
+* `run_module.sh` shell script to pre-process histology file and run analysis
 * `splicing_index.R` takes SI matrix and plots CDF plots, outputting to `plots/*png`
