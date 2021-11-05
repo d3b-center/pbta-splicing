@@ -6,15 +6,9 @@ The purpose of this module is to identify splicing events that result in loss/ga
 
 ## Usage
 ### Make summary table of strong splicing events and relevant filtered tables that overlap functional sites:
-<br>**Run shell script to make final tables to be used for plotting below**
+<br>**Run shell script to make  tables and subsequent plots below**
 ```
 ./run_module.sh
-```
-
-### Plot filtered tables that overlap functional sites using ggplot:
-<br>**Run R script for plotting**
-```
-Rscript splicing_functional_sites.R
 ```
 
 Input files:
