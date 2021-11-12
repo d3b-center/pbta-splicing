@@ -1,4 +1,4 @@
-BS_id	PSI	Group
+BS_id   PSI     Group
 BS_C83TK159	0.904	Low
 BS_FYRDYBMZ	0.909	Low
 BS_5GNQC2FF	0.138	Low
