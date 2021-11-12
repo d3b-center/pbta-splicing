@@ -5,7 +5,6 @@
 suppressPackageStartupMessages({
   library(tidyverse)
   library(readr)
-  library(RColorBrewer)
   library(pheatmap)
   library(readxl)
 })
@@ -51,7 +50,7 @@ histology_matched_filtered <- histology_matched %>%
   dplyr::filter(sample_id %in% common_samples) %>% 
   left_join( psi_group, by=c("Kids_First_Biospecimen_ID"= "BS_id")) %>%
   dplyr::distinct(sample_id, .keep_all = TRUE) %>%
-  dplyr::select(-c("Kids_First_Biospecimen_ID", "PSI")) %>% 
+  dplyr::select(-"Kids_First_Biospecimen_ID") %>% 
   tibble::column_to_rownames("sample_id") %>%
   arrange(Group, harmonized_diagnosis)
 
@@ -67,7 +66,7 @@ fix_NA_function <- function(df){
 }
 
 kinase_activity_fixed <-fix_NA_function(kinase_activity_filtered) %>% 
-  as.data.frame() %>%
+  as.data.frame() %>% 
   # order the columns for plotting
   dplyr::select(rownames(histology_matched_filtered)) 
 
@@ -78,7 +77,7 @@ pheatmap::pheatmap(as.matrix(kinase_activity_fixed),
                    cluster_cols=FALSE,
                    width = 10, 
                    height = 8,
-                   filename = file.path(plots_dir, "kinase_psi_hist.pdf"))
+                   filename = file.path(plots_dir, "kinase_group_psi_hist.pdf"))
 
 
 
