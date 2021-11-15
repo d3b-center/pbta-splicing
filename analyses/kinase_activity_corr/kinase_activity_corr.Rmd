@@ -8,6 +8,9 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+BiocManager::install("pheatmap")
+BiocManager::install("readxl")
+
 suppressPackageStartupMessages({
   library(tidyverse)
   library(readr)
