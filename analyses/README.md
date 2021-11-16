@@ -1,4 +1,4 @@
-## Get rMATS data files
+### Get rMATS data files
 <br>**Run shell script to get merged rMATS result tables**
 ```
 ./download_data.sh
