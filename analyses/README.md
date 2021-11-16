@@ -1,3 +1,8 @@
+## Get rMATS data files
+<br>**Run shell script to get merged rMATS result tables**
+```
+./download_data.sh
+```
 ## Analysis Modules
 This directory contains various analysis modules in the pbta-splicing-hgat project.
 See the README of an individual analysis modules for more information about that module.
