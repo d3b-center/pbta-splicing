@@ -1,9 +1,0 @@
-control-XX    _6_PBTA_single_normals.SE.MATS.JC.txt
-SRR7268792    _1_PBTA_single_normals.SE.MATS.JC.txt
-SRR4787052    _4_PBTA_single_normals.SE.MATS.JC.txt
-control-BS    _3_PBTA_single_normals.SE.MATS.JC.txt
-control-FB    _8_PBTA_single_normals.SE.MATS.JC.txt
-control-BC    _5_PBTA_single_normals.SE.MATS.JC.txt
-control-BR    _7_PBTA_single_normals.SE.MATS.JC.txt
-SRR7268790    _2_PBTA_single_normals.SE.MATS.JC.txt
-SRR7268791    PBTA_single_normals.SE.MATS.JC.txt
