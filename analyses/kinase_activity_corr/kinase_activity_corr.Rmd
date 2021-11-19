@@ -67,7 +67,7 @@ psi_group$Group <- factor(psi_group$Group, levels = c("Low","Med","High"))
 # match BS_ID to sample ID
 histology_matched <- histology_df %>% 
   dplyr::filter(Kids_First_Biospecimen_ID %in% psi_group$BS_id) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, sample_id, harmonized_diagnosis, composition, RNA_library)
+  dplyr::select(Kids_First_Biospecimen_ID, sample_id, harmonized_diagnosis, short_histology, composition, RNA_library)
 ```
 
 ### what samples in PSI group-score file that are not in histologies file
@@ -140,7 +140,7 @@ kinase_activity_fixed_hgat <-kinase_activity_fixed %>%
 ```{r}
 pheatmap::pheatmap(as.matrix(kinase_activity_fixed_hgat),
                    annotation_col = histology_matched_filtered,
-                   cluster_rows=FALSE,
+                   cluster_rows=TRUE,
                    cluster_cols=FALSE,
                    width = 10,
                    height = 8,
@@ -151,11 +151,18 @@ pheatmap::pheatmap(as.matrix(kinase_activity_fixed_hgat),
 ```{r}
 pheatmap::pheatmap(as.matrix(kinase_activity_fixed_hgat),
                    annotation_col = histology_matched_filtered ,
-                   cluster_rows=FALSE, 
+                   cluster_rows=TRUE, 
                    cluster_cols=FALSE
                    )
 ```
 
+```{r}
+pheatmap::pheatmap(as.matrix(kinase_activity_fixed_hgat),
+                   annotation_col = histology_matched_filtered ,
+                   cluster_rows=TRUE, 
+                   cluster_cols=TRUE
+                   )
+```
 
 ## Analyze all Samples with PSI scores
 ```{r}
@@ -166,7 +173,7 @@ psi_group_pan$Group <- factor(psi_group_pan$Group, levels = c("Low","Medium","Hi
 # match BS_ID to sample ID
 histology_matched_pan <- histology_df %>% 
   dplyr::filter(Kids_First_Biospecimen_ID %in% psi_group_pan$samples) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, sample_id, harmonized_diagnosis, RNA_library, composition)
+  dplyr::select(Kids_First_Biospecimen_ID, sample_id, short_histology, harmonized_diagnosis, RNA_library, composition)
 ```
 
 ### what samples in PSI group-score file that are not in histologies file
@@ -223,34 +230,109 @@ histology_matched_dup_fixed <- bind_rows(histology_matched_dup_match,
 histology_matched_filtered <- histology_matched_filtered %>%
   dplyr::filter(!sample_id %in% duplicated_sample_id) %>% 
   bind_rows(histology_matched_dup_fixed) %>%
-  tibble::column_to_rownames("sample_id") %>%
-  arrange(Group, PSI, harmonized_diagnosis) %>% 
+  tibble::column_to_rownames("sample_id") 
+
+
+plot_all <- histology_matched_filtered %>%
+  arrange(Group, PSI, short_histology) %>% 
   dplyr::select(-c("RNA_library", "composition", "Kids_First_Biospecimen_ID"))
 
 # filter to pan cancer samples
-kinase_activity_fixed_pan <-kinase_activity_fixed %>% 
+kinase_activity_fixed_plot_all <-kinase_activity_fixed %>% 
   # order the columns for plotting
-  dplyr::select(rownames(histology_matched_filtered)) 
+  dplyr::select(rownames(plot_all)) 
 
 ```
 
 ### save heatmap
 ```{r}
-pheatmap::pheatmap(as.matrix(kinase_activity_fixed_pan),
-                   annotation_col = histology_matched_filtered,
-                   cluster_rows=FALSE,
+pheatmap::pheatmap(as.matrix(kinase_activity_fixed_plot_all),
+                   annotation_col = plot_all,
+                   cluster_rows=TRUE,
                    cluster_cols=FALSE,
                    width = 10,
                    height = 8,
                    show_colnames = F,
-                   filename = file.path(plots_dir, "kinase_group_psi_hist_pan.pdf"))
+                   filename = file.path(plots_dir, "kinase_group_psi_hist_pan_all.pdf"))
 ```
 
 ### generate heatmap
 ```{r}
-pheatmap::pheatmap(as.matrix(kinase_activity_fixed_pan),
-                   annotation_col = histology_matched_filtered,
-                   cluster_rows=FALSE, 
+pheatmap::pheatmap(as.matrix(kinase_activity_fixed_plot_all),
+                   annotation_col = plot_all,
+                   cluster_rows=TRUE, 
+                   cluster_cols=FALSE,
+                   show_colnames = F
+                   )
+```
+
+
+### only plot group and short histology - do not rank by PSI 
+```{r}
+plot_sub <- histology_matched_filtered %>%
+  arrange(Group, short_histology) %>% 
+  dplyr::select(-c("RNA_library", "composition", "Kids_First_Biospecimen_ID", "PSI", "harmonized_diagnosis"))
+
+# filter to pan cancer samples
+kinase_activity_fixed_plot_sub <-kinase_activity_fixed %>% 
+  # order the columns for plotting
+  dplyr::select(rownames(plot_sub)) 
+
+```
+
+### save heatmap
+```{r}
+pheatmap::pheatmap(as.matrix(kinase_activity_fixed_plot_sub),
+                   annotation_col = plot_sub,
+                   cluster_rows=TRUE,
+                   cluster_cols=FALSE,
+                   width = 10,
+                   height = 8,
+                   show_colnames = F,
+                   filename = file.path(plots_dir, "kinase_group_psi_hist_pan_sub.pdf"))
+```
+
+### generate heatmap
+```{r}
+pheatmap::pheatmap(as.matrix(kinase_activity_fixed_plot_sub),
+                   annotation_col = plot_sub,
+                   cluster_rows=TRUE, 
+                   cluster_cols=FALSE,
+                   show_colnames = F
+                   )
+```
+
+
+### sort on short histology first and then PSI group and PSI score 
+```{r}
+plot_hist <- histology_matched_filtered %>%
+  arrange(short_histology, Group, PSI) %>% 
+  dplyr::select(-c("RNA_library", "composition", "Kids_First_Biospecimen_ID", "harmonized_diagnosis"))
+
+# filter to pan cancer samples
+kinase_activity_fixed_plot_hist <-kinase_activity_fixed %>% 
+  # order the columns for plotting
+  dplyr::select(rownames(plot_hist)) 
+
+```
+
+### save heatmap
+```{r}
+pheatmap::pheatmap(as.matrix(kinase_activity_fixed_plot_hist),
+                   annotation_col = plot_hist,
+                   cluster_rows=TRUE,
+                   cluster_cols=FALSE,
+                   width = 10,
+                   height = 8,
+                   show_colnames = F,
+                   filename = file.path(plots_dir, "kinase_group_psi_hist_pan_hist.pdf"))
+```
+
+### generate heatmap
+```{r}
+pheatmap::pheatmap(as.matrix(kinase_activity_fixed_plot_hist),
+                   annotation_col = plot_hist,
+                   cluster_rows=TRUE, 
                    cluster_cols=FALSE,
                    show_colnames = F
                    )
