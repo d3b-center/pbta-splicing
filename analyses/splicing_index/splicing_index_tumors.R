@@ -16,6 +16,7 @@ library(viridis)
 `%>%` <- dplyr::`%>%`
 
 dataDir = "/Users/naqvia/Desktop/pbta-splicing/analyses/splicing_index/results/"
+plotDir = "/Users/naqvia/Desktop/pbta-splicing/analyses/splicing_index/plots/"
 
 ## newer version with just tumors
 file <- "splicing_index.total.txt"
@@ -30,7 +31,7 @@ si_cdf <- splice_index %>%
   # We only really need these two variables from data.frame
   dplyr::transmute(
     group = Histology,
-    number = log(as.numeric(SI))
+    number = (as.numeric(SI))
   ) %>%
 
   # Group by specified column
@@ -77,9 +78,25 @@ si_cdf %>%
     strip.placement = "outside",
     strip.text = ggplot2::element_text(size = 14, angle = 90, hjust = .5),
     strip.background = ggplot2::element_rect(fill = NA, color = NA)
-  ) + theme_Publication()
+  ) + theme_Publication() 
 
-## SI with survival
+file_si_plot = "SI_total.png"
+filename = paste0(plotDir, file_plot)
+ggsave(
+  filename,
+  plot = last_plot(),
+  device = NULL,
+  path = NULL,
+  scale = 1,
+  width =6000,
+  height = 2000,
+  units = "px",
+  dpi = 300,
+  limitsize = TRUE,
+  bg = NULL
+)
+
+## SI with survival in HGGs
 file <- "splicing_index.total.hgg_clusters.surv.txt"
 splice_index_surv = read.delim(paste0(dataDir, file), sep = "\t", header=TRUE)
 
@@ -99,14 +116,30 @@ kap_fit <- survival_analysis(splice_index_surv,
                              test = "kap.meier",
                              metadata_sample_col = "Kids_First_Biospecimen_ID")
 
-survminer::ggsurvplot(kap_fit$model,
+surv_plot <- survminer::ggsurvplot(kap_fit$model,
                       pval = TRUE,
                       data = kap_fit$original_data,
-                      risk.table = TRUE,
+                      risk.table = FALSE,
                       break.time.by = 500,
-                      #ggtheme = theme_Publication(),
+                      ggtheme = theme_Publication(),
                       risk.table.y.text.col = TRUE,
                       risk.table.y.text = FALSE)
+
+file_surv_plot = "surv_si.hgat.png"
+filename = paste0(plotDir, file_surv_plot)
+ggsave(
+  filename,
+  plot = last_plot(),
+  device = NULL,
+  path = NULL,
+  scale = 1,
+  width =2800,
+  height = 1800,
+  units = "px",
+  dpi = 300,
+  limitsize = TRUE,
+  bg = NULL
+)
 
 ##theme for all plots
 theme_Publication <- function(base_size=15, base_family="Helvetica") {
