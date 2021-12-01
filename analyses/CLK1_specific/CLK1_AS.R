@@ -1,57 +1,38 @@
-################################################################################
-# CLK1_AS.R
-# script 
-#
-# written by Ammar Naqvi
-#
-# usage: Rscript CLK1_AS.R
-################################################################################
-
+library(ggthemes)
+library(extrafont)
+library(plyr)
+library(scales)
 library(ggplot2)
 library(dplyr)
-library(hrbrthemes)
-library(viridis)
-
-dataDir = "/Users/naqvia/Desktop/AS-DMG/analyses/CLK1_specific/results/"
-
-## more accurate version -- dPSI version
-file <- "CLK1_exon_inclusion.txt"
-inc_levels  = read.delim(paste0(dataDir, file), sep = "\t", header=TRUE,row.names=1)
-
-# results/CLK1_exon_inclusion.above10perc.txt
-file_fil <- "CLK1_exon_inclusion.above20perc.txt"
-inc_levels  = read.delim(paste0(dataDir, file_fil), sep = "\t", header=TRUE,row.names=1)
+library(ggstatsplot)
 
 
-## violin plot version
-e <- ggplot(inc_levels, aes(x = Hist, y = Inclusion))
+# Get `magrittr` pipe
+`%>%` <- dplyr::`%>%`
+
+file="/Users/naqvia/Desktop/pbta-splicing/analyses/splicing_events_functional_sites/scr/CLK1_dpsi_samples.v2.txt" 
+dpsi<- read.table(file, header=TRUE,sep = "\t")
 
 
-e + geom_violin(trim = FALSE) + 
-  stat_summary(
-    fun.data = "mean_sdl",  fun.args = list(mult = 1), 
-    geom = "pointrange", color = "black"
-  )
+#JitterPlot = qplot(Type, dPSI, data=dpsi, fill = Type, geom=c("boxplot", "jitter"), 
+#                  main="CLK1 Aberrant Splicing",xlab="Type", ylab="dPSI") + theme_Publication()
 
-e + geom_violin(aes(fill = Hist), trim = FALSE) + 
-  geom_boxplot(width = 0.2) +
-  #scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) +
-  geom_point(color="black", size=1, position = position_jitter(w=0.02)) +
-  theme(legend.position = "none") + theme_Publication()
+##set working dir for module
+setwd("/Users/naqvia/Desktop/pbta-splicing_git/pbta_splicing/analyses/CLK1_specific") 
 
-## results/CLK1_exon_psi.hgats_subtyped.txt
-file_fil <- "CLK1_exon_psi.hgats_subtyped.txt"
-dpsi_levels  = read.delim(paste0(dataDir, file_fil), sep = "\t", header=TRUE,row.names=1)
+set.seed(123)
+ggstatsplot::ggbetweenstats(
+  data = dpsi, 
+  x = Type, 
+  y = dPSI,
+  k = 3,
+  nboot = 15,
+  notch = TRUE,
+  mean.ci = TRUE,
+  outlier.tagging = TRUE,
+  type = "robust",
+  pairwise.comparisons = TRUE,
+  messages = FALSE
+) + theme_Publication() 
 
-
-## box plot version for subtypes
-e <- ggplot(dpsi_levels, aes(x = Hist, y = Inclusion,fill = Hist))
-
-e + geom_boxplot(width = 0.4) +
-  geom_point(color="black", size=.5, position = position_jitter(w=0.02)) +
-  theme(legend.position = "none") + theme_Publication()
-  
-  
-
-
-
+ggsave("plots/CLK1_dPSI_sign.pdf", width = 8, height = 15)
