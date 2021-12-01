@@ -11,7 +11,7 @@ Rscript kinase_activity_corr.R
 
 Input files (in the `input` folder of this analysis module):
 ```
-1-s2.0-S0092867420314513-mmc4.xlsx
+supplementarytable_kinase.xlsx
 CLK1_PSI_grouping.txt
 ```
 
