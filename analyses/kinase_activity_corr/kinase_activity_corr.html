@@ -190,7 +190,7 @@ if(!dir.exists(plots_dir)){
 <div id="read-in-files-necessary-for-analyses" class="section level4">
 <h4>Read in files necessary for analyses</h4>
 <pre><code>## Rows: 2841 Columns: 36</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+<pre><code>## ── Column specification ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
 ## chr (31): Kids_First_Biospecimen_ID, CNS_region, sample_id, aliquot_id, Kids...
 ## dbl  (5): OS_days, age_last_update_days, normal_fraction, tumor_fraction, tu...</code></pre>
@@ -201,24 +201,12 @@ if(!dir.exists(plots_dir)){
 ## * `7316-24` -&gt; `7316-24...91`
 ## * `7316-24` -&gt; `7316-24...157`</code></pre>
 </div>
-<div id="fix-kinsae-activiyt-file-since-it-has-na-in-the-flie" class="section level4">
-<h4>Fix kinsae activiyt file since it has NA in the flie</h4>
-<pre class="r"><code># # clear the NA in the numbers
-# fix_NA_function &lt;- function(df){
-#   df_fixed &lt;- apply(df, 2, function(x) as.numeric(gsub(&quot;NA&quot;, &quot;&quot;, x)))
-#   rownames(df_fixed) &lt;- rownames(df)
-#   return(df_fixed)
-# }
-# 
-# kinase_activity_fixed &lt;-fix_NA_function(kinase_activity) %&gt;% 
-#   as.data.frame() </code></pre>
-</div>
 <div id="analyze-hgat-midline-specifici-psi" class="section level2">
 <h2>Analyze HGAT Midline specifici PSI</h2>
 <pre class="r"><code># PSI group 
 psi_group &lt;- readr::read_tsv(file.path(input_dir, &quot;CLK1_PSI_grouping.txt&quot;))</code></pre>
 <pre><code>## Rows: 77 Columns: 3</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+<pre><code>## ── Column specification ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
 ## chr (2): BS_id, Group
 ## dbl (1): PSI</code></pre>
@@ -312,7 +300,7 @@ histology_matched_filtered_dup%&gt;%
 <h4>when duplicated, select non cell-line, stranded if available</h4>
 <pre class="r"><code># filter for distinct stranded, solid tissue
 histology_matched_dup_match &lt;- histology_matched_filtered_dup %&gt;%
-  dplyr::filter(RNA_library == &quot;poly-A&quot;,
+  dplyr::filter(RNA_library == &quot;stranded&quot;,
                 composition == &quot;Solid Tissue&quot;) %&gt;% 
   dplyr::distinct(sample_id, .keep_all = TRUE) 
 
@@ -367,7 +355,7 @@ kinase_activity_hgat &lt;-kinase_activity %&gt;%
 <pre class="r"><code># PSI group 
 psi_group_pan &lt;- readr::read_tsv(file.path(input_dir, &quot;CLK1_PSI.pan-cancer.groupings.txt&quot;))</code></pre>
 <pre><code>## Rows: 1096 Columns: 3</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+<pre><code>## ── Column specification ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
 ## chr (2): samples, Group
 ## dbl (1): PSI</code></pre>

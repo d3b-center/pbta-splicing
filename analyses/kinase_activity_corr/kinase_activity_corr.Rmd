@@ -98,7 +98,7 @@ histology_matched_filtered_dup%>%
 ```{r}
 # filter for distinct stranded, solid tissue
 histology_matched_dup_match <- histology_matched_filtered_dup %>%
-  dplyr::filter(RNA_library == "poly-A",
+  dplyr::filter(RNA_library == "stranded",
                 composition == "Solid Tissue") %>% 
   dplyr::distinct(sample_id, .keep_all = TRUE) 
 
