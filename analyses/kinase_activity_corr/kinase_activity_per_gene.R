@@ -175,14 +175,26 @@ for (i in 1:length(file_list)){
       # order the columns for plotting
       dplyr::select(rownames(plot_matrix_1)) 
     
-    pheatmap::pheatmap(as.matrix(kinase_activity_plot3),
-                       annotation_col = plot_matrix_3,
-                       cluster_rows=FALSE,
-                       cluster_cols=FALSE,
-                       width = 10,
-                       height = 8,
-                       show_colnames = F,
-                       filename = file.path(plots_sig_dir, paste0(file_id, "_vs_kinase_by_psi_short.pdf")))
+    if(length(cor_sig_genes) >=2){
+      pheatmap::pheatmap(as.matrix(kinase_activity_plot3),
+                         annotation_col = plot_matrix_3,
+                         cluster_rows=TRUE,
+                         cluster_cols=FALSE,
+                         width = 10,
+                         height = 8,
+                         show_colnames = F,
+                         filename = file.path(plots_sig_dir, paste0(file_id, "_vs_kinase_by_psi_short.pdf")))
+    } else {
+      pheatmap::pheatmap(as.matrix(kinase_activity_plot3),
+                         annotation_col = plot_matrix_3,
+                         cluster_rows=FALSE,
+                         cluster_cols=FALSE,
+                         width = 10,
+                         height = 8,
+                         show_colnames = F,
+                         filename = file.path(plots_sig_dir, paste0(file_id, "_vs_kinase_by_psi_short.pdf")))
+    }
+    
     
     # order by short histology and then PSI
     plot_matrix_4 <-histology_matched_filtered %>% 
@@ -196,14 +208,25 @@ for (i in 1:length(file_list)){
       # order the columns for plotting
       dplyr::select(rownames(plot_matrix_4)) 
     
-    pheatmap::pheatmap(as.matrix(kinase_activity_plot4),
-                       annotation_col = plot_matrix_4,
-                       cluster_rows=FALSE,
-                       cluster_cols=FALSE,
-                       width = 10,
-                       height = 8,
-                       show_colnames = F,
-                       filename = file.path(plots_sig_dir, paste0(file_id, "_vs_kinase_by_short_psi.pdf")))
+    if(length(cor_sig_genes) >=2){
+      pheatmap::pheatmap(as.matrix(kinase_activity_plot4),
+                         annotation_col = plot_matrix_4,
+                         cluster_rows=TRUE,
+                         cluster_cols=FALSE,
+                         width = 10,
+                         height = 8,
+                         show_colnames = F,
+                         filename = file.path(plots_sig_dir, paste0(file_id, "_vs_kinase_by_short_psi.pdf")))
+    } else {
+      pheatmap::pheatmap(as.matrix(kinase_activity_plot4),
+                         annotation_col = plot_matrix_4,
+                         cluster_rows=FALSE,
+                         cluster_cols=FALSE,
+                         width = 10,
+                         height = 8,
+                         show_colnames = F,
+                         filename = file.path(plots_sig_dir, paste0(file_id, "_vs_kinase_by_short_psi.pdf")))
+    }
   }
 }
 
