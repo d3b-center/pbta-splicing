@@ -23,7 +23,7 @@ kinase_activity_file="${input_dir}/supplementarytable_kinase.xlsx"
 clk1_psi_group_file="${input_dir}/CLK1_PSI.pan-cancer.groupings.txt"
 
 
-# Rscript -e "rmarkdown::render('kinase_activity_corr.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('kinase_activity_corr.Rmd', clean = TRUE)"
 
 # Run kinase activity per gene for all genes of interest
 Rscript --vanilla kinase_activity_per_gene.R \
