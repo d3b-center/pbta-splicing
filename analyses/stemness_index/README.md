@@ -1,4 +1,4 @@
-# Proliferative index
+# Stemness index
 
 Module authors: Komal S. Rathi (@komalsrathi)
 
