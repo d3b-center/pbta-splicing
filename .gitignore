@@ -1,3 +1,4 @@
 .DS_Store
+analyses/.DS_Store
 data/metadata.rds
 data/tpm_matrix.rds
