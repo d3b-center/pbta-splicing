@@ -190,7 +190,7 @@ if(!dir.exists(plots_dir)){
 <div id="read-in-files-necessary-for-analyses" class="section level4">
 <h4>Read in files necessary for analyses</h4>
 <pre><code>## Rows: 2841 Columns: 36</code></pre>
-<pre><code>## ── Column specification ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<pre><code>## ── Column specification ───────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
 ## chr (31): Kids_First_Biospecimen_ID, CNS_region, sample_id, aliquot_id, Kids...
 ## dbl  (5): OS_days, age_last_update_days, normal_fraction, tumor_fraction, tu...</code></pre>
@@ -206,7 +206,7 @@ if(!dir.exists(plots_dir)){
 <pre class="r"><code># PSI group 
 psi_group &lt;- readr::read_tsv(file.path(input_dir, &quot;CLK1_PSI_grouping.txt&quot;))</code></pre>
 <pre><code>## Rows: 77 Columns: 3</code></pre>
-<pre><code>## ── Column specification ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<pre><code>## ── Column specification ───────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
 ## chr (2): BS_id, Group
 ## dbl (1): PSI</code></pre>
@@ -355,7 +355,7 @@ kinase_activity_hgat &lt;-kinase_activity %&gt;%
 <pre class="r"><code># PSI group 
 psi_group_pan &lt;- readr::read_tsv(file.path(input_dir, &quot;CLK1_PSI.pan-cancer.groupings.txt&quot;))</code></pre>
 <pre><code>## Rows: 1096 Columns: 3</code></pre>
-<pre><code>## ── Column specification ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<pre><code>## ── Column specification ───────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
 ## chr (2): samples, Group
 ## dbl (1): PSI</code></pre>
