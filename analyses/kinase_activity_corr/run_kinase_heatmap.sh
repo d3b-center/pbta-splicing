@@ -20,7 +20,6 @@ pki_input_dir="input/individual_files"
 # Define files used
 histology_file="${data_dir}/pbta-histologies.tsv"
 kinase_activity_file="${input_dir}/supplementarytable_kinase.xlsx"
-clk1_psi_group_file="${input_dir}/CLK1_PSI.pan-cancer.groupings.txt"
 
 
 Rscript -e "rmarkdown::render('kinase_activity_corr.Rmd', clean = TRUE)"
@@ -29,5 +28,4 @@ Rscript -e "rmarkdown::render('kinase_activity_corr.Rmd', clean = TRUE)"
 Rscript --vanilla kinase_activity_per_gene.R \
 --histology $histology_file \
 --kinase $kinase_activity_file \
---group $clk1_psi_group_file \
 --pki_input_dir $pki_input_dir 
