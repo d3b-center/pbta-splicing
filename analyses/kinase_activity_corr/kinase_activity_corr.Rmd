@@ -39,22 +39,9 @@ if(!dir.exists(plots_dir)){
 histology_df <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max=10000)
 
 # kinase activity score
-kinase_activity <- readxl::read_excel(file.path(input_dir, "1-s2.0-S0092867420314513-mmc4.xlsx"), sheet =3, skip=2) %>%
+kinase_activity <- readxl::read_excel(file.path(input_dir, "supplementarytable_kinase.xlsx"), sheet =3, skip=2) %>%
   tibble::column_to_rownames("proID") %>% 
   dplyr::select(-geneID)
-```
-
-#### Fix kinsae activiyt file since it has NA in the flie
-```{r}
-# clear the NA in the numbers
-fix_NA_function <- function(df){
-  df_fixed <- apply(df, 2, function(x) as.numeric(gsub("NA", "", x)))
-  rownames(df_fixed) <- rownames(df)
-  return(df_fixed)
-}
-
-kinase_activity_fixed <-fix_NA_function(kinase_activity) %>% 
-  as.data.frame() 
 ```
 
 ## Analyze HGAT Midline specifici PSI
@@ -111,7 +98,7 @@ histology_matched_filtered_dup%>%
 ```{r}
 # filter for distinct stranded, solid tissue
 histology_matched_dup_match <- histology_matched_filtered_dup %>%
-  dplyr::filter(RNA_library == "poly-A",
+  dplyr::filter(RNA_library == "stranded",
                 composition == "Solid Tissue") %>% 
   dplyr::distinct(sample_id, .keep_all = TRUE) 
 
@@ -130,7 +117,7 @@ histology_matched_filtered <- histology_matched_filtered %>%
   dplyr::select(-c("RNA_library", "composition", "Kids_First_Biospecimen_ID"))
 
 # filter to HGAT samples
-kinase_activity_fixed_hgat <-kinase_activity_fixed %>% 
+kinase_activity_hgat <-kinase_activity %>% 
   # order the columns for plotting
   dplyr::select(rownames(histology_matched_filtered)) 
 
@@ -138,7 +125,7 @@ kinase_activity_fixed_hgat <-kinase_activity_fixed %>%
 
 ### save heatmap
 ```{r}
-pheatmap::pheatmap(as.matrix(kinase_activity_fixed_hgat),
+pheatmap::pheatmap(as.matrix(kinase_activity_hgat),
                    annotation_col = histology_matched_filtered,
                    cluster_rows=TRUE,
                    cluster_cols=FALSE,
@@ -149,7 +136,7 @@ pheatmap::pheatmap(as.matrix(kinase_activity_fixed_hgat),
 
 ### generate heatmap
 ```{r}
-pheatmap::pheatmap(as.matrix(kinase_activity_fixed_hgat),
+pheatmap::pheatmap(as.matrix(kinase_activity_hgat),
                    annotation_col = histology_matched_filtered ,
                    cluster_rows=TRUE, 
                    cluster_cols=FALSE
@@ -157,7 +144,7 @@ pheatmap::pheatmap(as.matrix(kinase_activity_fixed_hgat),
 ```
 
 ```{r}
-pheatmap::pheatmap(as.matrix(kinase_activity_fixed_hgat),
+pheatmap::pheatmap(as.matrix(kinase_activity_hgat),
                    annotation_col = histology_matched_filtered ,
                    cluster_rows=TRUE, 
                    cluster_cols=TRUE
@@ -238,7 +225,7 @@ plot_all <- histology_matched_filtered %>%
   dplyr::select(-c("RNA_library", "composition", "Kids_First_Biospecimen_ID"))
 
 # filter to pan cancer samples
-kinase_activity_fixed_plot_all <-kinase_activity_fixed %>% 
+kinase_activity_plot_all <-kinase_activity %>% 
   # order the columns for plotting
   dplyr::select(rownames(plot_all)) 
 
@@ -246,7 +233,7 @@ kinase_activity_fixed_plot_all <-kinase_activity_fixed %>%
 
 ### save heatmap
 ```{r}
-pheatmap::pheatmap(as.matrix(kinase_activity_fixed_plot_all),
+pheatmap::pheatmap(as.matrix(kinase_activity_plot_all),
                    annotation_col = plot_all,
                    cluster_rows=TRUE,
                    cluster_cols=FALSE,
@@ -258,7 +245,7 @@ pheatmap::pheatmap(as.matrix(kinase_activity_fixed_plot_all),
 
 ### generate heatmap
 ```{r}
-pheatmap::pheatmap(as.matrix(kinase_activity_fixed_plot_all),
+pheatmap::pheatmap(as.matrix(kinase_activity_plot_all),
                    annotation_col = plot_all,
                    cluster_rows=TRUE, 
                    cluster_cols=FALSE,
@@ -274,7 +261,7 @@ plot_sub <- histology_matched_filtered %>%
   dplyr::select(-c("RNA_library", "composition", "Kids_First_Biospecimen_ID", "PSI", "harmonized_diagnosis"))
 
 # filter to pan cancer samples
-kinase_activity_fixed_plot_sub <-kinase_activity_fixed %>% 
+kinase_activity_plot_sub <-kinase_activity %>% 
   # order the columns for plotting
   dplyr::select(rownames(plot_sub)) 
 
@@ -282,7 +269,7 @@ kinase_activity_fixed_plot_sub <-kinase_activity_fixed %>%
 
 ### save heatmap
 ```{r}
-pheatmap::pheatmap(as.matrix(kinase_activity_fixed_plot_sub),
+pheatmap::pheatmap(as.matrix(kinase_activity_plot_sub),
                    annotation_col = plot_sub,
                    cluster_rows=TRUE,
                    cluster_cols=FALSE,
@@ -294,7 +281,7 @@ pheatmap::pheatmap(as.matrix(kinase_activity_fixed_plot_sub),
 
 ### generate heatmap
 ```{r}
-pheatmap::pheatmap(as.matrix(kinase_activity_fixed_plot_sub),
+pheatmap::pheatmap(as.matrix(kinase_activity_plot_sub),
                    annotation_col = plot_sub,
                    cluster_rows=TRUE, 
                    cluster_cols=FALSE,
@@ -310,7 +297,7 @@ plot_hist <- histology_matched_filtered %>%
   dplyr::select(-c("RNA_library", "composition", "Kids_First_Biospecimen_ID", "harmonized_diagnosis"))
 
 # filter to pan cancer samples
-kinase_activity_fixed_plot_hist <-kinase_activity_fixed %>% 
+kinase_activity_plot_hist <-kinase_activity %>% 
   # order the columns for plotting
   dplyr::select(rownames(plot_hist)) 
 
@@ -318,7 +305,7 @@ kinase_activity_fixed_plot_hist <-kinase_activity_fixed %>%
 
 ### save heatmap
 ```{r}
-pheatmap::pheatmap(as.matrix(kinase_activity_fixed_plot_hist),
+pheatmap::pheatmap(as.matrix(kinase_activity_plot_hist),
                    annotation_col = plot_hist,
                    cluster_rows=TRUE,
                    cluster_cols=FALSE,
@@ -330,7 +317,7 @@ pheatmap::pheatmap(as.matrix(kinase_activity_fixed_plot_hist),
 
 ### generate heatmap
 ```{r}
-pheatmap::pheatmap(as.matrix(kinase_activity_fixed_plot_hist),
+pheatmap::pheatmap(as.matrix(kinase_activity_plot_hist),
                    annotation_col = plot_hist,
                    cluster_rows=TRUE, 
                    cluster_cols=FALSE,
