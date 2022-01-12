@@ -20,7 +20,7 @@ Output files:
 results/splicing_index.total.txt
 ```
 
-![](plots/SI_dpsi_thr10.png)
+![](plots/SI_total.png)
 <br>
 
 
