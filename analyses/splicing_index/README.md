@@ -17,7 +17,7 @@ Input files:
 ```
 Output files:
 ```
-results/splicing_index.wdPSI10_per_sample.txt
+results/splicing_index.total.txt
 ```
 
 ![](plots/SI_dpsi_thr10.png)
