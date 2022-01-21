@@ -1,10 +1,10 @@
 #!/usr/bin/perl
-###############################################################
-# quant_MHC_expr_vs_IR_PSI.pl
-# generate table of expression of MHC-related genes and NLRC5
-# intron retention
 #
-# usage: ./quant_MHC_expr_vs_IR_PSI.pl <stranded_counts>
+###############################################################
+# quant_expr_vs_psi_PCT.pl
+# generate table of expression of pct-expr and PSI
+#
+# usage: perl quant_expr_vs_psi_PCT.pl <stranded_counts>
 #        <polyA_counts>  <psi_file>
 #
 # author: Ammar Naqvi
@@ -17,7 +17,6 @@ use strict;
 my ($stranded_rsem, $polyA_rsem, $psi) = ($ARGV[0],$ARGV[1],$ARGV[2]);
 
 ##hard-coded list of splice ids to get expression for
-my $mhc_class1= "datasets/MHC_class1.other.txt";
 my $input= "diffSplicing_cand.filterDiffExpr.txt";
 
 
@@ -25,39 +24,17 @@ my $input= "diffSplicing_cand.filterDiffExpr.txt";
 my @samples;
 my %sample_psi;
 my @genes;
-#my (@class1_genes,@class2_genes);
 my @gene_list;
-
 my %gene_list;
 my %tpm_tumor_str;
 my %sample_psi;
-
 my %filter_samples;
 
-
+## file to gene and their protein coding transcripts
 my $pct_input = "input/gene_pct.names.txt";
 my %ens_to_gene;
 
-
-#
-# #make  gene list
-# open (FIL,$input) || die("Cannot Open File");
-# while(<FIL>)
-# {
-#   chomp;
-#   my (@cols) = split;
-#   my $gene = $cols[0];
-#   $gene=~s/\"//g;
-#
-#   ##save to array and hash to access later
-#   push @gene_list, $gene;
-#   #print $gene,"\n";
-#   $gene_list{$gene} = 1;
-# }
-# close(FIL);
-
-
-
+## get samples with signficant CLK1 Exon 4 changes
 open(FIL, "input/CLK1_dpsi.midline_HGGs.sign.names.txt") || die("Cannot Open File");
 while(<FIL>)
 {
@@ -68,16 +45,16 @@ while(<FIL>)
   $filter_samples{$_} = 1;
 }
 
+## extract gene name
 if($psi=~/(\w+)\_\d+\-\d+\_\d+\-\d+\_\d+\-\d+\./)
 {
-  #print $psi,"\t",$1."TEST\n";
   push @gene_list, $1;
-  #print $gene,"\n";
   $gene_list{$1} = 1;
 
 }
 close(FIL);
 
+## extract splice change
 my $splice_ID = "";
 if($psi=~/(\w+\_\d+\-\d+\_\d+\-\d+\_\d+\-\d+)\./)
 {
@@ -147,11 +124,6 @@ while(<TPM>)
     {
       $ens = $1;
     }
-    #print "ens\t",$ens,"\n";
-    ## clean up gene name
-    # $gene=~s/\.\d+//;
-    # $gene=~s/ENSG\d+\_//;
-    # $gene=~s/\"//g;
 
     #skip unless gene of interest provided by input
     next unless $ens_to_gene{$ens};
@@ -171,7 +143,6 @@ while(<TPM>)
       next unless $sample_psi{$bs_id};
 
       ##store expression value by sample and gene
-      #print $bs_id,"\t",$gene,"\t",$tpm,"\n";
       $tpm_tumor_str{$bs_id}{$gene}+= $tpm;
     }
   }
@@ -213,14 +184,3 @@ foreach my $sample (sort keys %sample_psi)
 }
 
 __DATA__
-foreach my $sample (keys %sample_psi)
-{
-  foreach my $gene(@genes)
-  {
-    next unless $tpm_tumor_str{$sample}{$gene};
-    print $sample,"\t";
-    print $tpm_tumor_str{$sample}{$gene},"\t";
-    print $sample_psi{$sample},"\t";
-    print $gene,"\n";
-  }
-}
