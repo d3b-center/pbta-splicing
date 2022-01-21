@@ -1,4 +1,4 @@
-# Splicing Overlapping Functional Sites
+# CLK1 Specific 
 
 Module authors: Ammar Naqvi (@naqvia)
 
