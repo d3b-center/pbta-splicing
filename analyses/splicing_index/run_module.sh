@@ -17,7 +17,6 @@ rmats_file="$script_directory"/"$2" #/../data/merge_rMATS_splicing.SE.single.tsv
 echo "hist file:" $hist_file
 echo "rmats file:" $rmats_file
 
-
 echo "processing PSIs and generating tables"
 perl generate_splicing_index_tab_using_tumors.pl $hist_file $rmats_file
 
