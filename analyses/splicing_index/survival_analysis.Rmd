@@ -1,0 +1,151 @@
+---
+title: "Survival Analyasis for HGG patients"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+This notebook does Kaplan Meier survival analysis on the following covariates:
+1) reported_gender
+2) CNS_region,
+3) primary_site
+4) tumor_descriptor
+5) molecular_subtype
+6) age (categorized)
+
+
+#### Packages and functions
+
+Read in set up script.
+
+```{r Set up library}
+library(survival)
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+```
+
+#### Set up files and directories
+
+```{r}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+analysis_dir <- file.path(root_dir, "analyses", "splicing_index")
+data_dir <- file.path("~/OpenPedCan-analysis", "data")
+
+input_dir <- file.path(analysis_dir, "results")
+
+km_survival_plots_dir <- file.path(analysis_dir, "survival_plots")
+if(!dir.exists(km_survival_plots_dir)){
+  dir.create(km_survival_plots_dir)
+}
+```
+
+#### Read in files necessary for analyses 
+```{r}
+histology_df <- readr::read_tsv(file.path(data_dir, "histologies.tsv"))
+sample_list <- readr::read_tsv(file.path(input_dir, "splicing_index.total.hgg_clusters.surv.txt"))
+
+```
+
+#### Calculate PFS status based on the PFS days and OS days 
+```{r}
+histology_df$PFS_days <- as.numeric(histology_df$PFS_days)
+histology_df$age_at_diagnosis_days <- as.numeric(histology_df$age_at_diagnosis_days)
+
+# filter to only samples of interest 
+histology_df <- histology_df %>%
+  # keep only samples in the sample list
+  dplyr::filter(Kids_First_Biospecimen_ID %in% sample_list$Kids_First_Biospecimen_ID) %>% 
+  # keep only unique Kids First Participant 
+  dplyr::distinct(Kids_First_Participant_ID, .keep_all = TRUE) %>% 
+  dplyr::filter(!is.na(OS_status)) %>%
+  dplyr::mutate(os_status_level = case_when(
+    OS_status == "LIVING" ~ 0,
+    OS_status == "DECEASED" ~ 1)) %>%
+  dplyr::mutate(PFS_status = if_else(PFS_days < OS_days, 1, 0)) %>%
+  dplyr::mutate(age_group = case_when(
+    age_at_diagnosis_days <= 5*365.25 ~ "1-5 years old",
+    age_at_diagnosis_days <= 10*365.25 & age_at_diagnosis_days > 5*365.25 ~ "5-10 years old",
+    age_at_diagnosis_days <= 15*365.25 & age_at_diagnosis_days > 10*365.25 ~ "10-15 years old",
+    age_at_diagnosis_days > 15*365.25 ~ "over 15 years old"
+  ))
+```
+
+
+### Survival analysis OS
+```{r}
+for(ind_var in c("tumor_descriptor", "CNS_region", "molecular_subtype",
+                 "reported_gender", "primary_site", "age_group")){
+  # generate the log-rank model 
+  fit_ind_var <- survival::survdiff(
+    as.formula(paste0("survival::Surv(OS_days, os_status_level) ~ ", ind_var)),
+    data = histology_df
+  )
+  
+  # get the p.values and all statistics for the model 
+  fit_ind_var$p.value <- round(pchisq(fit_ind_var$chisq, df = 1, lower = FALSE), digits=3)
+  fit_ind_var_df <- as.data.frame(fit_ind_var[c("n", "obs", "exp", "chisq", "p.value")])
+  
+  fit_ind_var_df <- fit_ind_var_df %>% 
+    mutate(covaraite = ind_var,
+           model = "OS")
+
+  # generate the kaplan-meier model 
+  kap_fit_ind_var <- survival::survfit(
+    as.formula(paste0("survival::Surv(OS_days, os_status_level) ~ ", ind_var)),
+    data = histology_df
+  )
+  
+  # generate and save the survival plot 
+  surv_plot <- survminer::ggsurvplot(kap_fit_ind_var,
+                                     pval = round(fit_ind_var$p.value, digits=3), # use computed pval from log rank analyses 
+                                     data = histology_df,
+                                     risk.table = TRUE,
+                                     xlim = c(0, 2000),
+                                     break.time.by = 500,
+                                     ggtheme = theme_minimal(),
+                                     risk.table.y.text.col = TRUE,
+                                     risk.table.y.text = FALSE)
+  print(surv_plot)
+}
+    
+```
+
+### Survival analysis PFS
+```{r}
+for(ind_var in c("tumor_descriptor", "CNS_region", "molecular_subtype",
+                 "reported_gender", "primary_site", "age_group")){
+    # generate the log-rank model 
+  fit_ind_var <- survival::survdiff(
+    as.formula(paste0("survival::Surv(OS_days, os_status_level) ~ ", ind_var)),
+    data = histology_df
+  )
+  
+  # get the p.values and all statistics for the model 
+  fit_ind_var$p.value <- round(pchisq(fit_ind_var$chisq, df = 1, lower = FALSE), digits=3)
+  fit_ind_var_df <- as.data.frame(fit_ind_var[c("n", "obs", "exp", "chisq", "p.value")])
+  
+  fit_ind_var_df <- fit_ind_var_df %>% 
+    mutate(covaraite = ind_var,
+           model = "OS")
+
+  # generate the kaplan-meier model 
+  kap_fit_ind_var <- survival::survfit(
+    as.formula(paste0("survival::Surv(OS_days, os_status_level) ~ ", ind_var)),
+    data = histology_df
+  )
+  
+  # generate and save the survival plot 
+  surv_plot <- survminer::ggsurvplot(kap_fit_ind_var,
+                                     pval = round(fit_ind_var$p.value, digits=3), # use computed pval from log rank analyses 
+                                     data = histology_df,
+                                     risk.table = TRUE,
+                                     xlim = c(0, 2000),
+                                     break.time.by = 500,
+                                     ggtheme = theme_minimal(),
+                                     risk.table.y.text.col = TRUE,
+                                     risk.table.y.text = FALSE)
+  print(surv_plot)
+}
+```
+
