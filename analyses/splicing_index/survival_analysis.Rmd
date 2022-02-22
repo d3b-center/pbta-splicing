@@ -12,6 +12,7 @@ This notebook does Kaplan Meier survival analysis on the following covariates:
 4) tumor_descriptor
 5) molecular_subtype
 6) age (categorized)
+7) level
 
 
 #### Packages and functions
@@ -56,6 +57,7 @@ histology_df$age_at_diagnosis_days <- as.numeric(histology_df$age_at_diagnosis_d
 histology_df <- histology_df %>%
   # keep only samples in the sample list
   dplyr::filter(Kids_First_Biospecimen_ID %in% sample_list$Kids_First_Biospecimen_ID) %>% 
+  dplyr::left_join(sample_list) %>% 
   # keep only unique Kids First Participant 
   dplyr::distinct(Kids_First_Participant_ID, .keep_all = TRUE) %>% 
   dplyr::filter(!is.na(OS_status)) %>%
@@ -68,14 +70,14 @@ histology_df <- histology_df %>%
     age_at_diagnosis_days <= 10*365.25 & age_at_diagnosis_days > 5*365.25 ~ "5-10 years old",
     age_at_diagnosis_days <= 15*365.25 & age_at_diagnosis_days > 10*365.25 ~ "10-15 years old",
     age_at_diagnosis_days > 15*365.25 ~ "over 15 years old"
-  ))
+  )) 
 ```
 
 
 ### Survival analysis OS
 ```{r}
 for(ind_var in c("tumor_descriptor", "CNS_region", "molecular_subtype",
-                 "reported_gender", "primary_site", "age_group")){
+                 "reported_gender", "primary_site", "age_group", "Level")){
   # generate the log-rank model 
   fit_ind_var <- survival::survdiff(
     as.formula(paste0("survival::Surv(OS_days, os_status_level) ~ ", ind_var)),
@@ -114,10 +116,10 @@ for(ind_var in c("tumor_descriptor", "CNS_region", "molecular_subtype",
 ### Survival analysis PFS
 ```{r}
 for(ind_var in c("tumor_descriptor", "CNS_region", "molecular_subtype",
-                 "reported_gender", "primary_site", "age_group")){
+                 "reported_gender", "primary_site", "age_group", "Level")){
     # generate the log-rank model 
   fit_ind_var <- survival::survdiff(
-    as.formula(paste0("survival::Surv(OS_days, os_status_level) ~ ", ind_var)),
+    as.formula(paste0("survival::Surv(PFS_days, PFS_status) ~ ", ind_var)),
     data = histology_df
   )
   
@@ -131,7 +133,7 @@ for(ind_var in c("tumor_descriptor", "CNS_region", "molecular_subtype",
 
   # generate the kaplan-meier model 
   kap_fit_ind_var <- survival::survfit(
-    as.formula(paste0("survival::Surv(OS_days, os_status_level) ~ ", ind_var)),
+    as.formula(paste0("survival::Surv(PFS_days, PFS_status) ~ ", ind_var)),
     data = histology_df
   )
   
