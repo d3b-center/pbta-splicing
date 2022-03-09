@@ -19,12 +19,30 @@ args <- commandArgs(trailing = TRUE)
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
+##directory setup
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses", "psi_clustering")
+
+results_dir  <- file.path(analysis_dir, "results")
+plots_dir    <- file.path(analysis_dir, "plots")
+input_dir    <- file.path(analysis_dir, "input")
+
+plots_dir <- file.path(analysis_dir, "plots")
+
+if(!dir.exists(plots_dir)){
+  dir.create(plots_dir, recursive=TRUE)
+}
+
 ## input psi matrix (removing duplicates, cell lines, and second malignancies) made by ./create_matrix_of_PSI_removeDups.pl
 dataDir = "/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering/results/"
-file_psi <- args[1]
-file_psi <- "/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering/results/pan_cancer_splicing_SE.txt"
+#file_psi <- args[1]
 
-psi_tab  = read.delim(file_psi, sep = "\t", header=TRUE)
+##download file from https://figshare.com/s/47bd539da8e9887143c8 ## too large for github
+file_psi <- "pan_cancer_splicing_SE.txt"
+psi_tab  = read.delim(paste0(results_dir, file_psi), sep = "\t", header=TRUE,row.names=1)
+
+#psi_tab  = read.delim(file_psi, sep = "\t", header=TRUE)
 rnames <- psi_tab[,1]
 row.names(psi_tab) <- psi_tab$Splice_ID
 mat_hm <- data.matrix(psi_tab[,2:ncol(psi_tab)])
