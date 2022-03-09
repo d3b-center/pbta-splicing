@@ -102,7 +102,7 @@ rownames(hist_sample)<- hist_sample$clin_tab.Kids_First_Biospecimen_ID
 ##remove colum
 hist_sample = subset(hist_sample, select = -c(clin_tab.Kids_First_Biospecimen_ID))
 
-setwd("/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering")
+setwd(analysis_dir)
 pheatmap::pheatmap(
   CC_consensus_mat,
   annotation_col=hist_sample,
