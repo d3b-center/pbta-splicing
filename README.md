@@ -12,3 +12,9 @@ docker run --name pbta-splicing -d -e PASSWORD=pass -p 8787:8787 -v "$PWD":/home
 ```
 docker exec -ti pbta-splicing bash
 ```
+### Get rMATS data files
+
+<br>**Run shell script to get merged rMATS result tables**
+```
+./download_data.sh
+```
