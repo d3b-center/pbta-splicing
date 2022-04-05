@@ -20,9 +20,9 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "psi_clustering")
 
-results_dir  <- file.path(analysis_dir, "results")
-plots_dir    <- file.path(analysis_dir, "plots")
-input_dir    <- file.path(analysis_dir, "input")
+results_dir <- file.path(analysis_dir, "results")
+plots_dir <- file.path(analysis_dir, "plots")
+input_dir <- file.path(analysis_dir, "input")
 
 plots_dir <- file.path(analysis_dir, "plots")
 if(!dir.exists(plots_dir)){
@@ -31,14 +31,14 @@ if(!dir.exists(plots_dir)){
 
 ##download file from https://figshare.com/s/47bd539da8e9887143c8 ## too large for github
 file_psi <- "pan_cancer_splicing_SE.txt"
-psi_tab <- readr::read_tsv(file.path(input_dir, file_psi), header=TRUE)
-
-row.names(psi_tab) <- psi_tab$Splice_ID
-d <- data.matrix(psi_tab[,2:ncol(psi_tab)])
+psi_tab <- readr::read_tsv(file.path(input_dir, file_psi))
+d <- psi_tab %>%
+  as.data.frame() %>%
+  tibble::column_to_rownames("Splice_ID")
 
 ## reduce the dataset to the top 5% most variable genes, measured by median absolute deviation
 mads <- apply(d,1,mad)
-top_5_perc <- round(nrow(mads)*0.05) ## top 5% .05*108352
+top_5_perc <- round(length(mads)*0.05) ## top 5% .05*108352 (vs. 199134)
 d <- d[rev(order(mads))[1:top_5_perc],] 
 
 ## the default settings of the agglomerative hierarchical clustering algorithm using Pearson correlation distance, so it is appropriate to gene median center d using
@@ -47,10 +47,9 @@ d <- sweep(d,1, apply(d,1,median,na.rm=T))
 ## remove NAs
 is.na(d) <- sapply(d, is.infinite)
 d[is.na(d)] <- 0
-d[is.nan(d)] <- 0
 
 ## k= 3 clusters pam+spearman after visual inspection
-results <- ConsensusClusterPlus((d),
+results <- ConsensusClusterPlus(as.matrix(d),
                                 maxK=10,
                                 reps=100,
                                 pItem=0.8,
@@ -67,8 +66,8 @@ CC_group <- results[[3]]$consensusClass %>%
 colnames(CC_group) <- "Cluster"
 
 ## write cluster file for vtest 
-cluster_tab <- rownames_to_column(CC_group, 
-                                  var="Kids_First_Biospecimen_ID")
+cluster_tab <- tibble::rownames_to_column(CC_group, 
+                                          var="Kids_First_Biospecimen_ID")
 readr::write_tsv(cluster_tab, file = file.path(results_dir, 
                                                "CC_groups.tsv"))
 
@@ -80,7 +79,7 @@ rownames(CC_consensus_mat) <- rownames(CC_group)
 # read in clinical file
 clin_tab <- readr::read_tsv(file.path(data_dir, "v19_plus_20210311_pnoc_rna.tsv")) %>%
   ## add cluster membership info for BS IDS
-  dplyr::left_join(rownames_to_column(CC_group,var="Kids_First_Biospecimen_ID"),
+  dplyr::left_join(tibble::rownames_to_column(CC_group,var="Kids_First_Biospecimen_ID"),
                    by="Kids_First_Biospecimen_ID")
 
 ## make table with ID, Short histology and cluster info
