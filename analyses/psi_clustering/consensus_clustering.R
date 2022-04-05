@@ -13,6 +13,8 @@ suppressPackageStartupMessages({
   library("dplyr")
   library("tidyverse")
   library("optparse")
+  library("RColorBrewer")
+  library("purrr")
 })
 
 ##directory setup
@@ -85,7 +87,8 @@ clin_tab <- readr::read_tsv(file.path(data_dir, "v19_plus_20210311_pnoc_rna.tsv"
 ## make table with ID, Short histology and cluster info
 hist_sample <- cbind(data.frame(clin_tab$Kids_First_Biospecimen_ID), 
                      data.frame(clin_tab$short_histology),
-                     data.frame(clin_tab$Cluster))
+                     data.frame(clin_tab$Cluster)) %>%
+  dplyr::filter(clin_tab.Kids_First_Biospecimen_ID %in% colnames(CC_consensus_mat))
 
 ## convert to factors
 hist_sample$clin_tab.short_histology <- as.factor(hist_sample$clin_tab.short_histology )
@@ -94,12 +97,36 @@ hist_sample$clin_tab.Cluster <- as.factor(hist_sample$clin_tab.Cluster )
 rownames(hist_sample)<- hist_sample$clin_tab.Kids_First_Biospecimen_ID
 
 ##remove column
-hist_sample = subset(hist_sample, select = -c(clin_tab.Kids_First_Biospecimen_ID))
+hist_sample = subset(hist_sample, select = -c(clin_tab.Kids_First_Biospecimen_ID)) %>%
+  dplyr::filter()
+
+
+# generate color list for heatmaps
+qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
+col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
+
+# select n distinct colors short histology
+n_short_hist <- hist_sample %>% 
+  pull(clin_tab.short_histology) %>% unique() %>% length()
+# generate a list of colors for each annotation 
+set.seed(1015)
+short_hist_color <- sample(col_vector, n_short_hist) %>% 
+  set_names(unique(hist_sample$clin_tab.short_histology))
+
+# select n distinct colors cluster
+n_cluster <- hist_sample %>% pull(clin_tab.Cluster) %>% unique() %>% length()
+# generate a list of colors for each annotation 
+set.seed(1018)
+cluster_color <- sample(col_vector, n_cluster) %>% 
+  set_names(unique(hist_sample$clin_tab.Cluster))
+
+anno_colors <- list(short_hist_color, cluster_color)
+names(anno_colors) <- c("clin_tab.short_histology", "clin_tab.Cluster")
 
 pheatmap::pheatmap(
   CC_consensus_mat,
   annotation_col=hist_sample,
-  #annotation_colors=anno_palette,
+  annotation_colors=anno_colors,
   cluster_rows = results[[3]]$consensusTree,
   cluster_cols = results[[3]]$consensusTree,
   show_rownames = F,
