@@ -23,14 +23,6 @@ results/CC_groups.txt
 results/pan_cancer_splicing_SE.gene.txt
 ```
 
-![](plots/CC_heatmap.png)
-<br>
-![](plots/stacked_barplot_clusters.v2.png)
-<br>
-![](plots/vtest_res._top10features.png)
-<br>
-![](plots/vtest_res._bottom10features.png)
-
 ## Folder content
 * `run_module.sh` shell script to pre-process histology file and run analysis
 * `create_matrix_of_PSI_SE.pl` generates matrix of PSIs of each sample and splicing event
