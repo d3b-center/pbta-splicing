@@ -11,24 +11,6 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 echo $script_directory
-# hist_file="$1"
-# rmats_file="$2"
-#
-# if [ -n "$1" ]; then
-#   echo "supplied hist file: $hist_file"
-#   #hist file: $hist_file
-# else
-#   #echo "default hist_file = ../../data/v19_plus_20210311_pnoc_rna.tsv"
-#   hist_file=../../data/v19_plus_20210311_pnoc_rna.tsv
-# fi
-#
-# if [ -n "$2" ]; then
-#   echo "supplied rmats file: rmats_file"
-#   #rmats_file=rmats_file
-# else
-#   #echo "default rmats_file = ../../data/merge_rMATS_splicing.SE.single.tsv"
-#   rmats_file="../../data/merge_rMATS_splicing.SE.single.tsv"
-# fi
 
 ##default file paths for histology and rmats output
 hist_file="../../data/v19_plus_20210311_pnoc_rna.tsv"
