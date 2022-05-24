@@ -31,7 +31,7 @@ if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
 }
 
-##download file from https://figshare.com/s/47bd539da8e9887143c8 ## too large for github
+## output file generated from create_matrix_of_PSI_SE_gene.pl
 file_psi <- "pan_cancer_splicing_SE.txt"
 psi_tab <- readr::read_tsv(file.path(input_dir, file_psi))
 d <- psi_tab %>%
@@ -56,8 +56,8 @@ results <- ConsensusClusterPlus(as.matrix(d),
                                 reps=100,
                                 pItem=0.8,
                                 title="clustering",
-                                clusterAlg="pam",
-                                distance="spearman",
+                                clusterAlg="km",
+                                distance="euclidean",
                                 seed=123,
                                 innerLinkage = "average", 
                                 finalLinkage = "average")
@@ -100,7 +100,6 @@ rownames(hist_sample)<- hist_sample$clin_tab.Kids_First_Biospecimen_ID
 hist_sample = subset(hist_sample, select = -c(clin_tab.Kids_First_Biospecimen_ID)) %>%
   dplyr::filter()
 
-
 # generate color list for heatmaps
 qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
 col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
@@ -115,6 +114,7 @@ short_hist_color <- sample(col_vector, n_short_hist) %>%
 
 # select n distinct colors cluster
 n_cluster <- hist_sample %>% pull(clin_tab.Cluster) %>% unique() %>% length()
+
 # generate a list of colors for each annotation 
 set.seed(1018)
 cluster_color <- sample(col_vector, n_cluster) %>% 
