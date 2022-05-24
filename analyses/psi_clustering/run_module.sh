@@ -26,4 +26,4 @@ perl create_matrix_of_PSI_SE_gene.pl $hist_file $rmats_file
 
 ## run clustering method, save in plots folder
 echo "run clustering method, save in plots folder..."
-Rscript consensus_clustering.R results/pan_cancer_splicing_SE.txt
+Rscript consensus_clustering.R 
