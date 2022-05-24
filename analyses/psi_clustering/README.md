@@ -19,12 +19,11 @@ Input files:
 
 Output files:
 ```
-results/CC_groups.txt
 results/pan_cancer_splicing_SE.gene.txt
 ```
 
 ## Folder content
 * `run_module.sh` shell script to pre-process histology file and run analysis
 * `create_matrix_of_PSI_SE.pl` generates matrix of PSIs of each sample and splicing event
-* `create_matrix_of_PSI_SE.pl` generates matrix of PSIs of each sample and splicing event limit to one per gene
+* `create_matrix_of_PSI_SE_gene.pl` generates matrix of PSIs of each sample and splicing event limit to one per gene
 * `consensus_clustering.R` takes PSI matrix and impliments consensus clustering, plots heatmap and stacked barplot of cluster members, outputting to `plots/*png`
