@@ -32,7 +32,7 @@ if(!dir.exists(plots_dir)){
 }
 
 ## output file generated from create_matrix_of_PSI_SE_gene.pl
-file_psi <- "pan_cancer_splicing_SE.txt"
+file_psi <- "pan_cancer_splicing_SE.gene.txt"
 psi_tab <- readr::read_tsv(file.path(input_dir, file_psi))
 d <- psi_tab %>%
   as.data.frame() %>%
