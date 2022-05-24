@@ -72,7 +72,6 @@ theme_Publication <- function(base_size=15, base_family="Helvetica") {
 }
 
 
-## newer version with just tumors
 file <- "splicing_index.total.txt"
 splice_index <- readr::read_tsv(file.path(results_dir, file))
 
@@ -150,7 +149,7 @@ ggsave(
   bg = NULL
 )
 
-## SBI plot for HGATs only
+## SBI plot for HGAT only
 file <- "splicing_index.total.hgg_clusters.txt"
 splice_index <- readr::read_tsv(file.path(results_dir, file))
 
