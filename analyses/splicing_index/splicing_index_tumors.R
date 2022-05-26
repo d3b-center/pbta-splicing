@@ -149,84 +149,6 @@ ggsave(
   bg = NULL
 )
 
-## SI with survival in HGGs
-file <- "splicing_index.total.hgg_clusters.surv.txt"
-splice_index_surv = read.delim(paste0(dataDir, file), sep = "\t", header=TRUE)
-
-# source function to compute survival
-source(file.path("/Users/naqvia/Desktop/pbta-splicing/analyses/pan_cancer/util", "survival_models.R"))
-`%>%` <- dplyr::`%>%`
-
-# read pbta-histology file
-metadata <- readr::read_tsv("/Users/naqvia/Desktop/pbta-splicing/analyses/psi_clustering/input/pbta-histologies.tsv")
-
-splice_index_surv <- splice_index_surv %>%
-  dplyr::left_join(metadata, by = "Kids_First_Biospecimen_ID")
-
-# Kaplan-Meier for all clusters
-kap_fit <- survival_analysis(splice_index_surv,
-                             ind_var = "Level",
-                             test = "kap.meier",
-                             metadata_sample_col = "Kids_First_Biospecimen_ID")
-
-surv_plot <- survminer::ggsurvplot(kap_fit$model,
-                                   pval = TRUE,
-                                   data = kap_fit$original_data,
-                                   risk.table = FALSE,
-                                   break.time.by = 500,
-                                   ggtheme = theme_Publication(),
-                                   risk.table.y.text.col = TRUE,
-                                   risk.table.y.text = FALSE)
-
-file_surv_plot = "surv_si.hgat.png"
-filename = paste0(plotDir, file_surv_plot)
-ggsave(
-  filename,
-  plot = last_plot(),
-  device = NULL,
-  path = NULL,
-  scale = 1,
-  width =2800,
-  height = 1800,
-  units = "px",
-  dpi = 300,
-  limitsize = TRUE,
-  bg = NULL
-)
-
-##theme for all plots
-theme_Publication <- function(base_size=15, base_family="Helvetica") {
-  library(grid)
-  library(ggthemes)
-  (theme_foundation(base_size=base_size, base_family=base_family)
-    + theme(plot.title = element_text(face = "bold",
-                                      size = rel(1.2), hjust = 0.5),
-            text = element_text(),
-            panel.background = element_rect(colour = NA),
-            plot.background = element_rect(colour = NA),
-            panel.border = element_rect(colour = NA),
-            axis.title = element_text(face = "bold",size = rel(1)),
-            axis.title.y = element_text(angle=90,vjust =2),
-            axis.title.x = element_text(vjust = -0.2),
-            axis.text = element_text(),
-            axis.line = element_line(colour="black"),
-            axis.ticks = element_line(),
-            panel.grid.major = element_line(colour="#f0f0f0"),
-            panel.grid.minor = element_blank(),
-            legend.key = element_rect(colour = NA),
-            legend.position = "right",
-            legend.direction = "vertical",
-            legend.key.size= unit(0.5, "cm"),
-            # legend.margin = unit(0.5, "cm"),
-            legend.margin = margin(5,5,5,5),
-            legend.title = element_text(face="bold"),
-            #plot.margin=unit(c(10,5,5,5),"mm"),
-            plot.margin=unit(c(10,5,5,10),"mm"),
-            strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0"),
-            strip.text = element_text(face="bold")
-    ))
-}
-
 ## survival based on high vs low SBI
 file <- "splicing_index.total.txt"
 splice_index  <-  read.delim(paste0(resultsDir, file), sep = "\t", header=TRUE) %>% rename(Kids_First_Biospecimen_ID = Sample)
@@ -243,15 +165,6 @@ splicing_index_outliers <- filter(splice_index, splice_index$SI <SI_total_low | 
   mutate(level=case_when(splicing_index_outliers$SI < SI_total_low ~ "Low",
                          splicing_index_outliers$SI >SI_total_high  ~ "High" ))
 
-
-splicing_index_outliers_HGAT <- filter(splice_index, Histology=="HGAT") 
-SI_total_high_HGAT     <- quantile(splicing_index_outliers_HGAT$SI, probs=.75, names=FALSE)
-SI_total_low_HGAT      <- quantile(splicing_index_outliers_HGAT$SI, probs=.25, names=FALSE)
-
-splicing_index_outliers_HGAT <-  filter(splicing_index_outliers_HGAT, SI <SI_total_low_HGAT | SI >SI_total_high_HGAT  ) %>% 
-  mutate(level=case_when(SI < SI_total_low_HGAT ~ "Low",
-                         SI >SI_total_high_HGAT  ~ "High" ))
-
 # source function to compute survival
 util_dir <- file.path(root_dir, "util")
 
@@ -262,7 +175,6 @@ source(file.path(util_dir, "survival_models.R"))
 clin_tab <- readr::read_tsv(file.path(data_dir, "v19_plus_20210311_pnoc_rna.tsv")) %>% 
   dplyr::left_join(splicing_index_outliers, by = "Kids_First_Biospecimen_ID")
 
-
 # Kaplan-Meier for all clusters
 kap_fit <- survival_analysis(clin_tab,
                              ind_var = "level",
@@ -278,36 +190,19 @@ survminer::ggsurvplot(kap_fit$model,
                       risk.table.y.text.col = TRUE,
                       risk.table.y.text = FALSE)
 
-## focus on HGAT
-splicing_index_outliers_HGAT <- filter(splice_index, Histology=="HGAT") 
-SI_total_high_HGAT     <- quantile(splicing_index_outliers_HGAT$SI, probs=.75, names=FALSE)
-SI_total_low_HGAT      <- quantile(splicing_index_outliers_HGAT$SI, probs=.25, names=FALSE)
 
-splicing_index_outliers_HGAT <-  filter(splicing_index_outliers_HGAT, SI <SI_total_low_HGAT | SI >SI_total_high_HGAT  ) %>% 
-  mutate(level=case_when(SI < SI_total_low_HGAT ~ "Low",
-                         SI >SI_total_high_HGAT  ~ "High" ))
-
-# source function to compute survival
-source(file.path("/Users/naqvia/Desktop/pbta-splicing/analyses/pan_cancer/util", "survival_models.R"))
-`%>%` <- dplyr::`%>%`
-
-# read in clinical file
-clin_tab <- readr::read_tsv(file.path(data_dir, "v19_plus_20210311_pnoc_rna.tsv")) %>% 
-  dplyr::left_join(splicing_index_outliers_HGAT, by = "Kids_First_Biospecimen_ID")
-
-
-# Kaplan-Meier for all clusters
-kap_fit <- survival_analysis(clin_tab,
-                             ind_var = "level",
-                             test = "kap.meier",
-                             metadata_sample_col = "Kids_First_Biospecimen_ID")
-
-survminer::ggsurvplot(kap_fit$model,
-                      pval = TRUE,
-                      data = kap_fit$original_data,
-                      risk.table = TRUE,
-                      break.time.by = 500,
-                      #ggtheme = theme_Publication(),
-                      risk.table.y.text.col = TRUE,
-                      risk.table.y.text = FALSE)
-
+file_surv_plot = "surv_si.png"
+filename = paste0(plotDir, file_surv_plot)
+ggsave(
+  filename,
+  plot = last_plot(),
+  device = NULL,
+  path = NULL,
+  scale = 1,
+  width =2800,
+  height = 1800,
+  units = "px",
+  dpi = 300,
+  limitsize = TRUE,
+  bg = NULL
+)
