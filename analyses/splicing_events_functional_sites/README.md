@@ -15,12 +15,15 @@ Input files:
 ```
 data/v19_plus_20210311_pnoc.tsv
 data/rMATS_merged.comparison.tsv
-tables (*bed and *tsv) generated from `extract_recurrent_splicing_events.pl` run
-unipDisulfBond.hg38col.bed
-unipDomain.hg38.col.bed
-unipLocSignal.hg38.col.bed
-unipMod.hg38.col.bed
-unipOther.hg38.col.bed
+```
+```
+tables (*bed and *tsv) generated from `extract_recurrent_splicing_events.pl` run:
+results/unipDisulfBond.hg38col.bed
+results/unipDomain.hg38.col.bed
+results/unipLocSignal.hg38.col.bed
+results/unipMod.hg38.col.bed
+results/unipOther.hg38.col.bed
+```
 ```
 
 Output files:
