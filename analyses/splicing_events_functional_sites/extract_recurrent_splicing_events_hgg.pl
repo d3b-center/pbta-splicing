@@ -173,11 +173,11 @@ foreach my $event(@splicing_events_uniq)
 
 ## write to files for summary tables (with a bed version for downstream analyses)
 ## print to one tsv table and a bed table
-open(TABPOS, ">results/splicing_events.total.pos.2.tsv");
-open(BEDPOS, ">results/splicing_events.total.pos.2.bed");
+open(TABPOS, ">results/splicing_events.total.pos.tsv");
+open(BEDPOS, ">results/splicing_events.total.pos.bed");
 
-open(TABNEG, ">results/splicing_events.total.neg.2.tsv");
-open(BEDNEG, ">results/splicing_events.total.neg.2.bed");
+open(TABNEG, ">results/splicing_events.total.neg.tsv");
+open(BEDNEG, ">results/splicing_events.total.neg.bed");
 
 print "writing output...\n";
 print TABPOS "gene\tsplice_event\tavg_dpsi\tstdev_dpsi\tfreq\tcoord\tstr\tflip\n";
