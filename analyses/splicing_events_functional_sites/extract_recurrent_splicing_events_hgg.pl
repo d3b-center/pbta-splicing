@@ -21,6 +21,7 @@ my %hgg_midline_samples;
 
 ## output to terminal
 print "processing histology...\n";
+my %flip_event;
 
 ## open histology file and annotate DMG samples
 open(FIL,$histology) || die("Cannot Open File");
@@ -81,6 +82,7 @@ while(<FIL>)
   my $downstreamEE = $cols[18];
 
   ## retrieve inclusion level and junction count info
+  my $inc_level_ctrl = $cols[33];
   my $inc_level_tumor = $cols[34];
   my $ctrl_IJC        = $cols[25];
   my $ctrl_SJC        = $cols[26];
@@ -97,6 +99,8 @@ while(<FIL>)
   ## only look at strong changes, remove any dPSI < .20 and tumor junction reads > 10 reads
   next unless ( abs($thr_diff) >= .20);
   next unless ( ( ($tumor_IJC + $tumor_SJC) >=10) ) ;
+
+
 
   # annotate and re-name splice event IDs
   my $splice_id= $gene."_".$exonStart."-".$exonEnd."_".$upstreamES."-".$upstreamEE."_".$downstreamES."-".$downstreamEE;
@@ -119,6 +123,16 @@ while(<FIL>)
   $str{$splice_id_short} = $str;
   $inc_levels{$splice_id_short}{$sample} = $thr_diff;
   #print "keep: ",$sample,"\t",$splice_id_short,"\t",$splice_id,"\t",$thr_diff,"\n";
+
+  if( ($inc_level_ctrl >= .80) && ($inc_level_tumor <=.10) || ($inc_level_ctrl <= .10) && ($inc_level_tumor >=.80) )
+  {
+    $flip_event{$splice_id_short} = 1;
+  }
+  else{
+    $flip_event{$splice_id_short} = 0;
+
+  }
+
 
   ## store splicing events, inclusion levels, and splicing event counts/freqs
   push @splicing_events, $splice_id_short;
@@ -159,15 +173,15 @@ foreach my $event(@splicing_events_uniq)
 
 ## write to files for summary tables (with a bed version for downstream analyses)
 ## print to one tsv table and a bed table
-open(TABPOS, ">results/splicing_events.total.pos.tsv");
-open(BEDPOS, ">results/splicing_events.total.pos.bed");
+open(TABPOS, ">results/splicing_events.total.pos.2.tsv");
+open(BEDPOS, ">results/splicing_events.total.pos.2.bed");
 
-open(TABNEG, ">results/splicing_events.total.neg.tsv");
-open(BEDNEG, ">results/splicing_events.total.neg.bed");
+open(TABNEG, ">results/splicing_events.total.neg.2.tsv");
+open(BEDNEG, ">results/splicing_events.total.neg.2.bed");
 
 print "writing output...\n";
-print TABPOS "gene\tsplice_event\tavg_dpsi\tstdev_dpsi\tfreq\tcoord\tstr\n";
-print TABNEG "gene\tsplice_event\tavg_dpsi\tstdev_dpsi\tfreq\tcoord\tstr\n";
+print TABPOS "gene\tsplice_event\tavg_dpsi\tstdev_dpsi\tfreq\tcoord\tstr\tflip\n";
+print TABNEG "gene\tsplice_event\tavg_dpsi\tstdev_dpsi\tfreq\tcoord\tstr\tflip\n";
 
 foreach my $event (@splicing_events_uniq)
 {
@@ -188,7 +202,9 @@ foreach my $event (@splicing_events_uniq)
     ## print results
     print TABPOS $gene,"\t",$event,"\t",$avg_dpsi_pos,"\t",$std_dpsi_pos,"\t";
     print TABPOS $#{$splicing_event_deltapsis_pos{$event}}+1,"\t";
-    print TABPOS "\t",$chr{$event},":",$exon_coord,"\t",$str{$event},"\n";
+    print TABPOS "\t",$chr{$event},":",$exon_coord,"\t",$str{$event},"\t";
+    print TABPOS  $flip_event{$event},"\n";
+
     print BEDPOS $chr{$event},"\t";
 
     ## get exon coords for bed to intersect w Uniprot later
@@ -196,7 +212,9 @@ foreach my $event (@splicing_events_uniq)
     {
       $exon_coord = $2;
       my($start_exon_coord,$end_exon_coord) = split/\-/,$exon_coord;
-      print BEDPOS $start_exon_coord,"\t",$end_exon_coord,"\t",$event,"\t",$avg_dpsi_pos,"\t",$str{$event},"\n";
+      print BEDPOS $start_exon_coord,"\t",$end_exon_coord,"\t",$event,"\t",$avg_dpsi_pos,"\t",$str{$event},"\t";
+      print BEDPOS  $flip_event{$event},"\n";
+
     }
   }
   if(@{$splicing_event_deltapsis_neg{$event}})
@@ -214,7 +232,10 @@ foreach my $event (@splicing_events_uniq)
     ## print results
     print TABNEG $gene,"\t",$event,"\t",$avg_dpsi_neg,"\t",$std_dpsi_neg,"\t";
     print TABNEG $#{$splicing_event_deltapsis_neg{$event}}+1,"\t";
-    print TABNEG "\t",$chr{$event},":",$exon_coord,"\t",$str{$event},"\n";
+    print TABNEG "\t",$chr{$event},":",$exon_coord,"\t",$str{$event},"\t";
+    print TABNEG  $flip_event{$event},"\n";
+
+
     print BEDNEG $chr{$event},"\t";
 
     ## get exon coords for bed to intersect w Uniprot later
@@ -222,7 +243,9 @@ foreach my $event (@splicing_events_uniq)
     {
       $exon_coord = $2;
       my($start_exon_coord,$end_exon_coord) = split/\-/,$exon_coord;
-      print BEDNEG $start_exon_coord,"\t",$end_exon_coord,"\t",$event,"\t",$avg_dpsi_neg,"\t",$str{$event},"\n";
+      print BEDNEG $start_exon_coord,"\t",$end_exon_coord,"\t",$event,"\t",$avg_dpsi_neg,"\t",$str{$event},"\t";
+      print BEDNEG  $flip_event{$event},"\n";
+
     }
   }
 }
