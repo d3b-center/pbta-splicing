@@ -15,3 +15,6 @@ tmp*
 # Result of running docker image locally. Should not be tracked
 .rstudio/
 
+# Data folder contents
+data/*
+
