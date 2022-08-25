@@ -1,14 +1,9 @@
 # Author: Komal S. Rathi
 # Function: Get ccp clustering output for a specific combination of distance + algorithm + % variable genes 
-# for the splicing dataset, we chose km, euclidean at 0% (based on Ammar's manual inspection)
 
 # load libraries
 suppressPackageStartupMessages({
   library(optparse)
-  library(ConsensusClusterPlus)
-  library(tidyverse)
-  library(DGCA)
-  library(DESeq2)
 })
 
 # source function to perform dip test
@@ -42,23 +37,10 @@ cluster_algorithm <- opt$cluster_algorithm
 cluster_distance <- opt$cluster_distance
 prefix <- opt$prefix
 
-# pbta splicing data
-# read input file
-# input_mat <- readRDS('input/non_expr_pan_cancer_splice_subset.rds')
+# get ccp clustering output for a specific combination of distance + algorithm + % variable genes 
 get_ccp_output(input_mat,
                data_type = data_type, 
                var_genes = var_genes, 
                cluster_algorithm = cluster_algorithm, 
                cluster_distance = cluster_distance, 
                prefix = prefix)
-
-# run function with same clustering parameters using pbta expression data
-# pbta expression data subsetted to samples in the splicing data
-# read input file
-# input_mat <- readRDS('input/raw_counts_pbta_subset.rds')
-# get_ccp_output(input_mat,
-#                data_type = "raw_counts", 
-#                var_genes = 0, 
-#                cluster_algorithm = "km", 
-#                cluster_distance = "euclidean", 
-#                prefix = "raw_counts_pbta_subset")
