@@ -187,6 +187,8 @@ foreach my $sample(@bs_ids_uniq)
 my @ab_splicing_events_pos_uniq = do { my %seen; grep { !$seen{$_}++ } @ab_splicing_events_pos };
 my @ab_splicing_events_neg_uniq = do { my %seen; grep { !$seen{$_}++ } @ab_splicing_events_neg };
 
+##make results dir if does not exist
+mkdir "results" unless -e "results";
 
 #print "Event\tHistology\n";
 
@@ -214,6 +216,8 @@ foreach $hist (@broad_hist_uniq)
 
 
 }
+
+
 
 foreach $hist (@broad_hist_uniq)
 {
