@@ -30,15 +30,16 @@ Rscript code/03-diff-pathways-per-clusters.R \
 --output_dir "output/diff_pathways"
 
 # 2) PBTA mRNA expression data (subsetted to samples in the splicing data)
-# we don't need to run the CCP clustering on the expression data as we will be using the clustering output from the splicing dataset 
 # get clustering output with same clustering parameters used for pbta splicing dataset
-# Rscript code/01-get-clustering-output.R \
-# --input_mat "input/raw_counts_pbta_subset.rds" \
-# --data_type "raw_counts" \
-# --var_genes "0" \
-# --cluster_algorithm "km" \
-# --cluster_distance "euclidean" \
-# --prefix "raw_counts_pbta_subset"
+# we will not be using the CCP clustering output but only the filtered/normalized data matrix for downstream plotting 
+# we will be using the clustering output obtained from the splicing dataset 
+Rscript code/01-get-clustering-output.R \
+--input_mat "input/raw_counts_pbta_subset.rds" \
+--data_type "raw_counts" \
+--var_genes "0" \
+--cluster_algorithm "km" \
+--cluster_distance "euclidean" \
+--prefix "raw_counts_pbta_subset"
 
 # get differential genes per cluster and perform pre-ranked gsea using those genes
 # this was done for k = 3 with km + euclidean + 0% genes

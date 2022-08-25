@@ -1,4 +1,4 @@
-### Author: Komal Rathi
+### Author: Komal S. Rathi
  
 ### Purpose
 
