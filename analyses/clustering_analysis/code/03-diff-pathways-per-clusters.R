@@ -1,6 +1,5 @@
 # Author: Komal S. Rathi
 # Function: Identify differential pathway analysis for each cluster using GSVA
-# This script uses k = 3 with km + euclidean + 0% genes
 
 # load libraries
 suppressPackageStartupMessages({

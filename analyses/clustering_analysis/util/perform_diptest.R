@@ -1,6 +1,7 @@
 # Function: run diptest and filter matrix based on diptest results
 suppressPackageStartupMessages({
   library(diptest)
+  library(tidyverse)
 })
 
 perform_diptest <- function(count_matrix, pval_cutoff = 0.05){

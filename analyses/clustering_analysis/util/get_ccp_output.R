@@ -1,4 +1,10 @@
-# function to get ccp output
+# function to get ccp clustering output for a specific combination of distance + algorithm + % variable genes 
+suppressPackageStartupMessages({
+  library(ConsensusClusterPlus)
+  library(DGCA)
+  library(DESeq2)
+})
+
 get_ccp_output <- function(input_mat, data_type = c("raw_counts", "non_expr"), var_genes, cluster_algorithm, cluster_distance, prefix){
   
   # set seed for reproducibility
