@@ -8,6 +8,11 @@ This module performs the following analyses:
 2) Identify differentially expressed genes per cluster of interest and perform pre-ranked pathway enrichment using `fgsea` on those genes.
 3) Identify differentially regulated pathways per cluster of interest using `GSVA`.
 
+The module can be run using a single bash command:
+
+```
+bash run.sh
+```
 
 ### Input
 
