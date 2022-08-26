@@ -20,12 +20,8 @@ rmats_file="../../data/merge_rMATS_splicing.SE.single.tsv"
 echo "hist file:" $hist_file
 echo "rmats file:" $rmats_file
 
-## process PSIs and generate tables for splicing index
 echo "processing PSIs and generating tables"
 perl generate_splicing_index_tab_using_tumors.pl $hist_file $rmats_file
 
-echo "plotting SI"
+echo "plotting"
 Rscript splicing_index_tumors.R
-
-## 10% histology specific splicing based on splicing index computations
-perl generate_hist_spec_events_tab_using_tumors.pl $hist_file $rmats_file
