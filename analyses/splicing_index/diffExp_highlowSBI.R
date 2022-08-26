@@ -50,9 +50,7 @@ theme_Publication <- function(base_size=15, base_family="Helvetica") {
 }
 
 ## set directories
-
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-#root_dir <- "/Users/naqvia/Desktop/pbta-splicing_git/pbta-splicing"
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "splicing_index")
 
@@ -60,26 +58,41 @@ input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
-## get splicing index table
+## output files for final plots
+file_volc_hgat_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_hgat_sbi.png")
+file_volc_non_hgat_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_nonhgat_sbi.png")
+
+## retrieve and store input
+# splicing index table
 file <- "/splicing_index.total.txt"
 splice_index  <-  read.delim(paste0(results_dir, file), sep = "\t", header=TRUE) %>% rename(Kids_First_Biospecimen_ID = Sample)
 
+#count table for HGAT 
+input      = file.path(input_dir,"tab_rsem.str.sbi.hgat.txt")
+tab_rsem <- read.delim(input, header=TRUE, row.names=1)
 
+#count table for non-HGAT  
+input      = file.path(input_dir,"tab_rsem.str.sbi.non-hgat.txt")
+tab_rsem <- read.delim(input, header=TRUE, row.names=1)
+
+## grab HGAT samples and compute high vs low splicing burden index (SBI) values from splicing index table
+# fitler for HGAT
 splicing_index_outliers_HGAT <- filter(splice_index, Histology!="HGAT") 
+
+# compute high vs low SBI values
 SI_total_high_HGAT     <- quantile(splicing_index_outliers_HGAT$SI, probs=.75, names=FALSE)
 SI_total_low_HGAT      <- quantile(splicing_index_outliers_HGAT$SI, probs=.25, names=FALSE)
 
+## filter and get only HGAT outliers based on high and low SBI
 splicing_index_outliers_HGAT <-  filter(splicing_index_outliers_HGAT, SI <SI_total_low_HGAT | SI >SI_total_high_HGAT  ) %>% 
   mutate(level=case_when(SI < SI_total_low_HGAT ~ "Low",
                          SI >SI_total_high_HGAT  ~ "High" ))
 
 
-## get data files and make table
-input      = file.path(input_dir,"tab_rsem.str.sbi.hgat.txt")
-tab_rsem <- read.delim(input, header=TRUE, row.names=1)
-
 head(tab_rsem)
 
+## HGAT differential gene expression analysis
+# remove low expression genes
 filtered.counts <- tab_rsem[rowSums(tab_rsem>=10) >= 38, ]
 countTable <- filtered.counts
 
@@ -118,10 +131,8 @@ file_volc_hgat_plot <- EnhancedVolcano(res,
                 widthConnectors = 0.15,
                 colConnectors = 'black')
 
-file_volc_hgat_plot = "/enhancedVolcano_hgat_sbi.png"
-filename = paste0(plots_dir, file_volc_hgat_plot)
 ggsave(
-  filename,
+  file_volc_hgat_plot,
   plot = last_plot(),
   device = NULL,
   path = NULL,
@@ -134,16 +145,10 @@ ggsave(
   bg = NULL
 )
 
-##non HGAT
-## get data files and make table
-input      = file.path(input_dir,"tab_rsem.str.sbi.non-hgat.txt")
-tab_rsem <- read.delim(input, header=TRUE, row.names=1)
-
-head(tab_rsem)
-
+##non HGAT differential gene expression analysis
+#filter low expressed genes
 filtered.counts <- tab_rsem[rowSums(tab_rsem>=10) >= 145, ]
 countTable <- filtered.counts
-
 
 ## construct metadata
 design = data.frame(row.names = colnames(countTable),
@@ -179,10 +184,8 @@ EnhancedVolcano(res,
                 widthConnectors = 0.15,
                 colConnectors = 'black')
 
-file_volc_non_hgat_plot = "/enhancedVolcano_nonhgat_sbi.png"
-filename = paste0(plots_dir, file_volc_non_hgat_plot)
 ggsave(
-  filename,
+  file_volc_non_hgat_plot,
   plot = last_plot(),
   device = NULL,
   path = NULL,
