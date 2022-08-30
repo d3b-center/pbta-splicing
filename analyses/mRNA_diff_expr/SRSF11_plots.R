@@ -26,7 +26,7 @@ results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
 ## output files for final plots
-file_SRSF11_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_ctrl_hgat_SFs.png")
+file_SRSF11_plot <- file.path(analysis_dir, "plots", "SRSF11_hgat_stacked.png")
 file_SRSF11_corr_plot <- file.path(analysis_dir, "plots", "corr_rna_vs_psi_SRSF11.png")
 
 ## get SRSF11 psi table
@@ -61,7 +61,6 @@ ggsave(
 
 file <- "/SRSF11_splicing_vs_expr.txt"
 tab  <-  read.delim(paste0(input_dir, file), sep = "\t", header=TRUE)
-tab = read.table("/Users/naqvia/Desktop/pbta-splicing/analyses/histology_specific/SRSF11_splicing_vs_expr.txt", header=TRUE, sep="\t")
 ggscatter(tab, x="Expr", y="dPSI", 
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson",
