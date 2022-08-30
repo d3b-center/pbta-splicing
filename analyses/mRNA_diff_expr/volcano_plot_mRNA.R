@@ -18,13 +18,17 @@ suppressPackageStartupMessages({
 
 ## set directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-root_dir <- "/Users/naqvia/Desktop/d3b_codes/pbta-splicing"
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "mRNA_diff_expr")
 
 input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
+
+
+## output files for final plots
+file_volc_hgat_SF_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_ctrl_hgat_SFs.png")
+file_volc_H3K28_SF_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_ctrl_h3k28_SFs.png")
 
 ## get splicing index table
 file <- "/tpm_norm_vs_tumor.hgg.SFs.txt"
@@ -78,12 +82,10 @@ EnhancedVolcano(res,
                 pointSize = ,
                 labSize = 3)
 
-## save plot in plots folder
-file_volc_hgat_plot = "/enhancedVolcano_ctrl_hgat_SFs.png"
-filename = paste0(plots_dir, file_volc_hgat_plot)
+
 
 ggsave(
-  filename,
+  file_volc_hgat_SF_plot,
   plot = last_plot(),
   device = NULL,
   path = NULL,
@@ -146,11 +148,10 @@ EnhancedVolcano(res,
                 pointSize = 2,
                 labSize = 3)
 
-file_volc_h3k28_plot = "/enhancedVolcano_ctrl_h3k28_SFs.png"
-filename = paste0(plots_dir, file_volc_h3k28_plot)
+
 
 ggsave(
-  filename,
+  file_volc_H3K28_SF_plot,
   plot = last_plot(),
   device = NULL,
   path = NULL,
