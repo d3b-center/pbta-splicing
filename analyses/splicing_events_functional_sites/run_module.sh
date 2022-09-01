@@ -10,12 +10,10 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
-#echo $script_directory
-#input_file="$script_directory"/"$1"
+## histology input file (column orders important)
 input_file = "../../data/v19_plus_20210311_pnoc_rna.tsv"
 
 echo "input file:" $input_file
-
 echo "process rMATS with .20 dPSI and 10 junction read counts...";
 
 ## Process rMATS files given histologies file. Keep only HGG midlines samples and storng splicing events
