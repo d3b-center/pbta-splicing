@@ -59,7 +59,11 @@ RUN ./install_bioc.r \
 	EnhancedVolcano \
 	DESeq2 \
 	fgsea \
-	GSVA
+	GSVA \
+	limma \
+	pheatmap \
+	Biobase \
+	DGCA
 
 # install perl packages
 RUN cpanm install Statistics::Lite
