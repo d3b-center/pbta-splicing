@@ -32,8 +32,11 @@ file_dpsi_skip_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_
 file_dpsi_incl_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_neg.pdf")
 
 ## retrieve psi values from tables
-dpsi_unip_pos <- read.table(file_pos, header=TRUE,sep = "\t") ## read table of recurrent functional splicing (skipping)
-dpsi_unip_neg <- read.table(file_neg, header=TRUE,sep = "\t") ## read table of recurrent functional splicing (inclusion)
+file_psi_pos_func <- "/splicing_events.total.pos.intersectUnip.ggplot.txt"
+file_psi_neg_func <- "/splicing_events.total.pos.intersectUnip.ggplot.txt"
+
+dpsi_unip_pos <- read.table(file_psi_pos_func, header=TRUE,sep = "\t") ## read table of recurrent functional splicing (skipping)
+dpsi_unip_neg <- read.table(file_psi_neg_func, header=TRUE,sep = "\t") ## read table of recurrent functional splicing (inclusion)
 
 ## ggstatplot across functional sites
 set.seed(123)
