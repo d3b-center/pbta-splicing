@@ -1,5 +1,5 @@
 ################################################################################
-# volcano_plot_mRNA.R
+# SRSF11_plots.R
 # written by Ammar Naqvi
 #
 # usage: Rscript SRSF11_plot.R
@@ -52,7 +52,7 @@ ggsave(
   width =2047,
   height = 800,
   units = "px",
-  dpi = 100,
+  dpi = 600,
   limitsize = TRUE,
   bg = NULL
 )
