@@ -1,11 +1,22 @@
-library("ggplot2")
+################################################################################
+# CLK1_EI_vs_ES_PSI_volcano.R
+# written by Ammar Naqvi
+#
+# usage: Rscript corr_plots_psi_vs_expr.R <file>
+################################################################################
+
+suppressPackageStartupMessages({
+  library("ggplot2")
+  library("dplyr")
+  library("tidyverse")
+  
+})
 
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
 ## set directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-root_dir <- "/Users/naqvia/Desktop/pbta-splicing_git/pbta-splicing"
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1_specific")
 
@@ -13,15 +24,15 @@ input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
-## get data files and make table
+## get data files from rMATS run and make table
 input      = file.path(input_dir,"dca735c2-6e0e-4239-8a68-10c6d2aa9015.CLK1_EI_vs_CLK1_ES.non_denovo.SE.MATS.JC.txt")
-tab=read.table(input,header=TRUE,sep = "\t")
+tab =read.table(input,header=TRUE,sep = "\t")
 
 p <- ggplot(data=tab, aes(x=IncLevelDifference, y=-log10(PValue))) + geom_point() + theme_minimal()
 p2 <- p + geom_vline(xintercept=c(-.20, +.20), col="red") +
   geom_hline(yintercept=-log10(0.05), col="red")
 
-# The significantly differentially expressed genes are the ones found in the upper-left and upper-right corners.
+# The significantly differential expressed genes are the ones found in the upper-left and upper-right corners.
 # Add a column to the data frame to specify if they are UP- or DOWN- regulated (log2FoldChange respectively positive or negative)
 
 # add a column of NAs
@@ -71,5 +82,6 @@ ggplot(data=tab, aes(x=IncLevelDifference, y=-log10(PValue), col=dPSI, label=del
   geom_hline(yintercept=-log10(0.05), col="red") 
 
 plot_file = file.path(plots_dir,"dPSI_volcano_CLK1.pdf") 
+
 ggsave(plot_file, width = 10, height = 15)
   
