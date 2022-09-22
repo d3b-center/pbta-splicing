@@ -42,7 +42,7 @@ my %splicing_psi;
                   ($hist=~/Oligodendroglioma/) ||
                   ($hist=~/Medulloblastoma/)   ||
                   ($hist=~/Ganglioglioma/)  ||
-                  ($$hist=~/Ependymoma/)||
+                  ($hist=~/Ependymoma/)||
                   ($hist=~/ATRT/)  ||
                   ($hist=~/Craniopharyngioma/) );
 
@@ -80,8 +80,7 @@ my (%splice_totals_per_sample, %splice_totals);
 
 ## process rMATS output (may take awhile) from merged input file
 print "processing rMATs results...\n";
-open(FIL, "gunzip -c $rmats_tsv |") || die ("can’t open $file");
-#open(FIL,$rmats_tsv) || die("Cannot Open File");
+open(FIL, "gunzip -c $rmats_tsv |") || die ("can’t open $rmats_tsv");
 while(<FIL>)
 {
   chomp;
