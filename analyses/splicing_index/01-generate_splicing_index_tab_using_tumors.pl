@@ -20,31 +20,44 @@ my %splicing_psi;
   while(<FIL>)
   {
     chomp;
-    my @cols = split "\t";
-    my $broad_hist = $cols[35];
+
+    ## only select RNA-seq and PBTA samples
+    next unless ($_=~/RNA-Seq/);
+    next unless ($_=~/PBTA/);
+
+    #filter out/skip those not solid tissue and second maligancy
+    next unless ($_=~/BS/);
+    next unless ($_=~/Tissue/);
+    next if     ($_=~/Second\sMalignancy/);
+
+    my @cols       = split "\t";
+    my $hist       = $cols[44];
     my $bs_id      = $cols[0];
-    my $CNS_region = $cols[1];
-    my $cluster = $cols[-1];
-    next if $_=~/Kids_First_Biospecimen_ID/;
+    my $patient_id = $cols[3];
+    my $CNS_region = $cols[32];
 
-    ##filter for specific histologies
-    #print $broad_hist,"\n";
-    next if $broad_hist =~/Embryonal/;
-    next if $broad_hist =~/EWS/;
-    next if $broad_hist =~/Oligodendroglioma/;
+    ## filter histologies of interests
+    next unless ( ($hist=~/HGAT/)  ||
+                  ($hist=~/LGAT/)  ||
+                  ($hist=~/Oligodendroglioma/) ||
+                  ($hist=~/Medulloblastoma/)   ||
+                  ($hist=~/Ganglioglioma/)  ||
+                  ($$hist=~/Ependymoma/)||
+                  ($hist=~/ATRT/)  ||
+                  ($hist=~/Craniopharyngioma/) );
 
-    push @broad_hist, $broad_hist;
+    ## store bs ids and histologies
+    push @broad_hist, $hist;
     push @bs_ids, $bs_id;
 
-    $bs_id_hist{$bs_id}  = $broad_hist;
-    $bs_id_hist{$bs_id}  = $cluster; ## group by cluster
+    $bs_id_hist{$bs_id}  = $hist;
     $cns_regions{$bs_id} = $CNS_region;
 
-    #print "cns: ",$CNS_region,"\n";
-    $hist_count{$broad_hist}++;
+    ## histology counter for downstream analysis
+    $hist_count{$hist}++;
 
-    #print "bs_id:".$bs_id,"\n";
-    push @{$histology_ids{$broad_hist}}, $bs_id;
+    ## hash to keep track of histology and bs id
+    push @{$histology_ids{$hist}}, $bs_id;
   }
   close(FIL);
 
@@ -64,9 +77,11 @@ my %splicing_psi;
   # store total splicing events and those that pass threshold for each sample
 
 my (%splice_totals_per_sample, %splice_totals);
+
 ## process rMATS output (may take awhile) from merged input file
 print "processing rMATs results...\n";
-open(FIL,$rmats_tsv) || die("Cannot Open File");
+open(FIL, "gunzip -c $rmats_tsv |") || die ("can’t open $file");
+#open(FIL,$rmats_tsv) || die("Cannot Open File");
 while(<FIL>)
 {
   chomp;
@@ -120,12 +135,12 @@ while(<FIL>)
 close(FIL);
 
 print "## make sure all arrays are unique...\n";
-## make sure all arrays are unique
+## make  all arrays are unique
 my @broad_hist_uniq      = do { my %seen; grep { !$seen{$_}++ } @broad_hist };
 my @bs_ids_uniq          = do { my %seen; grep { !$seen{$_}++ } @bs_ids };
 my @splicing_events_uniq = do { my %seen; grep { !$seen{$_}++ } @splicing_events };
 
-print "calculate mean and sd for each splicing event...\n";
+print "## calculate mean and sd for each splicing event...\n";
 ## calculate mean and sd for each splicing event
 my (%std_dev_psi, %count_psi, %mean_psi);
 foreach my $splice_event(@splicing_events_uniq)
