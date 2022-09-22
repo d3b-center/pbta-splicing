@@ -28,4 +28,5 @@ Rscript 01-splicing_index_tumors.R
 
 ## 10% histology specific splicing based on splicing index computations
 perl generate_hist_spec_events_tab_using_tumors.pl $hist_file $rmats_file
-Rscript 02-
+Rscript 02-hist_specific_splicing_tumors.R
+
