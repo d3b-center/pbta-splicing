@@ -30,3 +30,6 @@ Rscript 01-splicing_index_tumors.R
 perl generate_hist_spec_events_tab_using_tumors.pl $hist_file $rmats_file
 Rscript 02-hist_specific_splicing_tumors.R
 
+## differential gene expression
+perl format_rsem_SI_diffExpr.pl
+Rscript 03-diffExp_highlowSBI.R
