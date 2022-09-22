@@ -36,8 +36,6 @@ if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
 }
 
-
-
 ##theme for all plots
 theme_Publication <- function(base_size=15, base_family="Helvetica") {
   library(grid)
@@ -70,7 +68,6 @@ theme_Publication <- function(base_size=15, base_family="Helvetica") {
             strip.text = element_text(face="bold")
     ))
 }
-
 
 file <- "splicing_index.total.txt"
 splice_index <- readr::read_tsv(file.path(results_dir, file))
