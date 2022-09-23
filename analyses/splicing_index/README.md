@@ -8,7 +8,7 @@ The purpose of this module is to compute the splicing index of each tumor (propo
 ### script to run analysis
 <br>**Run shell script to make final tables to be used for plotting below**
 ```
-./run_module.sh 
+./run_module.sh
 ```
 Input files:
 ```
@@ -26,4 +26,8 @@ results/splicing_index.total.txt
 
 ## Folder content
 * `run_module.sh` shell script to pre-process histology file and run analysis
-* `splicing_index.R` takes SI matrix and plots CDF plots, outputting to `plots/*png`
+* `01-generate_splicing_index_tab_using_tumors.pl` processes rMATs output and computes splicing burden index for each
+* `01-splicing_index.R` takes splicing index burden values and generates CDF plot
+* `02-generate_hist_spec_events_tab_using_tumors.pl` creates list of splicing events with histologies to be used to generate UpSetR plot 
+* `02-hist_specific_splicing_tumors.R` creates UpSetR plot of splicing events as per histologies
+* `03-diffExp_highlowSBI.R` compute differential gene and generated volcano plot of low vs high splicing burden samples
