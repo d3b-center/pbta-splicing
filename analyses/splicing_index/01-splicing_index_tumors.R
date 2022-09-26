@@ -41,11 +41,10 @@ if(!dir.exists(plots_dir)){
 figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
+splice_index_file <- file.path(results_dir, "splicing_index.total.txt")
+splice_index_df <- readr::read_tsv(splice_index_file)
 
-file <- "splicing_index.total.txt"
-splice_index <- readr::read_tsv(file.path(results_dir, file))
-
-splice_index <- splice_index %>%
+splice_index <- splice_index_df %>%
   as.data.frame(stringsAsFactors = FALSE)
 
 # Set up the data.frame for plotting
