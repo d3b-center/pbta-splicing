@@ -30,4 +30,5 @@ bash 02-format_for_ggplot.sh
 rm results/splicing_events.total.*intersectUnipMod.wo.txt
 
 ## make plots
-Rscript 01-plot_splicing_across_functional_sites.R results/splicing_events.total.pos.intersectUnip.ggplot.txt results/splicing_events.total.neg.intersectUnip.ggplot.txt
+Rscript 01-plot_splicing_across_functional_sites.R 
+Rscript 02-plot-flip_mixed_events.R
