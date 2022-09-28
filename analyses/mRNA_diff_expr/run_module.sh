@@ -11,5 +11,10 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 ## generate volcano plot of SFs between ctrl vs hgat
-Rscript volcano_plot_mRNA.R
+Rscript 01-volcano_plot_mRNA.R
 
+## SRSF11 specific plots
+Rscript 02-SRSF11_plots.R
+
+## correlation plots for SRSF22 and RBM5
+Rscript 03-plot_corr_SRSF11_RBM5.R
