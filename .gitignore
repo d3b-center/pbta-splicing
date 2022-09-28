@@ -1,14 +1,16 @@
-# ignore
 .DS_Store
 .Rhistory
 .Rproj.user
 .snakemake
  
-# tmp files
+#tmp files
 *scr*
 *tmp
 tmp*
 *tmp*
+
+# Ignore jupyter checkpoint folders
+.ipynb_checkpoints
 
 # Result of running docker image locally. Should not be tracked
 .rstudio/
