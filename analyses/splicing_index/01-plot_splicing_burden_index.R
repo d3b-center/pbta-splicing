@@ -12,8 +12,6 @@
 suppressPackageStartupMessages({
   library("ggplot2")
   library("dplyr")
-  library("ggplot2")
-  library("dplyr")
   library("tidyverse")
   library("viridis")
   library("RColorBrewer")
@@ -120,8 +118,7 @@ ggsave(
 
 ## survival based on high vs low SBI
 file <- "splicing_index.total.txt"
-splice_index  <-  read.delim(paste0(resultsDir, file), sep = "\t", header=TRUE) %>% rename(Kids_First_Biospecimen_ID = Sample)
-
+splice_index <- read.delim(paste0(results_dir,"/", file), sep = "\t", header=TRUE) %>% rename(Kids_First_Biospecimen_ID = Sample)
 
 SI_total_high     <- quantile(splice_index$SI, probs=.75, names=FALSE)
 SI_total_low      <- quantile(splice_index$SI, probs=.25, names=FALSE)
@@ -130,9 +127,8 @@ splice_index_high <- filter(splice_index, splice_index$SI >SI_total_high )
 splice_index_low  <- filter(splice_index, splice_index$SI <SI_total_low | splice_index$SI >SI_total_high  )
 
 ## add column with "High or "Low" for SBI info
-splicing_index_outliers <- filter(splice_index, splice_index$SI <SI_total_low | splice_index$SI >SI_total_high  ) %>% 
-  mutate(level=case_when(splicing_index_outliers$SI < SI_total_low ~ "Low",
-                         splicing_index_outliers$SI >SI_total_high  ~ "High" ))
+splicing_index_outliers <- splice_index%>%filter(splice_index$SI <SI_total_low | splice_index$SI >SI_total_high) %>% 
+  mutate(level=case_when(SI < SI_total_low ~ "Low",SI >SI_total_high  ~ "High" ))
 
 # source function to compute survival
 util_dir <- file.path(root_dir, "util")
@@ -141,7 +137,7 @@ source(file.path(util_dir, "survival_models.R"))
 `%>%` <- dplyr::`%>%`
 
 # read in clinical file
-clin_tab <- readr::read_tsv(file.path(data_dir, "v19_plus_20210311_pnoc_rna.tsv")) %>% 
+clin_tab <- readr::read_tsv(file.path(data_dir, "histologies.tsv")) %>% 
   dplyr::left_join(splicing_index_outliers, by = "Kids_First_Biospecimen_ID")
 
 # Kaplan-Meier for all clusters
@@ -155,7 +151,6 @@ survminer::ggsurvplot(kap_fit$model,
                       data = kap_fit$original_data,
                       risk.table = TRUE,
                       break.time.by = 500,
-                      #ggtheme = theme_Publication(),
                       risk.table.y.text.col = TRUE,
                       risk.table.y.text = FALSE)
 

@@ -4,18 +4,27 @@
 #
 # usage: Rscript upsetR_of_hist-specific_splicing.R
 ################################################################################
-library(UpSetR)
-library(ggplot2)
-library(gplots)
-library(cowplot)
-library("grid")
+
+##libraries 
+suppressPackageStartupMessages({
+  library("ggplot2")
+  library("UpSetR")
+  library("grid")
+  library("cowplot")
+  library("viridis")
+})
 
 ##set up directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "splicing_index")
-plots_dir <- file.path(root_dir, "analyses/splicing_index", "plots")
-results_dir <- file.path(root_dir, "analyses/splicing_index", "results")
+results_dir <- file.path(analysis_dir, "results")
+
+plots_dir <- file.path(analysis_dir, "plots")
+if(!dir.exists(plots_dir)){
+  dir.create(plots_dir, recursive=TRUE)
+}
+
 
 ## output files for final plots
 upsetR_es_plot     <- file.path(analysis_dir, "plots", "upsetR_histology-specific.es.pdf")
