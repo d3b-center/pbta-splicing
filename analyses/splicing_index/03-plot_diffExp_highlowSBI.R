@@ -9,15 +9,16 @@
 # usage: Rscript diffExp_highlowSBI.R
 ################################################################################
 
-library("dplyr")
-library("EnhancedVolcano")
-library("DESeq2")
+##libraries 
+suppressPackageStartupMessages({
+  library("dplyr")
+  library("EnhancedVolcano")
+  library("DESeq2")
+  })
+
 
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
-
-
-
 
 ## set directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -37,40 +38,18 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 file_volc_hgat_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_hgat_sbi.png")
 file_volc_non_hgat_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_nonhgat_sbi.png")
 
-## retrieve and store input
-# splicing index table
-file <- "/splicing_index.total.txt"
-splice_index  <-  read.delim(paste0(results_dir, file), sep = "\t", header=TRUE) %>% rename(Kids_First_Biospecimen_ID = Sample)
-
 #count table for HGAT 
 input      = file.path(input_dir,"tab_rsem.str.sbi.hgat.txt")
-tab_rsem <- read.delim(input, header=TRUE, row.names=1)
+tab_rsem_hgat <- read.delim(input, header=TRUE, row.names=1)
 
 #count table for non-HGAT  
 input      = file.path(input_dir,"tab_rsem.str.sbi.non-hgat.txt")
-tab_rsem <- read.delim(input, header=TRUE, row.names=1)
-
-## grab HGAT samples and compute high vs low splicing burden index (SBI) values from splicing index table
-# fitler for HGAT
-splicing_index_outliers_HGAT <- filter(splice_index, Histology!="HGAT") 
-
-# compute high vs low SBI values
-SI_total_high_HGAT     <- quantile(splicing_index_outliers_HGAT$SI, probs=.75, names=FALSE)
-SI_total_low_HGAT      <- quantile(splicing_index_outliers_HGAT$SI, probs=.25, names=FALSE)
-
-## filter and get only HGAT outliers based on high and low SBI
-splicing_index_outliers_HGAT <-  filter(splicing_index_outliers_HGAT, SI <SI_total_low_HGAT | SI >SI_total_high_HGAT  ) %>% 
-  mutate(level=case_when(SI < SI_total_low_HGAT ~ "Low",
-                         SI >SI_total_high_HGAT  ~ "High" ))
-
-
-head(tab_rsem)
+tab_rsem_non_hgat <- read.delim(input, header=TRUE, row.names=1)
 
 ## HGAT differential gene expression analysis
 # remove low expression genes
-filtered.counts <- tab_rsem[rowSums(tab_rsem>=10) >= 38, ]
+filtered.counts <- tab_rsem_hgat[rowSums(tab_rsem_hgat>=10) >= 38, ]
 countTable <- filtered.counts
-
 
 ## construct metadata
 design = data.frame(row.names = colnames(countTable),
@@ -90,7 +69,7 @@ res <- results(cds)
 
 res$Significant <- ifelse(res$pvalue< 0.05, "P-val < 0.05", "Not Sig")
 
-file_volc_hgat_plot <- EnhancedVolcano(res,
+volc_hgat_plot <- EnhancedVolcano(res,
                 lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",row.names(res)), ## remove ensembleid portion
                 x = 'log2FoldChange',
                 y = 'pvalue',
@@ -122,7 +101,7 @@ ggsave(
 
 ##non HGAT differential gene expression analysis
 #filter low expressed genes
-filtered.counts <- tab_rsem[rowSums(tab_rsem>=10) >= 145, ]
+filtered.counts <- tab_rsem_non_hgat[rowSums(tab_rsem_non_hgat>=10) >= 145, ]
 countTable <- filtered.counts
 
 ## construct metadata
@@ -143,7 +122,7 @@ res <- results(cds)
 
 res$Significant <- ifelse(res$pvalue< 0.05, "P-val < 0.05", "Not Sig")
 
-EnhancedVolcano(res,
+volc_non_hgat_plot <- EnhancedVolcano(res,
                 lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",row.names(res)), ## remove ensembleid portion
                 x = 'log2FoldChange',
                 y = 'pvalue',
