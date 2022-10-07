@@ -13,8 +13,8 @@ cd "$script_directory" || exit
 echo $script_directory
 
 ## histology and rmats file
-hist_file="../../data/pbta-histologies.RNA-Seq.initial.tsv"
-rmats_file="../../data/merge_rMATS_splicing.SE.single.tsv"
+hist_file="../../data/histologies.tsv"
+rmats_file="../../data/rMATS_merged.single.SE.tsv.gz"
 
 echo "hist file:" $hist_file
 echo "rmats file:" $rmats_file
@@ -33,7 +33,7 @@ Rscript 02-plot_histology-specific_splicing_events.R
 
 ## differential gene expression
 # format rsem count files for volcano plots and DeSeq2
-perl 03-format_rsem_SI_diffExpr.pl
+#perl 03-format_rsem_SI_diffExpr.pl
 
 # generate volcano plot of high vs low splicing burden tumors
 Rscript 03-plot_diffExp_highlowSBI.R
