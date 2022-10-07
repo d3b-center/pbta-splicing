@@ -23,7 +23,7 @@ RUN apt update && apt install -y zlib1g-dev \
 	bzip2 \
 	zlib1g \
 	libreadline-dev \
-  build-essential \
+  	build-essential \
 	libxt-dev \
 	libproj-dev \
 	libv8-dev \
@@ -50,9 +50,8 @@ RUN install2.r \
 	ggthemes \
 	UpSetR \
 	cowplot \
-	grid \
-	viridis
-
+	grid
+	
 # install R packages from GitHub
 RUN ./install_github.r \
 	PoisonAlien/maftools
