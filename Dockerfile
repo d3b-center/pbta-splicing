@@ -1,8 +1,10 @@
-FROM rocker/tidyverse:4.1
+FROM rocker/tidyverse:4.2
+MAINTAINER="Jo Lynne Rokita (rokita@chop.edu)"
 WORKDIR /rocker-build/
 
-LABEL maintainer="Jo Lynne Rokita (rokita@chop.edu)"
-
+RUN RSPM="https://packagemanager.rstudio.com/cran/2022-09-06" \
+  && echo "options(repos = c(CRAN='$RSPM'), download.file.method = 'libcurl')" >> /usr/local/lib/R/etc/Rprofile.site
+  
 COPY scripts/install_bioc.r .
 
 COPY scripts/install_github.r .
