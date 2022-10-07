@@ -1,5 +1,5 @@
 FROM rocker/tidyverse:4.2
-MAINTAINER="Jo Lynne Rokita (rokita@chop.edu)"
+MAINTAINER rokita@chop.edu
 WORKDIR /rocker-build/
 
 RUN RSPM="https://packagemanager.rstudio.com/cran/2022-09-06" \
