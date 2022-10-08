@@ -2,7 +2,7 @@ FROM rocker/tidyverse:4.2
 MAINTAINER rokita@chop.edu
 WORKDIR /rocker-build/
 
-RUN RSPM="https://packagemanager.rstudio.com/cran/2022-09-06" \
+RUN RSPM="https://packagemanager.rstudio.com/cran/2022-10-07" \
   && echo "options(repos = c(CRAN='$RSPM'), download.file.method = 'libcurl')" >> /usr/local/lib/R/etc/Rprofile.site
   
 COPY scripts/install_bioc.r .
@@ -25,7 +25,7 @@ RUN apt update && apt install -y zlib1g-dev \
 	bzip2 \
 	zlib1g \
 	libreadline-dev \
-  	build-essential \
+  build-essential \
 	libxt-dev \
 	libproj-dev \
 	libv8-dev \
@@ -52,7 +52,8 @@ RUN install2.r \
 	ggthemes \
 	UpSetR \
 	cowplot \
-	grid
+	grid \
+	DCGA
 	
 # install R packages from GitHub
 RUN ./install_github.r \
@@ -68,8 +69,7 @@ RUN ./install_bioc.r \
 	GSVA \
 	limma \
 	pheatmap \
-	Biobase \
-	DGCA
+	Biobase
 
 # install perl packages
 RUN cpanm install Statistics::Lite
