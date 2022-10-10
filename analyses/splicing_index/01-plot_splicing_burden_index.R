@@ -146,7 +146,7 @@ kap_fit <- survival_analysis(clin_tab,
                              test = "kap.meier",
                              metadata_sample_col = "Kids_First_Biospecimen_ID")
 
-survminer::ggsurvplot(kap_fit$model,
+surviv_plot <- survminer::ggsurvplot(kap_fit$model,
                       pval = TRUE,
                       data = kap_fit$original_data,
                       risk.table = TRUE,
@@ -155,18 +155,13 @@ survminer::ggsurvplot(kap_fit$model,
                       risk.table.y.text = FALSE)
 
 
+
 file_surv_plot = "/surv_si.png"
 filename = paste0(plots_dir, file_surv_plot)
-ggsave(
-  filename,
-  plot = last_plot(),
-  device = NULL,
-  path = NULL,
-  scale = 1,
-  #width =2800,
-  #height = 1800,
-  units = "px",
-  dpi = 600,
-  limitsize = TRUE,
-  bg = NULL
-)
+
+# Save plot as PNG
+png(filename, 
+    res = 800, width = 8, height = 8, units = "in")
+surviv_plot
+dev.off()
+
