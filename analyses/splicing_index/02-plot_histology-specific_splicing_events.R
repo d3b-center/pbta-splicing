@@ -75,5 +75,5 @@ ei_events <- upset(fromList(listInput_ei),
       mainbar.y.label = "", sets.x.label = "Histology", order.by = "freq",
       mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 2, line.size = 1.5, nsets = 7)
 
-ggsave(upsetR_ei_plot, width = 16, height = 4)
+ggsave(upsetR_ei_plot_file, width = 16, height = 4)
 
