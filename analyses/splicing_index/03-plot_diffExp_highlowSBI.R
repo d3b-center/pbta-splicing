@@ -99,6 +99,12 @@ ggsave(
   bg = NULL
 )
 
+# Save plot as PNG
+png(file_volc_hgat_plot, 
+    res = 800, width = 8, height = 8, units = "in")
+volc_hgat_plot
+dev.off()
+
 ##non HGAT differential gene expression analysis
 #filter low expressed genes
 filtered.counts <- tab_rsem_non_hgat[rowSums(tab_rsem_non_hgat>=10) >= 145, ]
@@ -138,16 +144,8 @@ volc_non_hgat_plot <- EnhancedVolcano(res,
                 widthConnectors = 0.15,
                 colConnectors = 'black')
 
-ggsave(
-  file_volc_non_hgat_plot,
-  plot = last_plot(),
-  device = NULL,
-  path = NULL,
-  scale = 1,
-  width =2.74,
-  height = 2.38,
-  units = "in",
-  dpi = 600,
-  limitsize = TRUE,
-  bg = NULL
-)
+# Save plot as PNG
+png(file_volc_non_hgat_plot, 
+    res = 800, width = 8, height = 8, units = "in")
+volc_non_hgat_plot
+dev.off()
