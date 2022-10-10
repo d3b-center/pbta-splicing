@@ -155,18 +155,18 @@ survminer::ggsurvplot(kap_fit$model,
                       risk.table.y.text = FALSE)
 
 
-file_surv_plot = "surv_si.png"
-filename = paste0(plotDir, file_surv_plot)
+file_surv_plot = "/surv_si.png"
+filename = paste0(plots_dir, file_surv_plot)
 ggsave(
   filename,
   plot = last_plot(),
   device = NULL,
   path = NULL,
   scale = 1,
-  width =2800,
-  height = 1800,
+  #width =2800,
+  #height = 1800,
   units = "px",
-  dpi = 300,
+  dpi = 600,
   limitsize = TRUE,
   bg = NULL
 )
