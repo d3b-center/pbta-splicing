@@ -11,13 +11,13 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 ## histology input file (column orders important)
-input_file = "../../data/v19_plus_20210311_pnoc_rna.tsv"
+input_file="../../data/histologies.tsv"
 
 echo "input file:" $input_file
 echo "process rMATS with .20 dPSI and 10 junction read counts...";
 
 ## Process rMATS files given histologies file. Keep only HGG midlines samples and storng splicing events
-# ../../data/v19_plus_20210311_pnoc_rna.tsv
+
 perl 01-extract_recurrent_splicing_events_hgg.pl $input_file
 
 echo "bedtools intersect...";
@@ -30,5 +30,6 @@ bash 02-format_for_ggplot.sh
 rm results/splicing_events.total.*intersectUnipMod.wo.txt
 
 ## make plots
-Rscript 01-plot_splicing_across_functional_sites.R 
+echo "make plots ...";
+Rscript 01-plot_splicing_across_functional_sites.R
 Rscript 02-plot-flip_mixed_events.R

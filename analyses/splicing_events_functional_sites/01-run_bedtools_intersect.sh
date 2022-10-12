@@ -1,6 +1,7 @@
 #!/bin/sh
 
 ## Cross reference splicing events with Unipro database (*hg38.col.bed)
+
 bedtools intersect -wo -a results/splicing_events.total.pos.bed -b input/unipMod.hg38.col.bed       |sort -u > results/splicing_events.total.pos.intersectUnipMod.wo.txt
 bedtools intersect -wo -a results/splicing_events.total.pos.bed -b input/unipOther.hg38.col.bed     |sort -u > results/splicing_events.total.pos.intersectUnipOther.wo.txt
 bedtools intersect -wo -a results/splicing_events.total.pos.bed -b input/unipDisulfBond.hg38col.bed |sort -u > results/splicing_events.total.pos.intersectUnipDisulfBond.wo.txt
