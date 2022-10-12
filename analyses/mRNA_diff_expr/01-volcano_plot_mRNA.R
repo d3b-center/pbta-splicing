@@ -7,9 +7,9 @@
 
 
 suppressPackageStartupMessages({
-  library("sva")
   library("EnhancedVolcano")
   library("DESeq2")
+  library("sva")
 })
 
 
@@ -30,12 +30,12 @@ plots_dir   <- file.path(analysis_dir, "plots")
 file_volc_hgat_SF_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_ctrl_hgat_SFs.png")
 file_volc_H3K28_SF_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_ctrl_h3k28_SFs.png")
 
-## get splicing index table
+## get splicing index table with splicing factors filtered out
 file <- "/tpm_norm_vs_tumor.hgg.SFs.txt"
 gene_counts  <-  read.csv(paste0(input_dir, file), row.names = 1,  header=TRUE)
 
 batch <- c(rep(1, 61), rep(2, 137))
-filtered.counts <- gene_tpms[rowSums(gene_counts>=2) >= 1, ]
+filtered.counts <- gene_counts[rowSums(gene_counts>=2) >= 1, ]
 
 adjusted <- ComBat_seq(as.matrix(log2(filtered.counts+1)), batch=batch, group=NULL)
 corrected_mat <- 2^(adjusted)
@@ -48,7 +48,7 @@ design = data.frame(row.names = colnames(corrected_df),
                     libType   = c(rep("paired-end",198)))
 
 singleSamples = design$libType == "paired-end"
-new_countTable = (gene_tpms[ , singleSamples ])
+new_countTable = (gene_counts[ , singleSamples ])
 condition = design$condition[ singleSamples ]
 
 
@@ -99,12 +99,12 @@ ggsave(
 )
 
 
-## get count table index table
+## get count table index table for just H3K28
 file <- "/tpm_norm_vs_tumor.h3k28.SFs.v2.txt"
 gene_counts  <-  read.csv(paste0(input_dir, file), row.names = 1,  header=TRUE)
 batch <- c(rep(1, 45), rep(2, 38))
 
-filtered.counts <- gene_tpms[rowSums(gene_counts>=2) >= 1, ]
+filtered.counts <- gene_counts[rowSums(gene_counts>=2) >= 1, ]
 
 adjusted <- ComBat_seq(as.matrix(log2(filtered.counts+1)), batch=batch, group=NULL)
 corrected_mat <- 2^(adjusted)
