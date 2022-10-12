@@ -25,15 +25,24 @@ analysis_dir <- file.path(root_dir, "analyses", "splicing_events_functional_site
 
 input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
-plots_dir   <- file.path(analysis_dir, "plots")
+
+plots_dir <- file.path(analysis_dir, "plots")
+if(!dir.exists(plots_dir)){
+  dir.create(plots_dir, recursive=TRUE)
+}
+
+##theme for all plots
+# source function for theme for plots survival
+figures_dir <- file.path(root_dir, "figures")
+source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## output files for final plots
 file_dpsi_skip_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_pos.pdf")
 file_dpsi_incl_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_neg.pdf")
 
 ## retrieve psi values from tables
-file_psi_pos_func <- "/splicing_events.total.pos.intersectUnip.ggplot.txt"
-file_psi_neg_func <- "/splicing_events.total.pos.intersectUnip.ggplot.txt"
+file_psi_pos_func <-  file.path(results_dir,"splicing_events.total.pos.intersectUnip.ggplot.txt")
+file_psi_neg_func <-  file.path(results_dir,"splicing_events.total.neg.intersectUnip.ggplot.txt")
 
 dpsi_unip_pos <- read.table(file_psi_pos_func, header=TRUE,sep = "\t") ## read table of recurrent functional splicing (skipping)
 dpsi_unip_neg <- read.table(file_psi_neg_func, header=TRUE,sep = "\t") ## read table of recurrent functional splicing (inclusion)
