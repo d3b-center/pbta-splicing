@@ -4,7 +4,7 @@ WORKDIR /rocker-build/
 
 RUN RSPM="https://packagemanager.rstudio.com/cran/2022-10-07" \
   && echo "options(repos = c(CRAN='$RSPM'), download.file.method = 'libcurl')" >> /usr/local/lib/R/etc/Rprofile.site
-  
+
 COPY scripts/install_bioc.r .
 
 COPY scripts/install_github.r .
@@ -53,8 +53,16 @@ RUN install2.r \
 	UpSetR \
 	cowplot \
 	grid \
-	DCGA
-	
+	DCGA \
+  reshape \
+  reshape2 \
+  gridExtra \
+  corrplot \
+  sva \
+  ggpubr \
+  dplyr
+
+
 # install R packages from GitHub
 RUN ./install_github.r \
 	PoisonAlien/maftools
