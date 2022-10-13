@@ -10,6 +10,8 @@ suppressPackageStartupMessages({
   library("sva")
   library("EnhancedVolcano")
   library("DESeq2")
+  library("reshape2")
+  library("tidyverse")
 })
 
 
@@ -43,22 +45,13 @@ melt_psi_tab %>%
   ggplot(aes(x = sample,y = value, fill= Type ))+ 
   geom_bar(position="stack", stat="identity") + scale_fill_manual(values=c("red",
                                                                            "blue")) 
-ggsave(
-  file_SRSF11_plot,
-  plot = last_plot(),
-  device = NULL,
-  path = NULL,
-  scale = 1,
-  width =2047,
-  height = 800,
-  units = "px",
-  dpi = 600,
-  limitsize = TRUE,
-  bg = NULL
-)
+# Save plot as PNG
+png(file_SRSF11_plot, 
+    res = 800, width = 16, height = 8, units = "in")
+last_plot()
+dev.off()
 
 ## scatter plot of psi vs pct expression
-
 file <- "/SRSF11_splicing_vs_expr.txt"
 tab  <-  read.delim(paste0(input_dir, file), sep = "\t", header=TRUE)
 ggscatter(tab, x="Expr", y="dPSI", 
@@ -70,19 +63,11 @@ ggscatter(tab, x="Expr", y="dPSI",
           xticks.by = .1, yticks.by = .1,
           xlab = "Expr", ylab = "dPSI") + theme_Publication()
 
-"blue")) 
 
-ggsave(
-  file_SRSF11_corr_plot,
-  plot = last_plot(),
-  device = NULL,
-  path = NULL,
-  scale = 1,
-  width =400,
-  height = 400,
-  units = "px",
-  dpi = 100,
-  limitsize = TRUE,
-  bg = NULL
-)
+# Save plot as PNG
+png(file_SRSF11_corr_plot, 
+    res = 800, width = 4, height = 4, units = "in")
+last_plot()
+dev.off()
+
 
