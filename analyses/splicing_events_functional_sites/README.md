@@ -13,11 +13,11 @@ The purpose of this module is to identify splicing events that result in loss/ga
 
 *Input files:*
 ```
-data/v19_plus_20210311_pnoc.tsv
-data/rMATS_merged.comparison.tsv
+data/histologies.tsv
+data/rMATS_merged.comparison.tsv.gz
 ```
 
-*tables (*bed and *tsv) generated from `extract_recurrent_splicing_events.pl` run*
+*input bed files obtained from unipro needed to  run*
 ```
 unipDisulfBond.hg38col.bed
 unipDomain.hg38.col.bed
@@ -28,20 +28,14 @@ unipOther.hg38.col.bed
 
 *Output files:*
 ```
-results/splicing_events.total.neg.bed
-results/splicing_events.total.pos.bed
-results/splicing_events.total.neg.tsv
-results/splicing_events.total.pos.tsv
-results/splicing_events.total.neg.intersect*wo.txt
-results/splicing_events.total.pos.intersect*wo.txt
+results/splicing_events.total.pos.intersectUnip.ggplot.txt
+results/splicing_events.total.neg.intersectUnip.ggplot.txt
 ```
-
-![](plots/dPSI_distr_across_sites_positive_rec2.png)
-<br>
-![](plots/dPSI_distr_across_sites_negative_rec2.png)
-
 
 ## Folder content
 * `run_module.sh` takes the files from above and generates table with uniprot overlaps to be used for plotting
-* `extract_recurrent_splicing_events_hgg.pl` processing output from rMATS with filters and constructs data table for all downstream analysis and output file to `results/splicing_events.total*`
-* `splicing_functional_sites.R` generates ggplot violin plots of average dPSI per event identidied overlapping a functional site, outputting to `plots/*png`
+* `01-extract_recurrent_splicing_events_hgg.pl` processing output from rMATS with filters and constructs data table for all downstream analysis and output file to `results/splicing_events.total*`
+* `01-run_bedtools_intersect.sh` runs bedtools intersect to find exon coordinates corresponding to Uniprot sites
+* `02-format_for_ggplot.sh` formats and appends file into table for plotting
+* `01-plot_splicing_across_functional_sites.R` generates ggplot violin plots of average dPSI per event identidied overlapping a functional site, outputting to `plots/*png`
+* `02-plot-flip_mixed_events.R` generates plots for special flip splicing events into `plots` folder
