@@ -8,9 +8,6 @@
 
 suppressPackageStartupMessages({
   library(corrplot)
-  library(limma)
-  library(Hmisc)
-  library(corrplot)
   library(plyr)
   library(gridExtra)
   library(grid)
@@ -18,7 +15,6 @@ suppressPackageStartupMessages({
   library(ggplot2)
   library(ggpubr)
 })
-
 
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
@@ -49,7 +45,7 @@ plot_prot_S11 <-ggscatter(tab_rna_vs_prot, x="RNA", y="Protein",
                           add.params = list(color = "red",
                                             fill = "pink"),
                           ticks = TRUE,
-                          xlab = "RNA", ylab = "Protein") + theme_Publication()
+                          xlab = "RNA", ylab = "Protein") #+ theme_Publication()
 
 
 ggsave(
@@ -99,15 +95,19 @@ plot_phos3 <- ggscatter(tab_rna_vs_phosp, x="RNA", y="S448",
                         #xticks.by = .1, yticks.by = .1,
                         xlab = "RNA", ylab = "S448") + theme_Publication()
 
-grid.arrange(plot_prot_S11, plot_phos1, plot_phos2,plot_phos3, ncol=4, widths=c(2.3,2.3, 2.3, 2.3))
+## arrange all SRSF11 vs phso plots in one grid
+grid.arrange(plot_prot_S11, plot_phos1, plot_phos2,plot_phos3, ncol=4, widths=c(2.3,2.3, 2.3, 2.3)) 
 grid.rect(width = .98, height = .98, gp = gpar(lwd = 2, col = "black", fill = NA))
 
+# Save plot as PNG
+SRSF11_corr_phos_plot <- arrangeGrob(plot_prot_S11, plot_phos1, plot_phos2,plot_phos3, nrow=1) #generates g
+ggsave(file=file_SRSF11_corr_phos_plot, SRSF11_corr_phos_plot) #saves SRSF11_corr_phos_plot
 
-file = "/Users/naqvia/Desktop/pbta-splicing_git/pbta-splicing/analyses/splicing_expr_corr/RBM5rna_vs_phos.txt"
-tab=read.table(file,header=TRUE,sep = "\t")
 
-tab_mod <- tab %>%
-  na.omit()
+file = "/RBM5rna_vs_phos.txt"
+tab=read.table((paste0(input_dir, file),header=TRUE,sep = "\t")
+
+tab_mod <- tab %>% na.omit()
 
 scatter_proteo <- ggscatter(tab_mod, x="rna", y="proteo", 
                             add = "reg.line", conf.int = TRUE, 
@@ -150,5 +150,11 @@ scatter_phosp2 <- ggscatter(tab_mod, x="rna", y="S78",
                             #xticks.by = .1, yticks.by = .1,
                             xlab = "RNA", ylab = "S78") + theme_Publication()
 
+## arrange all RBM5 vs phso plots in one grid
 grid.arrange(scatter_proteo, scatter_phosp1, scatter_phosp2, ncol=3, widths=c(2.3, 2.3, 2.3))
 grid.rect(width = .98, height = .98, gp = gpar(lwd = 2, col = "black", fill = NA))
+
+# Save plot as PNG
+RBM5_corr_phos_plot <- arrangeGrob(scatter_phosp1, scatter_phosp2, nrow=1) #generates RBM5_corr_phos_plot
+ggsave(file=file_RBM5_corr_phos_plot, RBM5_corr_phos_plot) #saves SRSF11_corr_phos_plot
+
