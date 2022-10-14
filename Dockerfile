@@ -14,7 +14,7 @@ COPY scripts/install_github.r .
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialog
 
 # Install dev libraries and curl
-RUN apt update && apt install -y 
+RUN apt update && apt install -y \
 	build-essential \
 	bzip2 \
 	cpanminus \
