@@ -11,7 +11,7 @@ The purpose of this module is assess and identify splicing factor dysregulation
 ./run_module.sh
 ```
 
-*Input files:*
+*Input files*
 ```
 tpm_norm_vs_tumor.h3k28.SFs.v2.txt
 tpm_norm_vs_tumor.hgg.SFs.txt
