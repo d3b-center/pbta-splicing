@@ -4,7 +4,7 @@ WORKDIR /rocker-build/
 
 RUN RSPM="https://packagemanager.rstudio.com/cran/2022-10-07" \
   && echo "options(repos = c(CRAN='$RSPM'), download.file.method = 'libcurl')" >> /usr/local/lib/R/etc/Rprofile.site
-  
+
 COPY scripts/install_bioc.r .
 
 COPY scripts/install_github.r .
@@ -14,62 +14,63 @@ COPY scripts/install_github.r .
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialog
 
 # Install dev libraries and curl
-RUN apt update && apt install -y zlib1g-dev \
-	libncurses5-dev \
-	libbz2-dev \
-	liblzma-dev \
-	libcurl4-openssl-dev \
-	libssl-dev \
-	curl \
-	cpanminus \
+RUN apt update && apt install -y \
+	build-essential \
 	bzip2 \
-	zlib1g \
-	libreadline-dev \
-  build-essential \
-	libxt-dev \
-	libproj-dev \
-	libv8-dev \
 	cpanminus \
+	curl \
+	libbz2-dev \
+	libcurl4-openssl-dev \
 	libgdal-dev \
 	libgmp-dev \
-	libmpfr-dev
+	liblzma-dev \
+	libmpfr-dev \
+	libncurses5-dev \
+	libproj-dev \
+	libreadline-dev \
+	libssl-dev \
+	libv8-dev \
+	libxt-dev \
+	zlib1g-dev 
 
 # Install java
 RUN apt-get update && apt-get -y --no-install-recommends install \
-   default-jdk \
-   libxt6
+  default-jdk \
+  libxt6
 
 # install R packages from CRAN
 RUN install2.r \
 	BiocManager \
-	pheatmap \
-	optparse \
-	hrbrthemes \
-	viridis \
-	plyr \
-	ggstatsplot \
+  corrplot \
+  cowplot \
+	DCGA \
 	diptest \
+	ggpubr \
+  ggstatsplot \
 	ggthemes \
-	UpSetR \
-	cowplot \
-	grid \
-	DCGA
-	
+  grid \
+  gridExtra \
+  hrbrthemes \
+	optparse \
+	pheatmap \
+  reshape2 \
+  sva \
+  UpSetR \
+	viridis 
+
 # install R packages from GitHub
 RUN ./install_github.r \
 	PoisonAlien/maftools
 
 # install R packages from BioC
 RUN ./install_bioc.r \
+	Biobase \
 	ConsensusClusterPlus \
-	sva \
-	EnhancedVolcano \
 	DESeq2 \
+	EnhancedVolcano \
 	fgsea \
 	GSVA \
-	limma \
-	pheatmap \
-	Biobase
+	limma 
 
 # install perl packages
 RUN cpanm install Statistics::Lite
