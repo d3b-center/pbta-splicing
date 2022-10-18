@@ -173,6 +173,7 @@ foreach my $event(@splicing_events_uniq)
 
 ## create results folder if it does not exists
 if (!-d "results") { mkdir "results"; }
+
 ## write to files for summary tables (with a bed version for downstream analyses)
 ## print to one tsv table and a bed table
 open(TABPOS, ">results/splicing_events.total.pos.tsv");
