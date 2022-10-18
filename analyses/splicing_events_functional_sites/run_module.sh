@@ -21,15 +21,15 @@ echo "process rMATS with .20 dPSI and 10 junction read counts...";
 perl 01-extract_recurrent_splicing_events_hgg.pl $input_file
 
 echo "bedtools intersect...";
-bash 01-run_bedtools_intersect.sh
+bash 02-run_bedtools_intersect.sh
 
 echo "make tab for ggplot ...";
-bash 02-format_for_ggplot.sh
+bash 03-format_for_ggplot.sh
 
 ## Remove intermediatery files / off for now
 rm results/splicing_events.total.*intersectUnipMod.wo.txt
 
 ## make plots
 echo "make plots ...";
-Rscript 01-plot_splicing_across_functional_sites.R
-Rscript 02-plot-flip_mixed_events.R
+Rscript 04-plot_splicing_across_functional_sites.R
+Rscript 05-plot-flip_mixed_events.R
