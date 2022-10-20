@@ -25,7 +25,10 @@ analysis_dir <- file.path(root_dir, "analyses", "mRNA_diff_expr")
 
 input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
-plots_dir   <- file.path(analysis_dir, "plots")
+plots_dir <- file.path(analysis_dir, "plots")
+if(!dir.exists(plots_dir)){
+  dir.create(plots_dir, recursive=TRUE)
+}
 
 ## output files for final plots
 file_volc_hgat_SF_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_ctrl_hgat_SFs.png")
