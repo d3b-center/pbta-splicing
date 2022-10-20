@@ -13,13 +13,13 @@ The purpose of this module is assess and identify splicing factor dysregulation
 
 *Input files*
 ```
-tpm_norm_vs_tumor.h3k28.SFs.v2.txt
-tpm_norm_vs_tumor.hgg.SFs.txt
-RSF11.rna_vs_prot.cptac.txt
+SRSF11.rna_vs_prot.cptac.txt
 SRSF11_psi.txt
 SRSF11_splicing_vs_expr.txt
 SRSF11rna_vs_phos.txt
-RBM5rna_vs_phos.txt
+RBM15_prot_rna.txt
+MSI1_prot_rna.txt
+NOVA2_prot_rna.txt
 ```
 
 ## Folder content
