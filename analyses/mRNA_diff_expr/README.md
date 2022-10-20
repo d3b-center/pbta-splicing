@@ -26,4 +26,4 @@ NOVA2_prot_rna.txt
 * `run_module.sh` runs R scripts to perfom differential expression analysis and runs correlation scripts
 * `01-volcano_plot_mRNA.R` Runs DESeq2 on count data from `input/tpm_norm_vs_tumor*` and generates volcano plots
 * `02-SRSF11_plots.R` generates stacked barplot of PSI values from `SRSF11_psi.txt` and computes correlation and generates scatter plot of expr and PSI
-* `03-plot_corr_SRSF11_RBM5.R` computes correlation and generates scatter plots of select gene expression, proteomics and phosphoprotein obtained from CPTAC and input files `input/*vs_phos.txt`
+* `03-plot_prot_vs_rna.R.R` computes correlation and generates scatter plots of select gene expression, proteomics and obtained from CPTAC and input files `input/*prot_rna.txt`
