@@ -17,4 +17,4 @@ Rscript 01-volcano_plot_mRNA.R
 Rscript 02-SRSF11_plots.R
 
 ## correlation plots for SRSF22 and RBM5
-Rscript 03-plot_corr_SRSF11_RBM5.R
+Rscript 03-plot_prot_vs_rna.R
