@@ -28,6 +28,11 @@ input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
+##theme for all plots
+# source function for theme for plots survival
+figures_dir <- file.path(root_dir, "figures")
+source(file.path(figures_dir, "theme_for_plots.R"))
+
 ## output files for final plots
 file_SRSF11_plot <- file.path(analysis_dir, "plots", "SRSF11_hgat_stacked.png")
 file_SRSF11_corr_plot <- file.path(analysis_dir, "plots", "corr_rna_vs_psi_SRSF11.png")
