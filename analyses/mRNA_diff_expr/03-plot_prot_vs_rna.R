@@ -29,16 +29,15 @@ results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
 file_RBM15 = "RBM15_prot_rna.txt"
-file_MSI1 = "MSI1_prot_rna.txt"
+file_MSI1  = "MSI1_prot_rna.txt"
 file_NOVA2 = "NOVA2_prot_rna.txt"
 
-## get SRSF11 psi table
-cptac_prot_info <-  read.delim(paste0(input_dir, "/",file), sep = "\t", header=TRUE) %>% filter(Gene == 'RBM15') %>% filter(type == 'rna')
-
+## get SF protein vs rna values
 cptac_prot_RBM15 <-  read.delim(paste0(input_dir, "/",file_RBM15), sep = "\t", header=TRUE)
-cptac_prot_MSI1 <-  read.delim(paste0(input_dir, "/",file_MSI1), sep = "\t", header=TRUE)
+cptac_prot_MSI1  <-  read.delim(paste0(input_dir, "/",file_MSI1),  sep = "\t", header=TRUE)
 cptac_prot_NOVA2 <-  read.delim(paste0(input_dir, "/",file_NOVA2), sep = "\t", header=TRUE)
 
+## make scatter plots of each SF 
 plot_RBM15 <- ggscatter(cptac_prot_RBM15, x="rna", y="proteo", 
                         add = "reg.line", conf.int = TRUE, 
                         cor.coef = TRUE, cor.method = "pearson",
@@ -74,6 +73,6 @@ grid.rect(width = .98, height = .98, gp = gpar(lwd = 2, col = "black", fill = NA
 file_corr_prot_plot <- file.path(analysis_dir, "plots", "corr_SF_prot_rna.png")
 
 corr_plots <- arrangeGrob(plot_MSI1, plot_NOVA2, plot_RBM15, ncol=1) #generates g
-ggsave(file=file_corr_prot_plot, SRSF11_corr_phos_plot) #saves SRSF11_corr_phos_plot
+ggsave(file=file_corr_prot_plot, corr_plots) #saves SRSF11_corr_phos_plot
 
 
