@@ -1,6 +1,11 @@
 ################################################################################
-# volcano_plot_mRNA.R
+# 01-volcano_plot_mRNA.R
 # written by Ammar Naqvi
+#
+# This script uses DESeq2 to perform differential gene expression on select 
+# samples annotaed by the histology files. THe results are plotted in a volcano 
+# plot and splicing factor genes are then selected based on that for downstream 
+# analyses. 
 #
 # usage: Rscript volcano_plot_mRNA.R
 ################################################################################
@@ -31,8 +36,10 @@ if(!dir.exists(plots_dir)){
 }
 
 ## output files for final plots
-file_volc_hgat_SF_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_ctrl_hgat_SFs.png")
-file_volc_H3K28_SF_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_ctrl_h3k28_SFs.png")
+file_volc_hgat_SF_plot <- file.path(analysis_dir, "plots", 
+                                    "enhancedVolcano_ctrl_hgat_SFs.png")
+file_volc_H3K28_SF_plot <- file.path(analysis_dir, "plots", 
+                                     "enhancedVolcano_ctrl_h3k28_SFs.png")
 
 ## get splicing factor list to subset later
 sf_file = "splicing_factors.txt"
@@ -40,17 +47,20 @@ sf_list <- read.csv(paste0(input_dir, "/", sf_file),  header=FALSE)
 
 ## get cliincal histlogy file fitlered by HGG samples
 clin_file = "v1/histologies.tsv"
-clin_tab <- read.delim(paste0(data_dir,"/",clin_file), sep = "\t", header=TRUE) %>% filter(short_histology == 'HGAT') %>% 
-                                                                                    filter(RNA_library == 'stranded') %>%
-                                                                                    filter(cohort == 'PBTA') %>%
-                                                                                    filter(CNS_region == 'Midline')
+clin_tab <- read.delim(paste0(data_dir,"/",clin_file), sep = "\t", header=TRUE) 
+%>% filter(short_histology == 'HGAT') %>% filter(RNA_library == 'stranded') %>%
+                                          filter(cohort == 'PBTA') %>%
+                                          filter(CNS_region == 'Midline')
 
 ## get gene count table with splicing factors and midline HGGs filter
 file_gene_counts = "gene-counts-rsem-expected_count-collapsed.rds" 
 count_data <- readRDS(paste0(data_dir, "/v1/", file_gene_counts)) 
-count_data_sf <- count_data[rownames(count_data) %in% sf_list$V1, ]  %>% #filter for only splicing factors from above SF list
-                select(any_of(clin_tab$Kids_First_Biospecimen_ID))       #filter for HGG midline samples
 
+#filter for only splicing factors from above SF list
+count_data_sf <- count_data[rownames(count_data) %in% sf_list$V1, ]  %>% 
+                select(any_of(clin_tab$Kids_First_Biospecimen_ID))       
+
+#filter for HGG midline samples
 count_data_sf <- cbind(gene = rownames(count_data_sf), count_data_sf)
 rownames(count_data_sf) <- NULL
 
@@ -119,17 +129,19 @@ ggsave(
 clin_file = "v1/histologies.tsv"
 
 ## get cliincal histlogy file fitlered by HGG samples
-clin_tab_hgg <- read.delim(paste0(data_dir,"/",clin_file), sep = "\t", header=TRUE) %>% filter(short_histology == 'HGAT') %>% 
-                                                                                    filter(RNA_library == 'stranded') %>%
-                                                                                    filter(cohort == 'PBTA') %>%
-                                                                                    filter(CNS_region == 'Midline')  %>%
-                                                                                    filter(pathology_diagnosis == 'High-grade glioma/astrocytoma (WHO grade III/IV)')
+clin_tab_hgg <- read.delim(paste0(data_dir,"/",clin_file), sep = "\t", 
+                           header=TRUE) %>% filter(short_histology == 'HGAT') %>% 
+                                            filter(RNA_library == 'stranded') %>%
+                                            filter(cohort == 'PBTA') %>%
+                                            filter(CNS_region == 'Midline')  %>%
+                                            filter(pathology_diagnosis == 'High-grade glioma/astrocytoma (WHO grade III/IV)')
 ## get DIPG samples
-clin_tab_dipg <- read.delim(paste0(data_dir,"/",clin_file), sep = "\t", header=TRUE) %>% filter(short_histology == 'HGAT') %>% 
-                                                                                    filter(RNA_library == 'stranded') %>%
-                                                                                    filter(cohort == 'PBTA') %>%
-                                                                                    filter(CNS_region == 'Midline')  %>%
-                                                                                    filter(pathology_diagnosis == 'Brainstem glioma- Diffuse intrinsic pontine glioma')
+clin_tab_dipg <- read.delim(paste0(data_dir,"/",clin_file), sep = "\t", 
+                            header=TRUE) %>% filter(short_histology == 'HGAT') %>% 
+                                             filter(RNA_library == 'stranded') %>%
+                                             filter(cohort == 'PBTA') %>%
+                                             filter(CNS_region == 'Midline')  %>%
+                                             filter(pathology_diagnosis == 'Brainstem glioma- Diffuse intrinsic pontine glioma')
 
 file_gene_counts = "gene-counts-rsem-expected_count-collapsed.rds" 
 count_data <- readRDS(paste0(data_dir, "/v1/", file_gene_counts)) 

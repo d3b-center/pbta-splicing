@@ -1,6 +1,10 @@
 ################################################################################
-# SRSF11_plots.R
+# 02-RSF11_plots.R
 # written by Ammar Naqvi
+#
+# This script uses SRSF11 specific input files to compute and plot correlations 
+# between PSI vs expression and also makes barplot of splicing changes across 
+# samples. 
 #
 # usage: Rscript SRSF11_plot.R
 ################################################################################

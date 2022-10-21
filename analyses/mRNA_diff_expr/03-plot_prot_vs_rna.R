@@ -2,6 +2,11 @@
 # corr_plots.R
 # written by Ammar Naqvi
 #
+# This script computes and plots correlations between RNA expression and 
+# proteommic z-scores obtained from CPTACT portal for dysregulated splicing 
+# factors RBM15, NOVA2 and MSI1-- that was previously identified in 
+# 01-volcano_plot_mRNA.R script.
+#
 # usage: Rscript SRSF11_plot.R
 ################################################################################
 
