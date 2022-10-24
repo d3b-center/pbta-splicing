@@ -21,9 +21,6 @@ suppressPackageStartupMessages({
   library(ggpubr)
 })
 
-# Get `magrittr` pipe
-`%>%` <- dplyr::`%>%`
-
 ## set directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
