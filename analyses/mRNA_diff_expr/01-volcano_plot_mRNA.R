@@ -47,8 +47,8 @@ sf_list <- read.csv(paste0(input_dir, "/", sf_file),  header=FALSE)
 
 ## get cliincal histlogy file fitlered by HGG samples
 clin_file = "v1/histologies.tsv"
-clin_tab <- read.delim(paste0(data_dir,"/",clin_file), sep = "\t", header=TRUE) 
-%>% filter(short_histology == 'HGAT') %>% filter(RNA_library == 'stranded') %>%
+clin_tab <- read.delim(paste0(data_dir,"/",clin_file), sep = "\t", header=TRUE) %>% 
+  filter(short_histology == 'HGAT') %>% filter(RNA_library == 'stranded') %>%
                                           filter(cohort == 'PBTA') %>%
                                           filter(CNS_region == 'Midline')
 
