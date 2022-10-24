@@ -14,7 +14,6 @@
 suppressPackageStartupMessages({
   library("EnhancedVolcano")
   library("DESeq2")
-  library("sva")
   library("tidyverse")
   library("dplyr")
 })
