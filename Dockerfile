@@ -18,6 +18,7 @@ RUN apt update && apt install -y \
 	build-essential \
 	bzip2 \
 	cpanminus \
+	cmake \
 	curl \
 	libbz2-dev \
 	libcurl4-openssl-dev \
@@ -38,39 +39,34 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
   default-jdk \
   libxt6
 
-# install R packages from CRAN
-RUN install2.r \
+# install R packages
+RUN ./install_bioc.r \
+	Biobase \
 	BiocManager \
-  corrplot \
+	ConsensusClusterPlus \
+	corrplot \
   cowplot \
-	DCGA \
+  DGCA \
+	DESeq2 \
 	diptest \
+	EnhancedVolcano \
+	fgsea \
 	ggpubr \
-  ggstatsplot \
-	ggthemes \
-  grid \
+	ggstatsplot \
+  ggthemes \
   gridExtra \
-  hrbrthemes \
+	GSVA \
+	hrbrthemes \
+	limma \
 	optparse \
 	pheatmap \
   reshape2 \
   sva \
-  UpSetR \
-	viridis 
+  UpSetR
 
 # install R packages from GitHub
 RUN ./install_github.r \
 	PoisonAlien/maftools
-
-# install R packages from BioC
-RUN ./install_bioc.r \
-	Biobase \
-	ConsensusClusterPlus \
-	DESeq2 \
-	EnhancedVolcano \
-	fgsea \
-	GSVA \
-	limma 
 
 # install perl packages
 RUN cpanm install Statistics::Lite
