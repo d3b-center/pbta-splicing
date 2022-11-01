@@ -30,8 +30,13 @@ analysis_dir <- file.path(root_dir, "analyses", "mRNA_diff_expr")
 input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir <- file.path(analysis_dir, "plots")
+
 if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
+}
+
+if(!dir.exists(results_dir)){
+  dir.create(results_dir, recursive=TRUE)
 }
 
 ## output files for final plots
@@ -75,9 +80,6 @@ design = data.frame(row.names = colnames(filtered.counts$gene),
                     condition = c(rep("Healthy",10), rep("Tumor",53) ),
                     libType   = c(rep("paired-end",63)))
 
-singleSamples = design$libType == "paired-end"
-new_countTable = (filtered.counts[ , singleSamples ])
-condition = design$condition[ singleSamples ]
 
 ## remove first column
 filtered.counts_removed <- select(filtered.counts, -gene)
@@ -102,7 +104,7 @@ EnhancedVolcano(res,
                 y = 'pvalue',
                 ylim = c(0,21),
                 xlim = c(-3,3),
-                title = 'Healthy versus HGG',
+                title = 'HGG versus Non-tumor',
                 pCutoff = 0.05,
                 FCcutoff = 1,
                 pointSize = ,
@@ -194,7 +196,7 @@ EnhancedVolcano(res,
                 y = 'pvalue',
                 ylim = c(0,5),
                 xlim = c(-3,3),
-                title = 'Non-DIPG versus DIPG',
+                title = 'DIPG versus Non-DIPG',
                 pCutoff = 0.05,
                 FCcutoff = 1,
                 pointSize = ,

@@ -11,12 +11,10 @@
 
 
 suppressPackageStartupMessages({
-  library("sva")
-  library("EnhancedVolcano")
-  library("DESeq2")
   library("reshape2")
   library("tidyverse")
   library("ggpubr")
+  library("ggplot2")
 })
 
 
@@ -52,9 +50,11 @@ melt_psi_tab <- melt(psi_tab, id=c("sample","id","histology"), variable.name =c(
 melt_psi_tab %>% 
   #arrange(desc(value)) %>%
   mutate(sample=fct_reorder(sample,value)) %>% 
-  ggplot(aes(x = sample,y = value, fill= Type ))+ 
-  geom_bar(position="stack", stat="identity") + scale_fill_manual(values=c("red",
-                                                                           "blue")) 
+  ggplot(aes(x = sample,y = value, fill= Type )) +
+  geom_bar(position="stack", stat="identity")    + 
+  scale_fill_manual(values=c("red","blue"))      + 
+  theme(axis.text.x=element_blank())
+  
 # Save plot as PNG
 png(file_SRSF11_plot, 
     res = 800, width = 16, height = 8, units = "in")
