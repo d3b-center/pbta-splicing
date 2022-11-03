@@ -40,16 +40,16 @@ file_SRSF11_plot <- file.path(analysis_dir, "plots", "SRSF11_hgat_stacked.png")
 file_SRSF11_corr_plot <- file.path(analysis_dir, "plots", "corr_rna_vs_psi_SRSF11.png")
 
 ## get SRSF11 psi table
-file <- "/SRSF11_psi.txt"
+file <- "/SRSF11_psi.v2.txt"
 psi_tab  <-  read.delim(paste0(input_dir, file), sep = "\t", header=TRUE)
 
 ## transform and melt data for ggplot
-melt_psi_tab <- melt(psi_tab, id=c("sample","id","histology"), variable.name =c("Type"))
+melt_psi_tab <- melt(psi_tab, id=c("Sample","id","histology"), variable.name =c("Type"))
 
 ## stacked barplot 
 melt_psi_tab %>% 
   #arrange(desc(value)) %>%
-  mutate(sample=fct_reorder(sample,value)) %>% 
+  mutate(sample=fct_reorder(Sample,value)) %>% 
   ggplot(aes(x = sample,y = value, fill= Type )) +
   geom_bar(position="stack", stat="identity")    + 
   scale_fill_manual(values=c("red","blue"))      + 
@@ -63,15 +63,17 @@ dev.off()
 
 ## scatter plot of psi vs pct expression
 file <- "/SRSF11_splicing_vs_expr.txt"
-tab  <-  read.delim(paste0(input_dir, file), sep = "\t", header=TRUE)
-ggscatter(tab, x="Expr", y="dPSI", 
+tab  <-  read.delim(paste0(input_dir, file), sep = "\t", header=TRUE) %>% 
+  inner_join(melt_psi_tab, by="Sample") %>% filter(Type=="incl") ## join with previous table to get inclusion PSI values
+
+ggscatter(tab, x="Expr", y="value", 
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson",
           add.params = list(color = "blue",
                             fill = "lightgray"),
           ticks = TRUE,
           xticks.by = .1, yticks.by = .1,
-          xlab = "Expr", ylab = "dPSI") + theme_Publication()
+          xlab = "Expr", ylab = "Exon PSI") + theme_Publication()
 
 
 # Save plot as PNG
