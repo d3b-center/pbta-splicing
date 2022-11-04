@@ -5,7 +5,7 @@
 .snakemake
  
 # tmp files
-*scr*
+scratch/
 *tmp
 tmp*
 *tmp*
