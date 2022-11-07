@@ -9,7 +9,7 @@
 # usage: Rscript diffExp_highlowSBI.R
 ################################################################################
 
-##libraries 
+## libraries needed
 suppressPackageStartupMessages({
   library("dplyr")
   library("EnhancedVolcano")
@@ -75,7 +75,7 @@ volc_hgat_plot <- EnhancedVolcano(res,
                 y = 'pvalue',
                 ylim = c(0,8),
                 xlim = c(-2,2),
-                title = 'High vs Low SBI in HGATs',
+                title = 'Low vs High SBI in HGATs',
                 pCutoff = 0.05,
                 FCcutoff = 1,
                 pointSize = 1,
@@ -85,19 +85,6 @@ volc_hgat_plot <- EnhancedVolcano(res,
                 widthConnectors = 0.15,
                 colConnectors = 'black')
 
-ggsave(
-  file_volc_hgat_plot,
-  plot = last_plot(),
-  device = NULL,
-  path = NULL,
-  scale = 1,
-  width =2.74,
-  height = 2.38,
-  units = "in",
-  dpi = 600,
-  limitsize = TRUE,
-  bg = NULL
-)
 
 # Save plot as PNG
 png(file_volc_hgat_plot, 
@@ -134,7 +121,7 @@ volc_non_hgat_plot <- EnhancedVolcano(res,
                 y = 'pvalue',
                 ylim = c(0,30),
                 xlim = c(-2,2),
-                title = 'High vs Low SBI in non-HGATs',
+                title = 'Low vs High SBI in non-HGATs',
                 pCutoff = 0.05,
                 FCcutoff = 1,
                 pointSize = 1,
