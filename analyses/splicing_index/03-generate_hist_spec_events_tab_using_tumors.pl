@@ -39,7 +39,7 @@ my %splicing_psi;
     ## filter histologies of interests
     next unless ( ($hist=~/HGAT/)  ||
                   ($hist=~/LGAT/)  ||
-                  ($hist=~/Oligodendroglioma/) ||
+                  #($hist=~/Oligodendroglioma/) ||
                   ($hist=~/Medulloblastoma/)   ||
                   ($hist=~/Ganglioglioma/)  ||
                   ($hist=~/Ependymoma/)||
@@ -47,6 +47,13 @@ my %splicing_psi;
                   ($hist=~/Craniopharyngioma/) );
 
     #print $hist,"hist\n";
+    ## convert to shorter names
+    ## convert histology names
+    $hist =~s/Oligodendroglioma/OGG/;
+    $hist =~s/Medulloblastoma/MB/;
+    $hist =~s/Ganglioglioma/GNG/;
+    $hist =~s/Ependymoma/EPN/;
+    $hist =~s/Craniopharyngioma/CNG/;
 
     ## store bs ids and histologies
     push @broad_hist, $hist;
@@ -253,24 +260,3 @@ foreach $hist (@broad_hist_uniq)
   close(TAB);
 
 }
-__DATA__
-#make table for plotting of splice_index
-print "make table for plotting of splice_index...\n";
-open(TAB,">results/splicing_events.hist-specific.total.txt");
-print TAB "Sample\tTotal\tAS_neg\tAS_pos\tAS_total\tSI\tHistology\n";
-foreach my $sample(@bs_ids_uniq)
-{
-  next unless $splice_totals_per_sample{$sample};
-
-  print TAB $sample,"\t";
-  print TAB $splice_totals_per_sample{$sample},"\t";
-  print TAB $absplice_totals_per_sample_neg{$sample},"\t",$absplice_totals_per_sample_pos{$sample},"\t";
-
-  my $total_absplice_totals_per_sample = $absplice_totals_per_sample_neg{$sample}+$absplice_totals_per_sample_pos{$sample};
-  my $splice_index = $total_absplice_totals_per_sample/$splice_totals_per_sample{$sample};
-
-  print TAB $total_absplice_totals_per_sample,"\t";
-  print TAB $splice_index,"\t";
-  print TAB $bs_id_hist{$sample},"\n";
-}
-close(TAB);

@@ -39,12 +39,20 @@ my %splicing_psi;
     ## filter histologies of interests
     next unless ( ($hist=~/HGAT/)  ||
                   ($hist=~/LGAT/)  ||
-                  ($hist=~/Oligodendroglioma/) ||
+                  #($hist=~/Oligodendroglioma/) ||
                   ($hist=~/Medulloblastoma/)   ||
                   ($hist=~/Ganglioglioma/)  ||
                   ($hist=~/Ependymoma/)||
                   ($hist=~/ATRT/)  ||
                   ($hist=~/Craniopharyngioma/) );
+
+    ## convert histology names
+    $hist =~s/Oligodendroglioma/OGG/;
+    $hist =~s/Medulloblastoma/MB/;
+    $hist =~s/Ganglioglioma/GNG/;
+    $hist =~s/Ependymoma/EPN/;
+    $hist =~s/Craniopharyngioma/CNG/;
+
 
     ## store bs ids and histologies
     push @broad_hist, $hist;

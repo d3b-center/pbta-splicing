@@ -92,13 +92,14 @@ si_cdf %>%
 
   # Making it pretty
   #ggplot2::theme(legend.position = "none") +
+  theme_Publication() +
   ggplot2::theme(
     axis.text.x = ggplot2::element_blank(),
     axis.ticks.x = ggplot2::element_blank(),
     strip.placement = "outside",
-    strip.text = ggplot2::element_text(size = 14, angle = 90, hjust = .5),
-    strip.background = ggplot2::element_rect(fill = NA, color = NA)
-  ) + theme_Publication() 
+    #strip.text = ggplot2::element_text(size = 14, angle = 90, hjust = .5),
+    #strip.background = ggplot2::element_rect(fill = NA, color = NA)
+  )  
 
 file_si_plot = "/SI_total.png"
 filename = paste0(plots_dir, file_si_plot)
@@ -134,7 +135,6 @@ splicing_index_outliers <- splice_index%>%filter(splice_index$SI <SI_total_low |
 util_dir <- file.path(root_dir, "util")
 
 source(file.path(util_dir, "survival_models.R"))
-`%>%` <- dplyr::`%>%`
 
 # read in clinical file
 clin_tab <- readr::read_tsv(file.path(data_dir, "histologies.tsv")) %>% 
@@ -147,14 +147,17 @@ kap_fit <- survival_analysis(clin_tab,
                              metadata_sample_col = "Kids_First_Biospecimen_ID")
 
 surviv_plot <- survminer::ggsurvplot(kap_fit$model,
-                      pval = TRUE,
+                      title = "High vs Low Splicing Burden Index Survival",
+                      xlab = "Time (days)",
+                      pval = TRUE,palette  = c("red","blue"),
+                      font.main = 18,
                       data = kap_fit$original_data,
                       risk.table = TRUE,
-                      break.time.by = 500,
+                      break.time.by = 730,
                       risk.table.y.text.col = TRUE,
-                      risk.table.y.text = FALSE)
-
-
+                      risk.table.y.text = FALSE, 
+                      legend.title = "SBI",conf.int = TRUE,
+                      legend = "bottom", surv.median.line = "hv")
 
 file_surv_plot = "/surv_si.png"
 filename = paste0(plots_dir, file_surv_plot)
