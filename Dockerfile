@@ -1,5 +1,5 @@
 FROM rocker/tidyverse:4.2
-MAINTAINER rokita@chop.edu
+MAINTAINER naqvia@chop.edu
 WORKDIR /rocker-build/
 
 RUN RSPM="https://packagemanager.rstudio.com/cran/2022-10-07" \
@@ -32,7 +32,8 @@ RUN apt update && apt install -y \
 	libssl-dev \
 	libv8-dev \
 	libxt-dev \
-	zlib1g-dev 
+	zlib1g-dev \
+	bedtools
 
 # Install java
 RUN apt-get update && apt-get -y --no-install-recommends install \
@@ -45,6 +46,7 @@ RUN ./install_bioc.r \
 	BiocManager \
 	ConsensusClusterPlus \
 	corrplot \
+	survminer \
   cowplot \
   DGCA \
 	DESeq2 \
@@ -62,7 +64,7 @@ RUN ./install_bioc.r \
 	pheatmap \
   reshape2 \
   sva \
-  UpSetR
+  UpSetR 
 
 # install R packages from GitHub
 RUN ./install_github.r \
