@@ -69,7 +69,7 @@ si_cdf <- splice_index %>%
   dplyr::ungroup() %>%
   dplyr::mutate(group = reorder(group, group_median))
 
-si_cdf %>%
+si_plot <- si_cdf %>%
   # Now we will plot these as cumulative distribution plots
   ggplot2::ggplot(ggplot2::aes(
     x = group_rank,
@@ -101,21 +101,13 @@ si_cdf %>%
     #strip.background = ggplot2::element_rect(fill = NA, color = NA)
   )  
 
-file_si_plot = "/SI_total.png"
-filename = paste0(plots_dir, file_si_plot)
-ggsave(
-  filename,
-  plot = last_plot(),
-  device = NULL,
-  path = NULL,
-  scale = 1,
-  width =6000,
-  height = 2000,
-  units = "px",
-  dpi = 300,
-  limitsize = TRUE,
-  bg = NULL
-)
+file_si_plot = "/SI_total.pdf"
+filename_si_plot= paste0(plots_dir, file_si_plot)
+
+# Save plot as PDF
+pdf(filename, width = 24, height = 7)
+si_plot
+dev.off()
 
 ## survival based on high vs low SBI
 file <- "splicing_index.total.txt"
@@ -159,12 +151,11 @@ surviv_plot <- survminer::ggsurvplot(kap_fit$model,
                       legend.title = "SBI",conf.int = TRUE,
                       legend = "bottom", surv.median.line = "hv")
 
-file_surv_plot = "/surv_si.png"
+file_surv_plot = "/surv_si.pdf"
 filename = paste0(plots_dir, file_surv_plot)
 
-# Save plot as PNG
-png(filename, 
-    res = 800, width = 8, height = 8, units = "in")
+# Save plot as PDF
+pdf(filename, width = 8, height = 8)
 surviv_plot
 dev.off()
 

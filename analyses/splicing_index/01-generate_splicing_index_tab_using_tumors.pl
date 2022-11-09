@@ -51,7 +51,9 @@ my %splicing_psi;
     $hist =~s/Medulloblastoma/MB/;
     $hist =~s/Ganglioglioma/GNG/;
     $hist =~s/Ependymoma/EPN/;
-    $hist =~s/Craniopharyngioma/CNG/;
+    $hist =~s/Craniopharyngioma/CPG/;
+    $hist =~s/HGAT/HGG/;
+    $hist =~s/LGAT/LGG/;
 
 
     ## store bs ids and histologies
