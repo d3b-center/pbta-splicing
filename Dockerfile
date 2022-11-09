@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialo
 
 # Install dev libraries and curl
 RUN apt update && apt install -y \
+  bedtools \
 	build-essential \
 	bzip2 \
 	cpanminus \
@@ -33,7 +34,6 @@ RUN apt update && apt install -y \
 	libv8-dev \
 	libxt-dev \
 	zlib1g-dev \
-	bedtools
 
 # Install java
 RUN apt-get update && apt-get -y --no-install-recommends install \
@@ -46,7 +46,6 @@ RUN ./install_bioc.r \
 	BiocManager \
 	ConsensusClusterPlus \
 	corrplot \
-	survminer \
   cowplot \
   DGCA \
 	DESeq2 \
@@ -64,7 +63,8 @@ RUN ./install_bioc.r \
 	pheatmap \
   reshape2 \
   sva \
-  UpSetR 
+  survminer \
+  UpSetR
 
 # install R packages from GitHub
 RUN ./install_github.r \
