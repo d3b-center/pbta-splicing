@@ -35,14 +35,14 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## output files for final plots
-file_volc_hgat_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_hgat_sbi.png")
-file_volc_non_hgat_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_nonhgat_sbi.png")
+file_volc_hgat_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_hgat_sbi.pdf")
+file_volc_non_hgat_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_nonhgat_sbi.pdf")
 
-#count table for HGAT 
+#count table for HGGs 
 input      = file.path(input_dir,"tab_rsem.str.sbi.hgat.txt")
 tab_rsem_hgat <- read.delim(input, header=TRUE, row.names=1)
 
-#count table for non-HGAT  
+#count table for HGGs 
 input      = file.path(input_dir,"tab_rsem.str.sbi.non-hgat.txt")
 tab_rsem_non_hgat <- read.delim(input, header=TRUE, row.names=1)
 
@@ -86,13 +86,13 @@ volc_hgat_plot <- EnhancedVolcano(res,
                 colConnectors = 'black')
 
 
-# Save plot as PNG
-png(file_volc_hgat_plot, 
-    res = 800, width = 8, height = 8, units = "in")
+# Save plot as PDF
+pdf(file_volc_hgat_plot, 
+    width = 8, height = 8)
 volc_hgat_plot
 dev.off()
 
-##non HGAT differential gene expression analysis
+## non HGG differential gene expression analysis
 #filter low expressed genes
 filtered.counts <- tab_rsem_non_hgat[rowSums(tab_rsem_non_hgat>=10) >= 145, ]
 countTable <- filtered.counts
@@ -131,8 +131,8 @@ volc_non_hgat_plot <- EnhancedVolcano(res,
                 widthConnectors = 0.15,
                 colConnectors = 'black')
 
-# Save plot as PNG
-png(file_volc_non_hgat_plot, 
-    res = 800, width = 8, height = 8, units = "in")
+# Save plot as PDF
+pdf(file_volc_non_hgat_plot, 
+    width = 8, height = 8)
 volc_non_hgat_plot
 dev.off()

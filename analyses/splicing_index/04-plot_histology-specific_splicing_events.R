@@ -26,8 +26,8 @@ if(!dir.exists(plots_dir)){
 }
 
 ## output files for final plots
-upsetR_es_plot_file     <- file.path(analysis_dir, "plots", "upsetR_histology-specific.es.png")
-upsetR_ei_plot_file <- file.path(analysis_dir, "plots", "upsetR_histology-specific.ei.png")
+upsetR_es_plot_file     <- file.path(analysis_dir, "plots", "upsetR_histology-specific.es.pdf")
+upsetR_ei_plot_file <- file.path(analysis_dir, "plots", "upsetR_histology-specific.ei.pdf")
 
 ## exon skipping
 ATRT_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.ATRT.txt"), sep = "\t", header=FALSE)
@@ -50,11 +50,11 @@ es_events <- upset(fromList(listInput),
       mainbar.y.label = "", sets=c("ATRT","CPG","GNG","EPN","HGAT","MB","LGAT"), sets.x.label = "Histology", order.by = "freq",
       mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 2, line.size = 1.5, nsets = 7)
 
-# Save plot as PNG
-png(upsetR_es_plot_file, 
-    res = 800, width = 16, height = 8, units = "in")
+# Save plot as PDF
+pdf(upsetR_es_plot_file, width = 16, height = 8)
 es_events
 dev.off()
+
 
 
 ## exon inclusion
@@ -79,9 +79,9 @@ ei_events <- upset(fromList(listInput_ei),
       mainbar.y.label = "", sets.x.label = "Histology", order.by = "freq",
       mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 2, line.size = 1.5, nsets = 7)
 
-# Save plot as PNG
-png(upsetR_ei_plot_file, 
-    res = 800, width = 16, height = 8, units = "in")
+# Save plot as PDF
+pdf(upsetR_ei_plot_file, width = 16, height = 8)
 ei_events
 dev.off()
+
 
