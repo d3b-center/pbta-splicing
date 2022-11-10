@@ -1,5 +1,5 @@
 FROM rocker/tidyverse:4.2
-MAINTAINER rokita@chop.edu
+MAINTAINER naqvia@chop.edu
 WORKDIR /rocker-build/
 
 RUN RSPM="https://packagemanager.rstudio.com/cran/2022-10-07" \
@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialo
 
 # Install dev libraries and curl
 RUN apt update && apt install -y \
+  bedtools \
 	build-essential \
 	bzip2 \
 	cpanminus \
@@ -32,7 +33,7 @@ RUN apt update && apt install -y \
 	libssl-dev \
 	libv8-dev \
 	libxt-dev \
-	zlib1g-dev 
+	zlib1g-dev \
 
 # Install java
 RUN apt-get update && apt-get -y --no-install-recommends install \
@@ -62,6 +63,7 @@ RUN ./install_bioc.r \
 	pheatmap \
   reshape2 \
   sva \
+  survminer \
   UpSetR
 
 # install R packages from GitHub
