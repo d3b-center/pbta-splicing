@@ -1,9 +1,9 @@
 ################################################################################
-# splicing_functional_sites.R
+# 04-plot_splicing_across_functional_sites.R
 # script that plots a table of splicing events overlapping uniprot sites
 # written by Ammar Naqvi
 #
-# usage: Rscript splicing_functional_sites.R <file>
+# usage: Rscript 04-plot_splicing_across_functional_sites.R 
 ################################################################################
 
 suppressPackageStartupMessages({
