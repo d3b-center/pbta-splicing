@@ -35,7 +35,7 @@ results/splicing_events.total.neg.intersectUnip.ggplot.txt
 ## Folder content
 * `run_module.sh` takes the files from above and generates table with uniprot overlaps to be used for plotting
 * `01-extract_recurrent_splicing_events_hgg.pl` processing output from rMATS with filters and constructs data table for all downstream analysis and output file to `results/splicing_events.total*`
-* `01-run_bedtools_intersect.sh` runs bedtools intersect to find exon coordinates corresponding to Uniprot sites
-* `02-format_for_ggplot.sh` formats and appends file into table for plotting
-* `01-plot_splicing_across_functional_sites.R` generates ggplot violin plots of average dPSI per event identidied overlapping a functional site, outputting to `plots/*png`
-* `02-plot-flip_mixed_events.R` generates plots for special flip splicing events into `plots` folder
+* `02-run_bedtools_intersect.sh` runs bedtools intersect to find exon coordinates corresponding to Uniprot sites
+* `03-format_for_ggplot.sh` formats and appends file into table for plotting
+* `04-plot_splicing_across_functional_sites.R` generates ggplot violin plots of average dPSI per event identidied overlapping a functional site, outputting to `plots/*png`
+* `05-plot-flip_mixed_events.R` generates plots for special flip splicing events into `plots` folder
