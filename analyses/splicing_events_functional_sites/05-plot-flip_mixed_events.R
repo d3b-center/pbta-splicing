@@ -69,7 +69,7 @@ theme_Publication <- function(base_size=15, base_family="Helvetica") {
 }
 
 
-##num of sites that are undergo flip at functional sites
+## num of sites that are undergo flip at functional sites
 flip_event_func_skipping  <- psi_pos_tab[psi_pos_func_tab$SpliceID %in% psi_pos_tab$splice_event, ]
 flip_event_func_inclusion <- psi_neg_tab[psi_neg_func_tab$SpliceID %in% psi_neg_tab$splice_event, ]
 
@@ -86,12 +86,12 @@ num_incl_func <- c(nrow(psi_neg_func_tab))
 num_flip_incl_func_perc <- (num_flip_incl_func/(num_incl_func)) * 100
 num_non_flip_incl_func_perc      <- ( (num_incl_func-num_flip_incl_func)/(num_incl_func)) * 100
 
-##create daatafram for plotting
+##create dataframe for plotting
 type <- c("Skipping", "Skipping", "Inclusion", "Inclusion")
 counts <- c(num_flip_incl_func_perc,num_non_flip_incl_func_perc,
             num_flip_skip_func_perc,num_non_flip_skip_func_perc)
 event <- c("Flip", "Non-flip","Flip", "Non-flip")
-num_of_hits_perc <- data.frame(type,counts, site)
+num_of_hits_perc <- data.frame(type,counts, event)
 
 ##plot
 ggplot(num_of_hits_perc, aes(x = type, y = counts, fill = event)) + 
