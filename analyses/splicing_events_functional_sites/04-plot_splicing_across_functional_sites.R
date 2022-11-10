@@ -49,7 +49,7 @@ dpsi_unip_neg <- read.table(file_psi_neg_func, header=TRUE,sep = "\t") ## read t
 
 ## ggstatplot across functional sites
 set.seed(123)
-plot1 <- ggstatsplot::ggbetweenstats(
+plot_incl <- ggstatsplot::ggbetweenstats(
   data = dpsi_unip_neg, 
   x = Uniprot, 
   y = dPSI,
@@ -60,15 +60,21 @@ plot1 <- ggstatsplot::ggbetweenstats(
   notch = TRUE,
   mean.ci = TRUE,
   outlier.tagging = TRUE,
-  #title = "Tumor supressors",
   type = "robust",
   xlab = "Unipro-defined Site",
-  pairwise.comparisons = TRUE,
+  pairwise.comparisons = FALSE,
   messages = FALSE
 ) + theme_Publication()
 
+# Save plot as PDF
+pdf(file_dpsi_incl_plot, 
+    width = 15, height = 5)
+plot_incl
+dev.off()
+
+
 set.seed(123)
-plot2 <- ggstatsplot::ggbetweenstats(
+plot_skip <- ggstatsplot::ggbetweenstats(
   data = dpsi_unip_pos, 
   x = Uniprot, 
   y = dPSI,
@@ -81,10 +87,13 @@ plot2 <- ggstatsplot::ggbetweenstats(
   #outlier.tagging = TRUE,
   type = "robust",
   xlab = "Unipro-defined Site",
-  pairwise.comparisons = TRUE,
+  pairwise.comparisons = FALSE,
   messages = FALSE
 ) + theme_Publication()
 
-## save plots 
-ggsave(file_dpsi_skip_plot, width = 15, height = 5)
-ggsave(file_dpsi_incl_plot, width = 15, height = 5)
+# Save plot as PDF
+pdf(file_dpsi_skip_plot, 
+    width = 15, height = 5)
+plot_skip
+dev.off()
+
