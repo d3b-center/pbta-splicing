@@ -70,20 +70,22 @@ res <- results(cds)
 res$Significant <- ifelse(res$pvalue< 0.05, "P-val < 0.05", "Not Sig")
 
 volc_hgat_plot <- EnhancedVolcano(res,
-                lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",row.names(res)), ## remove ensembleid portion
-                x = 'log2FoldChange',
-                y = 'pvalue',
-                ylim = c(0,8),
-                xlim = c(-2,2),
-                title = 'Low vs High SBI in HGATs',
-                pCutoff = 0.05,
-                FCcutoff = 1,
-                pointSize = 1,
-                labSize = 3,
-                typeConnectors = "closed",
-                #drawConnectors = TRUE,
-                widthConnectors = 0.15,
-                colConnectors = 'black')
+                  lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",row.names(res)), ## remove ensembleid portion
+                  x = 'log2FoldChange',
+                  y = 'pvalue',
+                  ylim = c(0,30),
+                  xlim = c(-2,2),
+                  title = 'Low vs High SBI (HGGs)',
+                  subtitle = NULL,
+                  caption = NULL,
+                  pCutoff = 0.05,
+                  FCcutoff = 1,
+                  pointSize = 1,
+                  labSize = 3,
+                  typeConnectors = "closed",
+                  #drawConnectors = TRUE,
+                  widthConnectors = 0.15,
+                  colConnectors = 'black')
 
 
 # Save plot as PDF
@@ -121,7 +123,9 @@ volc_non_hgat_plot <- EnhancedVolcano(res,
                 y = 'pvalue',
                 ylim = c(0,30),
                 xlim = c(-2,2),
-                title = 'Low vs High SBI in non-HGATs',
+                title = 'Low vs High SBI (non HGGs)',
+                subtitle = NULL,
+                caption = NULL,
                 pCutoff = 0.05,
                 FCcutoff = 1,
                 pointSize = 1,

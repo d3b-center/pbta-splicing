@@ -46,66 +46,41 @@ splice_index <- splice_index_df %>%
   as.data.frame(stringsAsFactors = FALSE)
 
 # Set up the data.frame for plotting
-si_cdf <- splice_index %>%
-
-  # We only really need these two variables from data.frame
-  dplyr::transmute(
-    group = Histology,
-    number = log10(as.numeric(SI*100))
-  ) %>%
-
-  # Group by specified column
-  dplyr::group_by(group) %>%
-
-  # Only keep groups with the specified minimum number of samples
-  dplyr::filter(dplyr::n() > 1) %>%
-
-  # Calculate group median
-  dplyr::mutate(
-    group_median = median(number, na.rm = TRUE),
-    group_rank = rank(number, ties.method = "first") / dplyr::n(),
-    sample_size = paste0("n = ", dplyr::n())
-  ) %>%
-  dplyr::ungroup() %>%
-  dplyr::mutate(group = reorder(group, group_median))
-
 si_plot <- si_cdf %>%
   # Now we will plot these as cumulative distribution plots
   ggplot2::ggplot(ggplot2::aes(
     x = group_rank,
     y = number
   )) +
-
+  
   ggplot2::geom_point(color = "black") +
-
+  
   # Add summary line for median
   ggplot2::geom_segment(
-    x = 0, xend = 1, color = "blue",
+    x = 0, xend = 1, color = "blue",linetype=2,
     ggplot2::aes(y = group_median, yend = group_median)
   ) +
-
+  
   # Separate by histology
-  ggplot2::facet_wrap(~ group + sample_size, nrow = 1, strip.position = "bottom") +
+  ggplot2::facet_wrap(~ group + sample_size, nrow = 1, strip.position = "bottom", labeller = ggplot2::label_wrap_gen(multi_line = FALSE)) +
   ggplot2::theme_classic() +
   ggplot2::xlab("Histology") +
   ggplot2::ylab("Splicing Burden Index") +
-
+  
   # Making it pretty
-  #ggplot2::theme(legend.position = "none") +
+  ggplot2::theme(legend.position = "none") +
   theme_Publication() +
   ggplot2::theme(
     axis.text.x = ggplot2::element_blank(),
     axis.ticks.x = ggplot2::element_blank(),
     strip.placement = "outside",
-    #strip.text = ggplot2::element_text(size = 14, angle = 90, hjust = .5),
-    #strip.background = ggplot2::element_rect(fill = NA, color = NA)
   )  
 
 file_si_plot = "/SI_total.pdf"
 filename_si_plot= paste0(plots_dir, file_si_plot)
 
 # Save plot as PDF
-pdf(filename, width = 24, height = 7)
+pdf(filename_si_plot, width = 24, height = 7)
 si_plot
 dev.off()
 
@@ -129,7 +104,7 @@ util_dir <- file.path(root_dir, "util")
 source(file.path(util_dir, "survival_models.R"))
 
 # read in clinical file
-clin_tab <- readr::read_tsv(file.path(data_dir, "histologies.tsv")) %>% 
+clin_tab <- readr::read_tsv(file.path(data_dir, "v1/histologies.tsv")) %>% 
   dplyr::left_join(splicing_index_outliers, by = "Kids_First_Biospecimen_ID")
 
 # Kaplan-Meier for all clusters
@@ -139,13 +114,13 @@ kap_fit <- survival_analysis(clin_tab,
                              metadata_sample_col = "Kids_First_Biospecimen_ID")
 
 surviv_plot <- survminer::ggsurvplot(kap_fit$model,
-                      title = "High vs Low Splicing Burden Index Survival",
+                      title = "High vs Low Splicing Burden",
                       xlab = "Time (days)",
                       pval = TRUE,palette  = c("red","blue"),
                       font.main = 18,
                       data = kap_fit$original_data,
                       risk.table = TRUE,
-                      break.time.by = 730,
+                      break.time.by = 500,
                       risk.table.y.text.col = TRUE,
                       risk.table.y.text = FALSE, 
                       legend.title = "SBI",conf.int = TRUE,
