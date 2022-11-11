@@ -34,20 +34,20 @@ ATRT_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list
 CPG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.Craniopharyngioma.txt"), sep = "\t", header=FALSE)
 GNG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.Ganglioglioma.txt"), sep = "\t", header=FALSE)
 EPN_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.Ependymoma.txt"), sep = "\t", header=FALSE)
-HGAT_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.HGAT.txt"), sep = "\t", header=FALSE)
+HGG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.HGG.txt"), sep = "\t", header=FALSE)
 MB_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.Medulloblastoma.txt"), sep = "\t", header=FALSE)
-LGAT_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.LGAT.txt"), sep = "\t", header=FALSE)
+LGG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.LGG.txt"), sep = "\t", header=FALSE)
 
 listInput <- list("ATRT" =ATRT_events$V1, 
                   "CPG" =CPG_events$V1,
                   "GNG" =GNG_events$V1,
                   "EPN" =EPN_events$V1,
-                  "HGAT" =HGAT_events$V1, 
-                  "MB" =MB_events$V1,
-                  "LGAT"=LGAT_events$V1)
+                  "HGG" =HGG_events$V1, 
+                  "MB" = MB_events$V1,
+                  "LGG"=LGG_events$V1)
 
 es_events <- upset(fromList(listInput), 
-      mainbar.y.label = "", sets=c("ATRT","CPG","GNG","EPN","HGAT","MB","LGAT"), sets.x.label = "Histology", order.by = "freq",
+      mainbar.y.label = "", sets=c("ATRT","CPG","GNG","EPN","HGG","MB","LGG"), sets.x.label = "Histology", order.by = "freq",
       mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 2, line.size = 1.5, nsets = 7)
 
 # Save plot as PDF
@@ -62,17 +62,17 @@ ATRT_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list
 CPG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.Craniopharyngioma.txt"), sep = "\t", header=FALSE)
 GNG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.Ganglioglioma.txt"), sep = "\t", header=FALSE)
 EPN_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.Ependymoma.txt"), sep = "\t", header=FALSE)
-HGAT_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.HGAT.txt"), sep = "\t", header=FALSE)
+HGG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.HGG.txt"), sep = "\t", header=FALSE)
 MB_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.Medulloblastoma.txt"), sep = "\t", header=FALSE)
-LGAT_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.LGAT.txt"), sep = "\t", header=FALSE)
+LGG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.LGG.txt"), sep = "\t", header=FALSE)
 
 listInput_ei <- list("ATRT" =ATRT_events$V1, 
                   "CPG" =CPG_events$V1,
                   "GNG" =GNG_events$V1,
                   "EPN" =EPN_events$V1,
-                  "HGAT" =HGAT_events$V1, 
+                  "HGG" =HGG_events$V1, 
                   "MB" =MB_events$V1,
-                  "LGAT"=LGAT_events$V1)
+                  "LGG"=LGG_events$V1)
 
 
 ei_events <- upset(fromList(listInput_ei), 
