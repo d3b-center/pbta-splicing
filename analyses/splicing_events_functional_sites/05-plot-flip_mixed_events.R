@@ -83,7 +83,7 @@ plot_flip <- ggplot(num_of_hits_perc, aes(x = type, y = counts, fill = event)) +
 
 # Save plot as PDF
 pdf(file_flip_events_plot, 
-    width = 16.1417, height = 9.84252)
+    width = 22.1417, height = 6.84252)
 plot_flip
 dev.off()
 
