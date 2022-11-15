@@ -51,9 +51,9 @@ plot1 <- ggstatsplot::ggbetweenstats(
   mean.ci = TRUE,
   outlier.tagging = TRUE,
   type = "robust",
-  xlab = "Type",
-  ylab = "PSI",
-  pairwise.comparisons = TRUE,
+  xlab = "Unipro-defined Site",
+  ylab = "dPSI",
+  pairwise.comparisons = FALSE,
   messages = FALSE
 ) + theme_Publication()
 
