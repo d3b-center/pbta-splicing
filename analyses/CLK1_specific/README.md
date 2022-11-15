@@ -16,15 +16,8 @@ Input files:
 input/dca735c2-6e0e-4239-8a68-10c6d2aa9015.CLK1_EI_vs_CLK1_ES.non_denovo.SE.MATS.JC.txt
 ```
 
-Output files:
-```
-results/rMATS_output.anno*txt
-```
-
-![](plots/dPSI_volcano_CLK1.pdf)
-<br>
-![](plots/highExon4_vs_lowExon4.volano.pdf)
-
 
 ## Folder content
 * `run_module.sh` takes the files from above and generates differential splicing and expression plots
+* `01-plot_CLK1_EI_vs_ES_PSI_volcano.R` processing output from rMATS and generates volcano plot deposited in `plots/`
+* `02-plot_highExon4_vs_lowExon4_diffExpr_volcano.R` generates volcano plot from count table between low vs high exon 4 inclusion tumors and outputs plot in `plots/`
