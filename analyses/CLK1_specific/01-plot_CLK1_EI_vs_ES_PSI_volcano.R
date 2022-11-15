@@ -62,15 +62,17 @@ tab$delabel[tab$dPSI != "Not Significant"] <- tab$geneSymbol[tab$dPSI != "Not Si
 plot_volcano <- ggplot(data=tab, aes(x=IncLevelDifference, y=-log10(PValue), col=dPSI, label=delabel, label.size=.05)) +
   geom_point() + 
   theme_Publication() +
+  theme(legend.position="none") + 
   geom_text_repel() +
   scale_color_manual(values=c("blue", "grey", "red")) +
   geom_vline(xintercept=c(-0.20, 0.20), col="black", linetype = "longdash") +
-  geom_hline(yintercept=-log10(0.05), col="black",linetype = "longdash") 
+  geom_hline(yintercept=-log10(0.05), col="black",linetype = "longdash") +
+  xlab("dPSI")
 
 plot_file = file.path(plots_dir,"dPSI_volcano_CLK1.pdf") 
 
 # Save plot as PDF
-pdf(plot_file, width = 10, height = 15)
+pdf(plot_file, width = 10, height = 10)
 plot_volcano 
 dev.off()
 
