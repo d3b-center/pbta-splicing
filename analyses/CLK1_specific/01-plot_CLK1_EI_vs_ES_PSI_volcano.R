@@ -53,12 +53,12 @@ diff_splice_df_label <- diff_splice_df %>%
                           TRUE ~ NA_character_))
 
 
-plot_volcano <- ggplot(data=diff_splice_df_label, 
-                      aes(x=IncLevelDifference, y=neg_log10_p, col=dPSI, 
+plot_volcano <- ggplot(data=diff_splice_df_label,
+                      aes(x=IncLevelDifference, y=neg_log10_p, col=dPSI,
                       label=point_label, label.size=.05)) +
-                      geom_point() + 
+                      geom_point() +
                       theme_Publication() +
-                      theme(legend.position="none") + 
+                      theme(legend.position="none") +
                       geom_text_repel() +
                       scale_color_manual(values=c("blue", "grey", "red")) +
                       geom_vline(xintercept=c(-0.20, 0.20), col="black", linetype = "longdash") +
@@ -66,10 +66,9 @@ plot_volcano <- ggplot(data=diff_splice_df_label,
                       xlab("dPSI") +
                       ylab("-log10 p-value")
 
-plot_file = file.path(plots_dir,"dPSI_volcano_CLK1.pdf") 
+plot_file = file.path(plots_dir,"dPSI_volcano_CLK1.pdf")
 
 # Save plot as PDF
 pdf(plot_file, width = 10, height = 10)
-plot_volcano 
+plot_volcano
 dev.off()
-
