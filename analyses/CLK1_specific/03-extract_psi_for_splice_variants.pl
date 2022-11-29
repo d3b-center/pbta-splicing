@@ -9,8 +9,7 @@ if (!-d "results")
   mkdir "results";
 }
 
-if (!-d "results/results_diff")
-{
+if (!-d "results/results_diff"){
  mkdir "results/results_diff";
 }
 

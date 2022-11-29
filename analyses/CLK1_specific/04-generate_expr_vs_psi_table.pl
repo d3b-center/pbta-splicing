@@ -14,13 +14,13 @@
 use strict;
 
 ## input files inluding rsem transcript counts and PSI tables previously made
-my ($stranded_rsem, $polyA_rsem, $psi) = ($ARGV[0],$ARGV[1],$ARGV[2]);
+my ($stranded_rsem, $psi) = ($ARGV[0],$ARGV[1]);
 
 ##hard-coded list of splice ids to get expression for
 my $input= "input/diffSplicing_cand.filterDiffExpr.txt";
 
-my @samples;
 my %sample_psi;
+my @samples;
 my @genes;
 my @gene_list;
 my %gene_list;

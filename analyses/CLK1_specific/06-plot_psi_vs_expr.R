@@ -5,15 +5,13 @@
 # usage: Rscript 05-plot_psi_vs_expr.R
 ################################################################################
 
+## libraries needed
 suppressPackageStartupMessages({
   library("ggplot2")
   library("dplyr")
   library("tidyverse")
   
 })
-
-# Get `magrittr` pipe
-`%>%` <- dplyr::`%>%`
 
 ## set directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -23,6 +21,9 @@ analysis_dir <- file.path(root_dir, "analyses", "CLK1_specific")
 input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
+
+# Get `magrittr` pipe
+`%>%` <- dplyr::`%>%`
 
 ## function to get stats from to print on box plot
 get_box_stats <- function(y, upper_limit = max(corr_df$V3) * 1.15) {
@@ -54,8 +55,6 @@ p <- ggplot(corr_df, aes(V3, V2))  + stat_boxplot(fill = "lightgreen", colour = 
                                      xlab("correlation coeff") + geom_jitter(width = 0.3) + ylab("") + xlim(-1,1) + 
                                      ggtitle(" Exon splicing vs gene expression") +  stat_summary(fun.data = get_box_stats, geom = "text", hjust = .4, vjust = .2) +
                                       theme_Publication()  
-
-
 
 ## save plot
 ggsave(file_corr_plot, width = 15, height = 5)
