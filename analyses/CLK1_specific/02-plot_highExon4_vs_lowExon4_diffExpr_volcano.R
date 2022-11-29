@@ -31,6 +31,7 @@ tab_rsem <- readRDS(paste0(data_dir, "/v1/", file_gene_counts)) %>%
            'BS_PZVHMSYN',  'BS_DRY58DTF','BS_GXTFW99H','BS_E60JZ9Z3',
            'BS_9CA93S6D'))
 
+# remove genes which do not have TPM >=10 in at least 8 samples
 countTable <- tab_rsem[rowSums(tab_rsem>=10) > 8, ]
 
 ## construct metadata
@@ -48,15 +49,16 @@ cds <- DESeq(cds)
 
 res <- results(cds)
 
-res$Significant <- ifelse(res$pvalue< 0.05, "P-val < 0.05", "Not Sig")
+# add significance column 
+res$Significant <- ifelse(res$padj< 0.05, "P-val < 0.05", "Not Sig")
 
 volc_plot <- EnhancedVolcano(res,
                 lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",row.names(res)), ## remove ensembleid portion
                 x = 'log2FoldChange',
-                y = 'pvalue',
+                y = 'padj',
                 ylim = c(0,8),
                 xlim = c(-4,4),
-                title = 'Low Exon 4  versus High Exon 4 Tumors',
+                title = 'Tumors with low vs. high CLK1 exon 4 inclusion',
                 pCutoff = 0.005,
                 subtitle = NULL,
                 FCcutoff = 2,
@@ -67,7 +69,7 @@ volc_plot <- EnhancedVolcano(res,
                 widthConnectors = 0.15,
                 colConnectors = 'black')
 
-plot_file = file.path(plots_dir,"highExon4_vs_lowExon4.volano.pdf") 
+plot_file = file.path(plots_dir,"high_v_low_clk1_exon4_inclusion.volano.pdf") 
 
 # Save plot as PDF
 pdf(plot_file, 
