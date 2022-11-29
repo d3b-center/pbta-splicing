@@ -17,5 +17,4 @@ END { # Print final data
 }
 
 # Not a typo, awk is fed inputfile twice.
-# This avoids needing to store the entire massive file in memory.
-
+# This avoids needing to store the entire massive file in memory

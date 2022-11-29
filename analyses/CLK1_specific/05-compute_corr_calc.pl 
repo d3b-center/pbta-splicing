@@ -7,4 +7,5 @@ foreach my $file (@psi_expr)
   my $entries = `wc -l $file`;
   next if $entries < 21;
   system("awk -f stdev.awk -f pearson.awk $file $file")
+
 }
