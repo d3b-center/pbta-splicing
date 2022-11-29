@@ -42,11 +42,35 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 splice_index_file <- file.path(results_dir, "splicing_index.total.txt")
 splice_index_df <- readr::read_tsv(splice_index_file)
 
+
 splice_index <- splice_index_df %>%
   as.data.frame(stringsAsFactors = FALSE)
 
 # Set up the data.frame for plotting
-si_plot <- si_cdf %>%
+si_cdf_plot <- splice_index %>%
+  
+  # We only really need these two variables from data.frame
+  dplyr::transmute(
+    group = Histology,
+    number = (as.numeric(SI*100))
+  ) %>%
+  
+  # Group by specified column
+  dplyr::group_by(group) %>%
+  
+  # Only keep groups with the specified minimum number of samples
+  dplyr::filter(dplyr::n() > 1) %>%
+  
+  # Calculate group median
+  dplyr::mutate(
+    group_median = median(number, na.rm = TRUE),
+    group_rank = rank(number, ties.method = "first") / dplyr::n(),
+    sample_size = paste0("n = ", dplyr::n())
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(group = reorder(group, group_median)) 
+
+si_cdf_plot %>%
   # Now we will plot these as cumulative distribution plots
   ggplot2::ggplot(ggplot2::aes(
     x = group_rank,
