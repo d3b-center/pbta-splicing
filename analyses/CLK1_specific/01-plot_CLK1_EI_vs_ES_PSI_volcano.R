@@ -20,7 +20,6 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1_specific")
 
-input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
@@ -38,7 +37,7 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 
-diff_splice_file <- file.path(input_dir,"CLK1_EI_vs_CLK1_ES_nondenovo.tsv")
+diff_splice_file <- file.path(data_dir,"CLK1_EI_vs_CLK1_ES_nondenovo.tsv")
 diff_splice_df <- read_tsv(diff_splice_file)
 
 # Add a few columns required for plotting
