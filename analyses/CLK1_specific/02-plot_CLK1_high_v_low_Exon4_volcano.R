@@ -50,7 +50,7 @@ cds <- DESeq(cds)
 res <- results(cds)
 
 # add significance column 
-res$Significant <- ifelse(res$padj< 0.05, "P-val < 0.05", "Not Sig")
+# res$Significant <- ifelse(res$padj< 0.05, "P-val < 0.05", "Not Sig")
 
 volc_plot <- EnhancedVolcano(res,
                 lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",row.names(res)), ## remove ensembleid portion
