@@ -15,7 +15,7 @@ input_file="$script_directory"/""
 
 ## make plots
 Rscript 01-plot_CLK1_EI_vs_ES_PSI_volcano.R
-Rscript 02-plot_highExon4_vs_lowExon4_diffExpr_volcano.R
+Rscript 02-plot_CLK1_high_v_low_Exon4_volcano.R
 
 ## run expression vs splicing correlation analyses ##
 ## get splicing information from input list and extract PSI for each sample
