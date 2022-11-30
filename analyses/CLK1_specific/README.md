@@ -13,7 +13,7 @@ The purpose of this module is to identify differential splicing and expression a
 
 Input files:
 ```
-input/dca735c2-6e0e-4239-8a68-10c6d2aa9015.CLK1_EI_vs_CLK1_ES.non_denovo.SE.MATS.JC.txt
+input/CLK1_EI_vs_CLK1_ES_nondenovo.tsv
 ```
 
 
