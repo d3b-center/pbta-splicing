@@ -14,8 +14,5 @@ echo $script_directory
 input_file="$script_directory"/""
 
 ## make plots
-Rscript splicing_functional_sites.R results/splicing_events.total.pos.intersectUnip.ggplot.txt results/splicing_events.total.neg.intersectUnip.ggplot.txt
-Rscript CLK1_EI_vs_ES_PSI_volcano.R   
-Rsript PSI_ggstatplot_across_types.R 
-Rscript highExon4_vs_lowExon4_diffExpr_volcano.R
-
+Rscript 01-plot_CLK1_EI_vs_ES_PSI_volcano.R
+Rscript 02-plot_CLK1_high_v_low_Exon4_volcano.R
