@@ -32,8 +32,5 @@ perl 03-generate_hist_spec_events_tab_using_tumors.pl $hist_file $rmats_file
 Rscript 04-plot_histology-specific_splicing_events.R
 
 ## differential gene expression
-# format rsem count files for volcano plots and DeSeq2
-#perl 03-format_rsem_SI_diffExpr.pl
-
 # generate volcano plot of high vs low splicing burden tumors
 Rscript 05-plot_diffExp_highlowSBI.R
