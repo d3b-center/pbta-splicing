@@ -62,8 +62,8 @@ plot_volcano <- ggplot(data=diff_splice_df_label,
                       scale_color_manual(values=c("blue", "grey", "red")) +
                       geom_vline(xintercept=c(-0.20, 0.20), col="black", linetype = "longdash") +
                       geom_hline(yintercept=-log10(0.05), col="black",linetype = "longdash") +
-                      xlab("dPSI") +
-                      ylab("-log10 p-value")
+                      xlab(bquote("dPSI")) +
+                      ylab(bquote(bold(~-log[10] ~ "p-value")))
 
 plot_file = file.path(plots_dir,"dPSI_volcano_CLK1.pdf")
 
