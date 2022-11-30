@@ -11,12 +11,6 @@ The purpose of this module is to identify differential splicing and expression a
 ./run_module.sh
 ```
 
-Input files:
-```
-input/CLK1_EI_vs_CLK1_ES_nondenovo.tsv
-```
-
-
 ## Folder content
 * `run_module.sh` takes the files from above and generates differential splicing and expression plots
 * `01-plot_CLK1_EI_vs_ES_PSI_volcano.R` processing output from rMATS and generates volcano plot deposited in `plots/`

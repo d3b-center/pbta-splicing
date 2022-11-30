@@ -23,10 +23,10 @@ results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
 ## get data files and make table
-file_gene_counts = "gene-counts-rsem-expected_count-collapsed.rds" 
+file_gene_counts <- file.path(data_dir, "gene-counts-rsem-expected_count-collapsed.rds") 
 
 ## extract relevant samples only (top 4 exon 4 inclusion vs and lowest ex4 inclusion)
-tab_rsem <- readRDS(paste0(data_dir, "/v1/", file_gene_counts)) %>%  
+tab_rsem <- readRDS(file_gene_counts) %>%  
   select(c('BS_Q13FQ8FV', 'BS_ZV1P6W9C','BS_WH8G4VFB','BS_NNPEC7W1',
            'BS_PZVHMSYN',  'BS_DRY58DTF','BS_GXTFW99H','BS_E60JZ9Z3',
            'BS_9CA93S6D'))
