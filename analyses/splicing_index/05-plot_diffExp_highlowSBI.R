@@ -39,12 +39,12 @@ file_volc_hgat_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_hgat_sb
 file_volc_non_hgat_plot <- file.path(analysis_dir, "plots", "enhancedVolcano_nonhgat_sbi.pdf")
 
 #count table for HGGs 
-input      = file.path(input_dir,"tab_rsem.str.sbi.hgat.txt")
-tab_rsem_hgat <- read.delim(input, header=TRUE, row.names=1)
+count_table_hgg      = file.path(input_dir,"tab_rsem.str.sbi.hgat.txt")
+tab_rsem_hgat <- read.delim(count_table_hgg, header=TRUE, row.names=1)
 
-#count table for HGGs 
-input      = file.path(input_dir,"tab_rsem.str.sbi.non-hgat.txt")
-tab_rsem_non_hgat <- read.delim(input, header=TRUE, row.names=1)
+#count table for non-HGGs 
+count_table_non_hgg      = file.path(input_dir,"tab_rsem.str.sbi.non-hgat.txt")
+tab_rsem_non_hgat <- read.delim(count_table_non_hgg, header=TRUE, row.names=1)
 
 ## HGAT differential gene expression analysis
 # remove low expression genes
@@ -66,14 +66,13 @@ cds = estimateDispersions(cds)
 cds <- DESeq(cds)
 
 res <- results(cds)
-
-res$Significant <- ifelse(res$pvalue< 0.05, "P-val < 0.05", "Not Sig")
+#res$Significant <- ifelse(res$pvalue< 0.05, "P-val < 0.05", "Not Sig")
 
 volc_hgat_plot <- EnhancedVolcano(res,
                   lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",row.names(res)), ## remove ensembleid portion
                   x = 'log2FoldChange',
-                  y = 'pvalue',
-                  ylim = c(0,30),
+                  y = 'padj',
+                  ylim = c(0,3),
                   xlim = c(-2,2),
                   title = 'Low vs High SBI (HGGs)',
                   subtitle = NULL,
@@ -115,14 +114,14 @@ cds <- DESeq(cds)
 
 res <- results(cds)
 
-res$Significant <- ifelse(res$pvalue< 0.05, "P-val < 0.05", "Not Sig")
+#res$Significant <- ifelse(res$pvalue< 0.05, "P-val < 0.05", "Not Sig")
 
 volc_non_hgat_plot <- EnhancedVolcano(res,
                 lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",row.names(res)), ## remove ensembleid portion
                 x = 'log2FoldChange',
-                y = 'pvalue',
-                ylim = c(0,30),
-                xlim = c(-2,2),
+                y = 'padj',
+                ylim = c(0,25),
+                xlim = c(-3,3),
                 title = 'Low vs High SBI (non HGGs)',
                 subtitle = NULL,
                 caption = NULL,
