@@ -31,11 +31,11 @@ upsetR_ei_plot_file <- file.path(analysis_dir, "plots", "upsetR_histology-specif
 
 ## exon skipping
 ATRT_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.ATRT.txt"), sep = "\t", header=FALSE)
-CPG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.Craniopharyngioma.txt"), sep = "\t", header=FALSE)
-GNG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.Ganglioglioma.txt"), sep = "\t", header=FALSE)
-EPN_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.Ependymoma.txt"), sep = "\t", header=FALSE)
+CPG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.CPG.txt"), sep = "\t", header=FALSE)
+GNG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.GNG.txt"), sep = "\t", header=FALSE)
+EPN_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.EPN.txt"), sep = "\t", header=FALSE)
 HGG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.HGG.txt"), sep = "\t", header=FALSE)
-MB_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.Medulloblastoma.txt"), sep = "\t", header=FALSE)
+MB_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.MB.txt"), sep = "\t", header=FALSE)
 LGG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.LGG.txt"), sep = "\t", header=FALSE)
 
 listInput <- list("ATRT" =ATRT_events$V1, 
@@ -59,11 +59,11 @@ dev.off()
 
 ## exon inclusion
 ATRT_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.ATRT.txt"), sep = "\t", header=FALSE)
-CPG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.Craniopharyngioma.txt"), sep = "\t", header=FALSE)
-GNG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.Ganglioglioma.txt"), sep = "\t", header=FALSE)
-EPN_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.Ependymoma.txt"), sep = "\t", header=FALSE)
+CPG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.CPG.txt"), sep = "\t", header=FALSE)
+GNG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.GNG.txt"), sep = "\t", header=FALSE)
+EPN_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.EPN.txt"), sep = "\t", header=FALSE)
 HGG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.HGG.txt"), sep = "\t", header=FALSE)
-MB_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.Medulloblastoma.txt"), sep = "\t", header=FALSE)
+MB_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.MB.txt"), sep = "\t", header=FALSE)
 LGG_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.LGG.txt"), sep = "\t", header=FALSE)
 
 listInput_ei <- list("ATRT" =ATRT_events$V1, 

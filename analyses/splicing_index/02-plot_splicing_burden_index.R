@@ -105,7 +105,7 @@ filename_si_plot= paste0(plots_dir, file_si_plot)
 
 # Save plot as PDF
 pdf(filename_si_plot, width = 24, height = 7)
-si_plot
+si_cdf_plot
 dev.off()
 
 ## survival based on high vs low SBI
