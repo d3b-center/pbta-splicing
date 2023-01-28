@@ -69,7 +69,7 @@ si_plot <- si_cdf_plot %>%
   # Now we will plot these as cumulative distribution plots
   ggplot2::ggplot(ggplot2::aes(
     x = group_rank,
-    y = SI
+    y = log(SI+1, 10)
   )) +
   
   ggplot2::geom_point(color = "black", alpha =0.7, shape = 1) +
@@ -77,13 +77,13 @@ si_plot <- si_cdf_plot %>%
   # Add summary line for median
   ggplot2::geom_segment(
     x = 0, xend = 1, color = "red",linetype=2,
-    ggplot2::aes(y = group_median, yend = group_median)
+    ggplot2::aes(y = log(group_median+1,10), yend = log(group_median+1,10))
   ) +
   
   # Separate by histology
   ggplot2::facet_wrap(~ Histology + sample_size, nrow = 1, strip.position = "bottom", labeller = ggplot2::label_wrap_gen(multi_line = FALSE)) +
   ggplot2::xlab("Histology") +
-  ggplot2::ylab("Splicing Burden Index") +
+  ggplot2::ylab("Splicing Burden Index - log10(SI+1)") +
   
   # Making it pretty
   ggplot2::theme(legend.position = "none") +
