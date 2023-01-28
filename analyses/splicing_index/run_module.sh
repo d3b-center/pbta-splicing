@@ -21,7 +21,7 @@ echo "rmats file:" $rmats_file
 
 ## process PSIs and generate tables for splicing index values for each tumor
 echo "processing PSIs and generating tables"
-perl 01-generate_splicing_index_tab_using_tumors.pl $hist_file $rmats_file
+#perl 01-generate_splicing_index_tab_using_tumors.pl $hist_file $rmats_file
 
 ## plot values (SBI) generated from above script in CDF plot
 echo "plotting splicing burden indices"
