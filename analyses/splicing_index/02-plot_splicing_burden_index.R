@@ -15,7 +15,6 @@ suppressPackageStartupMessages({
   library("tidyverse")
   library("viridis")
   library("RColorBrewer")
-  library(survival)
   })
 
 # Get `magrittr` pipe
@@ -53,33 +52,24 @@ splice_index <- splice_index_df %>%
 
 # Set up the data.frame for plotting
 si_cdf_plot <- splice_index %>%
-  
-  # We only really need these two variables from data.frame
-  dplyr::transmute(
-    group = Histology,
-    number = (as.numeric(SI*100))
-  ) %>%
-  
   # Group by specified column
-  dplyr::group_by(group) %>%
-  
+  dplyr::group_by(Histology) %>%
   # Only keep groups with the specified minimum number of samples
   dplyr::filter(dplyr::n() > 1) %>%
-  
   # Calculate group median
   dplyr::mutate(
-    group_median = median(number, na.rm = TRUE),
-    group_rank = rank(number, ties.method = "first") / dplyr::n(),
+    group_median = median(SI, na.rm = TRUE),
+    group_rank = rank(SI, ties.method = "first") / dplyr::n(),
     sample_size = paste0("n = ", dplyr::n())
   ) %>%
   dplyr::ungroup() %>%
-  dplyr::mutate(group = reorder(group, group_median)) 
+  dplyr::mutate(Histology = reorder(Histology, group_median)) 
 
 si_plot <- si_cdf_plot %>%
   # Now we will plot these as cumulative distribution plots
   ggplot2::ggplot(ggplot2::aes(
     x = group_rank,
-    y = number
+    y = SI
   )) +
   
   ggplot2::geom_point(color = "black", alpha =0.7, shape = 1) +
@@ -91,7 +81,7 @@ si_plot <- si_cdf_plot %>%
   ) +
   
   # Separate by histology
-  ggplot2::facet_wrap(~ group + sample_size, nrow = 1, strip.position = "bottom", labeller = ggplot2::label_wrap_gen(multi_line = FALSE)) +
+  ggplot2::facet_wrap(~ Histology + sample_size, nrow = 1, strip.position = "bottom", labeller = ggplot2::label_wrap_gen(multi_line = FALSE)) +
   ggplot2::xlab("Histology") +
   ggplot2::ylab("Splicing Burden Index") +
   
