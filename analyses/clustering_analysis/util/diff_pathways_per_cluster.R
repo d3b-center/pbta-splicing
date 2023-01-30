@@ -95,7 +95,7 @@ diff_pathways_per_cluster <- function(input_mat, cluster_output, n_cluster, gene
   DEpwys_annot['sample_id'] <- NULL
   DEpwys_annot$cluster_class <- as.character(DEpwys_annot$cluster_class)
   
-  # annotation colors
+  # create annotation for cluster class
   gg_color_hue <- function(n) {
     hues = seq(15, 375, length = n + 1)
     hcl(h = hues, l = 65, c = 100)[1:n]
@@ -105,12 +105,33 @@ diff_pathways_per_cluster <- function(input_mat, cluster_output, n_cluster, gene
   mycolors <- list()
   mycolors[['cluster_class']] <- l 
   
+  # color palette for cancer group
+  palettes_dir <- "../../palettes/"
+  histology_table <- file.path(palettes_dir, "histology_label_color_table.tsv") %>% read_tsv()
+  DEpwys_annot <- DEpwys_annot %>%
+    rownames_to_column("Kids_First_Biospecimen_ID") %>%
+    inner_join(histology_table, by = "Kids_First_Biospecimen_ID") %>%
+    dplyr::select(Kids_First_Biospecimen_ID, cluster_class, cancer_group, cancer_group_hex_codes) %>%
+    column_to_rownames("Kids_First_Biospecimen_ID")
+  
+  # create annotation for cancer group
+  histology_table_sub <- DEpwys_annot %>%
+    dplyr::select(cancer_group, cancer_group_hex_codes) %>%
+    unique()
+  mycolors[['cancer_group']] <- histology_table_sub$cancer_group_hex_codes
+  names(mycolors[['cancer_group']]) <- histology_table_sub$cancer_group
+  
+  # remove colors from annotation table
+  DEpwys_annot$cancer_group_hex_codes <- NULL
+  
   pheatmap::pheatmap(DEpwys_es, scale = "row", 
+                     fontsize_row = 8,
+                     fontsize = 8, 
                      show_colnames = F, 
                      cellwidth = 0.5, cellheight = 10,
                      annotation = DEpwys_annot, 
                      annotation_colors = mycolors, 
                      cluster_cols = cluster_tree, 
                      filename = file.path(output_dir, paste0(prefix, '_top20_pathways.pdf')), 
-                     width = 12, height = 15)
+                     width = 15, height = 8)
 }

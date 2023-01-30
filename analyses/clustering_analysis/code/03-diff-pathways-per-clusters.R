@@ -37,8 +37,8 @@ output_dir <- opt$output_dir
 
 # differential pathway expression per cluster using GSVA
 diff_pathways_per_cluster(input_mat =  input_mat,
-                       cluster_output = cluster_output, 
-                       n_cluster = n_cluster, 
-                       gene_set = gene_set, 
-                       prefix = prefix, 
-                       output_dir = output_dir)
+                          cluster_output = cluster_output, 
+                          n_cluster = n_cluster, 
+                          gene_set = gene_set, 
+                          prefix = prefix, 
+                          output_dir = output_dir)
