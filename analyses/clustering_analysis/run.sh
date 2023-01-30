@@ -29,6 +29,12 @@ Rscript code/03-diff-pathways-per-clusters.R \
 --prefix "non_expr_pan_cancer_splice_subset_km_euclidean_0" \
 --output_dir "output/diff_pathways"
 
+# get heatmap of the CCP matrix
+Rscript code/04-plot-clustering-heatmap.R \
+--ccp_output "output/ccp_output/non_expr_pan_cancer_splice_subset_km_euclidean_0_ccp.rds" \
+--n_cluster "3" \
+--prefix "non_expr_pan_cancer_splice_subset"
+
 # 2) PBTA mRNA expression data (subsetted to samples in the splicing data)
 # get clustering output with same clustering parameters used for pbta splicing dataset
 # we will not be using the CCP clustering output but only the filtered/normalized data matrix for downstream plotting 
