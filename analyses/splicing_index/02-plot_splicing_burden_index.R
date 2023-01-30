@@ -39,8 +39,6 @@ file_si_plot = "SI_total.tiff"
 # source functions
 figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
-util_dir <- file.path(root_dir, "util")
-source(file.path(util_dir, "survival_models.R"))
 
 # read in SI file
 splice_index_file <- file.path(results_dir, "splicing_index.total.txt")
@@ -95,6 +93,7 @@ si_plot <- si_cdf_plot %>%
   )  
 
 dev.set(dev.next())
+
 # Save plot
 tiff(file.path(plots_dir, file_si_plot), height = 1200, width = 3000, res = 300)
 print(si_plot)
