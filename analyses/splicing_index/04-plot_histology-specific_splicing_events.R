@@ -28,6 +28,8 @@ if(!dir.exists(plots_dir)){
 ## output files for final plots
 upsetR_es_plot_file     <- file.path(analysis_dir, "plots", "upsetR_histology-specific.es.pdf")
 upsetR_ei_plot_file <- file.path(analysis_dir, "plots", "upsetR_histology-specific.ei.pdf")
+upsetR_tiff_es_plot_file     <- file.path(analysis_dir, "plots", "upsetR_histology-specific.es.tiff")
+upsetR_tiff_ei_plot_file <- file.path(analysis_dir, "plots", "upsetR_histology-specific.ei.tiff")
 
 ## exon skipping
 ATRT_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.pos.ATRT.txt"), sep = "\t", header=FALSE)
@@ -55,7 +57,10 @@ pdf(upsetR_es_plot_file, width = 16, height = 8)
 es_events
 dev.off()
 
-
+# Save plot tiff version
+tiff(upsetR_tiff_es_plot_file, height = 1200, width = 2400, res = 300)
+print(es_events)
+dev.off()
 
 ## exon inclusion
 ATRT_events = read.delim(paste0(results_dir, "/splicing_events.hist-labeled_list.thr10freq.neg.ATRT.txt"), sep = "\t", header=FALSE)
@@ -82,6 +87,11 @@ ei_events <- upset(fromList(listInput_ei),
 # Save plot as PDF
 pdf(upsetR_ei_plot_file, width = 16, height = 8)
 ei_events
+dev.off()
+
+# Save plot tiff version
+tiff(upsetR_tiff_ei_plot_file, height = 1200, width = 2400, res = 300)
+print(ei_events)
 dev.off()
 
 
