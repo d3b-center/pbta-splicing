@@ -30,6 +30,7 @@ plots_dir   <- file.path(analysis_dir, "plots")
 
 ## output file names for plots
 file_flip_events_plot <- file.path(analysis_dir, "plots", "flip_barplots.pdf")
+file_tiff_flip_events_plot <- file.path(analysis_dir,"plots","flip_barplots.tiff")
 
 ## retrieve psi values from tables
 file_psi_pos_total <- "/splicing_events.total.pos.tsv"
@@ -85,5 +86,10 @@ plot_flip <- ggplot(num_of_hits_perc, aes(x = type, y = counts, fill = event)) +
 pdf(file_flip_events_plot, 
     width = 22.1417, height = 6.84252)
 plot_flip
+dev.off()
+
+# Save plot tiff version
+tiff(file_tiff_flip_events_plot, height = 1200, width = 3200, res = 300)
+print(plot_flip)
 dev.off()
 

@@ -39,6 +39,8 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 ## output files for final plots
 file_dpsi_skip_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_pos.pdf")
 file_dpsi_incl_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_neg.pdf")
+file_tiff_dpsi_skip_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_pos.tiff")
+file_tiff_dpsi_incl_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_neg.tiff")
 
 ## retrieve psi values from tables
 file_psi_pos_func <-  file.path(results_dir,"splicing_events.total.pos.intersectUnip.ggplot.txt")
@@ -64,12 +66,17 @@ plot_incl <- ggstatsplot::ggbetweenstats(
   xlab = "Unipro-defined Site",
   pairwise.comparisons = FALSE,
   messages = FALSE
-) + theme_Publication()
+) + theme_Publication() + labs(y=expression(Delta*PSI)) 
 
 # Save plot as PDF
 pdf(file_dpsi_incl_plot, 
     width = 15, height = 5)
 plot_incl
+dev.off()
+
+# Save plot tiff version
+tiff(file_tiff_dpsi_incl_plot, height = 1200, width = 3600, res = 300)
+print(plot_incl)
 dev.off()
 
 
@@ -89,11 +96,16 @@ plot_skip <- ggstatsplot::ggbetweenstats(
   xlab = "Unipro-defined Site",
   pairwise.comparisons = FALSE,
   messages = FALSE
-) + theme_Publication()
+) + theme_Publication() + labs(y=expression(Delta*PSI)) 
 
 # Save plot as PDF
 pdf(file_dpsi_skip_plot, 
     width = 15, height = 5)
 plot_skip
+dev.off()
+
+# Save plot tiff version
+tiff(file_tiff_dpsi_skip_plot, height = 1200, width = 3600, res = 300)
+print(plot_skip)
 dev.off()
 
