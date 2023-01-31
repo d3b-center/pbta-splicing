@@ -11,7 +11,7 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 ## histology input file (column orders important)
-input_file="../../data/v1/histologies.tsv"
+input_file="../../data/histologies.tsv"
 
 echo "input file:" $input_file
 echo "process rMATS with .20 dPSI and 10 junction read counts...";
