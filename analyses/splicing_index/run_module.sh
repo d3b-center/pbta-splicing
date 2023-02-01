@@ -11,17 +11,26 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 echo $script_directory
-#hist_file="$script_directory"/"$1" # ../psi_clustering/input/pbta-histologies.RNA-Seq.initial.tsv
-#rmats_file="$script_directory"/"$2" #/../data/merge_rMATS_splicing.SE.single.tsv
 
-hist_file="../../data/pbta-histologies.RNA-Seq.initial.tsv"
-rmats_file="../../data/merge_rMATS_splicing.SE.single.tsv"
+## histology and rmats file
+hist_file="../../data/histologies.tsv"
+rmats_file="../../data/rMATS_merged.single.SE.tsv.gz"
 
 echo "hist file:" $hist_file
 echo "rmats file:" $rmats_file
 
+## process PSIs and generate tables for splicing index values for each tumor
 echo "processing PSIs and generating tables"
-perl generate_splicing_index_tab_using_tumors.pl $hist_file $rmats_file
+perl 01-generate_splicing_index_tab_using_tumors.pl $hist_file $rmats_file
 
-echo "plotting"
-Rscript splicing_index_tumors.R
+## plot values (SBI) generated from above script in CDF plot
+echo "plotting splicing burden indices"
+Rscript 02-plot_splicing_burden_index.R
+
+## 10% histology specific splicing based on splicing index computations
+perl 03-generate_hist_spec_events_tab_using_tumors.pl $hist_file $rmats_file
+Rscript 04-plot_histology-specific_splicing_events.R
+
+## differential gene expression
+# generate volcano plot of high vs low splicing burden tumors
+Rscript 05-plot_diffExp_highlowSBI.R
