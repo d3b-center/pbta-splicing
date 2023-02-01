@@ -5,8 +5,8 @@ Aberrant splicing in brain tumors
 
 ### docker pull and run
 ```
-docker pull jrokita1/pbta-splicing:latest
-docker run --name test -d -e PASSWORD=pass -p 8787:8787 -v $PWD:/home/rstudio/pbta-splicing jrokita1/pbta-splicing:latest
+docker pull pgc-images.sbgenomics.com/naqvia/pbta-splicing:latest
+docker run --platform linux/amd64 --name <CONTAINER_NAME> -d -e PASSWORD=pass -p 8787:8787 -v $PWD:/home/rstudio/pbta-splicing pgc-images.sbgenomics.com/naqvia/pbta-splicing:latest
 ```
 ### docker execute
 ```
