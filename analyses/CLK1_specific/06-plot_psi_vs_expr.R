@@ -38,17 +38,22 @@ get_box_stats <- function(y, upper_limit = max(corr_df$V3) * 1.15) {
 
 ## output files for final plots
 file_corr_plot <- file.path(analysis_dir, "plots", "corr_CLK1_spl_vs_expr.pdf")
+file_tiff_corr_plot <- file.path(analysis_dir, "plots", "corr_CLK1_spl_vs_expr.tiff")
 
 corr_expr_spl_file = file.path(results_dir, "expr_vs_psi_corr_res.txt")
 corr_df=read.delim(corr_expr_spl_file,header=FALSE,sep = " ", row.names = NULL)
 
 ## make corr plot
-p <- ggplot(corr_df, aes(V3, V2))  + stat_boxplot(fill = "lightgreen", colour = "black", outlier.colour = "red") + 
-  xlab("correlation coeff") + geom_jitter(width = 0.3) + ylab("") + xlim(-1,1) + 
-  ggtitle(" Exon splicing vs gene expression") +  stat_summary(fun.data = get_box_stats, geom = "text", hjust = .4, vjust = .2) +
+boxplot_corr <- ggplot(corr_df, aes(V3, V2))  + stat_boxplot(fill = "lightgreen", colour = "black", outlier.colour = "red") +
+  xlab("correlation coeff") + geom_jitter(width = 0.3, shape=16) + ylab("") + xlim(-1,1) + 
+  ggtitle("Exon splicing vs gene expression") +  stat_summary(fun.data = get_box_stats, geom = "text", hjust = .4, vjust = .2) +
   theme_Publication()  
-
-
 
 ## save plot
 ggsave(file_corr_plot, width = 15, height = 5)
+
+## save plot in tiff format
+# Save plot tiff version
+tiff(file_tiff_corr_plot, height = 1200, width = 3600, res = 300)
+print(boxplot_corr)
+dev.off()
