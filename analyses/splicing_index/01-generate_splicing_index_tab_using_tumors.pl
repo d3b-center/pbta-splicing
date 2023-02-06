@@ -212,6 +212,6 @@ foreach my $sample(@bs_ids_uniq)
 
   print TAB $total_absplice_totals_per_sample,"\t";
   print TAB $splice_index,"\t";
-  print TAB $bs_id_hist{$sample},"\n";
+  #print TAB $bs_id_hist{$sample},"\n";
 }
 close(TAB);

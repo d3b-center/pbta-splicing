@@ -12,6 +12,8 @@ suppressPackageStartupMessages({
   library("grid")
   library("cowplot")
   library("viridis")
+  library("vroom")
+  library("tidyverse")
 })
 
 #Get `magrittr` pipe

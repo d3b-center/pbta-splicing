@@ -225,7 +225,7 @@ foreach $hist (@broad_hist_uniq)
 
         if($splice_event_per_pos_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_pos_hist_count{$event}{$hist};
-          print $event,"\t",$hist,"\t",$total_hist_count,"*\n";
+          print $event,"\t",$hist,"\t",$total_hist_count,"\n";
           if( ($event_count/$total_hist_count) >= .10 )
           {
             print TAB $event,"\t",$hist,"\tskipping\n";
