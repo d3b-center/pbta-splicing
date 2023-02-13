@@ -81,5 +81,5 @@ pheatmap(CC_consensus_mat,
          annotation_col = CC_annot, 
          annotation_colors = mycolors, 
          cluster_cols = CC_tree, 
-         filename = file.path(output_dir, paste0(prefix, '_ccp_heatmap.pdf')), 
-         width = 12, height = 8)
+         filename = file.path(output_dir, paste0(prefix, '_ccp_heatmap.tiff')), 
+         width = 12, height = 18)
