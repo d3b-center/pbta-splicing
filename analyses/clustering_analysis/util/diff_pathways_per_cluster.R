@@ -132,6 +132,6 @@ diff_pathways_per_cluster <- function(input_mat, cluster_output, n_cluster, gene
                      annotation = DEpwys_annot, 
                      annotation_colors = mycolors, 
                      cluster_cols = cluster_tree, 
-                     filename = file.path(output_dir, paste0(prefix, '_top20_pathways.pdf')), 
-                     width = 15, height = 8)
+                     filename = file.path(output_dir, paste0(prefix, '_top20_pathways.tiff')), 
+                     width = 16, height = 20)
 }
