@@ -211,54 +211,44 @@ foreach my $sample(@bs_ids_uniq)
 my @ab_splicing_events_pos_uniq = do { my %seen; grep { !$seen{$_}++ } @ab_splicing_events_pos };
 my @ab_splicing_events_neg_uniq = do { my %seen; grep { !$seen{$_}++ } @ab_splicing_events_neg };
 
+my $output_file = "results/splicing_events.hist-labeled_list.thr10freq.txt";
+open(TAB,">".$output_file) || die("Cannot Open File");
 
-#print "Event\tHistology\n";
+print TAB "splicing_event\thistology\ttype\n";
 
+## save and report skipping events
 foreach $hist (@broad_hist_uniq)
 {
-  my $output_file = "results/splicing_events.hist-labeled_list.thr10freq.pos.".$hist.".txt";
-  open(TAB,">".$output_file);
-  #print TAB "Event\tHistology\n";
   foreach my $event (@ab_splicing_events_pos_uniq)
   {
-  #rint $event,"\t",$hist,"\n";
         my $total_hist_count = $hist_count{$hist};
-        #print $event,"\t",$hist,"\t",$total_hist_count,"*\n";
 
         if($splice_event_per_pos_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_pos_hist_count{$event}{$hist};
-          #print $event,"\t",$hist,"\t",$total_hist_count,"*\n";
+          print $event,"\t",$hist,"\t",$total_hist_count,"\n";
           if( ($event_count/$total_hist_count) >= .10 )
           {
-            print TAB $event,"\t",$hist,"\n";
+            print TAB $event,"\t",$hist,"\tskipping\n";
           }
         }
   }
-  close(TAB);
-
-
 }
 
+## save and report inclusion events
 foreach $hist (@broad_hist_uniq)
 {
-  my $output_file = "results/splicing_events.hist-labeled_list.thr10freq.neg.".$hist.".txt";
-  open(TAB,">".$output_file);
-  #print TAB "Event\tHistology\n";
   foreach my $event (@ab_splicing_events_neg_uniq)
   {
-  #rint $event,"\t",$hist,"\n";
         my $total_hist_count = $hist_count{$hist};
-        #print $event,"\t",$hist,"\t",$total_hist_count,"*\n";
-
         if($splice_event_per_neg_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_neg_hist_count{$event}{$hist};
           #print $event,"\t",$hist,"\t",$total_hist_count,"*\n";
           if( ($event_count/$total_hist_count) >= .10 )
           {
-            print TAB $event,"\t",$hist,"\n";
+            print TAB $event,"\t",$hist,"\tinclusion\n";
           }
         }
   }
-  close(TAB);
-
 }
+
+close(TAB);
