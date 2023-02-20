@@ -46,8 +46,11 @@ file_tiff_dpsi_incl_plot <- file.path(analysis_dir, "plots", "dPSI_across_functi
 file_psi_pos_func <-  file.path(results_dir,"splicing_events.total.pos.intersectUnip.ggplot.txt")
 file_psi_neg_func <-  file.path(results_dir,"splicing_events.total.neg.intersectUnip.ggplot.txt")
 
-dpsi_unip_pos <- read.table(file_psi_pos_func, header=TRUE,sep = "\t") ## read table of recurrent functional splicing (skipping)
-dpsi_unip_neg <- read.table(file_psi_neg_func, header=TRUE,sep = "\t") ## read table of recurrent functional splicing (inclusion)
+## read table of recurrent functional splicing (skipping)
+dpsi_unip_pos <- read.table(file_psi_pos_func, header=TRUE,sep = "\t") %>% mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\_")[, 2]) 
+
+## read table of recurrent functional splicing (inclusion) 
+dpsi_unip_neg <- read.table(file_psi_neg_func, header=TRUE,sep = "\t") %>% mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\_")[, 2]) 
 
 ## ggstatplot across functional sites
 set.seed(123)
@@ -57,14 +60,15 @@ plot_incl <- ggstatsplot::ggbetweenstats(
   y = dPSI,
   k = 3,
   nboot = 15,
-  outlier.label = SpliceID, # label to attach to outlier values
-  outlier.label.args = list(color = "red"), # outlier point label color
+  outlier.label = gene, # label to attach to outlier values
+  outlier.label.args = list(color = "red", size=1.8), # outlier point label color
   notch = TRUE,
   mean.ci = TRUE,
   outlier.tagging = TRUE,
   type = "robust",
   xlab = "Unipro-defined Site",
   pairwise.comparisons = FALSE,
+  #options(ggrepel.max.overlaps = 30),
   messages = FALSE
 ) + theme_Publication() + labs(y=expression(Delta*PSI)) 
 
@@ -87,14 +91,15 @@ plot_skip <- ggstatsplot::ggbetweenstats(
   y = dPSI,
   k = 3,
   nboot = 15,
-  outlier.label = SpliceID, # label to attach to outlier values
-  outlier.label.args = list(color = "red"), # outlier point label color
+  outlier.label = gene, # label to attach to outlier values
+  outlier.label.args = list(color = "red", size = 1.8), # outlier point label color
   notch = TRUE,
   mean.ci = TRUE,
-  #outlier.tagging = TRUE,
+  outlier.tagging = TRUE,
   type = "robust",
   xlab = "Unipro-defined Site",
   pairwise.comparisons = FALSE,
+  options(ggrepel.max.overlaps = 10),
   messages = FALSE
 ) + theme_Publication() + labs(y=expression(Delta*PSI)) 
 
