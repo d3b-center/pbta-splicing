@@ -34,14 +34,10 @@ while(<>)
 	$out_file .= $gene."_".$exon_coords_mod."_".$upstream_ec."_".$downstream_ec."\.txt";
   $out_file =~s/\\t/\-/g;
   #system("cat ~/Desktop/pbta-splicing/data/merge_rMATS_splicing.SE.single.tsv | grep $gene | grep \"$exon_coords_mod\" | grep \"$upstream_ec\" | grep \"$downstream_ec\" | awk \'{print \$2\"\t\"\$34}\' > test_lsv.txt");
-  system ("cat ../../data/v1/rMATS_merged.single.SE.tsv.gz | zcat | grep $gene | grep \"$exon_coords_mod\" | grep \"$upstream_ec\" | grep \"$downstream_ec\" | awk \'{print \$2\"\\t\"\$34}\' > $out_file");
+  system ("cat ../../data/rMATS_merged.single.SE.tsv.gz | zcat | grep $gene | grep \"$exon_coords_mod\" | grep \"$upstream_ec\" | grep \"$downstream_ec\" | awk \'{print \$2\"\\t\"\$34}\' > $out_file");
   print $out_file,"\n";
 #	 print "\n";
 
 
 
 }
-__DATA__
-
-cat ~/Desktop/pbta-splicing/data/merge_rMATS_splicing.SE.single.tsv | grep SRSF6 | grep "43459152\t43459420" | grep "43458360\t43458509" | grep "43459770\t43459895" | awk '{print $2"\t"$34}' > SRSF6_43459153-43459420_43458360-43458509_43459770-43459895.PSI.SE.txt
-RBM39_35740525-35740597_35738967-35739017_35740823-35740887
