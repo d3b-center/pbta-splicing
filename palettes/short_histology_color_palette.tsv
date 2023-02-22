@@ -1,8 +1,8 @@
-short_histology	Abbrev	Color
-Ependymoma	EPN	#CC6677
-Craniopharyngioma	CNG	#DDCC77
-HGAT	HGG	#117733
-LGAT	LGG	#88CCEE
-Medulloblastoma	MB	#882255
-Ganglioglioma	GNG	#44AA99
-ATRT	ATRT	#999933
+short_histology	Abbrev	Color	plot_group_display
+Ependymoma	EPN	#CC6677	Ependymoma
+Craniopharyngioma	CPG	#DDCC77	Craniopharyngioma
+HGAT	HGG	#117733	High-grade glioma
+LGAT	LGG	#88CCEE	Low-grade glioma
+Medulloblastoma	MB	#882255	Medulloblastoma
+Ganglioglioma	GNG	#44AA99	Ganglioglioma
+ATRT	ATRT	#999933	Atypical Teratoid Rhabdoid Tumor
