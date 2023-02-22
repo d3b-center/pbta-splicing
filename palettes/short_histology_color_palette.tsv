@@ -1,4 +1,4 @@
-short_histology	Abbrev	Color	plot_group_display
+short_histology	abbreviation	hex_code	plot_group_display
 Ependymoma	EPN	#CC6677	Ependymoma
 Craniopharyngioma	CPG	#DDCC77	Craniopharyngioma
 HGAT	HGG	#117733	High-grade glioma
