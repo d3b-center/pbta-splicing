@@ -5,7 +5,7 @@
 # generate table of expression of pct-expr and PSI
 #
 # usage: perl quant_expr_vs_psi_PCT.pl <stranded_counts>
-#        <polyA_counts>  <psi_file>
+#        <psi_file>
 #
 # author: Ammar Naqvi
 ###############################################################
