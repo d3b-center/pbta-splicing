@@ -1,6 +1,9 @@
-library(tidyverse)
-library(broom)
-`%>%` <- dplyr::`%>%`
+################################################################################
+# 08-model_and_plot-gsea.R
+# written by Ammar Naqvi modified from OpenPBTA
+#
+# usage: Rscript 08-model_and_plot-gsea.R
+################################################################################
 
 #Load libraries and define certain constants:
 library(tidyverse)
@@ -18,6 +21,10 @@ plots_dir   <- file.path(analysis_dir, "plots")
 
 # This script contains functions used to modeling GSVA scores
 source("/Users/naqvia/d3b_coding/pbta-splicing/analyses/gsea/util/hallmark_models.R")
+
+## theme for all plots
+# source function for theme for plots 
+source(file.path(figures_dir, "theme_for_plots.R"))
 
 # Significance testing universal threshold
 SIGNIFICANCE_THRESHOLD <- 0.05
@@ -78,9 +85,6 @@ CLK1_group_anova_outpaths <- lapply(rna_library_list, function(x){
 
 ### ANOVA and Tukey analysis of GSVA scores
 
-#Here we perform a series of ANOVAs, for polyA and stranded libraries separately, to determine whether mean GSVA scores for a given grouping are significantly different across hallmarks (pathways). The given groupings examined here are `cancer_group` and `broad_histology`. 
-#In other words, we perform an ANOVA (and associated posthoc Tukey test) for each hallmark as, `hallmark ~ grouping`. Users can specify the grouping variable.
-
 ### Merge histology metadata with each set of gsea scores
 ## First, prepare the data for modeling:
 metadata_with_gsva <- metadata %>%
@@ -112,11 +116,6 @@ for(i in 1:length(rna_library_list)){
 }
 
 ## plot significant pathways in heatmap format
-## theme for all plots
-
-# source function for theme for plots 
-source(file.path(figures_dir, "theme_for_plots.R"))
-
 sign_pathways_hm <- CLK1_model_results[["tukey"]] %>% filter(significant_tukey == TRUE) %>% 
                                                       dplyr::select(hallmark_name)
 
