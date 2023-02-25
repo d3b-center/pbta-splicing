@@ -23,11 +23,7 @@
 # 1. Sonja Hänzelmann, Robert Castelo, and Justin Guinney. 2013. “GSVA: Gene Set Variation Analysis for Microarray and RNA-Seq Data.” BMC Bioinformatics 14 (1): 7. https://doi.org/10.1186/1471-2105-14-7.
 ################################################################################
 
-
-
-#### Set Up Libraries --------------------------------------------------------------------
-
-## Load and/or install libraries ##
+## load libraries
 library(tidyverse)
 library(readr)
 library(tibble)
@@ -35,7 +31,7 @@ library(optparse)
 library(msigdbr) ## Contains the hallmark data sets
 library(GSVA)    ## Performs GSEA analysis
 
-# Magrittr pipe
+## Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
 ## set directories
@@ -48,24 +44,14 @@ results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
   
-#### Load input files --------------------------------------------------------------------
-#expression_data <- as.data.frame( readr::read_rds(expression_data_file) )
+#### Load input files
 expression_data <- as.data.frame(readRDS(file.path(data_dir, "gene-counts-rsem-expected_count-collapsed.rds")  ))
-
-
-human_hallmark  <- msigdbr::msigdbr(species = "Homo sapiens", category = "C2", subcategory = "KEGG") ## human hallmark genes from `migsdbr` package. The loaded data is a tibble.
-human_hallmark  <- msigdbr::msigdbr(species = "Homo sapiens", category = "C2", subcategory = "CP") ## human hallmark genes from `migsdbr` package. The loaded data is a tibble.
-
 human_hallmark  <- msigdbr::msigdbr(species = "Homo sapiens", category = "H") ## human hallmark genes from `migsdbr` package. The loaded data is a tibble.
 
-
+## histologies file
 histology_df <- readr::read_tsv( file.path(data_dir, "histologies.tsv")  , guess_max = 100000)
 
-
-
-
 ## get data files and make table
-
 #### Prepare hallmark genes: Create a list of hallmarks, each of which is a list of genes -----------------------------------------------
 human_hallmark_twocols <- human_hallmark %>% dplyr::select(gs_name, human_gene_symbol)
 human_hallmark_list    <- base::split(human_hallmark_twocols$human_gene_symbol, list(human_hallmark_twocols$gs_name))
@@ -73,7 +59,6 @@ human_hallmark_list    <- base::split(human_hallmark_twocols$human_gene_symbol, 
 
 
 #### Perform gene set enrichment analysis --------------------------------------------------------------------
-
 # Prepare expression data: log2 transform re-cast as matrix
 # filter to RNA and exclude TCGA and GTEx
 histology_rna_df <- histology_df %>% 
@@ -83,6 +68,8 @@ histology_rna_df <- histology_df %>%
   dplyr::filter(RNA_library == "stranded") %>%
   dplyr::filter(CNS_region == 'Midline') %>% 
   dplyr::filter(short_histology == 'HGAT') %>%
+  
+  ## filter for specific samples that was previously used in CLK1 splicing/comparisons
   dplyr::filter( (Kids_First_Biospecimen_ID   == 'BS_Q13FQ8FV') | 
                    (Kids_First_Biospecimen_ID   == 'BS_ZV1P6W9C') |
                    (Kids_First_Biospecimen_ID   == 'BS_WH8G4VFB') | 
@@ -94,10 +81,9 @@ histology_rna_df <- histology_df %>%
                    (Kids_First_Biospecimen_ID   == 'BS_9CA93S6D') )
 
 
-# First filter expression data to exclude GTEx and TCGA
+# filter expression data to exclude GTEx and TCGA
 expression_data <- expression_data %>%  dplyr::select(histology_rna_df$Kids_First_Biospecimen_ID)
  
-
 # for each type of the RNA library, we subset the expression matrix accordingly and run gsea scores for each RNA library 
 rna_library_list <- histology_rna_df %>% pull(RNA_library) %>% unique()
 
@@ -122,10 +108,6 @@ for(i in 1:length(rna_library_list)){
   
   ### Rownames are genes and column names are samples
   expression_data_each_log2_matrix <- as.matrix( log2(expression_data_each + 1) )
-  
-  # Renmove genes with 0 variance
-  #keep <- apply(expression_data_each_log2_matrix, 1, function(x) var(x, na.rm = TRUE)) > 0 
-  #expression_data_each_log2_matrix_keep <- data.matrix(expression_data_each_log2_matrix[keep,])
   
   #We then calculate the Gaussian-distributed scores
   gsea_scores_each <- GSVA::gsva(expression_data_each_log2_matrix,
@@ -153,7 +135,6 @@ for(i in 1:length(rna_library_list)){
   
   gsea_scores_df_tidy <-  bind_rows(gsea_scores_df_tidy , gsea_scores_each_df_tidy)
 }
-
 
 #### Export GSEA scores to TSV --------------------------------------------------------------------
 scores_output_file <- (file.path(results_dir, "gsea_out.tsv"))
