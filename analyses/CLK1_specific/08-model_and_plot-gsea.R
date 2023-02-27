@@ -25,7 +25,7 @@ results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
 # This script contains functions used to modeling GSVA scores
-source("/Users/naqvia/d3b_coding/pbta-splicing/analyses/gsea/util/hallmark_models.R")
+source("/Users/naqvia/d3b_coding/pbta-splicing/analyses/CLK1/util/hallmark_models.R")
 
 # source function for theme for plots 
 source(file.path(figures_dir, "theme_for_plots.R"))
