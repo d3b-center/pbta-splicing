@@ -1,40 +1,46 @@
 ################################################################################
-# This script conducts gene set enrichment analysis, specifically using the GSVA method [1] for scoring hallmark human pathway enrichment from RNA-Seq results.
+# 07-conduct_gsea_analysis.R
+# This script conducts gene set enrichment analysis, specifically using the GSVA 
+# method [1] for scoring hallmark human pathway enrichment from RNA-Seq results.
 #
-# The GSVA scores (i.e., enrichment scores) are calculated to produce a **Gaussian distribution of scores** "under the null hypothesis of no change in the pathway activity throughout the sample population."
+# The GSVA scores (i.e., enrichment scores) are calculated to produce a 
+# **Gaussian distribution of scores** "under the null hypothesis of no change 
+# in the pathway activity throughout the sample population."
+#
 # The authors claim a benefit to this approach:
 #   + "Penalizes deviations that are large in *both* tails"
-#   + "Provides a 'normalization' of the enrichment score by subtracting potential noise
-#   + "Emphasizes genes in pathways that are concordantly activated in one direction only"
-#   + "For pathways containing genes strongly acting in both directions, the deviations with cancel each other out and show little or no enrichment."
+#   + "Provides a 'normalization' of the enrichment score by 
+#      subtracting potential noise
+#   + "Emphasizes genes in pathways that are concordantly activated in one 
+#      direction only"
+#   + "For pathways containing genes strongly acting in both directions, the 
+#      deviations with cancel each other out and show little or no enrichment."
 #
-# Written by Stephanie J. Spielman for CCDL ALSF, 2020
+# Written by Stephanie J. Spielman for CCDL ALSF, 2020 and modified by Ammar S 
+#             Naqvi
 #
-#
-#
-# ####### USAGE, assumed to be run from top-level of project:
-# Rscript --vanilla 'analyses/gene-set-enrichment-analysis/01-conduct-gsea-analysis.R --input <expression input file> --output <output file for writing scores>
-#     --input_file: The name of the input expression data file to use for calculating scores.
-#     --output_file: The name of the TSV-formatted output file of GSVA scores.
-#     --hist_file: Histology file used.
-
+# usage: Rscript 07-conduct_gsea_analysis.R
 #
 # Reference:
-# 1. Sonja Hänzelmann, Robert Castelo, and Justin Guinney. 2013. “GSVA: Gene Set Variation Analysis for Microarray and RNA-Seq Data.” BMC Bioinformatics 14 (1): 7. https://doi.org/10.1186/1471-2105-14-7.
+# 1. Sonja Hänzelmann, Robert Castelo, and Justin Guinney. 2013. “GSVA: Gene Set 
+# Variation Analysis for Microarray and RNA-Seq Data.” BMC Bioinformatics 14 
+# (1): 7. https://doi.org/10.1186/1471-2105-14-7.
 ################################################################################
 
 ## load libraries
-library(tidyverse)
-library(readr)
-library(tibble)
-library(optparse)
-library(msigdbr) ## Contains the hallmark data sets
-library(GSVA)    ## Performs GSEA analysis
+suppressPackageStartupMessages({
+  library("GSVA")
+  library("dplyr")
+  library("tidyverse")
+  library("readr")
+  library("msigdbr")
+  library("tibble")
+})
 
 ## Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-## set directories
+## set up directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1_specific")
@@ -44,41 +50,40 @@ results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
   
-#### Load input files
+## load input files
 expression_data <- as.data.frame(readRDS(file.path(data_dir, "gene-counts-rsem-expected_count-collapsed.rds")  ))
 human_hallmark  <- msigdbr::msigdbr(species = "Homo sapiens", category = "H") ## human hallmark genes from `migsdbr` package. The loaded data is a tibble.
 
-## histologies file
+## make histologies dataframe
 histology_df <- readr::read_tsv( file.path(data_dir, "histologies.tsv")  , guess_max = 100000)
 
-## get data files and make table
 #### Prepare hallmark genes: Create a list of hallmarks, each of which is a list of genes -----------------------------------------------
 human_hallmark_twocols <- human_hallmark %>% dplyr::select(gs_name, human_gene_symbol)
 human_hallmark_list    <- base::split(human_hallmark_twocols$human_gene_symbol, list(human_hallmark_twocols$gs_name))
-
-
 
 #### Perform gene set enrichment analysis --------------------------------------------------------------------
 # Prepare expression data: log2 transform re-cast as matrix
 # filter to RNA and exclude TCGA and GTEx
 histology_rna_df <- histology_df %>% 
+  
+  ## filters to retrieve samples of interests 
   dplyr::filter(experimental_strategy == "RNA-Seq") %>% 
   dplyr::filter(!is.na(RNA_library)) %>%
   dplyr::filter(cohort == "PBTA") %>%
-  dplyr::filter(RNA_library == "stranded") %>%
+  dplyr::filter(RNA_library == "stranded") %>% 
   dplyr::filter(CNS_region == 'Midline') %>% 
   dplyr::filter(short_histology == 'HGAT') %>%
   
-  ## filter for specific samples that was previously used in CLK1 splicing/comparisons
+  ## module-specific filter for  samples that was previously used in CLK1 splicing/comparisons
   dplyr::filter( (Kids_First_Biospecimen_ID   == 'BS_Q13FQ8FV') | 
-                   (Kids_First_Biospecimen_ID   == 'BS_ZV1P6W9C') |
-                   (Kids_First_Biospecimen_ID   == 'BS_WH8G4VFB') | 
-                   (Kids_First_Biospecimen_ID   == 'BS_NNPEC7W1') |
-                   (Kids_First_Biospecimen_ID   == 'BS_PZVHMSYN') | 
-                   (Kids_First_Biospecimen_ID   == 'BS_DRY58DTF') | 
-                   (Kids_First_Biospecimen_ID   == 'BS_GXTFW99H') | 
-                   (Kids_First_Biospecimen_ID   == 'BS_E60JZ9Z3') |
-                   (Kids_First_Biospecimen_ID   == 'BS_9CA93S6D') )
+                 (Kids_First_Biospecimen_ID   == 'BS_ZV1P6W9C') |
+                 (Kids_First_Biospecimen_ID   == 'BS_WH8G4VFB') | 
+                 (Kids_First_Biospecimen_ID   == 'BS_NNPEC7W1') |
+                 (Kids_First_Biospecimen_ID   == 'BS_PZVHMSYN') | 
+                 (Kids_First_Biospecimen_ID   == 'BS_DRY58DTF') | 
+                 (Kids_First_Biospecimen_ID   == 'BS_GXTFW99H') | 
+                 (Kids_First_Biospecimen_ID   == 'BS_E60JZ9Z3') |
+                 (Kids_First_Biospecimen_ID   == 'BS_9CA93S6D') )
 
 
 # filter expression data to exclude GTEx and TCGA

@@ -5,9 +5,14 @@
 # usage: Rscript 08-model_and_plot-gsea.R
 ################################################################################
 
-#Load libraries and define certain constants:
-library(tidyverse)
-library(broom)
+## load libraries: 
+suppressPackageStartupMessages({
+  library("broom")
+  library("dplyr")
+  library("tidyverse")
+})
+
+## Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
 ## set directories
@@ -22,7 +27,6 @@ plots_dir   <- file.path(analysis_dir, "plots")
 # This script contains functions used to modeling GSVA scores
 source("/Users/naqvia/d3b_coding/pbta-splicing/analyses/gsea/util/hallmark_models.R")
 
-## theme for all plots
 # source function for theme for plots 
 source(file.path(figures_dir, "theme_for_plots.R"))
 
@@ -50,6 +54,8 @@ scores_file <- file.path(results_dir, "gsea_out.tsv")
 ######## Load input files
 metadata    <- readr::read_tsv(metadata_file, guess_max = 100000) %>% 
   filter(experimental_strategy == "RNA-Seq") %>% 
+  
+  ## module-specific filter for  samples that was previously used in CLK1 splicing/comparisons
   dplyr::filter( (Kids_First_Biospecimen_ID   == 'BS_Q13FQ8FV') | 
                    (Kids_First_Biospecimen_ID   == 'BS_ZV1P6W9C') |
                    (Kids_First_Biospecimen_ID   == 'BS_WH8G4VFB') | 
@@ -59,17 +65,18 @@ metadata    <- readr::read_tsv(metadata_file, guess_max = 100000) %>%
                    (Kids_First_Biospecimen_ID   == 'BS_GXTFW99H') | 
                    (Kids_First_Biospecimen_ID   == 'BS_E60JZ9Z3') |
                    (Kids_First_Biospecimen_ID   == 'BS_9CA93S6D') ) %>% 
+  
+  ## define CLK1 groups 
   mutate(CLK1_group = ifelse(  (Kids_First_Biospecimen_ID   == 'BS_Q13FQ8FV') |
-                                 (Kids_First_Biospecimen_ID   == 'BS_ZV1P6W9C') |
-                                 (Kids_First_Biospecimen_ID   == 'BS_WH8G4VFB') | 
-                                 (Kids_First_Biospecimen_ID   == 'BS_NNPEC7W1') |
-                                 (Kids_First_Biospecimen_ID   == 'BS_PZVHMSYN') , "High", "Low"))
+                               (Kids_First_Biospecimen_ID   == 'BS_ZV1P6W9C') |
+                               (Kids_First_Biospecimen_ID   == 'BS_WH8G4VFB') | 
+                               (Kids_First_Biospecimen_ID   == 'BS_NNPEC7W1') |
+                               (Kids_First_Biospecimen_ID   == 'BS_PZVHMSYN'), "High", "Low"))
 
 scores_file <- readr::read_tsv(scores_file) 
 
 ######## Find out unique RNA library types
 rna_library_list <- scores_file %>% pull(data_type) %>% unique()
-
 
 CLK1_group_tukey_outpaths <- lapply(rna_library_list, function(x){
   x<-gsub(" ", "_", x)
@@ -129,7 +136,7 @@ gsea_scores_hm <- ggplot(sign_pathways_mat, aes(y=hallmark_name, x=Kids_First_Bi
 
 file_tiff_heatmap_plot = file.path(plots_dir,"heatmap_sign_gsea.tiff")
 
-# Save plot tiff version
+# save plot tiff version
 tiff(file_tiff_heatmap_plot, height = 1600, width = 3200, res = 300)
 print(gsea_scores_hm)
 dev.off()
