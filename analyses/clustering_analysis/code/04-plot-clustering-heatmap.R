@@ -18,6 +18,8 @@ output_dir <- file.path(analysis_dir, "output", "ccp_output")
 option_list <- list(
   make_option(c("--ccp_output"), type = "character",
               help = "CCP output from running ConsensusClusterPlus (.rds)"),
+  make_option(c("--input_clin"), type = "character",
+              help = "histologies (.tsv)"),
   make_option(c("--n_cluster"), type = "character",
               help = "number of clusters to investigate"),
   make_option(c("--prefix"), type = "character",
@@ -25,6 +27,7 @@ option_list <- list(
 )
 opt <- parse_args(OptionParser(option_list = option_list))
 ccp_output <- opt$ccp_output %>% readRDS()
+input_clin <- opt$input_clin %>% readr::read_tsv()
 n_cluster <- as.numeric(opt$n_cluster)
 prefix <- opt$prefix
 
@@ -39,12 +42,17 @@ CC_tree <- ccp_output[[n_cluster]]$consensusTree
 # get cluster assignments for samples
 CC_class <- ccp_output[[n_cluster]]$consensusClass
 CC_class <- data.frame(cluster_class = CC_class)
+
+# color palette for short histology
 palettes_dir <- "../../palettes/"
-histology_table <- file.path(palettes_dir, "histology_label_color_table.tsv") %>% read_tsv()
+palette_file <- file.path(palettes_dir, "short_histology_color_palette.tsv") %>% read_tsv()
+
+# add short histology and color code to clusters
 CC_annot <- CC_class %>%
   rownames_to_column("Kids_First_Biospecimen_ID") %>%
-  inner_join(histology_table, by = "Kids_First_Biospecimen_ID") %>%
-  dplyr::select(Kids_First_Biospecimen_ID, cluster_class, cancer_group, cancer_group_hex_codes) %>%
+  inner_join(input_clin, by = "Kids_First_Biospecimen_ID") %>%
+  inner_join(palette_file, by = "short_histology") %>%
+  dplyr::select(Kids_First_Biospecimen_ID, cluster_class, short_histology, hex_code) %>%
   dplyr::mutate(cluster_class = as.character(cluster_class)) %>%
   column_to_rownames("Kids_First_Biospecimen_ID")
 
@@ -58,19 +66,15 @@ names(l) <- as.character(1:n_cluster)
 mycolors <- list()
 mycolors[['cluster_class']] <- l 
 
-# color palette for cancer group
-palettes_dir <- "../../palettes/"
-histology_table <- file.path(palettes_dir, "histology_label_color_table.tsv") %>% read_tsv()
-
-# create annotation for cancer group
-histology_table_sub <- CC_annot %>%
-  dplyr::select(cancer_group, cancer_group_hex_codes) %>%
+# create annotation for short histology
+short_histology_palettes <- CC_annot %>%
+  dplyr::select(short_histology, hex_code) %>%
   unique()
-mycolors[['cancer_group']] <- histology_table_sub$cancer_group_hex_codes
-names(mycolors[['cancer_group']]) <- histology_table_sub$cancer_group
+mycolors[['short_histology']] <- short_histology_palettes$hex_code
+names(mycolors[['short_histology']]) <- short_histology_palettes$short_histology
 
 # remove colors from annotation table
-CC_annot$cancer_group_hex_codes <- NULL
+CC_annot$hex_code <- NULL
 
 # create heatmap
 pheatmap(CC_consensus_mat,
