@@ -58,8 +58,8 @@ CC_annot <- CC_class %>%
 
 # rename annotation columns
 CC_annot <- CC_annot %>%
-  dplyr::rename("Short Histology" = "plot_group_display",
-                "Cluster Class" = "cluster_class")
+  dplyr::rename("Histology" = "plot_group_display",
+                "Cluster" = "cluster_class")
 
 # create annotation for cluster class
 gg_color_hue <- function(n) {
@@ -69,14 +69,14 @@ gg_color_hue <- function(n) {
 l <- gg_color_hue(n_cluster)
 names(l) <- as.character(1:n_cluster)
 mycolors <- list()
-mycolors[['Cluster Class']] <- l 
+mycolors[['Cluster']] <- l 
 
 # create annotation for short histology
 short_histology_palettes <- CC_annot %>%
-  dplyr::select(`Short Histology`, hex_code) %>%
+  dplyr::select(Histology, hex_code) %>%
   unique()
-mycolors[['Short Histology']] <- short_histology_palettes$hex_code
-names(mycolors[['Short Histology']]) <- short_histology_palettes$`Short Histology`
+mycolors[['Histology']] <- short_histology_palettes$hex_code
+names(mycolors[['Histology']]) <- short_histology_palettes$Histology
 
 # remove colors from annotation table
 CC_annot$hex_code <- NULL
