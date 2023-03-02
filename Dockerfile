@@ -60,9 +60,11 @@ RUN ./install_bioc.r \
 	hrbrthemes \
 	limma \
 	optparse \
+	patchwork \
 	pheatmap \
   reshape2 \
   sva \
+  survival \
   survminer \
   UpSetR
 
