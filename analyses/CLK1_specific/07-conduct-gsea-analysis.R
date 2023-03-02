@@ -35,6 +35,7 @@ suppressPackageStartupMessages({
   library("readr")
   library("msigdbr")
   library("tibble")
+  library("vroom")
 })
 
 ## Magrittr pipe
@@ -51,8 +52,9 @@ plots_dir   <- file.path(analysis_dir, "plots")
 
   
 ## load input files
-expression_data <- as.data.frame(readRDS(file.path(data_dir, "gene-counts-rsem-expected_count-collapsed.rds")  ))
-human_hallmark  <- msigdbr::msigdbr(species = "Homo sapiens", category = "H") ## human hallmark genes from `migsdbr` package. The loaded data is a tibble.
+human_hallmark  <- msigdbr::msigdbr(species = "Homo sapiens", category = "C2", subcategory = "CP:KEGG") ## human hallmark genes from `migsdbr` package. The loaded data is a tibble.
+
+
 
 ## make histologies dataframe
 histology_df <- readr::read_tsv( file.path(data_dir, "histologies.tsv")  , guess_max = 100000)
@@ -62,6 +64,8 @@ human_hallmark_twocols <- human_hallmark %>% dplyr::select(gs_name, human_gene_s
 human_hallmark_list    <- base::split(human_hallmark_twocols$human_gene_symbol, list(human_hallmark_twocols$gs_name))
 
 #### Perform gene set enrichment analysis --------------------------------------------------------------------
+##rmats input
+
 # Prepare expression data: log2 transform re-cast as matrix
 # filter to RNA and exclude TCGA and GTEx
 histology_rna_df <- histology_df %>% 
@@ -72,22 +76,31 @@ histology_rna_df <- histology_df %>%
   dplyr::filter(cohort == "PBTA") %>%
   dplyr::filter(RNA_library == "stranded") %>% 
   dplyr::filter(CNS_region == 'Midline') %>% 
-  dplyr::filter(short_histology == 'HGAT') %>%
-  
-  ## module-specific filter for  samples that was previously used in CLK1 splicing/comparisons
-  dplyr::filter( (Kids_First_Biospecimen_ID   == 'BS_Q13FQ8FV') | 
-                 (Kids_First_Biospecimen_ID   == 'BS_ZV1P6W9C') |
-                 (Kids_First_Biospecimen_ID   == 'BS_WH8G4VFB') | 
-                 (Kids_First_Biospecimen_ID   == 'BS_NNPEC7W1') |
-                 (Kids_First_Biospecimen_ID   == 'BS_PZVHMSYN') | 
-                 (Kids_First_Biospecimen_ID   == 'BS_DRY58DTF') | 
-                 (Kids_First_Biospecimen_ID   == 'BS_GXTFW99H') | 
-                 (Kids_First_Biospecimen_ID   == 'BS_E60JZ9Z3') |
-                 (Kids_First_Biospecimen_ID   == 'BS_9CA93S6D') )
+  dplyr::filter(short_histology == 'HGAT') 
 
+rmats_file <-  file.path(data_dir,"rMATS_merged.single.SE.tsv.gz")
+
+rmats_df <-  vroom(rmats_file, comment = "#",delim="\t") %>%
+  # select specific samples and extract CLK1 exon 4  
+  dplyr::filter(geneSymbol=="CLK1") %>% dplyr::filter(exonStart_0base=="200860124", exonEnd=="200860215") %>% dplyr::select(sample, geneSymbol, IncLevel1) %>% 
+  inner_join(histology_rna_df, by=c('sample'='Kids_First_Biospecimen_ID')) %>%  dplyr::select(sample, geneSymbol, IncLevel1) 
+
+
+## compute quantiles to define high vs low Exon 4 PSI groups
+quartiles_psi <- quantile(rmats_df$IncLevel1, probs=c(.25, .75), na.rm = FALSE)
+IQR_psi <- IQR(rmats_df$IncLevel1)
+lower_psi <- quartiles_psi[1] 
+upper_psi <- quartiles_psi[2] 
+
+rmats_subset_samples_lowEx4  <- rmats_df %>% dplyr::filter(rmats_df$IncLevel1 < lower_psi) %>% dplyr::select(sample)
+rmats_subset_samples_highEx4 <- rmats_df %>% dplyr::filter(rmats_df$IncLevel1 > upper_psi) %>% dplyr::select(sample)
+rmats_subset_samples_Ex4 <- rbind(rmats_subset_samples_lowEx4,rmats_subset_samples_highEx4)
+
+histology_rna_df <- inner_join(histology_rna_df, rmats_subset_samples_Ex4,by=c('Kids_First_Biospecimen_ID'='sample')) #  %>% dplyr::select(Kids_First_Biospecimen_ID)
 
 # filter expression data to exclude GTEx and TCGA
-expression_data <- expression_data %>%  dplyr::select(histology_rna_df$Kids_First_Biospecimen_ID)
+expression_data <- as.data.frame(readRDS(file.path(data_dir, "gene-counts-rsem-expected_count-collapsed.rds")  )) %>% 
+  dplyr::select(matches(histology_rna_df$Kids_First_Biospecimen_ID) )
  
 # for each type of the RNA library, we subset the expression matrix accordingly and run gsea scores for each RNA library 
 rna_library_list <- histology_rna_df %>% pull(RNA_library) %>% unique()
