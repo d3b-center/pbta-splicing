@@ -108,8 +108,8 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
   
   # rename annotation columns
   DEpwys_annot <- DEpwys_annot %>%
-    dplyr::rename("Short Histology" = "plot_group_display",
-                  "Cluster Class" = "cluster_class")
+    dplyr::rename("Histology" = "plot_group_display",
+                  "Cluster" = "cluster_class")
   
   # create annotation for cluster class
   gg_color_hue <- function(n) {
@@ -119,14 +119,14 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
   l <- gg_color_hue(length(n_clusters))
   names(l) <- as.character(n_clusters)
   mycolors <- list()
-  mycolors[['Cluster Class']] <- l 
+  mycolors[['Cluster']] <- l 
   
   # create annotation for short histology
   short_histology_palettes <- DEpwys_annot %>%
-    dplyr::select(`Short Histology`, hex_code) %>%
+    dplyr::select(Histology, hex_code) %>%
     unique()
-  mycolors[['Short Histology']] <- short_histology_palettes$hex_code
-  names(mycolors[['Short Histology']]) <- short_histology_palettes$`Short Histology`
+  mycolors[['Histology']] <- short_histology_palettes$hex_code
+  names(mycolors[['Histology']]) <- short_histology_palettes$Histology
   
   # remove colors from annotation table
   DEpwys_annot$hex_code <- NULL
