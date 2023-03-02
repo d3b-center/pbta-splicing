@@ -96,6 +96,21 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
   DEpwys_annot['sample_id'] <- NULL
   DEpwys_annot$cluster_class <- as.character(DEpwys_annot$cluster_class)
   
+  # color palette for short histology
+  palettes_dir <- "../../palettes/"
+  palette_file <- file.path(palettes_dir, "short_histology_color_palette.tsv") %>% read_tsv()
+  DEpwys_annot <- DEpwys_annot %>%
+    rownames_to_column("Kids_First_Biospecimen_ID") %>%
+    inner_join(input_clin, by = "Kids_First_Biospecimen_ID") %>%
+    inner_join(palette_file, by = "short_histology") %>%
+    dplyr::select(Kids_First_Biospecimen_ID, cluster_class, plot_group_display, hex_code) %>%
+    column_to_rownames("Kids_First_Biospecimen_ID")
+  
+  # rename annotation columns
+  DEpwys_annot <- DEpwys_annot %>%
+    dplyr::rename("Short Histology" = "plot_group_display",
+                  "Cluster Class" = "cluster_class")
+  
   # create annotation for cluster class
   gg_color_hue <- function(n) {
     hues = seq(15, 375, length = n + 1)
@@ -104,33 +119,23 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
   l <- gg_color_hue(length(n_clusters))
   names(l) <- as.character(n_clusters)
   mycolors <- list()
-  mycolors[['cluster_class']] <- l 
-  
-  # color palette for short histology
-  palettes_dir <- "../../palettes/"
-  palette_file <- file.path(palettes_dir, "short_histology_color_palette.tsv") %>% read_tsv()
-  DEpwys_annot <- DEpwys_annot %>%
-    rownames_to_column("Kids_First_Biospecimen_ID") %>%
-    inner_join(input_clin, by = "Kids_First_Biospecimen_ID") %>%
-    inner_join(palette_file, by = "short_histology") %>%
-    dplyr::select(Kids_First_Biospecimen_ID, cluster_class, short_histology, hex_code) %>%
-    column_to_rownames("Kids_First_Biospecimen_ID")
+  mycolors[['Cluster Class']] <- l 
   
   # create annotation for short histology
   short_histology_palettes <- DEpwys_annot %>%
-    dplyr::select(short_histology, hex_code) %>%
+    dplyr::select(`Short Histology`, hex_code) %>%
     unique()
-  mycolors[['short_histology']] <- short_histology_palettes$hex_code
-  names(mycolors[['short_histology']]) <- short_histology_palettes$short_histology
+  mycolors[['Short Histology']] <- short_histology_palettes$hex_code
+  names(mycolors[['Short Histology']]) <- short_histology_palettes$`Short Histology`
   
   # remove colors from annotation table
   DEpwys_annot$hex_code <- NULL
   
   pheatmap::pheatmap(DEpwys_es, scale = "row", 
-                     treeheight_row = 10, 
-                     treeheight_col = 10,
+                     treeheight_row = 20, 
+                     treeheight_col = 20,
                      fontsize_row = 8,
-                     fontsize = 8, 
+                     fontsize = 10, 
                      show_colnames = F, 
                      cellwidth = 0.5, cellheight = 10,
                      annotation = DEpwys_annot, 
