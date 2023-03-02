@@ -36,6 +36,8 @@ suppressPackageStartupMessages({
   library("msigdbr")
   library("tibble")
   library("vroom")
+  library("ggpubr")
+  library("ggplot2")
 })
 
 ## Magrittr pipe
@@ -49,11 +51,14 @@ analysis_dir <- file.path(root_dir, "analyses", "CLK1_specific")
 input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
+figures_dir <- file.path(root_dir, "figures")
 
+# source function for theme for plots 
+source(file.path(figures_dir, "theme_for_plots.R"))
   
 ## load input files
 human_hallmark  <- msigdbr::msigdbr(species = "Homo sapiens", category = "C2", subcategory = "CP:KEGG") ## human hallmark genes from `migsdbr` package. The loaded data is a tibble.
-
+#human_hallmark  <- msigdbr::msigdbr(species = "Homo sapiens", category = "C6") ## human hallmark genes from `migsdbr` package. The loaded data is a tibble.
 
 
 ## make histologies dataframe
@@ -157,5 +162,43 @@ for(i in 1:length(rna_library_list)){
 #### Export GSEA scores to TSV --------------------------------------------------------------------
 scores_output_file <- (file.path(results_dir, "gsea_out.tsv"))
 write_tsv(gsea_scores_df_tidy, scores_output_file)
+
+expression_tidy_df <- as.data.frame(expression_data) %>%
+  rownames_to_column(var = "gene")
+
+#first/last_bs needed for use in gather (we are not on tidyr1.0)
+first_bs <- head(colnames(expression_data), n=1)
+last_bs  <- tail(colnames(expression_data), n=1)
+
+expression_each_tidy_df <- expression_tidy_df %>%
+  tidyr::gather(Kids_First_Biospecimen_ID, expr, !!first_bs : !!last_bs) 
+
+expression_each_tidy_CLK1_df <- expression_each_tidy_df %>% filter(gene=='CLK1' | gene=="GALNT15" | gene=='DIAPH3')
+
+ggplot(expression_each_tidy_CLK1_df, aes(y=gene, x=Kids_First_Biospecimen_ID, fill=expr)) + 
+  geom_raster() + geom_tile() +  scale_fill_gradient(low="white", high="#DC3220") + xlab("Sample") +
+  ylab("Gene") + theme(axis.text.x = element_text(size = 10,angle = 90,hjust = .7, vjust = .8),axis.text.y = element_text(size = 10)) 
+
+## add column for CLK1 groupings and add in expression
+rmats_subset_with_CLK1expr_df <- rmats_df %>% dplyr::rename(gene=geneSymbol) %>% 
+                                              dplyr::rename(Kids_First_Biospecimen_ID=sample) %>% 
+                                              dplyr::inner_join(expression_each_tidy_CLK1_df, by=c('gene','Kids_First_Biospecimen_ID')) %>%
+                                              dplyr::mutate(CLK1_group = if_else(IncLevel1 < lower_psi, "Low", "High")) %>%  
+                                              dplyr::select(Kids_First_Biospecimen_ID, gene,IncLevel1, expr, CLK1_group) 
+
+#psi_vs_CLK1expr_groupings <- inner_join(expression_each_tidy_CLK1_df,rmats_subset_df, by="Kids_First_Biospecimen_ID") %>% dplyr::filter(gene=="CLK1")
+
+##plot expression categorized by CLK1 expression
+boxplot_grp_expr <- ggplot(rmats_subset_with_CLK1expr_df,aes(CLK1_group,expr)) + 
+                      geom_boxplot(aes(fill=CLK1_group)) + 
+                      stat_compare_means(method = "t.test") + 
+                      geom_jitter() + theme_Publication()
+
+file_tiff_plot = file.path(plots_dir,"boxplot_CLK1-expr.tiff")
+
+# save plot tiff version
+tiff(file_tiff_plot, height = 2000, width = 2000, res = 300)
+print(boxplot_grp_expr)
+dev.off()
 
 
