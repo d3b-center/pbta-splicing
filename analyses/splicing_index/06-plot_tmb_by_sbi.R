@@ -23,6 +23,11 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses","splicing_index")
 input_dir   <- file.path(analysis_dir, "input")
 data_dir   <- file.path(root_dir, "input")
+plots_dir   <- file.path(analysis_dir, "plots")
+
+## define output files
+boxplot_sbi_vs_tmb_file  <- file.path(plots_dir,"boxplot_tmb_vs_sbi-level.tiff")
+
 
 ## get and setup input
 tmb_coding_file  <- file.path(input_dir,"tmb-coding.tsv")
@@ -50,9 +55,14 @@ high_sbi_df <- dplyr::filter(sbi_vs_tmb_innerjoin_df, SI > upper_sbi) %>% dplyr:
 low_sbi_df  <- dplyr::filter(sbi_vs_tmb_innerjoin_df, SI < lower_sbi) %>% dplyr::mutate(SBI_level="low")
 high_vs_low_df <- rbind(high_sbi_df,low_sbi_df)
 
-boxplot_grp_expr <- ggplot(high_vs_low_df,aes((SBI_level),log(tmb))) + 
+boxplot_grp_sbi_tmb <- ggplot(high_vs_low_df,aes((SBI_level),log10(tmb))) + 
   geom_boxplot(aes(fill=SBI_level)) + 
   stat_compare_means(method = "t.test") + 
   geom_jitter() + theme_Publication()
+
+# save plot tiff version
+tiff(boxplot_sbi_vs_tmb_file, height =2000, width = 1500, res = 300)
+print(boxplot_grp_sbi_tmb)
+dev.off()
 
 
