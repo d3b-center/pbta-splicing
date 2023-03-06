@@ -74,4 +74,4 @@ Rscript code/03-diff-pathways-per-clusters.R \
 Rscript 05-plot-sbi_with_cluster-mem.R
 
 ## find differential splicing factors and generate venn diagram
-plot_and_identify_diffSFs_in_clusters.R
+Rscript 06-plot_and_identify_diffSFs_in_clusters.R
