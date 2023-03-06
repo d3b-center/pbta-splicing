@@ -64,4 +64,4 @@ if [ "$RELEASE" == "testing" ]; then
   chmod u-w data
 fi
 
-wget -P data/ https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_33/gencode.v33.primary_assembly.annotation.gtf.gz
+wget -P data/ https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.primary_assembly.annotation.gtf.gz
