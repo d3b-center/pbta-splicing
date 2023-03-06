@@ -7,13 +7,14 @@ suppressPackageStartupMessages({
   library(Biobase)
 })
 
-diff_pathways_per_cluster <- function(input_mat, cluster_output, n_cluster, gene_set, prefix, output_dir){
+diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_cluster, gene_set, prefix, output_dir){
   
   # output directory
   dir.create(output_dir, showWarnings = F, recursive = T)
   
   # read data
   input_mat <- readRDS(input_mat)
+  input_clin <- readr::read_tsv(input_clin)
   cluster_output <- readRDS(cluster_output)
   gene_set <- readRDS(gene_set)
   
@@ -95,6 +96,21 @@ diff_pathways_per_cluster <- function(input_mat, cluster_output, n_cluster, gene
   DEpwys_annot['sample_id'] <- NULL
   DEpwys_annot$cluster_class <- as.character(DEpwys_annot$cluster_class)
   
+  # color palette for short histology
+  palettes_dir <- "../../palettes/"
+  palette_file <- file.path(palettes_dir, "short_histology_color_palette.tsv") %>% read_tsv()
+  DEpwys_annot <- DEpwys_annot %>%
+    rownames_to_column("Kids_First_Biospecimen_ID") %>%
+    inner_join(input_clin, by = "Kids_First_Biospecimen_ID") %>%
+    inner_join(palette_file, by = "short_histology") %>%
+    dplyr::select(Kids_First_Biospecimen_ID, cluster_class, plot_group_display, hex_code) %>%
+    column_to_rownames("Kids_First_Biospecimen_ID")
+  
+  # rename annotation columns
+  DEpwys_annot <- DEpwys_annot %>%
+    dplyr::rename("Histology" = "plot_group_display",
+                  "Cluster" = "cluster_class")
+  
   # create annotation for cluster class
   gg_color_hue <- function(n) {
     hues = seq(15, 375, length = n + 1)
@@ -103,35 +119,28 @@ diff_pathways_per_cluster <- function(input_mat, cluster_output, n_cluster, gene
   l <- gg_color_hue(length(n_clusters))
   names(l) <- as.character(n_clusters)
   mycolors <- list()
-  mycolors[['cluster_class']] <- l 
+  mycolors[['Cluster']] <- l 
   
-  # color palette for cancer group
-  palettes_dir <- "../../palettes/"
-  histology_table <- file.path(palettes_dir, "histology_label_color_table.tsv") %>% read_tsv()
-  DEpwys_annot <- DEpwys_annot %>%
-    rownames_to_column("Kids_First_Biospecimen_ID") %>%
-    inner_join(histology_table, by = "Kids_First_Biospecimen_ID") %>%
-    dplyr::select(Kids_First_Biospecimen_ID, cluster_class, cancer_group, cancer_group_hex_codes) %>%
-    column_to_rownames("Kids_First_Biospecimen_ID")
-  
-  # create annotation for cancer group
-  histology_table_sub <- DEpwys_annot %>%
-    dplyr::select(cancer_group, cancer_group_hex_codes) %>%
+  # create annotation for short histology
+  short_histology_palettes <- DEpwys_annot %>%
+    dplyr::select(Histology, hex_code) %>%
     unique()
-  mycolors[['cancer_group']] <- histology_table_sub$cancer_group_hex_codes
-  names(mycolors[['cancer_group']]) <- histology_table_sub$cancer_group
+  mycolors[['Histology']] <- short_histology_palettes$hex_code
+  names(mycolors[['Histology']]) <- short_histology_palettes$Histology
   
   # remove colors from annotation table
-  DEpwys_annot$cancer_group_hex_codes <- NULL
+  DEpwys_annot$hex_code <- NULL
   
   pheatmap::pheatmap(DEpwys_es, scale = "row", 
+                     treeheight_row = 20, 
+                     treeheight_col = 20,
                      fontsize_row = 8,
-                     fontsize = 8, 
+                     fontsize = 10, 
                      show_colnames = F, 
                      cellwidth = 0.5, cellheight = 10,
                      annotation = DEpwys_annot, 
                      annotation_colors = mycolors, 
                      cluster_cols = cluster_tree, 
                      filename = file.path(output_dir, paste0(prefix, '_top20_pathways.tiff')), 
-                     width = 16, height = 20)
+                     width = 12, height = 8)
 }
