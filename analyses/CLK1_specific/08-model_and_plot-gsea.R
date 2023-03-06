@@ -1,89 +1,89 @@
 ################################################################################
 # 08-model_and_plot-gsea.R
-# written by Ammar Naqvi modified from OpenPBTA
+# Author: Ammar Naqvi (script adapted OpenPBTA)
 #
 # usage: Rscript 08-model_and_plot-gsea.R
 ################################################################################
 
-## load libraries: 
+## Load libraries: 
 suppressPackageStartupMessages({
-  library("broom")
-  library("dplyr")
+  #library("broom")
+  # Library for data manipulation
+  #library("dplyr")
   library("tidyverse")
-  library("vroom")
 })
 
 ## Magrittr pipe
-`%>%` <- dplyr::`%>%`
+#`%>%` <- dplyr::`%>%`
 
-## set directories
+## Set directories
+# Input directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1_specific")
-util_dir <- file.path(root_dir, "analyses", "CLK1_specific","util")
-figures_dir <- file.path(root_dir, "figures")
-
 input_dir   <- file.path(analysis_dir, "input")
+# Output directories
 results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
-# This script contains functions used to modeling GSVA scores
-source(file.path(util_dir,"hallmark_models.R"))
 
-# source function for theme for plots 
-source(file.path(figures_dir, "theme_for_plots.R"))
+# This script contains functions used for modeling GSVA scores
+source(file.path(analysis_dir, "util", "hallmark_models.R"))
+
+# Source function for plots theme
+source(file.path(root_dir, "figures", "theme_for_plots.R"))
 
 # Significance testing universal threshold
 SIGNIFICANCE_THRESHOLD <- 0.05
 
-######### Define input files
-## Metadata file (histologies/clinical data)
-metadata_file <- file.path(data_dir, "histologies.tsv")
+########NOT WORKING###########
+# # Assigning params$is_ci to running_in_ci avoids a locked binding error
+# running_in_ci <- params$is_ci
+# 
+# # Are we testing? In case of a non 0/1 number, we recast as logical, and then ensure logical.
+# if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
+# if (!(is.logical(running_in_ci)))
+# {
+#   stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
+# }
+########NOT WORKING###########
 
-## GSEA scores
+
+# Load input files
+## Load metadata file path
+metadata_file <- file.path(data_dir, "histologies.tsv")
+# Specify GSEA scores file path
 scores_file <- file.path(results_dir, "gsea_out.tsv")
 
-######## Load input files
-## histology file
-metadata    <- readr::read_tsv(metadata_file, guess_max = 100000) %>% 
-  
-  ## filters to retrieve samples of interests 
-  dplyr::filter(experimental_strategy == "RNA-Seq") %>% 
-  dplyr::filter(!is.na(RNA_library)) %>%
-  dplyr::filter(cohort == "PBTA") %>%
-  dplyr::filter(RNA_library == "stranded") %>% 
-  dplyr::filter(CNS_region == 'Midline') %>% 
-  dplyr::filter(short_histology == 'HGAT') 
+# Load metadata
+metadata <- readr::read_tsv(metadata_file, guess_max = 100000) %>% 
+  # Select only RNA-Seq samples
+  filter(experimental_strategy == "RNA-Seq") %>% 
+  # Filter for module-specific samples that was previously used in CLK1 splicing/comparisons
+  filter((Kids_First_Biospecimen_ID   == 'BS_Q13FQ8FV') | 
+         (Kids_First_Biospecimen_ID   == 'BS_ZV1P6W9C') |
+         (Kids_First_Biospecimen_ID   == 'BS_WH8G4VFB') | 
+         (Kids_First_Biospecimen_ID   == 'BS_NNPEC7W1') |
+         (Kids_First_Biospecimen_ID   == 'BS_PZVHMSYN') | 
+         (Kids_First_Biospecimen_ID   == 'BS_DRY58DTF') | 
+         (Kids_First_Biospecimen_ID   == 'BS_GXTFW99H') | 
+         (Kids_First_Biospecimen_ID   == 'BS_E60JZ9Z3') |
+         (Kids_First_Biospecimen_ID   == 'BS_9CA93S6D') ) %>% 
+  ## Define CLK1 groups as "High" or "Low"
+  mutate(CLK1_group = ifelse((Kids_First_Biospecimen_ID   == 'BS_Q13FQ8FV') |
+                             (Kids_First_Biospecimen_ID   == 'BS_ZV1P6W9C') |
+                             (Kids_First_Biospecimen_ID   == 'BS_WH8G4VFB') | 
+                             (Kids_First_Biospecimen_ID   == 'BS_NNPEC7W1') |
+                             (Kids_First_Biospecimen_ID   == 'BS_PZVHMSYN'), 
+                             "High", "Low"))
 
-## merged rmats output files
-rmats_file <-  file.path(data_dir,"rMATS_merged.single.SE.tsv.gz")
-rmats_df <-  vroom(rmats_file, comment = "#",delim="\t") %>%
-  
-  # select specific samples and extract CLK1 exon 4  
-  dplyr::filter(geneSymbol=="CLK1") %>% dplyr::filter(exonStart_0base=="200860124", exonEnd=="200860215") %>%  
-  
-  # join on metadata from above
-  inner_join(metadata, by=c('sample'='Kids_First_Biospecimen_ID')) %>%  
-  dplyr::select(sample, geneSymbol, IncLevel1) 
-
-## compute quantiles to define high vs low Exon 4 PSI groups
-quartiles_psi <- quantile(rmats_df$IncLevel1, probs=c(.25, .75), na.rm = FALSE)
-IQR_psi <- IQR(rmats_df$IncLevel1)
-lower_psi <- quartiles_psi[1] 
-upper_psi <- quartiles_psi[2] 
-
-rmats_subset_samples_lowEx4  <- rmats_df %>% dplyr::filter(rmats_df$IncLevel1 < lower_psi) %>% rename(Kids_First_Biospecimen_ID = sample)
-rmats_subset_samples_highEx4 <- rmats_df %>% dplyr::filter(rmats_df$IncLevel1 > upper_psi) %>%  rename(Kids_First_Biospecimen_ID = sample)
-rmats_subset_samples_Ex4 <- rbind(rmats_subset_samples_lowEx4,rmats_subset_samples_highEx4)
-
-metadata <- inner_join(metadata,rmats_subset_samples_Ex4, by="Kids_First_Biospecimen_ID") %>%   
-            mutate(CLK1_group = if_else(IncLevel1 < lower_psi, "Low", "High"))
-
-
+# Load GSEA scores
 scores_file <- readr::read_tsv(scores_file) 
 
 ######## Find out unique RNA library types
-rna_library_list <- scores_file %>% pull(data_type) %>% unique()
+rna_library_list <- scores_file %>% 
+  pull(data_type) %>% 
+  unique()
 
 CLK1_group_tukey_outpaths <- lapply(rna_library_list, function(x){
   x<-gsub(" ", "_", x)
@@ -99,7 +99,7 @@ CLK1_group_anova_outpaths <- lapply(rna_library_list, function(x){
 
 ### ANOVA and Tukey analysis of GSVA scores
 
-## Merge histology metadata with each set of gsea scores
+### Merge histology metadata with each set of gsea scores
 ## First, prepare the data for modeling:
 metadata_with_gsva <- metadata %>%
   inner_join(scores_file, by = "Kids_First_Biospecimen_ID") 
@@ -120,8 +120,8 @@ for(i in 1:length(rna_library_list)){
     CLK1_model_results <- gsva_anova_tukey(metadata_with_gsva, CLK1_group, rna_library, SIGNIFICANCE_THRESHOLD)
     
     # write out results
-    readr::write_tsv(CLK1_model_results[["anova"]], CLK1_group_anova_outpaths[[i]])
-    readr::write_tsv(CLK1_model_results[["tukey"]],  CLK1_group_tukey_outpaths[[i]])
+    readr::write_tsv(CLK1_model_results[["anova"]], cancer_group_anova_outpaths[[i]])
+    readr::write_tsv(CLK1_model_results[["tukey"]],  cancer_group_tukey_outpaths[[i]])
     
     # print results for viewing 
     print(rna_library)
@@ -129,25 +129,34 @@ for(i in 1:length(rna_library_list)){
   }
 }
 
-## plot significant pathways in heatmap format
-sign_pathways_hm <- CLK1_model_results[["tukey"]] %>% filter(significant_tukey_bonf == TRUE) %>% 
-                                                      dplyr::select(hallmark_name)
+## Plot significant pathways in heatmap format
+sign_pathways_hm <- CLK1_model_results[["tukey"]] %>% 
+  filter(significant_tukey == TRUE) %>% 
+  select(hallmark_name)
 
+# First make significant pathways dataframe
 sign_pathways_mat <- metadata_with_gsva %>% 
-                     dplyr::select(Kids_First_Biospecimen_ID, hallmark_name,gsea_score) %>% 
-                     dplyr::filter(hallmark_name %in% sign_pathways_hm$hallmark_name)
+                     select(Kids_First_Biospecimen_ID, hallmark_name, gsea_score) %>% 
+                     filter(hallmark_name %in% sign_pathways_hm$hallmark_name)
 
-sign_pathways_mat_grouping <- full_join(sign_pathways_mat, metadata) %>% select(Kids_First_Biospecimen_ID, hallmark_name,gsea_score, CLK1_group)
-
-gsea_scores_hm <- ggplot(sign_pathways_mat_grouping, aes(y=hallmark_name, x=Kids_First_Biospecimen_ID, fill=gsea_score)) + 
-  geom_raster() + geom_tile() +  scale_fill_gradient(low="white", high="#DC3220") + xlab("Sample") +
-  ylab("Pathway") + theme_Publication() + theme(axis.text.x = element_text(size = 10,angle = 45,hjust = .7, vjust = .8),axis.text.y = element_text(size = 7)) 
-
-file_tiff_heatmap_plot = file.path(plots_dir,"heatmap_sign_gsea-kegg.tiff")
-
-# save plot tiff version
-tiff(file_tiff_heatmap_plot, height = 2000, width = 2800, res = 300)
+# Plot GSEA Heatmap
+gsea_scores_hm <- ggplot(sign_pathways_mat, aes(y=hallmark_name, x=Kids_First_Biospecimen_ID, fill=gsea_score)) + 
+  geom_raster() + 
+  geom_tile() +  
+  scale_fill_gradient(low="white", high="#DC3220") + 
+  xlab("Sample") +
+  ylab("Pathway") + 
+  theme_Publication() + 
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = .7, vjust = .8), 
+        axis.text.y = element_text(size = 10)) 
+# View Heatmap
 print(gsea_scores_hm)
+
+# Path to save file as
+file_tiff_heatmap_plot <- file.path(plots_dir,"heatmap_sign_gsea.tiff")
+
+# Save plot as tiff
+tiff(file_tiff_heatmap_plot, height = 1600, width = 3200, res = 300)
+
+# Close the plotting device
 dev.off()
-
-
