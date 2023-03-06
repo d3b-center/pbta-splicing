@@ -5,7 +5,7 @@
 # usage: Rscript 08-model_and_plot-gsea.R
 ################################################################################
 
-## load libraries: 
+## load libraries
 suppressPackageStartupMessages({
   library("broom")
   library("dplyr")
@@ -47,13 +47,9 @@ scores_file <- file.path(results_dir, "gsea_out.tsv")
 ## histology file
 metadata    <- readr::read_tsv(metadata_file, guess_max = 100000) %>% 
   
-  ## filters to retrieve samples of interests 
-  dplyr::filter(experimental_strategy == "RNA-Seq") %>% 
-  dplyr::filter(!is.na(RNA_library)) %>%
-  dplyr::filter(cohort == "PBTA") %>%
-  dplyr::filter(RNA_library == "stranded") %>% 
-  dplyr::filter(CNS_region == 'Midline') %>% 
-  dplyr::filter(short_histology == 'HGAT') 
+  # Only include RNA-Seq, PBTA cohorts, stranded, Midline HGGs samples
+  dplyr::filter(experimental_strategy == "RNA-Seq", cohort == "PBTA", cohort == "PBTA", 
+         CNS_region == 'Midline',short_histology == 'HGAT') 
 
 ## merged rmats output files
 rmats_file <-  file.path(data_dir,"rMATS_merged.single.SE.tsv.gz")
