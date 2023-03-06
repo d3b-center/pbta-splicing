@@ -15,7 +15,7 @@ suppressPackageStartupMessages({
   library("tidyverse")
   library("viridis")
   library("RColorBrewer")
-})
+  })
 
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
@@ -29,16 +29,18 @@ results_dir <- file.path(analysis_dir, "results")
 plots_dir <- file.path(analysis_dir, "plots")
 input_dir <- file.path(analysis_dir, "input")
 
-plots_dir <- file.path(analysis_dir, "plots")
 if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
 }
 
-##theme for all plots
-# source function for theme for plots survival
+file_si_plot = "SI_total.tiff"
+
+# theme for all plots
+# source functions
 figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
+# read in SI file
 splice_index_file <- file.path(results_dir, "splicing_index.total.txt")
 splice_index_df <- readr::read_tsv(splice_index_file)
 
@@ -48,46 +50,37 @@ splice_index <- splice_index_df %>%
 
 # Set up the data.frame for plotting
 si_cdf_plot <- splice_index %>%
-  
-  # We only really need these two variables from data.frame
-  dplyr::transmute(
-    group = Histology,
-    number = (as.numeric(SI*100))
-  ) %>%
-  
   # Group by specified column
-  dplyr::group_by(group) %>%
-  
+  dplyr::group_by(Histology) %>%
   # Only keep groups with the specified minimum number of samples
   dplyr::filter(dplyr::n() > 1) %>%
   
   # Calculate group median
   dplyr::mutate(
-    group_median = median(number, na.rm = TRUE),
-    group_rank = rank(number, ties.method = "first") / dplyr::n(),
+    group_median = median(SI, na.rm = TRUE),
+    group_rank = rank(SI, ties.method = "first") / dplyr::n(),
     sample_size = paste0("n = ", dplyr::n())
   ) %>%
   dplyr::ungroup() %>%
-  dplyr::mutate(group = reorder(group, group_median)) 
+  dplyr::mutate(Histology = reorder(Histology, group_median)) 
 
-si_cdf_plot %>%
+si_plot <- si_cdf_plot %>%
   # Now we will plot these as cumulative distribution plots
   ggplot2::ggplot(ggplot2::aes(
     x = group_rank,
-    y = number
+    y = log2(SI*100)
   )) +
   
-  ggplot2::geom_point(color = "black") +
+  ggplot2::geom_point(color = "black", alpha =0.7, shape = 1) +
   
   # Add summary line for median
   ggplot2::geom_segment(
-    x = 0, xend = 1, color = "blue",linetype=2,
-    ggplot2::aes(y = group_median, yend = group_median)
+    x = 0, xend = 1, color = "red",linetype=2,
+    ggplot2::aes(y = log2(group_median*100), yend = log2(group_median*100))
   ) +
   
   # Separate by histology
-  ggplot2::facet_wrap(~ group + sample_size, nrow = 1, strip.position = "bottom", labeller = ggplot2::label_wrap_gen(multi_line = FALSE)) +
-  ggplot2::theme_classic() +
+  ggplot2::facet_wrap(~ Histology + sample_size, nrow = 1, strip.position = "bottom", labeller = ggplot2::label_wrap_gen(multi_line = FALSE)) +
   ggplot2::xlab("Histology") +
   ggplot2::ylab("Splicing Burden Index") +
   
@@ -97,64 +90,12 @@ si_cdf_plot %>%
   ggplot2::theme(
     axis.text.x = ggplot2::element_blank(),
     axis.ticks.x = ggplot2::element_blank(),
-    strip.placement = "outside",
+    strip.placement = "outside"
   )  
 
-file_si_plot = "/SI_total.pdf"
-filename_si_plot= paste0(plots_dir, file_si_plot)
+dev.set(dev.next())
 
-# Save plot as PDF
-pdf(filename_si_plot, width = 24, height = 7)
-si_cdf_plot
+# Save plot
+tiff(file.path(plots_dir, file_si_plot), height = 1200, width = 3000, res = 300)
+print(si_plot)
 dev.off()
-
-## survival based on high vs low SBI
-file <- "splicing_index.total.txt"
-splice_index <- read.delim(paste0(results_dir,"/", file), sep = "\t", header=TRUE) %>% rename(Kids_First_Biospecimen_ID = Sample)
-
-SI_total_high     <- quantile(splice_index$SI, probs=.75, names=FALSE)
-SI_total_low      <- quantile(splice_index$SI, probs=.25, names=FALSE)
-
-splice_index_high <- filter(splice_index, splice_index$SI >SI_total_high )
-splice_index_low  <- filter(splice_index, splice_index$SI <SI_total_low | splice_index$SI >SI_total_high  )
-
-## add column with "High or "Low" for SBI info
-splicing_index_outliers <- splice_index%>%filter(splice_index$SI <SI_total_low | splice_index$SI >SI_total_high) %>% 
-  mutate(level=case_when(SI < SI_total_low ~ "Low",SI >SI_total_high  ~ "High" ))
-
-# source function to compute survival
-util_dir <- file.path(root_dir, "util")
-
-source(file.path(util_dir, "survival_models.R"))
-
-# read in clinical file
-clin_tab <- readr::read_tsv(file.path(data_dir, "v1/histologies.tsv")) %>% 
-  dplyr::left_join(splicing_index_outliers, by = "Kids_First_Biospecimen_ID")
-
-# Kaplan-Meier for all clusters
-kap_fit <- survival_analysis(clin_tab,
-                             ind_var = "level",
-                             test = "kap.meier",
-                             metadata_sample_col = "Kids_First_Biospecimen_ID")
-
-surviv_plot <- survminer::ggsurvplot(kap_fit$model,
-                      title = "High vs Low Splicing Burden",
-                      xlab = "Time (days)",
-                      pval = TRUE,palette  = c("red","blue"),
-                      font.main = 18,
-                      data = kap_fit$original_data,
-                      risk.table = TRUE,
-                      break.time.by = 500,
-                      risk.table.y.text.col = TRUE,
-                      risk.table.y.text = FALSE, 
-                      legend.title = "SBI",conf.int = TRUE,
-                      legend = "bottom", surv.median.line = "hv")
-
-file_surv_plot = "/surv_si.pdf"
-filename = paste0(plots_dir, file_surv_plot)
-
-# Save plot as PDF
-pdf(filename, width = 8, height = 8)
-surviv_plot
-dev.off()
-
