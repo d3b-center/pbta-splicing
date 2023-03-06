@@ -22,7 +22,7 @@ suppressPackageStartupMessages({
 ## Set directories
 # Input directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data")
+data_dir <- file.path(root_dir, "data", "v2")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1_specific")
 figures_dir <- file.path(root_dir, "figures")
 input_dir   <- file.path(analysis_dir, "input")
