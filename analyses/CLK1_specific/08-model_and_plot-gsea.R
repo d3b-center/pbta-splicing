@@ -7,14 +7,9 @@
 
 ## Load libraries: 
 suppressPackageStartupMessages({
-  #library("broom")
   # Library for data manipulation
-  #library("dplyr")
   library("tidyverse")
 })
-
-## Magrittr pipe
-#`%>%` <- dplyr::`%>%`
 
 ## Set directories
 # Input directories
@@ -37,15 +32,15 @@ source(file.path(root_dir, "figures", "theme_for_plots.R"))
 SIGNIFICANCE_THRESHOLD <- 0.05
 
 ########NOT WORKING###########
-# # Assigning params$is_ci to running_in_ci avoids a locked binding error
-# running_in_ci <- params$is_ci
-# 
-# # Are we testing? In case of a non 0/1 number, we recast as logical, and then ensure logical.
-# if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
-# if (!(is.logical(running_in_ci)))
-# {
-#   stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
-# }
+# Assigning params$is_ci to running_in_ci avoids a locked binding error
+running_in_ci <- params$is_ci
+
+# Are we testing? In case of a non 0/1 number, we recast as logical, and then ensure logical.
+if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
+if (!(is.logical(running_in_ci)))
+{
+  stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
+}
 ########NOT WORKING###########
 
 
