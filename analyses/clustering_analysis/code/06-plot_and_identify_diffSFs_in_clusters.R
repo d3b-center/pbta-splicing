@@ -39,19 +39,21 @@ venn_upregSFs_plot   <- file.path(plots_dir, "venn_upreg_SFs.tiff")
 venn_downregSFs_plot <- file.path(plots_dir, "venn_downreg_SFs.tiff")
 venn_diffSFs_plot <- file.path(plots_dir, "venn_diff_SFs.tiff")
 
-## input files
+## input files generated from previous scripts
 cl1_diff_file <- paste0(output_dir,"/diff_genes/", "non_expr_pan_cancer_splice_subset_km_euclidean_0_cluster_1_limma_output.tsv")
 cl2_diff_file <- paste0(output_dir,"/diff_genes/", "non_expr_pan_cancer_splice_subset_km_euclidean_0_cluster_2_limma_output.tsv")
 cl3_diff_file <- paste0(output_dir,"/diff_genes/", "non_expr_pan_cancer_splice_subset_km_euclidean_0_cluster_3_limma_output.tsv")
 
+## splicing factor gene list
 splicing_factor_list_file <- paste0(input_dir,"/","SF_compr.list.txt")
 SF_list <- vroom(splicing_factor_list_file, delim = "\t", col_names = c("Gene"))
 
+## get cluster info and members
 cl1_diff_df <- vroom(cl1_diff_file, delim = "\t")
 cl2_diff_df <- vroom(cl2_diff_file, delim = "\t")
 cl3_diff_df <- vroom(cl3_diff_file, delim = "\t")
 
-
+## filter differential genes (cluster-specific) by splicing factor gene-list 
 cl1_diff_SF_neg_df <- cl1_diff_df %>%  inner_join(SF_list, by="Gene") %>% filter(logFC<0)
 cl2_diff_SF_neg_df <- cl2_diff_df %>%  inner_join(SF_list, by="Gene") %>% filter(logFC<0)
 cl3_diff_SF_neg_df <- cl3_diff_df %>%  inner_join(SF_list, by="Gene") %>% filter(logFC<0)
@@ -64,6 +66,7 @@ cl1_diff_SF_total_df <- cl1_diff_df %>%  inner_join(SF_list, by="Gene")  %>% fil
 cl2_diff_SF_total_df <- cl2_diff_df %>%  inner_join(SF_list, by="Gene")  %>% filter(abs(logFC)>4)
 cl3_diff_SF_total_df <- cl3_diff_df %>%  inner_join(SF_list, by="Gene")  %>% filter(abs(logFC)>4)
 
+## plot venn diagram based on genes for each cluster (up/down/all)
 venn_downreg <- ggVennDiagram(x=list(cl1_diff_SF_neg_df$Gene, cl2_diff_SF_neg_df$Gene,cl3_diff_SF_neg_df$Gene), edge_lty = "dashed", edge_size = 2, 
               category.names = c("Cl1" , "Cl2", "Cl3")) +  scale_fill_distiller(palette = "RdBu") + labs(title = "Down-regulated splicing factors")
 
