@@ -1,5 +1,5 @@
 ################################################################################
-# 07-conduct_gsea_analysis.R
+# 07-conduct_gsva_analysis.R
 # This script conducts gene set enrichment analysis, specifically using the GSVA 
 # method [1] for scoring hallmark human pathway enrichment from RNA-Seq results.
 #
@@ -19,7 +19,7 @@
 # Written by Stephanie J. Spielman for CCDL ALSF, 2020 and modified by Ammar S 
 #             Naqvi
 #
-# usage: Rscript 07-conduct_gsea_analysis.R
+# usage: Rscript 07-conduct_gsva_analysis.R
 #
 # Reference:
 # 1. Sonja Hänzelmann, Robert Castelo, and Justin Guinney. 2013. “GSVA: Gene Set 
@@ -72,20 +72,14 @@ human_hallmark_list    <- base::split(human_hallmark_twocols$human_gene_symbol, 
 ##rmats input
 
 # Prepare expression data: log2 transform re-cast as matrix
-# filter to RNA and exclude TCGA and GTEx
 histology_rna_df <- histology_df %>% 
-  
-  ## filters to retrieve samples of interests 
-  dplyr::filter(experimental_strategy == "RNA-Seq") %>% 
-  dplyr::filter(!is.na(RNA_library)) %>%
-  dplyr::filter(cohort == "PBTA") %>%
-  dplyr::filter(RNA_library == "stranded") %>% 
-  dplyr::filter(CNS_region == 'Midline') %>% 
-  dplyr::filter(short_histology == 'HGAT') 
+  # Only include RNA-Seq, PBTA cohorts, stranded, Midline HGGs samples
+  filter(experimental_strategy == "RNA-Seq", cohort == "PBTA", cohort == "PBTA", 
+         CNS_region == 'Midline',short_histology == 'HGAT') 
 
 rmats_file <-  file.path(data_dir,"rMATS_merged.single.SE.tsv.gz")
-
 rmats_df <-  vroom(rmats_file, comment = "#",delim="\t") %>%
+  
   # select specific samples and extract CLK1 exon 4  
   dplyr::filter(geneSymbol=="CLK1") %>% dplyr::filter(exonStart_0base=="200860124", exonEnd=="200860215") %>% dplyr::select(sample, geneSymbol, IncLevel1) %>% 
   inner_join(histology_rna_df, by=c('sample'='Kids_First_Biospecimen_ID')) %>%  dplyr::select(sample, geneSymbol, IncLevel1) 
@@ -163,6 +157,7 @@ for(i in 1:length(rna_library_list)){
 scores_output_file <- (file.path(results_dir, "gsea_out.tsv"))
 write_tsv(gsea_scores_df_tidy, scores_output_file)
 
+## compare high vs low SBI and their associated CLK1 expression 
 expression_tidy_df <- as.data.frame(expression_data) %>%
   rownames_to_column(var = "gene")
 
@@ -185,8 +180,6 @@ rmats_subset_with_CLK1expr_df <- rmats_df %>% dplyr::rename(gene=geneSymbol) %>%
                                               dplyr::inner_join(expression_each_tidy_CLK1_df, by=c('gene','Kids_First_Biospecimen_ID')) %>%
                                               dplyr::mutate(CLK1_group = if_else(IncLevel1 < lower_psi, "Low", "High")) %>%  
                                               dplyr::select(Kids_First_Biospecimen_ID, gene,IncLevel1, expr, CLK1_group) 
-
-#psi_vs_CLK1expr_groupings <- inner_join(expression_each_tidy_CLK1_df,rmats_subset_df, by="Kids_First_Biospecimen_ID") %>% dplyr::filter(gene=="CLK1")
 
 ##plot expression categorized by CLK1 expression
 boxplot_grp_expr <- ggplot(rmats_subset_with_CLK1expr_df,aes(CLK1_group,expr)) + 
