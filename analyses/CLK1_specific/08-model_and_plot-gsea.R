@@ -5,7 +5,11 @@
 # usage: Rscript 08-model_and_plot-gsea.R
 ################################################################################
 
+<<<<<<< HEAD
 ## Load libraries: 
+=======
+## load libraries
+>>>>>>> 8d35290ba80a9a562dcf39583436a5f6f92bb6c9
 suppressPackageStartupMessages({
   # Library for data manipulation
   library("tidyverse")
@@ -50,6 +54,7 @@ metadata_file <- file.path(data_dir, "histologies.tsv")
 # Specify GSEA scores file path
 scores_file <- file.path(results_dir, "gsea_out.tsv")
 
+<<<<<<< HEAD
 # Load metadata
 metadata <- readr::read_tsv(metadata_file, guess_max = 100000) %>% 
   # Select only RNA-Seq samples
@@ -71,6 +76,40 @@ metadata <- readr::read_tsv(metadata_file, guess_max = 100000) %>%
                              (Kids_First_Biospecimen_ID   == 'BS_NNPEC7W1') |
                              (Kids_First_Biospecimen_ID   == 'BS_PZVHMSYN'), 
                              "High", "Low"))
+=======
+######## Load input files
+## histology file
+metadata    <- readr::read_tsv(metadata_file, guess_max = 100000) %>% 
+  
+  # Only include RNA-Seq, PBTA cohorts, stranded, Midline HGGs samples
+  dplyr::filter(experimental_strategy == "RNA-Seq", cohort == "PBTA", cohort == "PBTA", 
+         CNS_region == 'Midline',short_histology == 'HGAT') 
+
+## merged rmats output files
+rmats_file <-  file.path(data_dir,"rMATS_merged.single.SE.tsv.gz")
+rmats_df <-  vroom(rmats_file, comment = "#",delim="\t") %>%
+  
+  # select specific samples and extract CLK1 exon 4  
+  dplyr::filter(geneSymbol=="CLK1") %>% dplyr::filter(exonStart_0base=="200860124", exonEnd=="200860215") %>%  
+  
+  # join on metadata from above
+  inner_join(metadata, by=c('sample'='Kids_First_Biospecimen_ID')) %>%  
+  dplyr::select(sample, geneSymbol, IncLevel1) 
+
+## compute quantiles to define high vs low Exon 4 PSI groups
+quartiles_psi <- quantile(rmats_df$IncLevel1, probs=c(.25, .75), na.rm = FALSE)
+IQR_psi <- IQR(rmats_df$IncLevel1)
+lower_psi <- quartiles_psi[1] 
+upper_psi <- quartiles_psi[2] 
+
+rmats_subset_samples_lowEx4  <- rmats_df %>% dplyr::filter(rmats_df$IncLevel1 < lower_psi) %>% rename(Kids_First_Biospecimen_ID = sample)
+rmats_subset_samples_highEx4 <- rmats_df %>% dplyr::filter(rmats_df$IncLevel1 > upper_psi) %>%  rename(Kids_First_Biospecimen_ID = sample)
+rmats_subset_samples_Ex4 <- rbind(rmats_subset_samples_lowEx4,rmats_subset_samples_highEx4)
+
+metadata <- inner_join(metadata,rmats_subset_samples_Ex4, by="Kids_First_Biospecimen_ID") %>%   
+            mutate(CLK1_group = if_else(IncLevel1 < lower_psi, "Low", "High"))
+
+>>>>>>> 8d35290ba80a9a562dcf39583436a5f6f92bb6c9
 
 # Load GSEA scores
 scores_file <- readr::read_tsv(scores_file) 
