@@ -34,3 +34,6 @@ Rscript 04-plot_histology-specific_splicing_events.R
 ## differential gene expression
 # generate volcano plot of high vs low splicing burden tumors
 Rscript 05-plot_diffExp_highlowSBI.R
+
+Rscript 06-identify_and_plot_histologies_by_SBI.R
+
