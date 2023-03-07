@@ -1,13 +1,10 @@
 ################################################################################
-<<<<<<< HEAD:analyses/CLK1_specific/07-conduct-gsea-analysis.R
-# 07-conduct_gsea_analysis.R
+# 07-conduct_gsva_analysis.R
 # Author: Stephanie J. Spielman for CCDL ALSF, 2020 and modified by Ammar S 
 # Naqvi
 # Description: This script conducts gene set enrichment analysis, using the GSVA 
-=======
 # 07-conduct_gsva_analysis.R
 # This script conducts gene set enrichment analysis, specifically using the GSVA 
->>>>>>> 8d35290ba80a9a562dcf39583436a5f6f92bb6c9:analyses/CLK1_specific/07-conduct-gsva-analysis.R
 # method [1] for scoring hallmark human pathway enrichment from RNA-Seq results.
 #
 # The GSVA scores (i.e., enrichment scores) are calculated to produce a 
@@ -46,7 +43,7 @@ suppressPackageStartupMessages({
 ## Set directories
 # Input directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data")
+data_dir <- file.path(root_dir, "data", "v2")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1_specific")
 input_dir   <- file.path(analysis_dir, "input")
 # Output directories
@@ -62,7 +59,7 @@ expression_data <- readr::read_rds(expr_path) %>%
 # Load Hallmark gene sets from MSigDB
 human_hallmark <- msigdbr(species = "Homo sapiens", category = "H") # The loaded data is a tibble.
 # Load histology data
-histology_df <- readr::read_tsv( file.path(data_dir, "histologies.tsv")  , guess_max = 100000)
+histology_df <- readr::read_tsv(file.path(data_dir, "histologies.tsv")  , guess_max = 100000)
 
 #### Prepare hallmark genes: Create a list of hallmarks, each of which is a list of genes -----------------------------------------------
 human_hallmark_twocols <- human_hallmark %>% 
@@ -72,7 +69,6 @@ human_hallmark_list <- base::split(human_hallmark_twocols$human_gene_symbol, lis
 #### Perform gene set enrichment analysis --------------------------------------------------------------------
 # Prepare expression data: log2 transform and re-cast as matrix
 
-<<<<<<< HEAD:analyses/CLK1_specific/07-conduct-gsea-analysis.R
 # Filter histology dataframe
 histology_rna_df <- histology_df %>% 
   # Only include RNA-Seq samples 
@@ -97,7 +93,6 @@ histology_rna_df <- histology_df %>%
          (Kids_First_Biospecimen_ID   == 'BS_GXTFW99H') | 
          (Kids_First_Biospecimen_ID   == 'BS_E60JZ9Z3') |
          (Kids_First_Biospecimen_ID   == 'BS_9CA93S6D') )
-=======
 # Prepare expression data: log2 transform re-cast as matrix
 histology_rna_df <- histology_df %>% 
   # Only include RNA-Seq, PBTA cohorts, stranded, Midline HGGs samples
@@ -110,7 +105,6 @@ rmats_df <-  vroom(rmats_file, comment = "#",delim="\t") %>%
   # select specific samples and extract CLK1 exon 4  
   dplyr::filter(geneSymbol=="CLK1") %>% dplyr::filter(exonStart_0base=="200860124", exonEnd=="200860215") %>% dplyr::select(sample, geneSymbol, IncLevel1) %>% 
   inner_join(histology_rna_df, by=c('sample'='Kids_First_Biospecimen_ID')) %>%  dplyr::select(sample, geneSymbol, IncLevel1) 
->>>>>>> 8d35290ba80a9a562dcf39583436a5f6f92bb6c9:analyses/CLK1_specific/07-conduct-gsva-analysis.R
 
 
 # Subset expression data to include only samples from filtered histology filter dataset
@@ -180,8 +174,7 @@ scores_output_file <- (file.path(results_dir, "gsea_out.tsv"))
 # Create output file
 write_tsv(gsea_scores_df_tidy, scores_output_file)
 
-<<<<<<< HEAD:analyses/CLK1_specific/07-conduct-gsea-analysis.R
-=======
+
 ## compare high vs low SBI and their associated CLK1 expression 
 expression_tidy_df <- as.data.frame(expression_data) %>%
   rownames_to_column(var = "gene")
@@ -219,5 +212,4 @@ tiff(file_tiff_plot, height = 2000, width = 2000, res = 300)
 print(boxplot_grp_expr)
 dev.off()
 
->>>>>>> 8d35290ba80a9a562dcf39583436a5f6f92bb6c9:analyses/CLK1_specific/07-conduct-gsva-analysis.R
 

@@ -15,7 +15,6 @@ suppressPackageStartupMessages({
   library(org.Hs.eg.db)
   # We will need this so we can use the pipe: %>%
   library(magrittr)
-  library(vroom)
 })
 
 ## SET DIRECTORIES
@@ -36,60 +35,12 @@ if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
 
+
 # Declare input file paths
-dge_results_file <- file.path(data_dir, "gene-counts-rsem-expected_count-collapsed.rds")
+dge_results_file <- file.path(results_dir, "clk1_group_diff_expr_results.csv")
 
 # Read in the contents of the differential expression results file
-dge_df <- readr::read_rds(dge_results_file) %>%
-  as.data.frame()
-
-
-# Load histology data
-histology_df <- readr::read_tsv(file.path(data_dir, "histologies.tsv"), guess_max = 100000)
-
-# Filter histology dataframe
-histology_rna_df <- histology_df %>% 
-  # Only include RNA-Seq samples 
-  filter(experimental_strategy == "RNA-Seq") %>% 
-  # Remove NAs
-  filter(!is.na(RNA_library)) %>%
-  # Only include samples from PBTA cohort
-  filter(cohort == "PBTA") %>%
-  # Include samples that are "stranded"
-  filter(RNA_library == "stranded") %>% 
-  # Include those samples originated from the Midline
-  filter(CNS_region == 'Midline') %>% 
-  # Include only HGAT sample histology
-  filter(short_histology == 'HGAT') %>%
-  # Filter for module-specific samples that was previously used in CLK1 splicing/comparisons
-  filter(Kids_First_Biospecimen_ID %in% c('BS_Q13FQ8FV', 'BS_ZV1P6W9C', 'BS_WH8G4VFB', 
-                                          'BS_NNPEC7W1', 'BS_PZVHMSYN', 'BS_DRY58DTF', 
-                                          'BS_GXTFW99H', 'BS_E60JZ9Z3', 'BS_9CA93S6D'))
-
-rmats_file <-  file.path(data_dir,"rMATS_merged.single.SE.tsv.gz")
-rmats_df <-  vroom(rmats_file, comment = "#",delim="\t") %>%
-  # select specific samples and extract CLK1 exon 4  
-  dplyr::filter(geneSymbol=="CLK1") %>% 
-  dplyr::filter(exonStart_0base=="200860124", exonEnd=="200860215") %>% 
-  dplyr::select(sample, geneSymbol, IncLevel1) %>% 
-  dplyr::inner_join(histology_rna_df, by=c('sample'='Kids_First_Biospecimen_ID')) %>%  
-  dplyr::select(sample, geneSymbol, IncLevel1) 
-
-# Subset expression data to include only samples from filtered histology filter dataset
-dge_df <- dge_df %>%
-  dplyr::select(histology_rna_df$Kids_First_Biospecimen_ID)
-
-# For each type of the RNA library, we subset the expression matrix accordingly and run gsea scores for each RNA library 
-rna_library_list <- histology_rna_df %>% 
-  dplyr::pull(RNA_library) %>% 
-  unique()
-
-# Further subset to each cohort to deal with size issues
-cohort_list <- histology_rna_df %>% 
-  dplyr::pull(cohort) %>% 
-  unique()
-
-
+dge_df <- readr::read_csv(dge_results_file)
 
 #######
 # Specifying MSigDB gene sets of interest
@@ -132,14 +83,118 @@ gsea_results <- GSEA(
 )
 
 
+# We can access the results from our `gsea_results` object using `@result`
+head(gsea_results@result)
+
+# Convert GSEA results object to dataframe
+gsea_result_df <- data.frame(gsea_results@result)
+
+# Save GSEA results
+readr::write_csv(
+  gsea_result_df,
+  file.path(
+    results_dir,
+    "clk1_status_gsea_results.csv"
+  )
+)
+
+# 3. Visualize GSEA
+# Look at the 3 gene sets with the most positive NES
+gsea_result_df %>%
+  # This returns the 3 rows with the largest NES values
+  dplyr::slice_max(NES, n = 3)
+
+# Make positive NES GSEA plot
+most_positive_nes_plot <- enrichplot::gseaplot2(
+  gsea_results,
+  geneSetID = "HALLMARK_E2F_TARGETS",
+  title = "HALLMARK_E2F_TARGETS"
+)
+most_positive_nes_plot
+
+# Save GSEA enrichment plot as tiff
+# Plot path
+most_positive_nes_plot_path <- file.path(plots_dir, "clk1_status_gsea_most_positive_plot.tiff")
+# Save plot
+ggplot2::ggsave(most_positive_nes_plot_path,
+                width=10.7,
+                height=5.33,
+                device="tiff"
+)
 
 
+# Look at the 3 gene sets with the most negative NES
+gsea_result_df %>%
+  # Return the 3 rows with the smallest (most negative) NES values
+  dplyr::slice_min(NES, n = 3)
+
+# Make negative NES GSEA plot
+most_negative_nes_plot <- enrichplot::gseaplot2(
+  gsea_results,
+  geneSetID = "HALLMARK_KRAS_SIGNALING_DN",
+  title = "HALLMARK_KRAS_SIGNALING_DOWN"
+)
+most_negative_nes_plot
 
 
+# Save GSEA enrichment plot as tiff
+# Plot path
+most_negative_nes_plot_path <- file.path(plots_dir, "clk1_status_gsea_most_negative_plot.tiff")
+# Save plot
+ggplot2::ggsave(most_negative_nes_plot_path,
+                width=10.7,
+                height=5.33,
+                device="tiff"
+)
 
 
+# Make GSEA enrichment plot for DNA Repair geneset
+# Make DNA Repair NES GSEA plot
+dna_repair_plot <- enrichplot::gseaplot2(
+  gsea_results,
+  geneSetID = "HALLMARK_DNA_REPAIR",
+  title = "HALLMARK_DNA_REPAIR"
+)
+dna_repair_plot
+
+# Save DNA Repair GSEA enrichment plot as tiff
+# Plot path
+dna_repair_plot_path <- file.path(plots_dir, "clk1_status_dna_repair_gsea_plot.tiff")
+# Save plot
+ggplot2::ggsave(dna_repair_plot_path,
+                width=10.7,
+                height=5.33,
+                device="tiff"
+)
 
 
+# Make dotplot of enriched gene sets
+require(DOSE)
+dotplot(gsea_results, showCategory=10, split=".sign") + facet_grid(.~.sign)
+
+# Save GSEA dotplot as tiff
+# Plot path
+gsea_dotplot_path <- file.path(plots_dir, "clk1_status_gsea_dotplot.tiff")
+# Save plot
+ggplot2::ggsave(gsea_dotplot_path,
+                width=10.7,
+                height=5.33,
+                device="tiff"
+)
 
 
+# Make ridgeplot of enriched gene sets
+ridgeplot(gsea_results) + labs(x = "enrichment distribution")
+
+# Save GSEA dotplot as tiff
+# Plot path
+gsea_ridgeplot_path <- file.path(plots_dir, "clk1_status_gsea_ridgeplot.tiff")
+# Save plot
+ggplot2::ggsave(gsea_ridgeplot_path,
+                width=10.7,
+                height=8,
+                device="tiff"
+)
+
+dev.off()
 
