@@ -5,14 +5,12 @@
 # usage: Rscript 08-model_and_plot-gsea.R
 ################################################################################
 
-<<<<<<< HEAD
 ## Load libraries: 
-=======
 ## load libraries
->>>>>>> 8d35290ba80a9a562dcf39583436a5f6f92bb6c9
 suppressPackageStartupMessages({
   # Library for data manipulation
   library("tidyverse")
+  library("vroom")
 })
 
 ## Set directories
@@ -35,18 +33,6 @@ source(file.path(root_dir, "figures", "theme_for_plots.R"))
 # Significance testing universal threshold
 SIGNIFICANCE_THRESHOLD <- 0.05
 
-########NOT WORKING###########
-# Assigning params$is_ci to running_in_ci avoids a locked binding error
-running_in_ci <- params$is_ci
-
-# Are we testing? In case of a non 0/1 number, we recast as logical, and then ensure logical.
-if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
-if (!(is.logical(running_in_ci)))
-{
-  stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
-}
-########NOT WORKING###########
-
 
 # Load input files
 ## Load metadata file path
@@ -54,44 +40,41 @@ metadata_file <- file.path(data_dir, "histologies.tsv")
 # Specify GSEA scores file path
 scores_file <- file.path(results_dir, "gsea_out.tsv")
 
-<<<<<<< HEAD
-# Load metadata
-metadata <- readr::read_tsv(metadata_file, guess_max = 100000) %>% 
-  # Select only RNA-Seq samples
-  filter(experimental_strategy == "RNA-Seq") %>% 
-  # Filter for module-specific samples that was previously used in CLK1 splicing/comparisons
-  filter((Kids_First_Biospecimen_ID   == 'BS_Q13FQ8FV') | 
-         (Kids_First_Biospecimen_ID   == 'BS_ZV1P6W9C') |
-         (Kids_First_Biospecimen_ID   == 'BS_WH8G4VFB') | 
-         (Kids_First_Biospecimen_ID   == 'BS_NNPEC7W1') |
-         (Kids_First_Biospecimen_ID   == 'BS_PZVHMSYN') | 
-         (Kids_First_Biospecimen_ID   == 'BS_DRY58DTF') | 
-         (Kids_First_Biospecimen_ID   == 'BS_GXTFW99H') | 
-         (Kids_First_Biospecimen_ID   == 'BS_E60JZ9Z3') |
-         (Kids_First_Biospecimen_ID   == 'BS_9CA93S6D') ) %>% 
-  ## Define CLK1 groups as "High" or "Low"
-  mutate(CLK1_group = ifelse((Kids_First_Biospecimen_ID   == 'BS_Q13FQ8FV') |
-                             (Kids_First_Biospecimen_ID   == 'BS_ZV1P6W9C') |
-                             (Kids_First_Biospecimen_ID   == 'BS_WH8G4VFB') | 
-                             (Kids_First_Biospecimen_ID   == 'BS_NNPEC7W1') |
-                             (Kids_First_Biospecimen_ID   == 'BS_PZVHMSYN'), 
-                             "High", "Low"))
-=======
+# # Load metadata
+# metadata <- readr::read_tsv(metadata_file, guess_max = 100000) %>% 
+#   # Select only RNA-Seq samples
+#   filter(experimental_strategy == "RNA-Seq") %>% 
+#   # Filter for module-specific samples that was previously used in CLK1 splicing/comparisons
+#   filter(Kids_First_Biospecimen_ID %in% c('BS_Q13FQ8FV', 'BS_ZV1P6W9C', 'BS_WH8G4VFB', 
+#                                           'BS_NNPEC7W1', 'BS_PZVHMSYN', 'BS_DRY58DTF', 
+#                                           'BS_GXTFW99H', 'BS_E60JZ9Z3', 'BS_9CA93S6D')) %>% 
+#   ## Define CLK1 groups as "High" or "Low"
+#   mutate(CLK1_group = ifelse((Kids_First_Biospecimen_ID   == 'BS_Q13FQ8FV') |
+#                              (Kids_First_Biospecimen_ID   == 'BS_ZV1P6W9C') |
+#                              (Kids_First_Biospecimen_ID   == 'BS_WH8G4VFB') | 
+#                              (Kids_First_Biospecimen_ID   == 'BS_NNPEC7W1') |
+#                              (Kids_First_Biospecimen_ID   == 'BS_PZVHMSYN'), 
+#                              "High", "Low"))
+
+
+
+
+
 ######## Load input files
 ## histology file
-metadata    <- readr::read_tsv(metadata_file, guess_max = 100000) %>% 
-  
+metadata <- readr::read_tsv(metadata_file, guess_max = 100000) %>% 
   # Only include RNA-Seq, PBTA cohorts, stranded, Midline HGGs samples
-  dplyr::filter(experimental_strategy == "RNA-Seq", cohort == "PBTA", cohort == "PBTA", 
-         CNS_region == 'Midline',short_histology == 'HGAT') 
+  dplyr::filter(experimental_strategy == "RNA-Seq", 
+                cohort == "PBTA",
+                CNS_region == 'Midline', 
+                short_histology == 'HGAT') 
 
-## merged rmats output files
+## Merged rmats output files
 rmats_file <-  file.path(data_dir,"rMATS_merged.single.SE.tsv.gz")
 rmats_df <-  vroom(rmats_file, comment = "#",delim="\t") %>%
-  
   # select specific samples and extract CLK1 exon 4  
-  dplyr::filter(geneSymbol=="CLK1") %>% dplyr::filter(exonStart_0base=="200860124", exonEnd=="200860215") %>%  
-  
+  dplyr::filter(geneSymbol=="CLK1") %>% 
+  dplyr::filter(exonStart_0base=="200860124", exonEnd=="200860215") %>%  
   # join on metadata from above
   inner_join(metadata, by=c('sample'='Kids_First_Biospecimen_ID')) %>%  
   dplyr::select(sample, geneSymbol, IncLevel1) 
@@ -108,8 +91,7 @@ rmats_subset_samples_Ex4 <- rbind(rmats_subset_samples_lowEx4,rmats_subset_sampl
 
 metadata <- inner_join(metadata,rmats_subset_samples_Ex4, by="Kids_First_Biospecimen_ID") %>%   
             mutate(CLK1_group = if_else(IncLevel1 < lower_psi, "Low", "High"))
-
->>>>>>> 8d35290ba80a9a562dcf39583436a5f6f92bb6c9
+write.csv(metadata, "CLK1_group_status.txt")
 
 # Load GSEA scores
 scores_file <- readr::read_tsv(scores_file) 
