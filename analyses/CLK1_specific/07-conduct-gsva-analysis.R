@@ -1,8 +1,13 @@
 ################################################################################
+<<<<<<< HEAD:analyses/CLK1_specific/07-conduct-gsea-analysis.R
 # 07-conduct_gsea_analysis.R
 # Author: Stephanie J. Spielman for CCDL ALSF, 2020 and modified by Ammar S 
 # Naqvi
 # Description: This script conducts gene set enrichment analysis, using the GSVA 
+=======
+# 07-conduct_gsva_analysis.R
+# This script conducts gene set enrichment analysis, specifically using the GSVA 
+>>>>>>> 8d35290ba80a9a562dcf39583436a5f6f92bb6c9:analyses/CLK1_specific/07-conduct-gsva-analysis.R
 # method [1] for scoring hallmark human pathway enrichment from RNA-Seq results.
 #
 # The GSVA scores (i.e., enrichment scores) are calculated to produce a 
@@ -19,7 +24,7 @@
 #      deviations with cancel each other out and show little or no enrichment."
 #
 #
-# usage: Rscript 07-conduct_gsea_analysis.R
+# usage: Rscript 07-conduct_gsva_analysis.R
 #
 # Reference:
 # [1] Sonja Hänzelmann, Robert Castelo, and Justin Guinney. 2013. “GSVA: Gene Set 
@@ -67,6 +72,7 @@ human_hallmark_list <- base::split(human_hallmark_twocols$human_gene_symbol, lis
 #### Perform gene set enrichment analysis --------------------------------------------------------------------
 # Prepare expression data: log2 transform and re-cast as matrix
 
+<<<<<<< HEAD:analyses/CLK1_specific/07-conduct-gsea-analysis.R
 # Filter histology dataframe
 histology_rna_df <- histology_df %>% 
   # Only include RNA-Seq samples 
@@ -91,6 +97,20 @@ histology_rna_df <- histology_df %>%
          (Kids_First_Biospecimen_ID   == 'BS_GXTFW99H') | 
          (Kids_First_Biospecimen_ID   == 'BS_E60JZ9Z3') |
          (Kids_First_Biospecimen_ID   == 'BS_9CA93S6D') )
+=======
+# Prepare expression data: log2 transform re-cast as matrix
+histology_rna_df <- histology_df %>% 
+  # Only include RNA-Seq, PBTA cohorts, stranded, Midline HGGs samples
+  filter(experimental_strategy == "RNA-Seq", cohort == "PBTA", cohort == "PBTA", 
+         CNS_region == 'Midline',short_histology == 'HGAT') 
+
+rmats_file <-  file.path(data_dir,"rMATS_merged.single.SE.tsv.gz")
+rmats_df <-  vroom(rmats_file, comment = "#",delim="\t") %>%
+  
+  # select specific samples and extract CLK1 exon 4  
+  dplyr::filter(geneSymbol=="CLK1") %>% dplyr::filter(exonStart_0base=="200860124", exonEnd=="200860215") %>% dplyr::select(sample, geneSymbol, IncLevel1) %>% 
+  inner_join(histology_rna_df, by=c('sample'='Kids_First_Biospecimen_ID')) %>%  dplyr::select(sample, geneSymbol, IncLevel1) 
+>>>>>>> 8d35290ba80a9a562dcf39583436a5f6f92bb6c9:analyses/CLK1_specific/07-conduct-gsva-analysis.R
 
 
 # Subset expression data to include only samples from filtered histology filter dataset
@@ -160,4 +180,44 @@ scores_output_file <- (file.path(results_dir, "gsea_out.tsv"))
 # Create output file
 write_tsv(gsea_scores_df_tidy, scores_output_file)
 
+<<<<<<< HEAD:analyses/CLK1_specific/07-conduct-gsea-analysis.R
+=======
+## compare high vs low SBI and their associated CLK1 expression 
+expression_tidy_df <- as.data.frame(expression_data) %>%
+  rownames_to_column(var = "gene")
+
+#first/last_bs needed for use in gather (we are not on tidyr1.0)
+first_bs <- head(colnames(expression_data), n=1)
+last_bs  <- tail(colnames(expression_data), n=1)
+
+expression_each_tidy_df <- expression_tidy_df %>%
+  tidyr::gather(Kids_First_Biospecimen_ID, expr, !!first_bs : !!last_bs) 
+
+expression_each_tidy_CLK1_df <- expression_each_tidy_df %>% filter(gene=='CLK1' | gene=="GALNT15" | gene=='DIAPH3')
+
+ggplot(expression_each_tidy_CLK1_df, aes(y=gene, x=Kids_First_Biospecimen_ID, fill=expr)) + 
+  geom_raster() + geom_tile() +  scale_fill_gradient(low="white", high="#DC3220") + xlab("Sample") +
+  ylab("Gene") + theme(axis.text.x = element_text(size = 10,angle = 90,hjust = .7, vjust = .8),axis.text.y = element_text(size = 10)) 
+
+## add column for CLK1 groupings and add in expression
+rmats_subset_with_CLK1expr_df <- rmats_df %>% dplyr::rename(gene=geneSymbol) %>% 
+                                              dplyr::rename(Kids_First_Biospecimen_ID=sample) %>% 
+                                              dplyr::inner_join(expression_each_tidy_CLK1_df, by=c('gene','Kids_First_Biospecimen_ID')) %>%
+                                              dplyr::mutate(CLK1_group = if_else(IncLevel1 < lower_psi, "Low", "High")) %>%  
+                                              dplyr::select(Kids_First_Biospecimen_ID, gene,IncLevel1, expr, CLK1_group) 
+
+##plot expression categorized by CLK1 expression
+boxplot_grp_expr <- ggplot(rmats_subset_with_CLK1expr_df,aes(CLK1_group,expr)) + 
+                      geom_boxplot(aes(fill=CLK1_group)) + 
+                      stat_compare_means(method = "t.test") + 
+                      geom_jitter() + theme_Publication()
+
+file_tiff_plot = file.path(plots_dir,"boxplot_CLK1-expr.tiff")
+
+# save plot tiff version
+tiff(file_tiff_plot, height = 2000, width = 2000, res = 300)
+print(boxplot_grp_expr)
+dev.off()
+
+>>>>>>> 8d35290ba80a9a562dcf39583436a5f6f92bb6c9:analyses/CLK1_specific/07-conduct-gsva-analysis.R
 
