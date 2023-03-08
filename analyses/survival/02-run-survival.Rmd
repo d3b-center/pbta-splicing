@@ -1,0 +1,312 @@
+---
+title: "Run survival analyses"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Ryan Corbett
+date: 2023
+params:
+  plot_ci: TRUE
+---
+
+**Purpose:** 
+
+Runs survival analysis models in histology groups with splicing burden index (SBI) as a predictor
+
+## Usage 
+
+Uses a wrapper function (`survival_analysis`) from utils folder. 
+
+## Setup
+
+#### Packages and functions
+
+Load packages, set directory paths and call setup script
+
+```{r}
+library(tidyverse)
+library(survival)
+library(ggpubr)
+library(ggplot2)
+
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+setwd(root_dir)
+
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses", "survival")
+input_dir <- file.path(analysis_dir, "results")
+results_dir <- file.path(analysis_dir, "results")
+
+# If the input and results directories do not exist, create it
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir, recursive = TRUE)
+}
+
+source(file.path("/Users/corbettr/pbta-ancestry/analyses/survival/util/survival_models.R"))
+```
+
+Set metadata path
+
+```{r set paths}
+metadata_file <- file.path(input_dir, "splicing_indices_with_survival.tsv")
+```
+
+Read in metadata
+
+```{r}
+metadata <- read_tsv(metadata_file)
+```
+
+Define histology groups to run survival analyses on 
+
+```{r}
+groups <- c("ATRT", "CPG", "EPN", "GNG", 
+            "HGG", "LGG", "MB")
+
+# create names vector for output files
+plot_names <- c("atrt", "cpg", "epn", 
+                "gng", "hgg", "lgg", "mb")
+names(plot_names) <- groups
+```
+
+Loop through histology groups and perform the following: 
+
+- Aggregate molecular subtypes into broader groups (HGG and LGG only)
+- Define samples with high and low SI burden (upper and lower quartiles, respectively)
+- Run Kaplan-Meier survival analysis and save output for plotting
+- Run cox proportional hazard models, including SI burden as covariate along with subtype (when applicable) and extent of tumor resection (LGG only). Save output for plotting
+
+```{r}
+for (group in groups){
+  
+  # Define output files for KM and coxph models
+  km_os_model_file <- file.path(results_dir, 
+                                    glue::glue("logrank_{plot_names[group]}_OS_SIburden.RDS"))
+  
+  coxph_os_model_file <- ifelse(group == "LGG",
+                             file.path(results_dir,
+                                       glue::glue("cox_{plot_names[group]}_OS_additive_terms_subtype_resection_SIburden.RDS")),
+                             file.path(results_dir,
+                                       glue::glue("cox_{plot_names[group]}_OS_additive_terms_subtype_SIburden.RDS"))
+  )
+  
+  km_pfs_model_file <- file.path(results_dir, 
+                                    glue::glue("logrank_{plot_names[group]}_PFS_SIburden.RDS"))
+  
+  coxph_pfs_model_file <- ifelse(group == "LGG",
+                             file.path(results_dir,
+                                       glue::glue("cox_{plot_names[group]}_PFS_additive_terms_subtype_resection_SIburden.RDS")),
+                             file.path(results_dir,
+                                       glue::glue("cox_{plot_names[group]}_PFS_additive_terms_subtype_SIburden.RDS"))
+  )
+  
+  # Subset histology
+  group_hist <- metadata %>%
+    filter(grepl(group, Histology))
+  
+  # consolidate HGG subtypes into broader groups
+  if (group == "HGG"){
+    group_hist <- group_hist %>%
+      dplyr::mutate(mol_sub_group = case_when(
+    OPC_methyl_subtype %in% c("DMG, H3 K28", 
+                             "DMG, H3 K28, TP53 loss", 
+                             "DMG, H3 K28, TP53 activated") ~ "H3 K28",
+    OPC_methyl_subtype %in% c("HGG, H3 G35",
+                             "HGG, H3 G35, TP53 loss") ~ "H3 G35",
+    OPC_methyl_subtype %in% c("HGG, H3 wildtype",
+                             "HGG, H3 wildtype, TP53 loss",
+                             "HGG, H3 wildtype, TP53 activated") ~ "H3 WT",
+    OPC_methyl_subtype %in% c("HGG, IDH, TP53 loss",
+                             "HGG, IDH, TP53 activated") ~ "IDH",
+    TRUE ~ NA_character_
+  )) %>%
+   mutate(mol_sub_group = factor(mol_sub_group)) %>% 
+   mutate(mol_sub_group = fct_relevel(mol_sub_group, c("H3 WT",
+                                                   "H3 G35",
+                                                   "H3 K28",
+                                                   "IDH"))) %>%
+ arrange(mol_sub_group)
+  }
+  
+  # consolidate LGG subtypes
+  if (group == "LGG"){
+    group_hist <- group_hist %>%
+      filter(extent_of_tumor_resection != 'Not Reported') %>%
+      dplyr::mutate(mol_sub_group = case_when(
+        OPC_methyl_subtype == "LGG, wildtype" ~ "WT",
+        grepl("-BRAF", OPC_methyl_subtype) ~ "BRAF fusion",
+        grepl("SEGA", OPC_methyl_subtype) ~ "SEGA",
+        !is.na(OPC_methyl_subtype) ~ "Other alteration",
+        TRUE ~ NA_character_
+      )) 
+  }
+  
+  #Define high and low SI burden samples using quartiles
+  group_hist <- group_hist %>%
+    dplyr::mutate(SI_group = case_when(
+    SI > summary(SI)["3rd Qu."] ~ "High SI",
+    SI < summary(SI)["1st Qu."] ~ "Low SI",
+    TRUE ~ NA_character_
+  )) %>%
+    dplyr::mutate(SI_group = factor(SI_group,
+                                    c("Low SI", "High SI")))
+  
+  # Generate kaplan meier survival models for OS and PFS, and save outputs
+  kap_os <- survival_analysis(
+  metadata  = group_hist,
+  ind_var = "SI_group",
+  test = "kap.meier",
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  days_col = "OS_days",
+  status_col = "OS_status"
+  )
+
+  readr::write_rds(kap_os, km_os_model_file)
+  
+  kap_pfs <- survival_analysis(
+  metadata  = group_hist,
+  ind_var = "SI_group",
+  test = "kap.meier",
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  days_col = "PFS_days",
+  status_col = "PFS_status"
+  )
+
+  readr::write_rds(kap_pfs, km_pfs_model_file)
+
+  # Run cox proprtional hazards models for OS, including appropriate covariates per histology
+  add_model_os <- fit_save_model(group_hist[!grepl("EPN, H3 K28|CNS BCOR|To be classified", group_hist$OPC_methyl_subtype),],
+                                  terms = ifelse(
+                                      group == "LGG", "mol_sub_group+extent_of_tumor_resection+SI_group",
+                                      ifelse(
+                                        group == "HGG", "mol_sub_group+SI_group",
+                                        ifelse(group %in% c("ATRT", "EPN", "MB"),
+                                                            "OPC_methyl_subtype+SI_group",
+                                                            "SI_group"
+                                  ))),
+             coxph_os_model_file,
+             "multivariate",
+             years_col = "OS_years",
+             status_col = "OS_status"
+            )
+  
+  # Run cox proprtional hazards models for PFS, including appropriate covariates per histology
+  add_model_pfs <- fit_save_model(group_hist[!grepl("EPN, H3 K28|CNS BCOR|To be classified", group_hist$OPC_methyl_subtype),],
+                                  terms = ifelse(
+                                      group == "LGG", "mol_sub_group+extent_of_tumor_resection+SI_group",
+                                      ifelse(
+                                        group == "HGG", "mol_sub_group+SI_group",
+                                        ifelse(group %in% c("ATRT", "EPN", "MB"),
+                                                            "OPC_methyl_subtype+SI_group",
+                                                            "SI_group"
+                                  ))),
+             coxph_pfs_model_file,
+             "multivariate",
+             years_col = "PFS_years",
+             status_col = "PFS_status"
+            )
+  
+}
+
+```
+
+Run same survival analyses on HGG, LGG, and MB subtypes with sufficient sample size
+
+```{r}
+# define subtype df with histology, subtype, and file names
+subtype_df <- data.frame(hist = c("HGG", "HGG",
+                                  rep("LGG", 2),
+                                  rep("MB", 2)),
+                         names = c("hgg", "hgg", "lgg", "lgg", 
+                                   "mb", "mb"),
+                         subtype = c("DMG", "wildtype", "wildtype",
+                                     "BRAF", "Group4", "SHH"))
+
+# Loop through subtypes and run survival analyses
+for (i in 1:nrow(subtype_df)) {
+  
+  # define output files
+  km_os_model_file <- file.path(results_dir, 
+                                    glue::glue("logrank_{subtype_df$names[i]}_{subtype_df$subtype[i]}_OS_SIburden.RDS"))
+  
+  coxph_os_model_file <- ifelse(subtype_df$hist[i] == "LGG",
+                             file.path(results_dir,
+                                      glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_OS_additive_terms_subtype_resection_SIburden.RDS")),
+                             file.path(results_dir,
+                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_OS_additive_terms_subtype_SIburden.RDS"))
+  )
+  
+  km_pfs_model_file <- file.path(results_dir, 
+                                    glue::glue("logrank_{subtype_df$names[i]}_{subtype_df$subtype[i]}_PFS_SIburden.RDS"))
+  
+  coxph_pfs_model_file <- ifelse(subtype_df$hist[i] == "LGG",
+                             file.path(results_dir,
+                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_PFS_additive_terms_subtype_resection_SIburden.RDS")),
+                             file.path(results_dir,
+                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_PFS_additive_terms_subtype_SIburden.RDS"))
+  )
+  
+    #Subset metadata for histology subtype
+    subtype_hist <- metadata %>%
+    filter(Histology == subtype_df$hist[i] & grepl(subtype_df$subtype[i], OPC_methyl_subtype)) %>%
+      mutate(SI_group = case_when(
+      SI > summary(SI)["3rd Qu."] ~ "High SI",
+      SI < summary(SI)["1st Qu."] ~ "Low SI",
+      TRUE ~ NA_character_
+    ))%>%
+    dplyr::mutate(SI_group = factor(SI_group,
+                                    c("Low SI", "High SI")))
+    
+    #Run kaplan meier survival models and save to output
+      kap_os <- survival_analysis(
+                  metadata  = subtype_hist,
+                  ind_var = "SI_group",
+                  test = "kap.meier",
+                  metadata_sample_col = "Kids_First_Biospecimen_ID",
+                  days_col = "OS_days",
+                  status_col = "OS_status"
+                  )
+
+  readr::write_rds(kap_os, km_os_model_file)
+  
+  kap_pfs <- survival_analysis(
+                metadata  = subtype_hist,
+                ind_var = "SI_group",
+                test = "kap.meier",
+                metadata_sample_col = "Kids_First_Biospecimen_ID",
+                days_col = "PFS_days",
+                status_col = "PFS_status"
+                )
+  
+    readr::write_rds(kap_pfs, km_pfs_model_file)
+    
+    if (subtype_df$hist[i] == "LGG"){
+      
+      subtype_hist <- subtype_hist %>%
+        filter(extent_of_tumor_resection != 'Not Reported')
+    }
+
+    # Run coxph models and save to output
+    add_model_os <- fit_save_model(subtype_hist,
+                                  terms = ifelse(subtype_df$hist[i] == "LGG",
+                                                 "extent_of_tumor_resection+SI_group",
+                                                 "SI_group"),
+                                   coxph_os_model_file,
+                                   "multivariate",
+                                   years_col = "OS_years",
+                                   status_col = "OS_status")
+    
+    add_model_os <- fit_save_model(subtype_hist,
+                                  terms = ifelse(subtype_df$hist[i] == "LGG",
+                                                 "extent_of_tumor_resection+SI_group",
+                                                 "SI_group"),
+                                     coxph_pfs_model_file,
+                                     "multivariate",
+                                     years_col = "PFS_years",
+                                     status_col = "PFS_status"
+                                    )
+
+}
+
+```

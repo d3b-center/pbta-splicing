@@ -1,0 +1,139 @@
+---
+title: "Prepare splicing data for survival analyses"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Ryan Corbett
+date: 2023
+params:
+  plot_ci: TRUE
+---
+
+**Purpose:** 
+
+- Add sample survival data to splicing index file to run survival analyses
+- Add additional subtype data from methylation to improve subtype-specific analyses
+
+## Setup
+
+#### Packages and functions
+
+load libraries and set directories
+```{r Set up library}
+library(survival)
+library(ggpubr)
+library(tidyverse)
+library(openxlsx)
+# Set directories
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses", "survival")
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+Set input and results directories
+
+```{r}
+input_dir <- file.path(analysis_dir, "input")
+results_dir <- file.path(analysis_dir, "results")
+```
+
+Set file paths
+
+```{r}
+sbi_file <- file.path(root_dir, "analyses", "splicing_index", "results", "splicing_index.total.txt")
+
+histologies_file <- file.path(data_dir, "histologies.tsv")
+
+diagnosis_file <- file.path(input_dir, "subject_diagnoses.tsv")
+
+methyl_file <- file.path(input_dir, "cbtn-dkfz-methylation-classification.csv")
+methyl_map_file <- file.path(input_dir, "methylation_to_OPC_subtype.csv")
+```
+
+Read in splicing index file, and utilize diagnosis file to code in `PFS_status` column indicating Progression/no progression
+
+```{r}
+splice_index <- read_table(sbi_file) %>%
+  rename("Kids_First_Biospecimen_ID"= Sample)
+
+hist <- read_tsv(histologies_file)
+
+diagnoses <- read_tsv(diagnosis_file)
+
+# Pull out patients with recorded progression event
+progression_pts <- diagnoses %>%
+  filter(grepl("Progressive", diagnonsis_type)) %>%
+  pull(subject_id) %>%
+  unique()
+
+# Add histology columns to splice index, and code PFS_status using following logic
+splice_index <- splice_index %>%
+  left_join(hist[,c("Kids_First_Biospecimen_ID", "cohort_participant_id", 
+                    "molecular_subtype", "OS_days", "OS_status", "PFS_days",
+                    "extent_of_tumor_resection")]) %>%
+  mutate(PFS_days = as.numeric(PFS_days)) %>%
+  mutate(PFS_years = PFS_days / 365.25,
+         OS_years = OS_days / 365.25) %>%
+  mutate(PFS_status = case_when(
+    PFS_days < OS_days ~ "PROGRESSION",
+    (PFS_days == OS_days & OS_status == "DECEASED") ~ "PROGRESSION",
+    PFS_days == OS_days & OS_status == "LIVING" & cohort_participant_id %in% progression_pts ~ "PROGRESSION",
+    PFS_days == OS_days & OS_status == "LIVING" & !cohort_participant_id %in% progression_pts ~ "NO PROGRESSION",
+    is.na(PFS_days) & OS_status == "LIVING" & cohort_participant_id %in% progression_pts  ~ "PROGRESSION",
+    is.na(PFS_days) & OS_status == "LIVING" & !cohort_participant_id %in% progression_pts  ~ "NO PROGRESSION",
+    is.na(PFS_days) & OS_status == "DECEASED" ~ "PROGRESSION",
+    TRUE ~ NA_character_
+  ))
+```
+
+Additional molecular subtypes can be pulled from methylation calls 
+
+```{r}
+# filter histology calls for spliciing samples with methylation data
+methyl_hist <- hist %>%
+  filter(cohort_participant_id %in% splice_index$cohort_participant_id & experimental_strategy == "Methylation")
+  
+# Read in methylation file, and file mapping methylation subtypes to OPC molecular subtypes
+methyl <- read_csv(methyl_file)
+methyl_map <- read_csv(methyl_map_file)
+
+# filter methylation table for only high confidence calls in tumors
+methyl <- methyl %>%
+  filter(dkfz_v12_methylation_subclass_score >= 0.8 & sample_type == "Tumor")
+
+# read in methyl_map file, which has a key matching methylation subtypes to OPC subtypes when available 
+methyl_map <- methyl_map %>%
+  rename("dkfz_v12_methylation_subclass" = Abbrevation)
+
+# Define 'OPC_methyl_subtype' variable that takes `molecular_subtype` first, and `OPC_molecular_subtype` defined by methylation otherwise  
+splice_index <- splice_index %>%
+  rename("Kids_First_Biospecimen_ID_RNA" = "Kids_First_Biospecimen_ID") %>%
+  #add columns using to join methylation data
+  left_join(methyl_hist[,c("cohort_participant_id", "Kids_First_Biospecimen_ID")]) %>%
+  # add v12 methylation subtype calls
+  left_join(methyl[,c("Kids_First_Biospecimen_ID", "dkfz_v12_methylation_subclass")]) %>%
+  # add corresponding OPC subtype
+  left_join(methyl_map[,c("dkfz_v12_methylation_subclass", "OPC_molecular_subtype")], by = "dkfz_v12_methylation_subclass") %>%
+  rename("Kids_First_Biospecimen_ID" = Kids_First_Biospecimen_ID_RNA,
+         "Kids_First_Biospecimen_ID_methylation" = Kids_First_Biospecimen_ID) %>%
+  mutate(OPC_methyl_subtype = case_when(
+    !is.na(molecular_subtype) & !grepl("To be classified", molecular_subtype) ~ molecular_subtype,
+    !is.na(OPC_molecular_subtype) & (grepl("To be classified", molecular_subtype) | is.na(molecular_subtype)) ~ OPC_molecular_subtype,
+    grepl("To be classified", molecular_subtype) ~ molecular_subtype,
+    TRUE ~ NA_character_
+  )) %>%
+  # redefine EPN, ST RELA as EPN, ZFTA to be consistent with methylation subtyping
+  mutate(OPC_methyl_subtype = case_when(
+    OPC_methyl_subtype == "EPN, ST RELA" ~ "EPN, ST ZFTA",
+    TRUE ~ OPC_methyl_subtype
+  )) %>%
+  arrange(OPC_methyl_subtype) %>%
+  distinct(Kids_First_Biospecimen_ID, .keep_all = T)
+
+# Save output
+write_tsv(splice_index,
+          file.path(results_dir, "splicing_indices_with_survival.tsv"))
+```
