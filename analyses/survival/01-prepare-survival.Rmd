@@ -46,6 +46,7 @@ Set file paths
 sbi_file <- file.path(root_dir, "analyses", "splicing_index", "results", "splicing_index.total.txt")
 
 histologies_file <- file.path(data_dir, "histologies.tsv")
+base_histologies_file <- file.path(input_dir, "2023-03-08_histologies-base.tsv")
 
 diagnosis_file <- file.path(input_dir, "subject_diagnoses.tsv")
 
@@ -60,31 +61,54 @@ splice_index <- read_table(sbi_file) %>%
   rename("Kids_First_Biospecimen_ID"= Sample)
 
 hist <- read_tsv(histologies_file)
+hist_base <- read_tsv(base_histologies_file)
 
 diagnoses <- read_tsv(diagnosis_file)
+```
+
+Use `diagnoses` to code in `EFS_status` (event-free status) column indicating event/no event
+
+```{r}
 
 # Pull out patients with recorded progression event
 progression_pts <- diagnoses %>%
-  filter(grepl("Progressive", diagnonsis_type)) %>%
+  filter(grepl("Progressive|Recurrence", diagnonsis_type)) %>%
   pull(subject_id) %>%
   unique()
 
-# Add histology columns to splice index, and code PFS_status using following logic
+# identify patients called deceased due to disease in file
+
+deceased_pts <- diagnoses %>%
+  filter(grepl("Deceased-due to disease", OS_status)) %>%
+  pull(subject_id) %>%
+  unique()
+
+# Add histology columns to splice index, and code EFS_status using following logic
 splice_index <- splice_index %>%
   left_join(hist[,c("Kids_First_Biospecimen_ID", "cohort_participant_id", 
-                    "molecular_subtype", "OS_days", "OS_status", "PFS_days",
+                    "molecular_subtype",
                     "extent_of_tumor_resection")]) %>%
-  mutate(PFS_days = as.numeric(PFS_days)) %>%
-  mutate(PFS_years = PFS_days / 365.25,
-         OS_years = OS_days / 365.25) %>%
-  mutate(PFS_status = case_when(
-    PFS_days < OS_days ~ "PROGRESSION",
-    (PFS_days == OS_days & OS_status == "DECEASED") ~ "PROGRESSION",
-    PFS_days == OS_days & OS_status == "LIVING" & cohort_participant_id %in% progression_pts ~ "PROGRESSION",
-    PFS_days == OS_days & OS_status == "LIVING" & !cohort_participant_id %in% progression_pts ~ "NO PROGRESSION",
-    is.na(PFS_days) & OS_status == "LIVING" & cohort_participant_id %in% progression_pts  ~ "PROGRESSION",
-    is.na(PFS_days) & OS_status == "LIVING" & !cohort_participant_id %in% progression_pts  ~ "NO PROGRESSION",
-    is.na(PFS_days) & OS_status == "DECEASED" ~ "PROGRESSION",
+  left_join(hist_base[,c("Kids_First_Participant_ID", "cohort_participant_id",
+                         "OS_days", "PFS_days", "OS_status")]) %>%
+  distinct(Kids_First_Participant_ID, .keep_all = T) %>%
+  dplyr::mutate(EFS_days = as.numeric(PFS_days),
+         OS_days = as.numeric(OS_days)) %>%
+  dplyr::mutate(OS_years = OS_days/365.25,
+         EFS_years = EFS_days/365.25) %>%
+  dplyr::select(-PFS_days) %>%
+  dplyr::mutate(OS_status = case_when(
+    
+    # in case any `deceased_patients` not coded as DECEASED, recode
+    cohort_participant_id %in% deceased_pts ~ "DECEASED",
+    TRUE ~ OS_status
+  )) %>%
+  
+  # code EFS status using following logic
+  dplyr::mutate(EFS_status = case_when(
+    EFS_days < OS_days ~ "EVENT",
+    OS_status == "DECEASED" ~ "EVENT",
+    OS_status == "LIVING" & cohort_participant_id %in% progression_pts  ~ "EVENT",
+    OS_status == "LIVING" & !cohort_participant_id %in% progression_pts  ~ "NO EVENT",
     TRUE ~ NA_character_
   ))
 ```
