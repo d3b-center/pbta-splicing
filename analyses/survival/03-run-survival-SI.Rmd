@@ -1,0 +1,237 @@
+---
+title: "Run survival analyses with SI"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Ryan Corbett
+date: 2023
+params:
+  plot_ci: TRUE
+---
+
+**Purpose:** 
+
+Runs survival analysis models in histology groups with splicing burden index (SBI) as a predictor
+
+## Usage 
+
+Uses a wrapper function (`survival_analysis`) from utils folder. 
+
+## Setup
+
+#### Packages and functions
+
+Load packages, set directory paths and call setup script
+
+```{r}
+library(tidyverse)
+library(survival)
+library(ggpubr)
+library(ggplot2)
+
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+setwd(root_dir)
+
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses", "survival")
+input_dir <- file.path(analysis_dir, "results")
+results_dir <- file.path(analysis_dir, "results")
+
+# If the input and results directories do not exist, create it
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir, recursive = TRUE)
+}
+
+source(file.path(analysis_dir, "util", "survival_models.R"))
+```
+
+Set metadata path
+
+```{r set paths}
+metadata_file <- file.path(input_dir, "splicing_indices_with_survival.tsv")
+```
+
+Read in metadata and consolidate HGG, LGG, and GNG subtypes
+
+```{r}
+metadata <- read_tsv(metadata_file)
+
+metadata <- metadata %>%
+  filter(!grepl("To be classified", OPC_methyl_subtype)) %>%
+  mutate(mol_sub_group = case_when(
+    Histology == "HGG" & grepl("wildtype", OPC_methyl_subtype) ~ "HGG, H3 WT",
+    Histology  == "HGG" & grepl("K28", OPC_methyl_subtype) ~ "DMG, H3 K28",
+    Histology  == "HGG" & grepl("G35", OPC_methyl_subtype) ~ "HGG, H3 G35",
+    Histology  == "HGG" & grepl("IDH", OPC_methyl_subtype) ~ "HGG, IDH",
+    Histology == "LGG" & grepl("wildtype", OPC_methyl_subtype) ~ "LGG, WT",
+    Histology == "LGG" & grepl("-BRAF", OPC_methyl_subtype) ~ "LGG, BRAF fusion",
+    Histology == "LGG" & grepl("SEGA", OPC_methyl_subtype) ~ "LGG, SEGA",
+    Histology == "LGG" & !grepl("To be classified", OPC_methyl_subtype) ~ "LGG, Other alteration",
+    Histology == "GNG" & grepl("wildtype", OPC_methyl_subtype) ~ "GNG, WT",
+    Histology == "GNG" & grepl("-BRAF", OPC_methyl_subtype) ~ "GNG, BRAF fusion",
+    Histology == "GNG" & !grepl("To be classified", OPC_methyl_subtype) ~ "GNG, Other alteration",
+    !is.na(OPC_methyl_subtype) ~ OPC_methyl_subtype,
+  ))
+```
+
+Define histology groups to run survival analyses on 
+
+```{r}
+groups <- c("ATRT", "CPG", "EPN", "GNG", 
+            "HGG", "LGG", "MB")
+
+# create names vector for output files
+plot_names <- c("atrt", "cpg", "epn", 
+                "gng", "hgg", "lgg", "mb")
+names(plot_names) <- groups
+```
+
+Loop through histology groups and perform the following: 
+
+- Filter metadta by histology
+- Multiply SI by 10 for modeling purposes (scale coefficients down for plotting)
+- Run cox proportional hazard models, including SI burden as covariate along with subtype (when applicable) and extent of tumor resection (LGG only). Save output for plotting
+
+```{r}
+for (group in groups){
+  
+
+  coxph_os_model_file <- ifelse(group %in% c("GNG", "LGG"),
+                             file.path(results_dir,
+                                       glue::glue("cox_{plot_names[group]}_OS_additive_terms_subtype_resection_SI.RDS")),
+                             file.path(results_dir,
+                                       glue::glue("cox_{plot_names[group]}_OS_additive_terms_subtype_SI.RDS"))
+  )
+
+  coxph_efs_model_file <- ifelse(group %in% c("GNG", "LGG"),
+                             file.path(results_dir,
+                                       glue::glue("cox_{plot_names[group]}_EFS_additive_terms_subtype_resection_SI.RDS")),
+                             file.path(results_dir,
+                                       glue::glue("cox_{plot_names[group]}_EFS_additive_terms_subtype_SI.RDS"))
+  )
+  
+  # Subset histology and transform SI 
+  group_hist <- metadata %>%
+    filter(grepl(group, Histology)) %>%
+    filter(!grepl("EPN, H3 K28|CNS BCOR|classified", OPC_methyl_subtype) & !is.na(OPC_methyl_subtype) & !is.na(OS_days) & !is.na(EFS_days)) %>%
+    dplyr::mutate(SI = SI * 10)
+  
+  if (group == "HGG"){
+    group_hist <- group_hist %>%
+     dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
+     dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("HGG, H3 WT",
+                                                     "HGG, H3 G35",
+                                                     "DMG, H3 K28",
+                                                     "HGG, IDH"))) %>%
+   arrange(mol_sub_group)
+  }
+  
+  
+  # Run cox proprtional hazards models for OS, including appropriate covariates per histology
+  add_model_os <- suppressWarnings(
+                                fit_save_model(group_hist,
+                                  terms = ifelse(
+                                      group %in% c("GNG", "LGG"), "mol_sub_group+extent_of_tumor_resection+SI",
+                                      ifelse(
+                                        group == "HGG", "mol_sub_group+SI",
+                                        ifelse(group %in% c("ATRT", "EPN", "MB"),
+                                                            "OPC_methyl_subtype+SI",
+                                                            "SI"
+                                  ))),
+             coxph_os_model_file,
+             "multivariate",
+             years_col = "OS_years",
+             status_col = "OS_status"
+            ))
+  
+  # Run cox proprtional hazards models for PFS, including appropriate covariates per histology
+  add_model_efs <- suppressWarnings(
+                            fit_save_model(group_hist,
+                                  terms = ifelse(
+                                      group %in% c("GNG", "LGG"), "mol_sub_group+extent_of_tumor_resection+SI",
+                                      ifelse(
+                                        group == "HGG", "mol_sub_group+SI",
+                                        ifelse(group %in% c("ATRT", "EPN", "MB"),
+                                                            "OPC_methyl_subtype+SI",
+                                                            "SI"
+                                  ))),
+             coxph_efs_model_file,
+             "multivariate",
+             years_col = "EFS_years",
+             status_col = "EFS_status"
+            ))
+  
+}
+
+```
+
+Run same survival analyses on HGG, LGG, and MB subtypes with sufficient sample size
+
+```{r}
+# define subtype df with histology, subtype, and file names
+subtype_df <- data.frame(hist = c("CPG",
+                                  "EPN",
+                                  rep("HGG", 2),
+                                  "GNG",
+                                  rep("LGG", 3),
+                                  rep("MB", 3)),
+                         names = c("cranio",
+                                  "epn",
+                                  rep("hgg", 2),
+                                  "gng_gnt",
+                                  rep("lgg", 3),
+                                  rep("mb", 3)),
+                         subtype = c("ADAM", "PF A", "K28", "WT",
+                                     "Other", "BRAF", "Other", "WT", 
+                                     "Group3", "Group4", "SHH"))
+
+# Loop through subtypes and run survival analyses
+for (i in 1:nrow(subtype_df)) {
+  
+  # define output files
+
+  coxph_os_model_file <- ifelse(subtype_df$hist[i] %in% c("LGG", "GNG"),
+                             file.path(results_dir,
+                                      glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_OS_additive_terms_subtype_resection_SI.RDS")),
+                             file.path(results_dir,
+                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_OS_additive_terms_subtype_SI.RDS"))
+  )
+
+  coxph_efs_model_file <- ifelse(subtype_df$hist[i] %in% c("LGG", "GNG"),
+                             file.path(results_dir,
+                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_EFS_additive_terms_subtype_resection_SI.RDS")),
+                             file.path(results_dir,
+                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_EFS_additive_terms_subtype_SI.RDS"))
+  )
+  
+    #Subset metadata for histology subtype
+    subtype_hist <- metadata %>%
+    filter(Histology == subtype_df$hist[i] & grepl(subtype_df$subtype[i], mol_sub_group) & !is.na(OS_days) & !is.na(EFS_days)) %>%
+    dplyr::mutate(SI = SI * 10)
+
+    # Run coxph models and save to output
+    add_model_os <- suppressWarnings(
+                              fit_save_model(subtype_hist,
+                                  terms = ifelse(subtype_df$hist[i] %in% c("GNG", "LGG"),
+                                                 "extent_of_tumor_resection+SI",
+                                                 "SI"),
+                                   coxph_os_model_file,
+                                   "multivariate",
+                                   years_col = "OS_years",
+                                   status_col = "OS_status"))
+    
+    add_model_efs <- suppressWarnings(
+                              fit_save_model(subtype_hist,
+                                  terms = ifelse(subtype_df$hist[i] %in% c("GNG", "LGG"),
+                                                 "extent_of_tumor_resection+SI",
+                                                 "SI"),
+                                     coxph_efs_model_file,
+                                     "multivariate",
+                                     years_col = "EFS_years",
+                                     status_col = "EFS_status"
+                                    ))
+
+}
+
+```
