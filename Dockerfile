@@ -45,6 +45,7 @@ RUN ./install_bioc.r \
 	Biobase \
 	BiocManager \
 	colorblindr \
+	broom \
 	ConsensusClusterPlus \
 	corrplot \
   cowplot \
