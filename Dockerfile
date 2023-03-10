@@ -44,6 +44,7 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
 RUN ./install_bioc.r \
 	Biobase \
 	BiocManager \
+	colorblindr \
 	ConsensusClusterPlus \
 	corrplot \
   cowplot \
