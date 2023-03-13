@@ -44,6 +44,7 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
 RUN ./install_bioc.r \
 	Biobase \
 	BiocManager \
+	colorblindr \
 	broom \
 	ConsensusClusterPlus \
 	corrplot \
@@ -61,9 +62,11 @@ RUN ./install_bioc.r \
 	hrbrthemes \
 	limma \
 	optparse \
+	patchwork \
 	pheatmap \
   reshape2 \
   sva \
+  survival \
   survminer \
   UpSetR
 
