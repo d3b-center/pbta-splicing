@@ -72,3 +72,6 @@ Rscript code/03-diff-pathways-per-clusters.R \
 
 ##plot cluster members categorized by SBI high vs low
 Rscript 05-plot-sbi_with_cluster-mem.R
+
+## find differential splicing factors and generate venn diagram
+Rscript 06-plot_and_identify_diffSFs_in_clusters.R
