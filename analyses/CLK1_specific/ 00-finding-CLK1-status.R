@@ -1,8 +1,8 @@
 ################################################################################
-# 01-finding-CLK1-status.R
+# 00-finding-CLK1-status.R
 # Author: Ammar Naqvi
 #
-# usage: Rscript 01-finding-CLK1-status.R
+# usage: Rscript 00-finding-CLK1-status.R
 ################################################################################
 
 ## Load libraries: 
