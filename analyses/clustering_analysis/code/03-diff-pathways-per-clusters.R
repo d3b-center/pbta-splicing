@@ -15,8 +15,6 @@ source(file.path(analysis_dir, 'util', 'diff_pathways_per_cluster.R'))
 option_list <- list(
   make_option(c("--input_mat"), type = "character",
               help = "Input matrix collapsed to unique features (.rds)"),
-  make_option(c("--input_clin"), type = "character",
-              help = "histologies file (.tsv)"),
   make_option(c("--cluster_output"), type = "character",
               help = "cluster output obtained after running 01-get-clustering-output script"),
   make_option(c("--n_cluster"), type = "character",
@@ -30,7 +28,6 @@ option_list <- list(
 )
 opt <- parse_args(OptionParser(option_list = option_list))
 input_mat <- opt$input_mat
-input_clin <- opt$input_clin
 cluster_output <- opt$cluster_output
 n_cluster <- opt$n_cluster
 n_cluster <- as.numeric(n_cluster)
@@ -40,9 +37,8 @@ output_dir <- opt$output_dir
 
 # differential pathway expression per cluster using GSVA
 diff_pathways_per_cluster(input_mat =  input_mat,
-                          input_clin = input_clin,
-                          cluster_output = cluster_output, 
-                          n_cluster = n_cluster, 
-                          gene_set = gene_set, 
-                          prefix = prefix, 
-                          output_dir = output_dir)
+                       cluster_output = cluster_output, 
+                       n_cluster = n_cluster, 
+                       gene_set = gene_set, 
+                       prefix = prefix, 
+                       output_dir = output_dir)
