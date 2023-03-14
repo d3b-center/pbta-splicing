@@ -16,13 +16,7 @@ bash run.sh
 
 ### Input
 
-Inputs used for all scripts are created using the bash script:
-
-```
-bash create_inputs.sh
-```
-
-This script will generate the following input files in the `input` directory:
+Inputs used for all scripts in this module:
 
 ```
 input
@@ -30,8 +24,6 @@ input
 ├── non_expr_pan_cancer_splice_subset.rds # pbta splicing data matrix. Rows are unique features and Columns are Kids_First_Biospecimen_Identifier
 └── raw_counts_pbta_subset.rds # pbta mRNA data matrix subsetted to samples in the splicing matrix. Rows are unique features and Columns are Kids_First_Biospecimen_Identifier
 ```
-
-For the input matrices, histologies with <=5 samples were removed before further downstream analysis.
 
 ### 01-get-clustering-output.R
 

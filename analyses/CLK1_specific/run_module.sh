@@ -13,6 +13,9 @@ cd "$script_directory" || exit
 echo $script_directory
 input_file="$script_directory"/""
 
+## prepare CLK1 status tables
+Rscript 00-finding-CLK1-status.R
+
 ## make plots
 Rscript 01-plot_CLK1_EI_vs_ES_PSI_volcano.R
 Rscript 02-plot_CLK1_high_v_low_Exon4_volcano.R
@@ -30,3 +33,9 @@ rm results/results_diff/*txt
 
 ## plot correlations
 Rscript 06-plot_psi_vs_expr.R
+
+## gsva/gsea analysis with plots
+Rscript 07-conduct-gsva-analysis.R
+Rscript 08-model_and_plot-gsea.R
+Rscript 09-gsea-analysis.R
+
