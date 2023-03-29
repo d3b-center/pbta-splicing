@@ -35,5 +35,6 @@ Rscript 04-plot_histology-specific_splicing_events.R
 # generate volcano plot of high vs low splicing burden tumors
 Rscript 05-plot_diffExp_highlowSBI.R
 
+## plot histology make up per SBI group (high vs low)
 Rscript 06-identify_and_plot_histologies_by_SBI.R
 
