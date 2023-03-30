@@ -15,7 +15,7 @@ suppressPackageStartupMessages({
 
 ## set directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data", "v2")
+data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1_specific")
 
 input_dir   <- file.path(analysis_dir, "input")
@@ -47,34 +47,10 @@ cds = estimateSizeFactors(cds)
 cds = estimateDispersions(cds)
 cds <- DESeq(cds)
 
-# Extract results table
 res <- results(cds)
 
 # add significance column 
 # res$Significant <- ifelse(res$padj< 0.05, "P-val < 0.05", "Not Sig")
-
-
-# Sort and filter DESeq2 results table and convert to dataframe
-res_df <- res %>%
-  # make into data.frame
-  as.data.frame() %>%
-  # the gene names are row names -- let's make them a column for easy display
-  tibble::rownames_to_column("Gene") %>%
-  # add a column for significance threshold results
-  dplyr::mutate(threshold = padj < 0.05) %>%
-  # sort by statistic -- the highest values will be genes with
-  # higher expression in RPL10 mutated samples
-  dplyr::arrange(dplyr::desc(log2FoldChange))
-
-# Save results as CSV to be later used for GSEA
-readr::write_csv(
-  res_df,
-  file.path(
-    results_dir,
-    "clk1_group_diff_expr_results.csv" 
-  )
-)
-
 
 volc_plot <- EnhancedVolcano(res,
                 lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",row.names(res)), ## remove ensembleid portion
