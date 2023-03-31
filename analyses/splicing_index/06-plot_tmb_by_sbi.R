@@ -36,7 +36,7 @@ tmb_coding_df  <-  vroom(tmb_coding_file, comment = "#",delim="\t")  %>% mutate(
 sbi_coding_file  <- file.path(results_dir,"splicing_index.total.txt")
 sbi_coding_df  <-  vroom(sbi_coding_file, comment = "#",delim="\t") %>% mutate(Kids_First_Biospecimen_ID=Tumor_Sample_Barcode) %>% filter(Histology=="HGG")
 
-clin_file = "~/d3b_coding/pbta-splicing/data/histologies.tsv"
+clin_file = file.path(data_dir, "histologies.tsv")
 clin_df  <-  vroom(clin_file, comment = "#",delim="\t") 
 sbi_ids_clin <- clin_df %>% inner_join(sbi_coding_df, by="Kids_First_Biospecimen_ID") %>% filter(tumor_descriptor=="Initial CNS Tumor")
 tmb_ids_clin <- clin_df %>% inner_join(tmb_coding_df, by="Kids_First_Biospecimen_ID") %>% filter(tumor_descriptor=="Initial CNS Tumor")
