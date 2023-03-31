@@ -49,8 +49,8 @@ upper_sbi <- quartiles_sbi[2]
 
 
 clin_df_w_SBI <- clin_df_w_SBI %>% 
-                 mutate(SBI_level = case_when(SI > upper_sbi ~ "high", 
-                                              SI < lower_sbi ~ "low")) %>% 
+                 mutate(SBI_level = case_when(SI > upper_sbi ~ "High SBI", 
+                                              SI < lower_sbi ~ "Low SBI")) %>% 
                  filter(!is.na(SBI_level))
 
 clin_df_w_highSBI <- clin_df_w_SBI %>% filter(SBI_level=="high")
