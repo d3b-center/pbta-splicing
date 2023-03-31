@@ -56,7 +56,7 @@ clin_df_w_SBI <- clin_df_w_SBI %>%
 clin_df_w_highSBI <- clin_df_w_SBI %>% filter(SBI_level=="High SBI")
 clin_df_w_lowSBI <- clin_df_w_SBI %>% filter(SBI_level=="Low SBI")
 
-histology_counts_by_sbi <- clin_df_w_SBI %>% count(SBI_level, short_histology) %>%
+histology_counts_by_sbi <- clin_df_w_SBI %>% dplyr::count(SBI_level, short_histology) %>%
 dplyr::mutate(SBI_level = fct_relevel(SBI_level,
                                         c("Low SBI", "High SBI")))
   
