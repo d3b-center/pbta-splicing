@@ -53,8 +53,8 @@ clin_df_w_SBI <- clin_df_w_SBI %>%
                                               SI < lower_sbi ~ "Low SBI")) %>% 
                  filter(!is.na(SBI_level))
 
-clin_df_w_highSBI <- clin_df_w_SBI %>% filter(SBI_level=="high")
-clin_df_w_lowSBI <- clin_df_w_SBI %>% filter(SBI_level=="low")
+clin_df_w_highSBI <- clin_df_w_SBI %>% filter(SBI_level=="High SBI")
+clin_df_w_lowSBI <- clin_df_w_SBI %>% filter(SBI_level=="Low SBI")
 
 histology_counts_by_sbi <- clin_df_w_SBI %>% count(SBI_level, short_histology)
   
