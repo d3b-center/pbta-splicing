@@ -23,6 +23,7 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses","splicing_index")
 input_dir   <- file.path(analysis_dir, "input")
 data_dir   <- file.path(root_dir, "data")
+results_dir   <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
 ## define output files
@@ -34,7 +35,7 @@ tmb_coding_file  <- file.path(input_dir,"tmb-coding.tsv")
 tmb_coding_df  <-  vroom(tmb_coding_file, comment = "#",delim="\t")  %>% mutate(Kids_First_Biospecimen_ID=Tumor_Sample_Barcode)
 
 sbi_coding_file  <- file.path(results_dir,"splicing_index.total.txt")
-sbi_coding_df  <-  vroom(sbi_coding_file, comment = "#",delim="\t") %>% mutate(Kids_First_Biospecimen_ID=Tumor_Sample_Barcode) %>% filter(Histology=="HGG")
+sbi_coding_df  <-  vroom(sbi_coding_file, comment = "#",delim="\t") %>% mutate(Kids_First_Biospecimen_ID=Sample) %>% filter(Histology=="HGG")
 
 clin_file = file.path(data_dir, "histologies.tsv")
 clin_df  <-  vroom(clin_file, comment = "#",delim="\t") 
@@ -53,12 +54,13 @@ upper_sbi <- quartiles_sbi[2]
 ## subset tmb values and samples by high vs low SBI tumors
 high_sbi_df <- dplyr::filter(sbi_vs_tmb_innerjoin_df, SI > upper_sbi) %>% dplyr::mutate(SBI_level="high")
 low_sbi_df  <- dplyr::filter(sbi_vs_tmb_innerjoin_df, SI < lower_sbi) %>% dplyr::mutate(SBI_level="low")
-high_vs_low_df <- rbind(high_sbi_df,low_sbi_df)
+high_vs_low_df <- rbind(low_sbi_df,high_sbi_df)
 
-boxplot_grp_sbi_tmb <- ggplot(high_vs_low_df,aes((SBI_level),log10(tmb))) + 
+boxplot_grp_sbi_tmb <- ggplot(high_vs_low_df,aes(SBI_level,log10(tmb))) + 
   geom_boxplot(aes(fill=SBI_level)) + 
   stat_compare_means(method = "t.test") + 
-  geom_jitter() + theme_Publication()
+  xlab("Splicing Burden Level") + 
+  geom_jitter() + theme_Publication() 
 
 # save plot tiff version
 tiff(boxplot_sbi_vs_tmb_file, height =2000, width = 1500, res = 300)
