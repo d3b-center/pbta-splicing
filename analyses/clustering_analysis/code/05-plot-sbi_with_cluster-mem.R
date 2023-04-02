@@ -38,7 +38,7 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 sbi_cluster_plot <- file.path(analysis_dir, "plots", 
                               "cluster_by_sbi.tiff")
 
-cc_members_file = "ccp_output/non_expr_pan_cancer_splice_subset_km_euclidean_0.rds"
+cc_members_file = "ccp_output/non_expr_pan_cancer_splice_subset_km_euclidean_0_ccp.rds"
 cc_members_df  <- readRDS(paste0(output_dir,"/",cc_members_file) )
 cc_members   <- cc_members_df[[3]]$consensusClass 
 cc_members <- tibble::rownames_to_column(as.data.frame(cc_members), "Sample")
@@ -49,21 +49,27 @@ sbi_df <- vroom(paste0(input_dir,"/",sbi_file),delim = "\t")
 SI_total_high     <- quantile(sbi_df$SI, probs=.75, names=FALSE)
 SI_total_low      <- quantile(sbi_df$SI, probs=.25, names=FALSE)
 
-splice_index_high <- filter(splice_index, splice_index$SI >SI_total_high )
-splice_index_low  <- filter(splice_index, splice_index$SI <SI_total_low  )
+splice_index_high <- filter(sbi_df, sbi_df$SI >SI_total_high )
+splice_index_low  <- filter(sbi_df, sbi_df$SI <SI_total_low  )
 
 ## add column with "High or "Low" for SBI info
-sbi_outliers <- splice_index%>%filter(splice_index$SI <SI_total_low | splice_index$SI >SI_total_high) %>% 
+sbi_outliers <- sbi_df%>%filter(sbi_df$SI <SI_total_low | sbi_df$SI >SI_total_high) %>% 
   mutate(level=case_when(SI < SI_total_low ~ "Low",SI >SI_total_high  ~ "High" )) %>% inner_join(cc_members, by="Sample")
 
 summ_sbi_cl <- sbi_outliers %>% group_by(cc_members, level) %>%
   summarise(n = n()) %>%
   mutate(Freq = n/sum(n))
 
-sbi_vs_cl_barplot <- ggplot(summ_sbi_cl, aes(x = level, y = n, fill = level, colour = level)) + geom_bar(stat = "identity",alpha = 0.5) +
-  facet_wrap( ~ cc_members, ncol = 3) + labs(x="SBI Level", y="Num samples") +  coord_flip()  +
-  theme_Publication() + theme(legend.position = "none")   #geom_col(width = 0.5) 
-  print(sbi_vs_cl_barplot)
+sbi_vs_cl_barplot <- ggplot(summ_sbi_cl, aes(x = level, y = n, fill = level)) + geom_bar(stat = "identity") +
+                            facet_wrap( ~ cc_members, ncol = 3) + 
+                            labs(x="SBI Level", y="Num samples") +  
+                            coord_flip()  +
+                            theme_Publication() + 
+                            theme(legend.position = "none") +
+                            scale_fill_manual(values= c("Low" = "#FFC20A", "High"="#0C7BDC" ))
+                                        
+
+print(sbi_vs_cl_barplot)
 
   
 ggsave(
