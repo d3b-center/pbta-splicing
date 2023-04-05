@@ -4,8 +4,8 @@ set -o pipefail
 
 # Use the OpenPBTA bucket as the default.
 URL=${SPLICE_URL:-https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/pbta-splicing}
-RELEASE=${SPLICE_RELEASE:-v2}
-PREVIOUS=${SPLICE_RELEASE:-v1}
+RELEASE=${SPLICE_RELEASE:-v3}
+PREVIOUS=${SPLICE_RELEASE:-v2}
 
 # Remove old symlinks in data
 find data -type l -delete
@@ -63,3 +63,5 @@ done
 if [ "$RELEASE" == "testing" ]; then
   chmod u-w data
 fi
+
+wget -P data/ https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.primary_assembly.annotation.gtf.gz
