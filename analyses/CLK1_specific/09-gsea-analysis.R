@@ -15,6 +15,7 @@ suppressPackageStartupMessages({
   library(org.Hs.eg.db)
   # We will need this so we can use the pipe: %>%
   library(magrittr)
+  library(ggplot2)
   library(ggridges)
 })
 
