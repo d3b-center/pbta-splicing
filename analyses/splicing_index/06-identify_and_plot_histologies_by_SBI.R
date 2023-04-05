@@ -98,7 +98,7 @@ piechart_hist_by_sbi <- ggplot(data = histology_counts_by_sbi, aes(x = "", y = n
         legend.text = element_text(size=8))
 
 # save plot tiff version
-tiff(piechart_hist_by_sbi_file, height = 500, width = 750, res = 300)
+tiff(piechart_hist_by_sbi_file, height = 1500, width = 1750, res = 300)
 print(piechart_hist_by_sbi)
 dev.off()  
 
