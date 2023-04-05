@@ -69,3 +69,9 @@ Rscript code/03-diff-pathways-per-clusters.R \
 --gene_set "input/kegg_geneset_mrna.rds" \
 --prefix "raw_counts_pbta_subset_km_euclidean_0" \
 --output_dir "output/diff_pathways"
+
+##plot cluster members categorized by SBI high vs low
+Rscript 05-plot-sbi_with_cluster-mem.R
+
+## find differential splicing factors and generate venn diagram
+Rscript 06-plot_and_identify_diffSFs_in_clusters.R
