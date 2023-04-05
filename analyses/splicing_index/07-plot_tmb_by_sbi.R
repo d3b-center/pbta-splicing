@@ -26,6 +26,9 @@ data_dir   <- file.path(root_dir, "data")
 results_dir   <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
+## Call plot publication theme script 
+source(file.path(root_dir, "figures", "theme_for_plots.R"))
+
 ## define output files
 boxplot_sbi_vs_tmb_file  <- file.path(plots_dir,"boxplot_tmb_vs_sbi-level.tiff")
 
