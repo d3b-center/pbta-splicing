@@ -56,7 +56,7 @@ then
 fi
 
 # Check the md5s for everything we downloaded except CHANGELOG.md
-cd data/$RELEASE
+cd $RELEASE
 echo "Checking MD5 hashes..."
 md5sum -c md5sum.txt
 cd ../../
