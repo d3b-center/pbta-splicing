@@ -8,69 +8,110 @@ use Statistics::Lite qw(:all);
 # ./generate_splicing_index_tab_using_tumors.pl ../psi_clustering/input/pbta-histologies.RNA-Seq.initial.tsv
 #                                   ~/Desktop/AS-DMG/analyses/merge_rMATS/merge_rMATS_splicing.SE.single.tsv
 ############################################################################################################
-my ($histology,$rmats_tsv) = ($ARGV[0], $ARGV[1]);
+my ($histology,$rmats_tsv,$primary_tumor_dat,$primary_tumor_plus_dat) = ($ARGV[0], $ARGV[1],$ARGV[2],$ARGV[3]);
 my (@broad_hist, @bs_id, @splicing_events);
 my (%histology_ids, %inc_levels, %bs_id_hist, %hist_check, %hist_count);
 my %splicing_psi;
 
-# annotate histology file #
-  # hash with BS and disease
-  # make arrays of each histology of BS IDs
-  open(FIL, $histology) || die("Cannot Open File $histology");
+  my %primary_initial_sample_list;
+
+  ## store primary tumor samples
+  open(FIL,$primary_tumor_dat) || die("Cannot Open File");
   while(<FIL>)
   {
     chomp;
-    ## only select RNA-seq and PBTA samples
-    next unless ($_=~/RNA-Seq/);
-    next unless ($_=~/PBTA/);
+    my @header = split "\t";
+    my $bs_id = $header[1];
+    my $cohort = $header[2];
+    my $exp_strategy = $header[4];
+    my $tumor_descr = $header[5];
 
-    #filter out/skip those not solid tissue and second maligancy
-    next unless ($_=~/BS/);
-    next unless ($_=~/Tissue/);
-    next if     ($_=~/Second\sMalignancy/);
+    next unless ($tumor_descr=~/Initial/);
+    next unless ($cohort=~/PBTA/);
+    next unless ($exp_strategy=~/RNA-Seq/);
 
-    my @cols       = split "\t";
-    my $hist       = $cols[44];
-    my $bs_id      = $cols[0];
-    my $patient_id = $cols[3];
-    my $CNS_region = $cols[32];
-  #  print $hist,"hist\n";
+    $primary_initial_sample_list{$bs_id} = $bs_id;
 
-    ## filter histologies of interests
-    next unless ( ($hist=~/HGAT/)  ||
-                  ($hist=~/LGAT/)  ||
-                  #($hist=~/Oligodendroglioma/) ||
-                  ($hist=~/Medulloblastoma/)   ||
-                  ($hist=~/Ganglioglioma/)  ||
-                  ($hist=~/Ependymoma/)||
-                  ($hist=~/ATRT/)  ||
-                  ($hist=~/Craniopharyngioma/) );
+  }
+  close(FIL);
 
-    #print $hist,"hist\n";
-    ## convert to shorter names
-    ## convert histology names
-    $hist =~s/Oligodendroglioma/OGG/;
-    $hist =~s/Medulloblastoma/MB/;
-    $hist =~s/Ganglioglioma/GNG/;
-    $hist =~s/Ependymoma/EPN/;
-    $hist =~s/Craniopharyngioma/CPG/;
-    $hist =~s/HGAT/HGG/;
-    $hist =~s/LGAT/LGG/;
+  ## store primary tumor samples
+  open(FIL,$primary_tumor_plus_dat) || die("Cannot Open File");
+  while(<FIL>)
+  {
+    chomp;
+    my @header = split "\t";
+    my $bs_id = $header[1];
+    my $cohort = $header[2];
+    my $exp_strategy = $header[4];
+    my $tumor_descr = $header[5];
 
-    ## store bs ids and histologies
+    next unless ($tumor_descr=~/Initial/);
+    next unless ($cohort=~/PBTA/);
+    next unless ($exp_strategy=~/RNA-Seq/);
+
+    $primary_initial_sample_list{$bs_id} = $bs_id;
+
+  }
+  close(FIL);
+
+
+  # annotate histology file #
+    # hash with BS and disease
+    # make arrays of each histology of BS IDs
+
+  open(FIL,$histology) || die("Cannot Open File");
+    while(<FIL>)
+    {
+      chomp;
+      my @cols       = split "\t";
+      my $hist       = $cols[53];
+      my $bs_id      = $cols[0];
+      my $patient_id = $cols[3];
+      my $CNS_region = $cols[32];
+
+
+      next unless ($primary_initial_sample_list{$bs_id});
+
+      ## filter histologies of interests
+      next unless ( ($hist=~/HGAT/)  ||
+                    ($hist=~/LGAT/)  ||
+                    #($hist=~/Oligodendroglioma/) ||
+                    ($hist=~/Medulloblastoma/)   ||
+                    ($hist=~/Ganglioglioma/)  ||
+                    ($hist=~/Ependymoma/)||
+                    ($hist=~/ATRT/)  ||
+                    ($hist=~/Craniopharyngioma/) );
+
+      ## convert histology names
+      $hist =~s/Oligodendroglioma/OGG/;
+      $hist =~s/Medulloblastoma/MB/;
+      $hist =~s/Ganglioglioma/GNG/;
+      $hist =~s/Ependymoma/EPN/;
+      $hist =~s/Craniopharyngioma/CPG/;
+      $hist =~s/HGAT/HGG/;
+      $hist =~s/LGAT/LGG/;
+
+    ## make an array and store histology information and BS IDs
     push @broad_hist, $hist;
     push @bs_ids, $bs_id;
 
-    $bs_id_hist{$bs_id}  = $hist;
+    $bs_id_hist{$bs_id} = $hist;
+
+    ## store total number of histologies
+    $hist_count{$hist}++;
+    push @{$histology_ids{$hist}}, $bs_id;
+
     $cns_regions{$bs_id} = $CNS_region;
 
     ## histology counter for downstream analysis
     $hist_count{$hist}++;
 
-    ## hash to keep track of histology and bs id
-    push @{$histology_ids{$hist}}, $bs_id;
-    }
-close(FIL);
+  }
+
+  close(FIL);
+
+
 
 #Exon-specific
 # For every alternatively spliced exon
@@ -115,6 +156,14 @@ while(<FIL>)
   my $upstreamEE   = $cols[16];
   my $downstreamES = $cols[17];
   my $downstreamEE = $cols[18];
+
+  ## remove decimals if needed
+  $exonStart =~s/\.0//;
+  $exonEnd =~s/\.0//;
+  $upstreamES =~s/\.0//;
+  $upstreamEE =~s/\.0//;
+  $downstreamES =~s/\.0//;
+  $downstreamEE =~s/\.0//;
 
   ## retrieve inclusion level and junction count info
   my $inc_level = $cols[33];
@@ -225,7 +274,7 @@ foreach $hist (@broad_hist_uniq)
 
         if($splice_event_per_pos_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_pos_hist_count{$event}{$hist};
-          print $event,"\t",$hist,"\t",$total_hist_count,"\n";
+          #print $event,"\t",$hist,"\t",$total_hist_count,"\n";
           if( ($event_count/$total_hist_count) >= .10 )
           {
             print TAB $event,"\t",$hist,"\tskipping\n";
