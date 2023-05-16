@@ -10,10 +10,6 @@
 ## load libraries
 suppressPackageStartupMessages({
   library("tidyverse")
-<<<<<<< Updated upstream
-=======
-  #library("optparse")
->>>>>>> Stashed changes
   library("vroom")
   library("ggplot2")
 } )
@@ -100,7 +96,7 @@ piechart_hist_by_sbi <- ggplot(data = histology_counts_by_sbi, aes(x = "", y = n
         legend.title = element_text(size=10),
         legend.text = element_text(size=8))
 
-# save plot tiff versionn
+# save plot tiff version
 tiff(piechart_hist_by_sbi_file, height = 1500, width = 1750, res = 300)
 print(piechart_hist_by_sbi)
 dev.off()  
