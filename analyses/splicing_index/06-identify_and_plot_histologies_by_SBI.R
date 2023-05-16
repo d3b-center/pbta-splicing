@@ -10,7 +10,6 @@
 ## load libraries
 suppressPackageStartupMessages({
   library("tidyverse")
-  library("optparse")
   library("vroom")
   library("ggplot2")
 } )
