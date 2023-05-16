@@ -10,7 +10,6 @@
 ## load libraries
 suppressPackageStartupMessages({
   library("tidyverse")
-  library("optparse")
   library("vroom")
   library("ggplot2")
 } )
@@ -72,7 +71,6 @@ short_histology_palettes <- palette_df %>%
 short_histology_palettes <- palette_df %>%
   dplyr::select(short_histology,plot_group_display, hex_code) %>%
   unique()
-
 
 mycolors <- list()
 mycolors[['short_histology']] <- short_histology_palettes$hex_code
