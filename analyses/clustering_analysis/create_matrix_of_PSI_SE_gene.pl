@@ -30,9 +30,7 @@ while(<FIL>)
   my $exp_strategy = $header[4];
   my $tumor_descr = $header[5];
 
-  next unless ($tumor_descr=~/Initial/);
   next unless ($cohort=~/PBTA/);
-  next unless ($exp_strategy=~/RNA-Seq/);
 
   $primary_initial_sample_list{$bs_id} = $bs_id;
 
@@ -50,9 +48,7 @@ while(<FIL>)
   my $exp_strategy = $header[4];
   my $tumor_descr = $header[5];
 
-  next unless ($tumor_descr=~/Initial/);
   next unless ($cohort=~/PBTA/);
-  next unless ($exp_strategy=~/RNA-Seq/);
 
   $primary_initial_sample_list{$bs_id} = $bs_id;
 
