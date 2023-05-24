@@ -1,10 +1,10 @@
 ################################################################################
-# 06-identify_and_plot_histologies_by_SBI.R
+# 07-identify_and_plot_histologies_by_SBI.R
 # written by Ammar S Naqvi
 #
 # script identifies high vs low SBI tumors and creates piechart of their hist 
 #
-# usage: Rscript 06-identify_and_plot_histologies_by_SBI.R
+# usage: Rscript 07-identify_and_plot_histologies_by_SBI.R
 ################################################################################
 
 ## load libraries
