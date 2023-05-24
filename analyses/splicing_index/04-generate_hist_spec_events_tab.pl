@@ -3,10 +3,9 @@
 use Statistics::Lite qw(:all);
 #use warnings;
 ############################################################################################################
-# generate_splicing_index_tab_using_tumors.pl
+# 04-generate_hist_spec_events_tab.pl
 #
-# ./generate_splicing_index_tab_using_tumors.pl ../psi_clustering/input/pbta-histologies.RNA-Seq.initial.tsv
-#                                   ~/Desktop/AS-DMG/analyses/merge_rMATS/merge_rMATS_splicing.SE.single.tsv
+# ./04-generate_hist_spec_events_tab.pl <hist file> <rmats file> <indep_samples> <indep_samples-plus>
 ############################################################################################################
 my ($histology,$rmats_tsv,$primary_tumor_dat,$primary_tumor_plus_dat) = ($ARGV[0], $ARGV[1],$ARGV[2],$ARGV[3]);
 my (@broad_hist, @bs_id, @splicing_events);
@@ -26,9 +25,8 @@ my %splicing_psi;
     my $exp_strategy = $header[4];
     my $tumor_descr = $header[5];
 
-    next unless ($tumor_descr=~/Initial/);
     next unless ($cohort=~/PBTA/);
-    next unless ($exp_strategy=~/RNA-Seq/);
+
 
     $primary_initial_sample_list{$bs_id} = $bs_id;
 
@@ -46,9 +44,7 @@ my %splicing_psi;
     my $exp_strategy = $header[4];
     my $tumor_descr = $header[5];
 
-    next unless ($tumor_descr=~/Initial/);
     next unless ($cohort=~/PBTA/);
-    next unless ($exp_strategy=~/RNA-Seq/);
 
     $primary_initial_sample_list{$bs_id} = $bs_id;
 
@@ -260,7 +256,7 @@ foreach my $sample(@bs_ids_uniq)
 my @ab_splicing_events_pos_uniq = do { my %seen; grep { !$seen{$_}++ } @ab_splicing_events_pos };
 my @ab_splicing_events_neg_uniq = do { my %seen; grep { !$seen{$_}++ } @ab_splicing_events_neg };
 
-my $output_file = "results/splicing_events.hist-labeled_list.thr10freq.txt";
+my $output_file = "results/splicing_events.hist-labeled_list.thr5freq.txt";
 open(TAB,">".$output_file) || die("Cannot Open File");
 
 print TAB "splicing_event\thistology\ttype\n";
@@ -275,7 +271,7 @@ foreach $hist (@broad_hist_uniq)
         if($splice_event_per_pos_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_pos_hist_count{$event}{$hist};
           #print $event,"\t",$hist,"\t",$total_hist_count,"\n";
-          if( ($event_count/$total_hist_count) >= .10 )
+          if( ($event_count/$total_hist_count) >= .05 )
           {
             print TAB $event,"\t",$hist,"\tskipping\n";
           }
@@ -292,7 +288,7 @@ foreach $hist (@broad_hist_uniq)
         if($splice_event_per_neg_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_neg_hist_count{$event}{$hist};
           #print $event,"\t",$hist,"\t",$total_hist_count,"*\n";
-          if( ($event_count/$total_hist_count) >= .10 )
+          if( ($event_count/$total_hist_count) >= .05 )
           {
             print TAB $event,"\t",$hist,"\tinclusion\n";
           }
