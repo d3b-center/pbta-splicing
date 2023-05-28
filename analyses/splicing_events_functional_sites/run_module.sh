@@ -11,14 +11,16 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 ## histology input file (column orders important)
-input_file="../../data/histologies.tsv"
+input_file="../../data/v5/histologies.tsv"
+primary_specimens="../../data/v5/independent-specimens.rnaseqpanel.primary.tsv"
+primary_plus_specimens="../../data/v5/independent-specimens.rnaseqpanel.primary-plus.tsv"
 
 echo "input file:" $input_file
 echo "process rMATS with .20 dPSI and 10 junction read counts...";
 
 ## Process rMATS files given histologies file. Keep only HGG midlines samples and storng splicing events
 
-perl 01-extract_recurrent_splicing_events_hgg.pl $input_file
+perl 01-extract_recurrent_splicing_events_hgg.pl $input_file $primary_specimens $primary_plus_specimens
 
 echo "bedtools intersect...";
 bash 02-run_bedtools_intersect.sh
