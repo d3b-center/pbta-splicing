@@ -4,8 +4,8 @@ set -o pipefail
 
 # Use the OpenPBTA bucket as the default.
 URL=${SPLICE_URL:-https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/pbta-splicing}
-RELEASE=${SPLICE_RELEASE:-v4}
-PREVIOUS=${SPLICE_RELEASE:-v3}
+RELEASE=${SPLICE_RELEASE:-v5}
+PREVIOUS=${SPLICE_RELEASE:-v4}
 
 # Remove old symlinks in data
 find data -type l -delete
@@ -16,25 +16,6 @@ curl --create-dirs $URL/$RELEASE/md5sum.txt -o data/$RELEASE/md5sum.txt -z data/
 # Consider the filenames in the md5sum file and the release notes
 FILES=(`tr -s ' ' < data/$RELEASE/md5sum.txt | cut -d ' ' -f 2` release-notes.md)
 
-if [ -d "data/$PREVIOUS" ]
-then
-  # Find unchanged files
-  echo "Checking for unchanged files..."
-  cd data/$PREVIOUS
-  UNCHANGED=(`md5sum -c ../$RELEASE/md5sum.txt 2>/dev/null | grep OK |cut -d ':' -f 1  || true`)
-  echo $UNCHANGED
-  cd ../../
-
-  # Hard link unchanged files
-  for oldfile in "${UNCHANGED[@]}"
-  do
-    if [ ! -e "data/$RELEASE/$oldfile" ]
-    then
-      echo "Hard linking $oldfile"
-      ln data/$PREVIOUS/$oldfile data/$RELEASE/$oldfile
-    fi
-  done
-fi
 
 # Download the items in FILES if not already present
 for file in "${FILES[@]}"
