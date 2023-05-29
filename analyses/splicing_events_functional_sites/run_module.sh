@@ -11,9 +11,9 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 ## histology input file (column orders important)
-input_file="../../data/v5/histologies.tsv"
-primary_specimens="../../data/v5/independent-specimens.rnaseqpanel.primary.tsv"
-primary_plus_specimens="../../data/v5/independent-specimens.rnaseqpanel.primary-plus.tsv"
+input_file="../../data/histologies.tsv"
+primary_specimens="../../data/independent-specimens.rnaseqpanel.primary.tsv"
+primary_plus_specimens="../../data/independent-specimens.rnaseqpanel.primary-plus.tsv"
 
 echo "input file:" $input_file
 echo "process rMATS with .20 dPSI and 10 junction read counts...";
