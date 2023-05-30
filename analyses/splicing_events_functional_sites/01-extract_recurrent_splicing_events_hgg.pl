@@ -140,9 +140,17 @@ while(<FIL>)
   ## get dPSI values
   my $thr_diff = $cols[-1];
 
+  ##stats
+  my $pval = $cols[31];
+  my $fdr = $cols[32];
+
+
   ## only look at strong changes, remove any dPSI < .20 and tumor junction reads > 10 reads
   next unless ( abs($thr_diff) >= .20);
-  next unless ( ( ($tumor_IJC + $tumor_SJC) >=10) ) ;
+  next unless ( ( ($tumor_IJC + $tumor_SJC) >=10) );
+  next unless ($fdr <= 0.05);
+  next unless ($pval <= 0.05);
+
 
   $exonStart    =~s/\.0//;
   $exonEnd      =~s/\.0//;
