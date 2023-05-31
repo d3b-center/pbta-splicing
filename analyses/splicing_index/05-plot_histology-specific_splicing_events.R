@@ -1,11 +1,11 @@
 ################################################################################
-# upsetR_of_hist-specific_splicing.R
+# 05-plot_histology-specific_splicing_events.R
 # written by Ammar Naqvi
 #
-# usage: Rscript upsetR_of_hist-specific_splicing.R
+# usage: Rscript 05-plot_histology-specific_splicing_events.R
 ################################################################################
 
-##libraries 
+## libraries 
 suppressPackageStartupMessages({
   library("ggplot2")
   library("UpSetR")
@@ -48,38 +48,33 @@ splice_event_df_MB <- splice_event_df %>% filter(histology=='MB', type=='skippin
 splice_event_df_LGG <- splice_event_df %>% filter(histology=='LGG', type=='skipping')
 
 list_for_skipping_upsetR <- list("ATRT"=splice_event_df_ATRT$splicing_event,
-                                  "CPG"=splice_event_df_CPG$splicing_event,
+                                 "CPG"=splice_event_df_CPG$splicing_event,
                                  "GNG"=splice_event_df_GNG$splicing_event,
                                  "EPN"=splice_event_df_EPN$splicing_event,
                                  "HGG"=splice_event_df_HGG$splicing_event,
                                  "MB"=splice_event_df_MB$splicing_event,
-                                 "LGG"=splice_event_df_LGG$splicing_event)
-                                 
-                                 
-es_events <- upset(fromList(list_for_skipping_upsetR), 
+                                 "LGG"=splice_event_df_LGG$splicing_event )
+
+# Save plot as TIFF
+tiff(upsetR_tiff_es_plot_file, width=16, height=8, units="in", res=300)
+upset(fromList(list_for_skipping_upsetR), 
                    mainbar.y.label = "", sets=c("ATRT","CPG","GNG","EPN","HGG","MB","LGG"), sets.x.label = "Histology", order.by = "freq",
-                   mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 2, line.size = 1.5, nsets = 7)
-
-
-# Save plot as PDF
-pdf(upsetR_es_plot_file, width = 16, height = 8)
-es_events
+                   mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 2, line.size = 1.5, nsets = 7) 
+  
+grid.text("Exon Skipping", x = 0.65, y=0.95, gp=gpar(fontsize=18))
 dev.off()
 
-# Save plot tiff version
-tiff(upsetR_tiff_es_plot_file, height = 1200, width = 2400, res = 300)
-print(es_events)
-dev.off()
+
 
 ## get splicing events unique to each histology
-ATRT <- setdiff(splice_event_df_ATRT$splicing_event, ( unique(c( splice_event_df_CPG$splicing_event,
+ATRT <- setdiff(splice_event_df_ATRT$splicing_event, ( unique(c(                        splice_event_df_CPG$splicing_event,
                                                                                         splice_event_df_GNG$splicing_event,
                                                                                         splice_event_df_EPN$splicing_event,
                                                                                         splice_event_df_HGG$splicing_event,
                                                                                         splice_event_df_MB$splicing_event,
                                                                                         splice_event_df_LGG$splicing_event) ) ) )
 
-CPG <- setdiff(splice_event_df_CPG$splicing_event, ( unique(c( splice_event_df_ATRT$splicing_event,
+CPG <- setdiff(splice_event_df_CPG$splicing_event, ( unique(c(                        splice_event_df_ATRT$splicing_event,
                                                                                       splice_event_df_GNG$splicing_event,
                                                                                       splice_event_df_EPN$splicing_event,
                                                                                       splice_event_df_HGG$splicing_event,
@@ -151,19 +146,14 @@ list_for_inclusion_upsetR <- list("ATRT"=splice_event_df_ATRT$splicing_event,
                                  "LGG"=splice_event_df_LGG$splicing_event)
 
 ## make upsetR plots
-ei_events <- upset(fromList(list_for_inclusion_upsetR), 
-                   mainbar.y.label = "", sets.x.label = "Histology", order.by = "freq",
-                   mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 3, line.size = 1.5, nsets = 7)
 
-# Save plot as PDF
-pdf(upsetR_ei_plot_file, width = 16, height = 8)
-ei_events
+tiff(upsetR_tiff_ei_plot_file, width=16, height=8, units="in", res=300)
+upset(fromList(list_for_inclusion_upsetR), 
+      mainbar.y.label = "", sets.x.label = "Histology", order.by = "freq",
+      mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 3, line.size = 1.5, nsets = 7)
+grid.text("Exon Inclusion", x = 0.65, y=0.95, gp=gpar(fontsize=18))
 dev.off()
 
-# Save plot tiff version
-tiff(upsetR_tiff_ei_plot_file, height = 1200, width = 2400, res = 300)
-print(ei_events)
-dev.off()
 
 ## get splicing events unique to each histology
 ATRT <- setdiff(splice_event_df_ATRT$splicing_event, ( unique(c( splice_event_df_CPG$splicing_event,
