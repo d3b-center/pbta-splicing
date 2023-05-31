@@ -26,8 +26,6 @@ my %splicing_psi;
     my $tumor_descr = $header[5];
 
     next unless ($cohort=~/PBTA/);
-
-
     $primary_initial_sample_list{$bs_id} = $bs_id;
 
   }
@@ -45,7 +43,6 @@ my %splicing_psi;
     my $tumor_descr = $header[5];
 
     next unless ($cohort=~/PBTA/);
-
     $primary_initial_sample_list{$bs_id} = $bs_id;
 
   }
@@ -65,7 +62,6 @@ my %splicing_psi;
       my $bs_id      = $cols[0];
       my $patient_id = $cols[3];
       my $CNS_region = $cols[32];
-
 
       next unless ($primary_initial_sample_list{$bs_id});
 
