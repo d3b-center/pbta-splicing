@@ -88,7 +88,7 @@ piechart_hist_by_sbi <- ggplot(data = histology_counts_by_sbi, aes(x = "", y = n
   coord_polar(theta = "y",start=0) +
   facet_wrap(~ SBI_level, ncol=1)  +
   scale_fill_manual(name = "Histology",values = mycolors[['short_histology']], labels=plot_labels[['short_histology']]) +
-  xlab("") + ylab("") +
+  xlab("") + ylab("Number of Samples") +
   theme_Publication() + 
   theme(axis.text = element_blank(),
         axis.ticks = element_blank(),
