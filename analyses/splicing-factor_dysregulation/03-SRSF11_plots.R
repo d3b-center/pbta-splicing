@@ -75,7 +75,7 @@ stacked_barplot_SRSF11 <- psi_with_midline_filter_and_ctrl %>%
   geom_bar(position="stack", stat="identity")    + 
   scale_fill_manual(values=c("#FFC20A","#0C7BDC"))      + 
   theme_Publication() +  ylab("Isoform %") + xlab("Sample") + 
-  theme(axis.text.x=element_blank()) 
+  theme(axis.text.x=element_blank(), text=element_text(size=20)) 
 
 
 # Save plot as tiff
