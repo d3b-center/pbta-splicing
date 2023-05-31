@@ -104,7 +104,7 @@ EnhancedVolcano(res,
                 y = 'pvalue',
                 ylim = c(0,21),
                 xlim = c(-3,3),
-                title = 'HGG versus Non-tumor',
+                title = 'non-Tumor versus HGG',
                 pCutoff = 0.05,
                 FCcutoff = 1,
                 pointSize = ,
@@ -127,7 +127,7 @@ ggsave(
 
 ## write significant genes to table for subsequent correlation analyses
 gene_sign_list <- as.data.frame(res) %>% mutate(gene = filtered.counts$gene) %>% filter(padj < 0.05) %>% filter(abs(log2FoldChange) > 1)  %>% select(gene) 
-write_delim(gene_list,paste0(results_dir,"/","sign_genes.txt"), delim = "\t")
+write_delim(gene_sign_list,paste0(results_dir,"/","sign_genes.txt"), delim = "\t")
 
 
 ## compute gene expression SF between Midline HGGs vs H3K28M
@@ -200,7 +200,7 @@ EnhancedVolcano(res,
                 y = 'pvalue',
                 ylim = c(0,5),
                 xlim = c(-3,3),
-                title = 'DIPG versus Non-DIPG',
+                title = 'non-DIPG vs DIPG',
                 pCutoff = 0.05,
                 FCcutoff = 1,
                 pointSize = ,
