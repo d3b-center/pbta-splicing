@@ -1,9 +1,10 @@
 #!/usr/bin/perl
 
 ######################################################################################
-# extract_recurrent_splicing_events.pl
-# descr: extract and append splicing ids from rMATS to be used to overlap with Uniprot
+# 01-extract_recurrent_splicing_events_hgg.pl
+# extract and append splicing ids from rMATS to be used to overlap with Uniprot
 # usage: perl extract_recurrent_splicing_events.pl <pbta-histologies.tsv>
+#                                  <primary_samples> <primary_samples-plus>
 ######################################################################################
 
 ## input argument for histology file from OpenPBTA project
@@ -106,9 +107,7 @@ while(<FIL>)
 
   ## skip non-midline HGGs and non BS ctrl comparisons
   next unless $hgg_midline_samples{$sample};
-  #next unless $ctrl =~/control\-BS/;
-  #print "$sample\n";
-  #print "bs_id: ",$sample,"\n";
+
 
   ## get gene name
   my $gene         = $cols[4];
@@ -150,7 +149,6 @@ while(<FIL>)
   next unless ( ( ($tumor_IJC + $tumor_SJC) >=10) );
   next unless ($fdr <= 0.05);
   next unless ($pval <= 0.05);
-
 
   $exonStart    =~s/\.0//;
   $exonEnd      =~s/\.0//;
