@@ -1,19 +1,15 @@
 ################################################################################
-# 06-identify_and_plot_histologies_by_SBI.R
+# 07-identify_and_plot_histologies_by_SBI.R
 # written by Ammar S Naqvi
 #
 # script identifies high vs low SBI tumors and creates piechart of their hist 
 #
-# usage: Rscript 06-identify_and_plot_histologies_by_SBI.R
+# usage: Rscript 07-identify_and_plot_histologies_by_SBI.R
 ################################################################################
 
 ## load libraries
 suppressPackageStartupMessages({
   library("tidyverse")
-<<<<<<< Updated upstream
-=======
-  #library("optparse")
->>>>>>> Stashed changes
   library("vroom")
   library("ggplot2")
 } )
@@ -92,7 +88,7 @@ piechart_hist_by_sbi <- ggplot(data = histology_counts_by_sbi, aes(x = "", y = n
   coord_polar(theta = "y",start=0) +
   facet_wrap(~ SBI_level, ncol=1)  +
   scale_fill_manual(name = "Histology",values = mycolors[['short_histology']], labels=plot_labels[['short_histology']]) +
-  xlab("") + ylab("") +
+  xlab("") + ylab("Number of Samples") +
   theme_Publication() + 
   theme(axis.text = element_blank(),
         axis.ticks = element_blank(),
@@ -100,7 +96,7 @@ piechart_hist_by_sbi <- ggplot(data = histology_counts_by_sbi, aes(x = "", y = n
         legend.title = element_text(size=10),
         legend.text = element_text(size=8))
 
-# save plot tiff versionn
+# save plot tiff version
 tiff(piechart_hist_by_sbi_file, height = 1500, width = 1750, res = 300)
 print(piechart_hist_by_sbi)
 dev.off()  
