@@ -147,7 +147,7 @@ count_data_nonHGG <- readRDS(paste0(data_dir,"/", file_gene_counts)) %>%
 
 ## non-HGG differential gene expression analysis
 # remove low expression genes
-filtered.counts <- count_data[rowSums(count_data_nonHGG>=5) >= 289, ]
+filtered.counts <- count_data_nonHGG[rowSums(count_data_nonHGG>=5) >= 289, ]
 countTable <- filtered.counts
 
 
