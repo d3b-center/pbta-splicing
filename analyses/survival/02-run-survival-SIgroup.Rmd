@@ -227,7 +227,7 @@ Run same survival analyses on molecular subtypes with sufficient sample size
 subtype_df <- data.frame(hist = c("CPG", "EPN",
                                   rep("HGG", 2), "GNG",
                                   rep("LGG", 3), rep("MB", 3)),
-                         names = c("cranio", "epn",
+                         names = c("cpg", "epn",
                                   rep("hgg", 2), "gng",
                                   rep("lgg", 3), rep("mb", 3)),
                          subtype = c("ADAM", "PF A", "K28", "WT",
