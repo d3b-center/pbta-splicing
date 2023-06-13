@@ -64,7 +64,7 @@ Merge pathology and survival data to `splice_index`
 
 ```{r}
 # Add histology columns to splice index
-test <- splice_index %>%
+splice_index <- splice_index %>%
   left_join(hist[,c("Kids_First_Biospecimen_ID",
                     "molecular_subtype",
                     "extent_of_tumor_resection", 
