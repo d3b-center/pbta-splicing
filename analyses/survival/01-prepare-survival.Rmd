@@ -46,12 +46,7 @@ Set file paths
 sbi_file <- file.path(root_dir, "analyses", "splicing_index", "results", "splicing_index.total.txt")
 
 histologies_file <- file.path(data_dir, "histologies.tsv")
-base_histologies_file <- file.path(input_dir, "2023-03-08_histologies-base.tsv")
-
-diagnosis_file <- file.path(input_dir, "subject_diagnoses.tsv")
-
-methyl_file <- file.path(input_dir, "cbtn-dkfz-methylation-classification.csv")
-methyl_map_file <- file.path(input_dir, "methylation_to_OPC_subtype.csv")
+base_histologies_file <- file.path(input_dir, "histologies-base.tsv")
 ```
 
 Read in splicing index file, and utilize diagnosis file to code in `PFS_status` column indicating Progression/no progression
@@ -61,103 +56,40 @@ splice_index <- read_table(sbi_file) %>%
   rename("Kids_First_Biospecimen_ID"= Sample)
 
 hist <- read_tsv(histologies_file)
-hist_base <- read_tsv(base_histologies_file)
 
-diagnoses <- read_tsv(diagnosis_file)
+hist_base <- read_tsv(base_histologies_file)
 ```
 
-Use `diagnoses` to code in `EFS_status` (event-free status) column indicating event/no event
+Merge pathology and survival data to `splice_index`
 
 ```{r}
-
-# Pull out patients with recorded progression event
-progression_pts <- diagnoses %>%
-  filter(grepl("Progressive|Recurrence", diagnonsis_type)) %>%
-  pull(subject_id) %>%
-  unique()
-
-# identify patients called deceased due to disease in file
-
-deceased_pts <- diagnoses %>%
-  filter(grepl("Deceased-due to disease", OS_status)) %>%
-  pull(subject_id) %>%
-  unique()
-
-# Add histology columns to splice index, and code EFS_status using following logic
-splice_index <- splice_index %>%
-  left_join(hist[,c("Kids_First_Biospecimen_ID", "cohort_participant_id", 
+# Add histology columns to splice index
+test <- splice_index %>%
+  left_join(hist[,c("Kids_First_Biospecimen_ID",
                     "molecular_subtype",
-                    "extent_of_tumor_resection")]) %>%
-  left_join(hist_base[,c("Kids_First_Participant_ID", "cohort_participant_id",
-                         "OS_days", "PFS_days", "OS_status")]) %>%
-  distinct(Kids_First_Participant_ID, .keep_all = T) %>%
-  dplyr::mutate(EFS_days = as.numeric(PFS_days),
-         OS_days = as.numeric(OS_days)) %>%
+                    "extent_of_tumor_resection", 
+                    "OS_days", "OS_status",
+                    "age_at_diagnosis_days")]) %>%
+  
+  # EFS_days and EFS_event_type must be pulled from base histologies files
+  
+  left_join(hist_base[,c("Kids_First_Biospecimen_ID",
+                         "EFS_days", "EFS_event_type")]) %>%
+  dplyr::mutate(EFS_days = as.numeric(EFS_days)) %>%
   dplyr::mutate(OS_years = OS_days/365.25,
          EFS_years = EFS_days/365.25) %>%
-  dplyr::select(-PFS_days) %>%
-  dplyr::mutate(OS_status = case_when(
-    
-    # in case any `deceased_patients` not coded as DECEASED, recode
-    cohort_participant_id %in% deceased_pts ~ "DECEASED",
-    TRUE ~ OS_status
-  )) %>%
   
   # code EFS status using following logic
-  dplyr::mutate(EFS_status = case_when(
-    EFS_days < OS_days ~ "EVENT",
-    OS_status == "DECEASED" ~ "EVENT",
-    OS_status == "LIVING" & cohort_participant_id %in% progression_pts  ~ "EVENT",
-    OS_status == "LIVING" & !cohort_participant_id %in% progression_pts  ~ "NO EVENT",
+    dplyr::mutate(EFS_status = case_when(
+    EFS_event_type %in% c("Not Applicable", "Not Reported") ~ "NO EVENT",
+    !is.na(EFS_event_type) ~ "EVENT",
     TRUE ~ NA_character_
   ))
 ```
 
-Additional molecular subtypes can be pulled from methylation calls 
+Save to output
 
 ```{r}
-# filter histology calls for spliciing samples with methylation data
-methyl_hist <- hist %>%
-  filter(cohort_participant_id %in% splice_index$cohort_participant_id & experimental_strategy == "Methylation")
-  
-# Read in methylation file, and file mapping methylation subtypes to OPC molecular subtypes
-methyl <- read_csv(methyl_file)
-methyl_map <- read_csv(methyl_map_file)
-
-# filter methylation table for only high confidence calls in tumors
-methyl <- methyl %>%
-  filter(dkfz_v12_methylation_subclass_score >= 0.8 & sample_type == "Tumor")
-
-# read in methyl_map file, which has a key matching methylation subtypes to OPC subtypes when available 
-methyl_map <- methyl_map %>%
-  rename("dkfz_v12_methylation_subclass" = Abbrevation)
-
-# Define 'OPC_methyl_subtype' variable that takes `molecular_subtype` first, and `OPC_molecular_subtype` defined by methylation otherwise  
-splice_index <- splice_index %>%
-  rename("Kids_First_Biospecimen_ID_RNA" = "Kids_First_Biospecimen_ID") %>%
-  #add columns using to join methylation data
-  left_join(methyl_hist[,c("cohort_participant_id", "Kids_First_Biospecimen_ID")]) %>%
-  # add v12 methylation subtype calls
-  left_join(methyl[,c("Kids_First_Biospecimen_ID", "dkfz_v12_methylation_subclass")]) %>%
-  # add corresponding OPC subtype
-  left_join(methyl_map[,c("dkfz_v12_methylation_subclass", "OPC_molecular_subtype")], by = "dkfz_v12_methylation_subclass") %>%
-  rename("Kids_First_Biospecimen_ID" = Kids_First_Biospecimen_ID_RNA,
-         "Kids_First_Biospecimen_ID_methylation" = Kids_First_Biospecimen_ID) %>%
-  mutate(OPC_methyl_subtype = case_when(
-    !is.na(molecular_subtype) & !grepl("To be classified", molecular_subtype) ~ molecular_subtype,
-    !is.na(OPC_molecular_subtype) & (grepl("To be classified", molecular_subtype) | is.na(molecular_subtype)) ~ OPC_molecular_subtype,
-    grepl("To be classified", molecular_subtype) ~ molecular_subtype,
-    TRUE ~ NA_character_
-  )) %>%
-  # redefine EPN, ST RELA as EPN, ZFTA to be consistent with methylation subtyping
-  mutate(OPC_methyl_subtype = case_when(
-    OPC_methyl_subtype == "EPN, ST RELA" ~ "EPN, ST ZFTA",
-    TRUE ~ OPC_methyl_subtype
-  )) %>%
-  arrange(OPC_methyl_subtype) %>%
-  distinct(Kids_First_Biospecimen_ID, .keep_all = T)
-
-# Save output
 write_tsv(splice_index,
           file.path(results_dir, "splicing_indices_with_survival.tsv"))
 ```
