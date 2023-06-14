@@ -156,7 +156,6 @@ for (group in groups){
   
   #Define high and low SI burden samples using quartiles
   group_hist <- group_hist %>%
-    filter(!is.na(molecular_subtype)) %>%
     dplyr::mutate(SI_group = case_when(
     SI > summary(SI)["3rd Qu."] ~ "High SI",
     SI < summary(SI)["1st Qu."] ~ "Low SI",
