@@ -68,14 +68,16 @@ splice_index <- splice_index %>%
   left_join(hist[,c("Kids_First_Biospecimen_ID",
                     "molecular_subtype",
                     "extent_of_tumor_resection", 
-                    "OS_days", "OS_status",
+ #                   "OS_days", "OS_status",
                     "age_at_diagnosis_days")]) %>%
   
   # EFS_days and EFS_event_type must be pulled from base histologies files
   
   left_join(hist_base[,c("Kids_First_Biospecimen_ID",
+                         "OS_days", "OS_status",
                          "EFS_days", "EFS_event_type")]) %>%
-  dplyr::mutate(EFS_days = as.numeric(EFS_days)) %>%
+  dplyr::mutate(EFS_days = as.numeric(EFS_days),
+                OS_days = as.numeric(OS_days)) %>%
   dplyr::mutate(OS_years = OS_days/365.25,
          EFS_years = EFS_days/365.25) %>%
   
