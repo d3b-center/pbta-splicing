@@ -37,13 +37,30 @@ groups <- c("ATRT", "CPG", "EPN", "GNG",
 file_names <- c("atrt", "cpg", "epn", 
                 "gng", "hgg",
                 "lgg", "mb",
-                "cranio_ADAM", "epn_PF A", "hgg_k28", "hgg_WT", "gng_gnt_Other",
+                "cpg_ADAM", "epn_PF A", "hgg_k28", "hgg_WT", "gng_Other",
                 "lgg_BRAF", "lgg_Other", "lgg_WT", "mb_Group3", "mb_Group4", "mb_SHH")
 names(file_names) <- groups
+
+folder_names <- c("atrt", "cpg", "epn", "gng", 
+                  "hgg", "lgg", "mb", "cpg",
+                  "epn", "hgg", "hgg", "gng", 
+                  "lgg", "lgg", "lgg",
+                  "mb", "mb", "mb")
+names(folder_names) <- groups
 
 # Loop through histology groups and subtypes to generate Kaplan-Meier plots from models
 
 for (group in groups){
+  
+  input_dir <- file.path(analysis_dir, "results", folder_names[group])
+  
+  plots_dir <- file.path(analysis_dir, "plots", folder_names[group])
+  
+  if (!dir.exists(plots_dir)) {
+    dir.create(plots_dir)
+    
+  }
+  
   
   km_os_result <- read_rds(
     file.path(input_dir,
@@ -73,13 +90,22 @@ for (group in groups){
   
 }
 
-# Loop through broad histologies only (not subtypes) to generate forest plots from coxph models with SI_group as predictor
+# Loop through groups to generate forest plots from coxph models with SI_group as predictor
 
 file_names["EPN, PF A"] <- "epn_PF-A"
 
 # Forest plots for OS
 
 for (group in groups){
+  
+  input_dir <- file.path(analysis_dir, "results", folder_names[group])
+  
+  plots_dir <- file.path(analysis_dir, "plots", folder_names[group])
+  
+  if (!dir.exists(plots_dir)) {
+    dir.create(plots_dir)
+    
+  }
   
   if (grepl("GNG|LGG", group)){
     os_survival_result <- read_rds(
@@ -136,6 +162,15 @@ for (group in groups){
 
 
 for (group in groups){
+  
+  input_dir <- file.path(analysis_dir, "results", folder_names[group])
+  
+  plots_dir <- file.path(analysis_dir, "plots", folder_names[group])
+  
+  if (!dir.exists(plots_dir)) {
+    dir.create(plots_dir)
+    
+  }
   
   # Forest plots for OS
   
