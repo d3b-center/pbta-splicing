@@ -58,7 +58,7 @@ Read in metadata and consolidate HGG, LGG, and GNG subtypes into broader groups
 metadata <- read_tsv(metadata_file)
 
 metadata <- metadata %>%
-  filter(!grepl("To be classified", molecular_subtype)) %>%
+#  filter(!grepl("To be classified", molecular_subtype)) %>%
   mutate(mol_sub_group = case_when(
     Histology == "HGG" & grepl("wildtype", molecular_subtype) ~ "HGG, H3 WT",
     Histology == "HGG" & grepl("K28", molecular_subtype) ~ "DMG, H3 K28",
@@ -74,7 +74,8 @@ metadata <- metadata %>%
     Histology == "GNG" & grepl("-BRAF", molecular_subtype) ~ "GNG/GNT, BRAF fusion",
     Histology == "GNG" & !grepl("To be classified", molecular_subtype) ~ "GNG/GNT, Other alteration",
     !is.na(molecular_subtype) ~ molecular_subtype
-  ))
+  )) %>%
+  dplyr::mutate(age_at_diagnosis_years = age_at_diagnosis_days/365.25)
 ```
 
 Define histology groups to run survival analyses on 
@@ -144,12 +145,18 @@ for (group in groups){
                                                      "DMG, H3 K28",
                                                      "HGG, IDH",
                                                      "IHG"))) %>%
-   arrange(mol_sub_group)
+      arrange(mol_sub_group) %>%
+      dplyr::mutate(tp53_status = case_when(
+        grepl("TP53", molecular_subtype) ~ "TP53 altered",
+        TRUE ~ "TP53 WT"
+      )) %>%
+      dplyr::mutate(tp53_status = fct_relevel(tp53_status,
+                                              "TP53 WT", "TP53 altered"))
   }
   
   #Define high and low SI burden samples using quartiles
   group_hist <- group_hist %>%
-    filter(!is.na(molecular_subtype) & !is.na(OS_days) & !is.na(EFS_days)) %>%
+    filter(!is.na(molecular_subtype)) %>%
     dplyr::mutate(SI_group = case_when(
     SI > summary(SI)["3rd Qu."] ~ "High SI",
     SI < summary(SI)["1st Qu."] ~ "Low SI",
@@ -184,12 +191,15 @@ for (group in groups){
   # Run cox proprtional hazards models for OS, including appropriate covariates per histology
   add_model_os <- suppressWarnings(fit_save_model(group_hist,
                                   terms = ifelse(
-                                      group %in% c("GNG", "LGG"), "mol_sub_group+extent_of_tumor_resection+SI_group",
+                                      group %in% c("GNG", "LGG"), "mol_sub_group+extent_of_tumor_resection+age_at_diagnosis_years+SI_group",
                                       ifelse(
-                                        group %in% c("ATRT", "EPN", "MB", "HGG"), 
-                                        "mol_sub_group+SI_group",
-                                        "SI_group"
-                                  )),
+                                        group == "HGG",
+                                        "mol_sub_group+tp53_status+age_at_diagnosis_years+SI_group",
+                                        ifelse(
+                                          group %in% c("ATRT", "EPN", "MB"), 
+                                          "mol_sub_group+age_at_diagnosis_years+SI_group",
+                                          "age_at_diagnosis_years+SI_group"
+                                  ))),
              coxph_os_model_file,
              "multivariate",
              years_col = "OS_years",
@@ -199,12 +209,15 @@ for (group in groups){
   # Run cox proprtional hazards models for PFS, including appropriate covariates per histology
   add_model_efs <- suppressWarnings(fit_save_model(group_hist,
                                   terms = ifelse(
-                                      group %in% c("GNG", "LGG"), "mol_sub_group+extent_of_tumor_resection+SI_group",
+                                      group %in% c("GNG", "LGG"), "mol_sub_group+extent_of_tumor_resection+age_at_diagnosis_years+SI_group",
                                       ifelse(
-                                        group %in% c("ATRT", "EPN", "MB", "HGG"), 
-                                        "mol_sub_group+SI_group",
-                                        "SI_group"
-                                  )),
+                                        group == "HGG",
+                                        "mol_sub_group+tp53_status+age_at_diagnosis_years+SI_group",
+                                        ifelse(
+                                          group %in% c("ATRT", "EPN", "MB"), 
+                                          "mol_sub_group+age_at_diagnosis_years+SI_group",
+                                          "age_at_diagnosis_years+SI_group"
+                                  ))),
              coxph_efs_model_file,
              "multivariate",
              years_col = "EFS_years",
@@ -272,7 +285,7 @@ for (i in 1:nrow(subtype_df)) {
   
     #Subset metadata for histology subtype
     subtype_hist <- metadata %>%
-    filter(Histology == subtype_df$hist[i] & grepl(subtype_df$subtype[i], mol_sub_group) & !is.na(OS_days) & !is.na(EFS_days)) %>%
+    filter(Histology == subtype_df$hist[i] & grepl(subtype_df$subtype[i], mol_sub_group)) %>%
       mutate(SI_group = case_when(
       SI > summary(SI)["3rd Qu."] ~ "High SI",
       SI < summary(SI)["1st Qu."] ~ "Low SI",
@@ -280,6 +293,16 @@ for (i in 1:nrow(subtype_df)) {
     ))%>%
     dplyr::mutate(SI_group = factor(SI_group,
                                     c("Low SI", "High SI")))
+    
+    if (subtype_df$hist[i] == "HGG"){
+      subtype_hist <- subtype_hist %>%
+        dplyr::mutate(tp53_status = case_when(
+          grepl("TP53", molecular_subtype) ~ "TP53 altered",
+          TRUE ~ "TP53 WT"
+        )) %>%
+        dplyr::mutate(tp53_status = fct_relevel(tp53_status,
+                                                "TP53 WT", "TP53 altered"))
+    }
     
     #Run kaplan meier survival models and save to output
       kap_os <- survival_analysis(
@@ -307,8 +330,10 @@ for (i in 1:nrow(subtype_df)) {
     # Run coxph models and save to output
     add_model_os <- suppressWarnings(fit_save_model(subtype_hist,
                                   terms = ifelse(subtype_df$hist[i] %in% c("GNG", "LGG"),
-                                                 "extent_of_tumor_resection+SI_group",
-                                                 "SI_group"),
+                                                 "extent_of_tumor_resection+age_at_diagnosis_years+SI_group",
+                                                 ifelse(subtype_df$hist[i] == "HGG",
+                                                        "tp53_status+age_at_diagnosis_years+SI_group",
+                                                        "age_at_diagnosis_years+SI_group")),
                                    coxph_os_model_file,
                                    "multivariate",
                                    years_col = "OS_years",
@@ -316,8 +341,10 @@ for (i in 1:nrow(subtype_df)) {
     
     add_model_efs <- suppressWarnings(fit_save_model(subtype_hist,
                                   terms = ifelse(subtype_df$hist[i] %in% c("GNG", "LGG"),
-                                                 "extent_of_tumor_resection+SI_group",
-                                                 "SI_group"),
+                                                 "extent_of_tumor_resection+age_at_diagnosis_years+SI_group",
+                                                 ifelse(subtype_df$hist[i] == "HGG",
+                                                        "tp53_status+age_at_diagnosis_years+SI_group",
+                                                        "age_at_diagnosis_years+SI_group")),
                                      coxph_efs_model_file,
                                      "multivariate",
                                      years_col = "EFS_years",
