@@ -53,7 +53,7 @@ Read in splicing index file, and utilize diagnosis file to code in `PFS_status` 
 
 ```{r}
 splice_index <- read_table(sbi_file) %>%
-  rename("Kids_First_Biospecimen_ID"= Sample)
+  dplyr::rename("Kids_First_Biospecimen_ID" = Sample)
 
 hist <- read_tsv(histologies_file)
 
