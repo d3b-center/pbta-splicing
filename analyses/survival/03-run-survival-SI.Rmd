@@ -124,7 +124,7 @@ for (group in groups){
   
   # Subset histology and transform SI 
   group_hist <- metadata %>%
-    filter(grepl(group, Histology)) %>%
+    filter(grepl(group, Histology) & !grepl("To be classified", molecular_subtype)) %>%
     dplyr::mutate(SI = SI * 10)
   
   if (group == "HGG"){
@@ -141,6 +141,11 @@ for (group in groups){
       )) %>%
       dplyr::mutate(tp53_status = fct_relevel(tp53_status,
                                               "TP53 WT", "TP53 altered"))
+  }
+  
+  if (group %in% c("GNG", "LGG")){
+    group_hist <- group_hist %>%
+      dplyr::filter(!is.na(extent_of_tumor_resection) & !extent_of_tumor_resection %in% c("Not Applicable", "Not Reported", "Unavailable"))
   }
   
   
@@ -235,7 +240,7 @@ for (i in 1:nrow(subtype_df)) {
   
     #Subset metadata for histology subtype
     subtype_hist <- metadata %>%
-    filter(Histology == subtype_df$hist[i] & grepl(subtype_df$subtype[i], mol_sub_group) & !is.na(OS_days) & !is.na(EFS_days)) %>%
+    filter(Histology == subtype_df$hist[i] & grepl(subtype_df$subtype[i], mol_sub_group)) %>%
     dplyr::mutate(SI = SI * 10)
     
     if (subtype_df$hist[i] == "HGG"){
@@ -246,6 +251,11 @@ for (i in 1:nrow(subtype_df)) {
         )) %>%
         dplyr::mutate(tp53_status = fct_relevel(tp53_status,
                                                 "TP53 WT", "TP53 altered"))
+    }
+    
+    if (subtype_df$hist[i] %in% c("GNG", "LGG")){
+      subtype_hist <- subtype_hist %>%
+        dplyr::filter(!is.na(extent_of_tumor_resection) & !extent_of_tumor_resection %in% c("Not Applicable", "Not Reported", "Unavailable"))
     }
 
     # Run coxph models and save to output
