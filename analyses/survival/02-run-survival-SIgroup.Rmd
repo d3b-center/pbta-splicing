@@ -153,9 +153,15 @@ for (group in groups){
       dplyr::mutate(tp53_status = fct_relevel(tp53_status,
                                               "TP53 WT", "TP53 altered"))
   }
-  
+    
+  if (group %in% c("GNG", "LGG")){
+    group_hist <- group_hist %>%
+      dplyr::filter(!is.na(extent_of_tumor_resection) & !extent_of_tumor_resection %in% c("Not Applicable", "Not Reported", "Unavailable"))
+  }
+
   #Define high and low SI burden samples using quartiles
   group_hist <- group_hist %>%
+    dplyr::filter(!grepl("To be classified", molecular_subtype)) %>%
     dplyr::mutate(SI_group = case_when(
     SI > summary(SI)["3rd Qu."] ~ "High SI",
     SI < summary(SI)["1st Qu."] ~ "Low SI",
@@ -284,7 +290,7 @@ for (i in 1:nrow(subtype_df)) {
   
     #Subset metadata for histology subtype
     subtype_hist <- metadata %>%
-    filter(Histology == subtype_df$hist[i] & grepl(subtype_df$subtype[i], mol_sub_group)) %>%
+    dplyr::filter(Histology == subtype_df$hist[i] & grepl(subtype_df$subtype[i], mol_sub_group)) %>%
       mutate(SI_group = case_when(
       SI > summary(SI)["3rd Qu."] ~ "High SI",
       SI < summary(SI)["1st Qu."] ~ "Low SI",
@@ -301,6 +307,11 @@ for (i in 1:nrow(subtype_df)) {
         )) %>%
         dplyr::mutate(tp53_status = fct_relevel(tp53_status,
                                                 "TP53 WT", "TP53 altered"))
+    }
+    
+    if (subtype_df$hist[i] %in% c("GNG", "LGG")){
+      subtype_hist <- subtype_hist %>%
+        dplyr::filter(!is.na(extent_of_tumor_resection) & !extent_of_tumor_resection %in% c("Not Applicable", "Not Reported", "Unavailable"))
     }
     
     #Run kaplan meier survival models and save to output
