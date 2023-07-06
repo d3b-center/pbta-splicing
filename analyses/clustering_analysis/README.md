@@ -4,9 +4,10 @@
 
 This module performs the following analyses:
 
-1) Perform clustering on input data matrix using `ConsensusClusterPlus` and parameters chosen by user.
-2) Identify differentially expressed genes per cluster of interest and perform pre-ranked pathway enrichment using `fgsea` on those genes.
-3) Identify differentially regulated pathways per cluster of interest using `GSVA`.
+1) Optimal cluster selection by evaluating multiple combinations of clustering algorithm, distances and k values.
+2) Perform clustering on input data matrix using `ConsensusClusterPlus` and parameters chosen by user.
+3) Identify differentially expressed genes per cluster of interest and perform pre-ranked pathway enrichment using `fgsea` on those genes.
+4) Identify differentially regulated pathways per cluster of interest using `GSVA`.
 
 The module can be run using a single bash command:
 
@@ -32,6 +33,20 @@ input
 ```
 
 For the input matrices, histologies with <=5 samples were removed before further downstream analysis.
+
+### 00-optimal-clustering.R
+
+Following are the output files created:
+
+```
+# feature_selection can be either dip_test or if variance is selected, it will be of the format "var_{selected_proportion}"
+output/optimal_clustering
+├── {hc, km, pam}_{pearson, spearman, euclidean, manhattan, binary, maximum, canberra, minkowski}_{feature_selection}.pdf # consensus PDF file
+├── {hc, km, pam}_{pearson, spearman, euclidean, manhattan, binary, maximum, canberra, minkowski}_{feature_selection}.rds # CCP output 
+├── {hc, km, pam}_{pearson, spearman, euclidean, manhattan, binary, maximum, canberra, minkowski}_{feature_selection}.tsv # clustering metrics 
+├── lspline_output.tsv # clustering and ranking metrics for all evaluated input combinations
+└── ccp_optimal_clusters.tsv # classification of top ranking cluster
+```
 
 ### 01-get-clustering-output.R
 
