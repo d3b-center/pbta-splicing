@@ -72,7 +72,8 @@ RUN ./install_bioc.r \
 
 # install R packages from GitHub
 RUN ./install_github.r \
-	PoisonAlien/maftools
+	PoisonAlien/maftools \
+	d3b-center/ClusTarIDseq
 
 # install perl packages
 RUN cpanm install Statistics::Lite
