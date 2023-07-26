@@ -71,7 +71,6 @@ RUN ./install_bioc.r \
   UpSetR
 
 # install R packages from GitHub
-RUN ./install_github.r \
 	RUN R -e "remotes::install_github('PoisonAlien/maftools', ref = '08625d18dcdf910f47f7e6309f698697ab483524', dependencies = TRUE)"
 	RUN R -e "remotes::install_github('d3b-center/ClusTarIDseq', ref = '5fe143bfe7f66b107cb1a51c956165619bff5012', dependencies = TRUE)"
 
