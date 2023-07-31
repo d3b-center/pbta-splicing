@@ -36,7 +36,7 @@ upsetR_ei_plot_file          <- file.path(analysis_dir, "plots", "upsetR_histolo
 upsetR_tiff_es_plot_file     <- file.path(analysis_dir, "plots", "upsetR_histology-specific.es.tiff")
 upsetR_tiff_ei_plot_file     <- file.path(analysis_dir, "plots", "upsetR_histology-specific.ei.tiff")
 
-splice_event_df = vroom(paste0(results_dir,"/","splicing_events.hist-labeled_list.thr10freq.txt"), delim="\t", trim_ws = TRUE, col_names = TRUE)
+splice_event_df = vroom(paste0(results_dir,"/","splicing_events.hist-labeled_list.thr2freq.txt"), delim="\t", trim_ws = TRUE, col_names = TRUE)
 
 ## select and create list for exon skipping only events
 splice_event_df_ATRT <- splice_event_df %>% filter(histology=='ATRT', type=='skipping') 
