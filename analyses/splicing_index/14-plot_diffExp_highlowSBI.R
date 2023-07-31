@@ -14,6 +14,7 @@ suppressPackageStartupMessages({
   library("dplyr")
   library("EnhancedVolcano")
   library("DESeq2")
+  library("vroom")
   })
 
 
