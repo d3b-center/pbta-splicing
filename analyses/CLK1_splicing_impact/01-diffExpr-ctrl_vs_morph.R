@@ -1,3 +1,10 @@
+################################################################################
+# 01-diffExpr-ctrl_vs_morph.R
+# Gene Set Enrichment Analysis using ClusterProfiler
+# Author: Ammar Naqvi and Shehbeel Arif
+# Script adapted from ALSF's DE Analysis Tutorial (https://alexslemonade.github.io/refinebio-examples/03-rnaseq/pathway-analysis_rnaseq_02_gsea.html)
+################################################################################
+
 suppressPackageStartupMessages({
   library("EnhancedVolcano")
   library("DESeq2")
@@ -12,7 +19,7 @@ suppressPackageStartupMessages({
 
 ## set directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data/v5")
+data_dir <- file.path(root_dir, "data/")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1_splicing_impact")
 
 input_dir   <- file.path(analysis_dir, "input")
@@ -29,9 +36,10 @@ if(!dir.exists(results_dir)){
 
 ## ouput files
 de_output = "ctrl_vs_treated.de.tsv"
+file_volc_plot = "ctrl_vs_clk1-morp_volcano.tiff"
 
 tpm_count_file <- "ctrl_vs_morpho.rsem.genes.results.tsv"
-count_data <- vroom(paste0(data_dir, "/v5/", tpm_count_file)) %>% 
+count_data <- vroom(paste0(data_dir, tpm_count_file)) %>% 
                filter( (CTRL1 + CTRL2 + CTRL3 > 10) & (Treated1 + Treated2 + Treated3 > 10) )
 
 ## construct metadata
@@ -41,7 +49,7 @@ design = data.frame(row.names = colnames(count_data$gene),
 
 
 ## remove first column
-count_data_removed <- select(count_data, -gene)
+count_data_removed <- dplyr::select(count_data, -gene)
 
 cds = DESeqDataSetFromMatrix(countData=round(count_data_removed),
                              colData=design,
@@ -68,11 +76,24 @@ EnhancedVolcano(res,
                 FCcutoff = 1,
                 pointSize = 2,
                 labSize = 4)
+ggsave(
+  paste0(plots_dir,"/", file_volc_plot),
+  plot = last_plot(),
+  device = NULL,
+  path = NULL,
+  scale = 1,
+  width =6.73,
+  height = 10.38,
+  units = "in",
+  dpi = 300,
+  limitsize = TRUE,
+  bg = NULL
+)
 
 de_results <- cbind(res, count_data) 
 
 write_delim(
   as_tibble(de_results),
-  paste0(results_dir, de_output),
+  paste0(results_dir,"/", de_output),
   delim = "\t"
 )
