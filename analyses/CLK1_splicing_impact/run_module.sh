@@ -10,3 +10,6 @@ cat results/ctrl_vs_treated.de.tsv | awk -F "\t" '{print $8,"\t"$1"\t"$2"\t"$3"\
 
 ## perform GSEA on diff expression results
 Rscript 02-gsea-analysis.R
+
+## compute splicing cases and plot
+Rscript 03-plot_splice-cases.R
