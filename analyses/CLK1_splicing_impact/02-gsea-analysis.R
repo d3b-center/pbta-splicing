@@ -47,6 +47,13 @@ hs_hallmark_sets <- msigdbr(
   category = "H"
 )
 
+hs_hallmark_sets <- msigdbr(
+  species = "Homo sapiens",
+  category = "C2", subcategory = "CP:KEGG"
+)
+
+
+
 #######
 ## PERFORM GSEA
 
@@ -95,7 +102,7 @@ readr::write_csv(
 ## ridgeplot of enriched gene sets
 ridgeplot(gsea_results) + labs(x = "Signficant Enrichment Distribution")
 
-## save GSEA dotplot as tiff
+## save GSEA ridgeplot as tiff
 gsea_ridgeplot_path <- file.path(plots_dir, "CLK1_morph_gsea_ridgeplot.tiff")
 ggplot2::ggsave(gsea_ridgeplot_path,
                 width=10.7,
@@ -103,5 +110,20 @@ ggplot2::ggsave(gsea_ridgeplot_path,
                 device="tiff",
                 dpi=300)
 dev.off()
+
+
+dotplot(gsea_results, showCategory=20, split=".sign") + facet_grid(.~.sign) 
+
+
+# Plot path
+gsea_dotplot_path <- file.path(plots_dir, "CLK1_status_gsea_dotplot.tiff")
+
+# Save GSEA dotplot as tiff
+ggplot2::ggsave(gsea_dotplot_path,
+                width=14,
+                height=10,
+                device="tiff",
+                dpi=300
+)
 
 
