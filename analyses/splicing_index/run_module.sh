@@ -27,9 +27,9 @@ perl 01-generate_splicing_index_tab_using_tumors.pl $hist_file $rmats_file
 echo "plotting splicing burden indices"
 Rscript 02-plot_splicing_burden_index.R
 
-## 10% histology specific splicing based on splicing index computations
-perl 03-generate_hist_spec_events_tab_using_tumors.pl $hist_file $rmats_file
-Rscript 04-plot_histology-specific_splicing_events.R
+## 5% histology specific splicing based on splicing index computations
+perl 04-generate_hist_spec_events_tab.pl ../../data/histologies.tsv ../../data/splice-events-rmats.tsv.gz ../../data/independent-specimens.rnaseqpanel.primary.tsv ../../data/independent-specimens.rnaseqpanel.primary-plus.tsv
+Rscript 05-plot_histology-specific_splicing_events.R
 
 ## differential gene expression
 # generate volcano plot of high vs low splicing burden tumors

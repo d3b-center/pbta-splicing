@@ -30,3 +30,8 @@ rm results/results_diff/*txt
 
 ## plot correlations
 Rscript 06-plot_psi_vs_expr.R
+
+## pathway-related analyses
+Rscript 07-conduct-gsva-analysis.R
+Rscript 08-model_and_plot-gsva.R
+Rscript 09-gsea-analysis.R
