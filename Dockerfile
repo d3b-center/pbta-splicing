@@ -46,12 +46,14 @@ RUN ./install_bioc.r \
 	BiocManager \
 	colorblindr \
 	broom \
+	COINr \
 	ConsensusClusterPlus \
 	corrplot \
   cowplot \
   DGCA \
 	DESeq2 \
 	diptest \
+	edgeR \
 	EnhancedVolcano \
 	fgsea \
 	ggpubr \
@@ -65,6 +67,7 @@ RUN ./install_bioc.r \
 	patchwork \
 	pheatmap \
   reshape2 \
+  rtracklayer \
   sva \
   survival \
   survminer \
@@ -72,8 +75,7 @@ RUN ./install_bioc.r \
 
 # install R packages from GitHub
 RUN ./install_github.r \
-	PoisonAlien/maftools \
-	d3b-center/ClusTarIDseq
+	PoisonAlien/maftools
 
 # install perl packages
 RUN cpanm install Statistics::Lite
