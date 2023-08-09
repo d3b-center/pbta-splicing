@@ -4,7 +4,6 @@
 # load libraries
 suppressPackageStartupMessages({
   library(optparse)
-  library(ClusTarIDseq)
   library(tidyverse)
 })
 
@@ -99,6 +98,9 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses", "clustering_analysis")
 output_dir <- file.path(analysis_dir, "output", "optimal_clustering")
 dir.create(output_dir, showWarnings = F, recursive = T)
+
+# source functions
+source(file.path(analysis_dir, 'util', 'lspline_clustering.R'))
 
 # compute optimal clustering across all combinations of algorithms, distances and input k-values
 # because this step takes a long time read existing output if available to avoid re-running
