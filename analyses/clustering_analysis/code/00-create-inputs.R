@@ -14,9 +14,8 @@ clin_file <- clin_file %>%
   filter(experimental_strategy == "RNA-Seq")
 
 # read splice dataset
-splice_mat <- "input/pan_cancer_splicing_SE.gene.txt" %>% 
-  read_tsv() %>%
-  column_to_rownames("Splice_ID")
+splice_mat <- readRDS("input/non_expr_pan_cancer_splice_subset.rds")
+
 
 # remove histologies with <= 5 samples
 remove_sh <- clin_file %>%
