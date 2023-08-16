@@ -22,8 +22,13 @@ echo "rmats file:" $rmats_file
 ## process PSIs and generate tables for splicing index values for each tumor
 bash generate_SBI.sh
 
-## 10% histology specific splicing based on splicing index computations
-bash generate_histology-specific-events.sh
+## plot values (SBI) generated from above script in CDF plot
+echo "plotting splicing burden indices"
+Rscript 02-plot_splicing_burden_index.R
+
+## 5% histology specific splicing based on splicing index computations
+perl 04-generate_hist_spec_events_tab.pl ../../data/histologies.tsv ../../data/splice-events-rmats.tsv.gz ../../data/independent-specimens.rnaseqpanel.primary.tsv ../../data/independent-specimens.rnaseqpanel.primary-plus.tsv
+Rscript 05-plot_histology-specific_splicing_events.R
 
 ## differential gene expression
 # generate volcano plot of high vs low splicing burden tumors

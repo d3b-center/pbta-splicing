@@ -24,6 +24,8 @@ input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
+source(file.path(root_dir, "figures", "theme_for_plots.R"))
+
 ## function to get stats from to print on box plot
 get_box_stats <- function(y, upper_limit = max(corr_df$V3) * 1.15) {
   return(data.frame(

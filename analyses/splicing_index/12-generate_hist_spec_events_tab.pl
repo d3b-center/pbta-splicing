@@ -253,7 +253,11 @@ foreach my $sample(@bs_ids_uniq)
 my @ab_splicing_events_pos_uniq = do { my %seen; grep { !$seen{$_}++ } @ab_splicing_events_pos };
 my @ab_splicing_events_neg_uniq = do { my %seen; grep { !$seen{$_}++ } @ab_splicing_events_neg };
 
+<<<<<<<< HEAD:analyses/splicing_index/12-generate_hist_spec_events_tab.pl
 my $output_file = "results/splicing_events.hist-labeled_list.thr2freq.txt";
+========
+my $output_file = "results/splicing_events.hist-labeled_list.thr5freq.txt";
+>>>>>>>> c3b71c7541bb60019b42dbdeccaf2062409f1aa7:analyses/splicing_index/04-generate_hist_spec_events_tab.pl
 open(TAB,">".$output_file) || die("Cannot Open File");
 
 print TAB "splicing_event\thistology\ttype\n";
@@ -268,7 +272,11 @@ foreach $hist (@broad_hist_uniq)
         if($splice_event_per_pos_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_pos_hist_count{$event}{$hist};
           #print $event,"\t",$hist,"\t",$total_hist_count,"\n";
+<<<<<<<< HEAD:analyses/splicing_index/12-generate_hist_spec_events_tab.pl
           if( ($event_count/$total_hist_count) >= .02 )
+========
+          if( ($event_count/$total_hist_count) >= .05 )
+>>>>>>>> c3b71c7541bb60019b42dbdeccaf2062409f1aa7:analyses/splicing_index/04-generate_hist_spec_events_tab.pl
           {
             print TAB $event,"\t",$hist,"\tskipping\n";
           }
@@ -285,7 +293,11 @@ foreach $hist (@broad_hist_uniq)
         if($splice_event_per_neg_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_neg_hist_count{$event}{$hist};
           #print $event,"\t",$hist,"\t",$total_hist_count,"*\n";
+<<<<<<<< HEAD:analyses/splicing_index/12-generate_hist_spec_events_tab.pl
           if( ($event_count/$total_hist_count) >= .02 )
+========
+          if( ($event_count/$total_hist_count) >= .05 )
+>>>>>>>> c3b71c7541bb60019b42dbdeccaf2062409f1aa7:analyses/splicing_index/04-generate_hist_spec_events_tab.pl
           {
             print TAB $event,"\t",$hist,"\tinclusion\n";
           }

@@ -1,9 +1,9 @@
-# 06-plot_tmb_by_sbi.R
+# 16-plot_tmb_by_sbi.R
 # written by Ammar Naqvi
 #
 # This script plots TMB based on high vs low splicing burden 
 #
-# usage: Rscript 06-plot_tmb_by_sbi.R
+# usage: Rscript 16-plot_tmb_by_sbi.R
 ################################################################################
 
 ## load libraries

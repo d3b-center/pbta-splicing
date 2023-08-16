@@ -76,7 +76,7 @@ num_of_hits_perc <- data.frame(type,counts, event)
 ##plot
 plot_flip <- ggplot(num_of_hits_perc, aes(x = type, y = counts, fill = event)) + 
          geom_bar(position="stack", stat="identity") + 
-  scale_fill_manual(values=c("#d6604d","#4393c3")) + 
+  scale_fill_manual(values=c("#FFC20A","#0C7BDC")) +
   xlab("Splicing Preference ") + 
   ylab("% of splice variants") + 
   coord_flip() +
