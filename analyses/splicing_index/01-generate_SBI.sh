@@ -7,7 +7,7 @@ indep_samples="../../data/independent-specimens.rnaseqpanel.primary.tsv"
 indep_samples_plus="../../data/independent-specimens.rnaseqpanel.primary-plus.tsv"
 
 ## process PSI and generate SBI tables
-#perl 03-generate_splicing-index_and_diff-events_table.SE.pl $hist_file $rmats_file $indep_samples $indep_samples_plus
+perl 03-generate_splicing-index_and_diff-events_table.SE.pl $hist_file $rmats_file $indep_samples $indep_samples_plus
 perl 04-generate_splicing-index_and_diff-events_table.RI.pl $hist_file $rmats_file $indep_samples $indep_samples_plus
 perl 05-generate_splicing-index_and_diff-events_table.A5SS.pl $hist_file $rmats_file $indep_samples $indep_samples_plus
 perl 06-generate_splicing-index_and_diff-events_table.A3SS.pl $hist_file $rmats_file $indep_samples $indep_samples_plus
