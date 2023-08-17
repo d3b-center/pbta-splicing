@@ -72,6 +72,7 @@ short_histology_palettes <- palette_df %>%
   dplyr::select(short_histology,plot_group_display, hex_code) %>%
   unique()
 
+
 mycolors <- list()
 mycolors[['short_histology']] <- short_histology_palettes$hex_code
 names(mycolors[['short_histology']]) <- short_histology_palettes$short_histology
