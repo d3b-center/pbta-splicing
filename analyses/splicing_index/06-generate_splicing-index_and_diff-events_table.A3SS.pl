@@ -245,7 +245,7 @@ if (!-d "results")
 }
 
 print "make table for plotting of splice_index...\n";
-open(TAB,">results/splicing_index.A3SS.total.txt");
+open(TAB,">results/splicing_index.total.A3SS.txt");
 print TAB "Sample\tTotal\tAS_neg\tAS_pos\tAS_total\tSI\tHistology\n";
 foreach my $sample(@bs_ids_uniq)
 {
