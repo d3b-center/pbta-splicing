@@ -1,8 +1,7 @@
 ################################################################################
 # 07-plot_splicing_burden_index.R
-# script that takes in "splicing_index.total.txt" data file
-# and computes relative proportion (splicing burden index of aberrant splicing 
-# changes in samples
+# script that takes in SBI tsv files and  computes relative proportion 
+# (splicing burden index of aberrant splicing changes in samples
 #
 # written by Ammar Naqvi
 #
@@ -117,4 +116,4 @@ splice_index_A3SS_df <- readr::read_tsv(splice_index_A3SS_file) %>% as.data.fram
 plot_sbi(splice_index_SE_df,file_si_SE_plot)
 plot_sbi(splice_index_RI_df,file_si_RI_plot)
 plot_sbi(splice_index_A5SS_df,file_si_A5SS_plot)
-plot_sbi(splice_index_A3SS_df,file_si_S3SS_plot)
+plot_sbi(splice_index_A3SS_df,file_si_A3SS_plot)
