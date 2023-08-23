@@ -48,20 +48,9 @@ rmats_merged_file  <- file.path(analysis_dir,"input","morpholno.merged.rmats.tsv
 
 ## extract strong splicing changes 
 splicing_df  <-  vroom(rmats_merged_file, comment = "#", delim="\t") %>% 
-                 filter(FDR <= 0.05 & PValue <= 0.05) %>% 
-                 filter( (IncLevelDifference >= .20) | (IncLevelDifference <= -.20))  %>%
-                 mutate(Type = case_when(IncLevelDifference >= .20 ~ "CLK1-Ex4 Mediated Skipping", 
-                                         IncLevelDifference <= -.20 ~ "CLK1-Ex4 Mediated Inclusion"))
+                 filter(FDR <= 0.05 & PValue <= 0.05) 
 
-splice_case_counts_df <- splicing_df %>% dplyr::count(splicing_case, Type) 
-
-# Specify colors
-safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#AA4499","#D55E00")
-
-
-case_colors = list(
-  splicing_case = c(A3SS=safe_colorblind_palette[1], A5SS=safe_colorblind_palette[3],RI=safe_colorblind_palette[4],SE=safe_colorblind_palette[5], MXE=safe_colorblind_palette[6]) ) 
-
+## extract strong differential splicing cases (dPSI >= |.10|)
 splicing_df_ES <- splicing_df %>% filter(IncLevelDifference  >= .10) 
 splicing_df_EI <- splicing_df %>% filter(IncLevelDifference <= -.10) 
                                                         
