@@ -1,8 +1,8 @@
 ################################################################################
-# 04-plot_splice-cases.R
+# 03-plot_diff-splice-events.R
 # written byAmmar Naqvi and Jo Lynne Rokita
 #
-# usage: Rscript 04-plot_splice-cases.R
+# usage: Rscript 03-plot_diff-splice-events.R
 ################################################################################
 
 suppressPackageStartupMessages({
@@ -43,8 +43,12 @@ file_dpsi_ei_plot <- file.path(plots_dir,"dPSI_distr_ei.pdf")
 
 
 ## get and setup input
-rmats_merged_file  <- file.path(input_dir,"morpholno.merged.rmats.tsv")
+## rmats file
+rmats_merged_file  <- file.path(analysis_dir,"input","morpholno.merged.rmats.tsv")
+
+## extract strong splicing changes 
 splicing_df  <-  vroom(rmats_merged_file, comment = "#", delim="\t") %>% 
+                 filter(FDR <= 0.05 & PValue <= 0.05) %>% 
                  filter( (IncLevelDifference >= .20) | (IncLevelDifference <= -.20))  %>%
                  mutate(Type = case_when(IncLevelDifference >= .20 ~ "CLK1-Ex4 Mediated Skipping", 
                                          IncLevelDifference <= -.20 ~ "CLK1-Ex4 Mediated Inclusion"))
@@ -58,28 +62,8 @@ safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#AA449
 case_colors = list(
   splicing_case = c(A3SS=safe_colorblind_palette[1], A5SS=safe_colorblind_palette[3],RI=safe_colorblind_palette[4],SE=safe_colorblind_palette[5], MXE=safe_colorblind_palette[6]) ) 
 
-piechart_plot<- ggplot(data = splice_case_counts_df, aes(x = "", y = n, fill = splicing_case )) + 
-  geom_bar(stat = "identity", position = position_fill()) +
-  geom_text(aes(label = n), position = position_fill(vjust = 0.5)) +
-  coord_polar(theta = "y",start=0) +
-  facet_wrap(~ Type, ncol=1)  +
-  scale_fill_manual(name = "Splicing Case",values = case_colors[['splicing_case']]) +
-  xlab("") + ylab("") +
-  theme_Publication() + 
-  theme(axis.text = element_blank(),
-        axis.ticks = element_blank(),
-        panel.grid  = element_blank(),
-        legend.title = element_text(size=12),
-        legend.text = element_text(size=10))
-
-# save plot tiff version
-tiff(piechart_plot_of_splicing_case, height =2000, width = 1500, res = 300)
-print(piechart_plot)
-dev.off()
-
-
-splicing_df_ES <- splicing_df %>% filter(IncLevelDifference >= .20) 
-splicing_df_EI <- splicing_df %>% filter( (IncLevelDifference <= -.20) 
+splicing_df_ES <- splicing_df %>% filter(IncLevelDifference  >= .10) 
+splicing_df_EI <- splicing_df %>% filter(IncLevelDifference <= -.10) 
                                                         
 ## ggstatplot across functional sites
 set.seed(123)
