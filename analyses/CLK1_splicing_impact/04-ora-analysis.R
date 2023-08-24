@@ -19,7 +19,7 @@ suppressPackageStartupMessages({
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
-## set directories
+## set up directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1_splicing_impact")
@@ -28,6 +28,7 @@ input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir <- file.path(analysis_dir, "plots")
 
+## create folder if non-existent 
 if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
 }
@@ -35,6 +36,9 @@ if(!dir.exists(plots_dir)){
 if(!dir.exists(results_dir)){
   dir.create(results_dir, recursive=TRUE)
 }
+
+## outplut file for plot
+ora_dotplot_path <- file.path(plots_dir, "CLK1_targets_ora_dotplot.tiff")
 
 ## get gene sets relevant to H. sapiens
 hs_msigdb_df <- msigdbr(species = "Homo sapiens")
@@ -61,11 +65,11 @@ genes_of_interest <- splicing_df %>%
                              unique()
 
 
+## run enrichR to compute and identify significant over-repr pathways
 ora_results <- enricher(
   gene = genes_of_interest$geneSymbol, # A vector of your genes of interest
-  pvalueCutoff = 0.05, # Can choose a FDR cutoff
-  pAdjustMethod = "BH", # Method to be used for multiple testing correction
-
+  pvalueCutoff = 0.05, 
+  pAdjustMethod = "BH", 
   TERM2GENE = dplyr::select(
     hs_hm_df,
     gs_name,
@@ -76,15 +80,12 @@ ora_results <- enricher(
 ## plot enrichment using dotplot
 ora_result_df <- data.frame(ora_results@result)
 enrich_plot <- enrichplot::dotplot(ora_results)
-
-# Plot path
-ora_dotplot_path <- file.path(plots_dir, "CLK1_targets_ora_dotplot.tiff")
 enrich_plot
 
-# Save ORA dotplot as tiff
+## save ORA dotplot as tiff
 ggplot2::ggsave(ora_dotplot_path,
-                width=14,
-                height=10,
+                width=7,
+                height=5,
                 device="tiff",
                 dpi=300)
                 
