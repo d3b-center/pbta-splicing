@@ -12,11 +12,31 @@ suppressPackageStartupMessages({
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
+## call plot publication theme script 
+source(file.path(root_dir, "figures", "theme_for_plots.R"))
+
+
 ## set directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data/")
-analysis_dir <- file.path(root_dir, "analyses", "CLK1_splicing_impact")
+
+analysis_dir <- file.path(root_dir, "analyses", "KNS42_cell-line")
 input_dir   <- file.path(analysis_dir, "input")
+results_dir <- file.path(analysis_dir, "results", "KNS42_cell-line")
+plots_dir <- file.path(analysis_dir, "plots", "KNS42_cell-line")
+
+
+if(!dir.exists(plots_dir)){
+  dir.create(plots_dir, recursive=TRUE)
+}
+
+if(!dir.exists(results_dir)){
+  dir.create(results_dir, recursive=TRUE)
+}
+
+## output for plots
+file_depmap_score_plot <- file.path(analysis_dir, "plots", "depmap_score_cell-lines.tiff")
+file_expr_vs_score_plot <- file.path(analysis_dir,"plots", "depmap_score_CLK1_vs_score_KNS42.tiff")
 
 ## load dataset
 depmap_file = "CLK1_CRISPR_depmap_score.csv"
@@ -27,14 +47,20 @@ depmap_data <- vroom(paste0(file.path(input_dir),"/", depmap_file), show_col_typ
 ## general Depmap CLK1 Pertubation
 depmap_data_KNS42 <- depmap_data %>% dplyr::filter(`Cell Line Name` =="KNS42")
 
-ggplot(data=depmap_data, aes(reorder(`Cell Line Name`,`CRISPR (DepMap Public 23Q2+Score, Chronos)`),`CRISPR (DepMap Public 23Q2+Score, Chronos)`,  group=1)) +
+gene_score_plot <- ggplot(data=depmap_data, aes(reorder(`Cell Line Name`,`CRISPR (DepMap Public 23Q2+Score, Chronos)`),`CRISPR (DepMap Public 23Q2+Score, Chronos)`,  group=1)) +
   #geom_line() + 
-  geom_point(size=4, colour="grey") + 
+  geom_point(size=5, colour="grey") + 
   theme_Publication() + 
   theme(axis.text.x=element_blank(),axis.ticks.x=element_blank()) + 
-  geom_point(data=depmap_data_KNS42, colour="red", size = 4) +
+  geom_point(data=depmap_data_KNS42, colour="red", size = 5) +
   xlab("Cell Line") + ylab("Dependency Score") + ggtitle("DepMap CLK1 Pertubation") 
 
+
+# Save plot as tiff
+tiff(file_depmap_score_plot, 
+     res = 300, width = 20, height = 8, units = "in")
+gene_score_plot
+dev.off()
 
 ## compare distrubutions based on CLK1 expression 
 omics_id_mapping_df <- vroom("~/Downloads/OmicsDefaultModelProfiles.csv") %>% inner_join(depmap_data,by="ModelID")
@@ -58,7 +84,16 @@ depmap_low_expr_df  <- dplyr::filter(depMap_transcr_CLK1_pct_expr, PCT_Expr < lo
 
 depmap_high_low <- rbind(depmap_low_expr_df,depmap_high_expr_df)
 
-ggplot(depmap_high_low,aes(Expression_level,CRISPR_score)) + 
+boxplot_expr_vs_score <- ggplot(depmap_high_low,aes(Expression_level,CRISPR_score)) + 
   geom_boxplot(aes(fill=Expression_level)) + 
   stat_compare_means() + 
-  geom_jitter() 
+  geom_jitter() +
+  ylab("Dependency Score") + 
+  xlab("Exon4 Transcript Expression Levels") + 
+  scale_fill_manual(values=c("#FFC20A","#0C7BDC")) + 
+  theme_Publication()
+
+# save plot tiff version
+tiff(file_expr_vs_score_plot, height =1500, width = 1700, res = 300)
+print(boxplot_expr_vs_score)
+dev.off()
