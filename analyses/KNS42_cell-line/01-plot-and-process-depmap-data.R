@@ -12,6 +12,7 @@ suppressPackageStartupMessages({
   library("dplyr")
   library("vroom")
   library("ggpubr")
+  library("ggthemes")
 })
 
 # Get `magrittr` pipe
@@ -54,16 +55,16 @@ depmap_data_KNS42 <- depmap_data %>% dplyr::filter(`Cell Line Name` =="KNS42")
 
 gene_score_plot <- ggplot(data=depmap_data, aes(reorder(`Cell Line Name`,`CRISPR (DepMap Public 23Q2+Score, Chronos)`),`CRISPR (DepMap Public 23Q2+Score, Chronos)`,  group=1)) +
   #geom_line() + 
-  geom_point(size=5, colour="grey") + 
+  geom_point(size=3, colour="grey") + 
   theme_Publication() + 
   theme(axis.text.x=element_blank(),axis.ticks.x=element_blank()) + 
-  geom_point(data=depmap_data_KNS42, colour="red", size = 5) +
-  xlab("Cell Line") + ylab("Dependency Score") + ggtitle("DepMap CLK1 Pertubation") 
+  geom_point(data=depmap_data_KNS42, colour="red", size = 3) +
+  xlab("Cell Line") + ylab("Dependency Score") + ggtitle("CLK1 Pertubation") 
 
 
 # Save plot as tiff
 tiff(file_depmap_score_plot, 
-     res = 300, width = 20, height = 8, units = "in")
+     res = 300, width = 1800, height = 1000)
 gene_score_plot
 dev.off()
 
