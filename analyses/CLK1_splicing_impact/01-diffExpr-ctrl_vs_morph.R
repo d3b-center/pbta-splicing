@@ -97,3 +97,36 @@ write_delim(
   paste0(results_dir,"/", de_output),
   delim = "\t"
 )
+
+## brain-goi list
+brain_goi_file <- "brain-goi-list-new.txt"
+brain_goi_data <- read.table(file.path(input_dir, brain_goi_file),header=TRUE)
+
+## res data with filtered goi from above 
+res2 <- as.data.frame(res) %>% dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% inner_join(brain_goi_data, by="gene")
+
+EnhancedVolcano(res2,
+                lab = res2$gene, ## remove ensembleid portion , ## remove ensembleid portion
+                x = 'log2FoldChange',
+                y = 'pvalue',
+                #ylim = c(0,21),
+                #xlim = c(-3,3),
+                title = 'Ctrl vs Treated',
+                pCutoff = 0.05,
+                FCcutoff = 0.5,
+                pointSize = 2,
+                labSize = 4)
+
+ggsave(
+  paste0(plots_dir,"/", "ctrl_vs_clk1-morp_volcano.brain-goi.tiff"),
+  plot = last_plot(),
+  device = NULL,
+  path = NULL,
+  scale = 1,
+  width =6.73,
+  height = 10.38,
+  units = "in",
+  dpi = 300,
+  limitsize = TRUE,
+  bg = NULL
+)
