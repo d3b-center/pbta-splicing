@@ -64,7 +64,7 @@ plot_sbi <- function(sbi_df, plot_file) { ## if conflicting intrep. take the cal
     dplyr::filter(dplyr::n() > 1) %>%
     # Calculate group median
     dplyr::mutate(
-      group_median = median(SI, na.rm = TRUE),
+      group_mean = mean(SI, na.rm = TRUE),
       group_rank = rank(SI, ties.method = "first") / dplyr::n(),
       sample_size = paste0("n = ", dplyr::n())
     ) %>%
@@ -82,7 +82,7 @@ plot_sbi <- function(sbi_df, plot_file) { ## if conflicting intrep. take the cal
     # Add summary line for median
     ggplot2::geom_segment(
       x = 0, xend = 1, color = "red", linetype = 2,
-      ggplot2::aes(y = log2(group_median * 100), yend = log2(group_median * 100))
+      ggplot2::aes(y = log2(group_mean * 100), yend = log2(group_mean * 100))
     ) +
 
     # Separate by histology
