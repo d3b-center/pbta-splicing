@@ -44,9 +44,9 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 
 # read in SI file
 splice_index_SE_file   <- file.path(results_dir, "splicing_index.total.SE.txt")
-splice_index_RI_file   <- file.path(results_dir, "splicing_index.total.RI.txt")
-splice_index_A5SS_file <- file.path(results_dir, "splicing_index.total.A5SS.txt")
-splice_index_A3SS_file <- file.path(results_dir, "splicing_index.total.A3SS.txt")
+splice_index_RI_file   <- file.path(results_dir, "splicing_index.RI.total.txt")
+splice_index_A5SS_file <- file.path(results_dir, "splicing_index.A5SS.total.txt")
+splice_index_A3SS_file <- file.path(results_dir, "splicing_index.A3SS.total.txt")
 
 splice_index_SE_df   <- readr::read_tsv(splice_index_SE_file)
 splice_index_RI_df   <- readr::read_tsv(splice_index_RI_file)
