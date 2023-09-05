@@ -69,7 +69,7 @@ plot_sbi <- function(sbi_df, plot_file) { ## if conflicting intrep. take the cal
       sample_size = paste0("n = ", dplyr::n())
     ) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(Histology = reorder(Histology, group_median))
+    dplyr::mutate(Histology = reorder(Histology, group_mean))
 
   si_plot <- si_cdf_plot %>%
     # Now we will plot these as cumulative distribution plots
