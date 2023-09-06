@@ -44,7 +44,7 @@ count_data <- vroom(paste0(data_dir, tpm_count_file)) %>%
 
 ## construct metadata
 design = data.frame(row.names = colnames(count_data$gene),
-                    condition = c(rep("Ctrl",3), rep("Treated",3) ),
+                    condition = c(rep("Treated",3), rep("Ctrl",3) ),
                     libType   = c(rep("paired-end",6)))
 
 
@@ -109,7 +109,7 @@ EnhancedVolcano(res2,
                 y = 'pvalue',
                 #ylim = c(0,21),
                 #xlim = c(-3,3),
-                title = 'Ctrl vs Treated',
+                title = 'Treated vs Ctrl',
                 pCutoff = 0.05,
                 FCcutoff = 0.5,
                 pointSize = 2,
