@@ -47,13 +47,6 @@ hs_hallmark_sets <- msigdbr(
   category = "H"
 )
 
-hs_hallmark_sets <- msigdbr(
-  species = "Homo sapiens",
-  category = "C2", subcategory = "CP:KEGG"
-)
-
-
-
 #######
 ## PERFORM GSEA
 
