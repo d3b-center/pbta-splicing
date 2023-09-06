@@ -11,8 +11,8 @@ suppressPackageStartupMessages({
   library("tidyverse")
   library("dplyr")
   library("vroom")
+  library("clusterProfiler")
 })
-
 
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
@@ -55,10 +55,8 @@ cds = DESeqDataSetFromMatrix(countData=round(count_data_removed),
                              colData=design,
                              design= ~ condition)
 
-cds = estimateSizeFactors( cds )
-cds = estimateDispersions(cds)
 
-## run deseq function to compute pvalues
+## run DeSeq function to compute pvalues
 cds <- DESeq(cds)
 res <- results(cds)
 
