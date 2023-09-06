@@ -7,9 +7,9 @@
 
 suppressPackageStartupMessages({
   library("ggplot2")
-  library("dplyr")
   library("tidyverse")
   library("ggrepel")
+  library("vroom")
 })
 
 # Get `magrittr` pipe
@@ -63,14 +63,16 @@ plot_es <- ggstatsplot::ggbetweenstats(
   k = 3,
   nboot = 15,
   outlier.label = geneSymbol, # label to attach to outlier values
-  outlier.label.args = list(color = "red", size=1.8), # outlier point label color
+  outlier.label.args = list(color = "red", size=2), # outlier point label color
   notch = TRUE,
   mean.ci = TRUE,
   outlier.tagging = TRUE,
   type = "robust",
-  pairwise.comparisons = FALSE,
+  pairwise.comparisons = TRUE,
   messages = FALSE
-) + theme_Publication() + labs(y=expression(Delta*PSI)) 
+) + theme_Publication() + 
+  labs(y=expression(Delta*PSI), x="Splicing Case") + 
+  theme(legend.position = "none")
 
 set.seed(123)
 plot_ei <- ggstatsplot::ggbetweenstats(
@@ -80,14 +82,16 @@ plot_ei <- ggstatsplot::ggbetweenstats(
   k = 3,
   nboot = 15,
   outlier.label = geneSymbol, # label to attach to outlier values
-  outlier.label.args = list(color = "red", size=1.8), # outlier point label color
+  outlier.label.args = list(color = "red", size=2), # outlier point label color
   notch = TRUE,
   mean.ci = TRUE,
   outlier.tagging = TRUE,
   type = "robust",
-  pairwise.comparisons = FALSE,
+  pairwise.comparisons = TRUE,
   messages = FALSE
-) + theme_Publication() + labs(y=expression(Delta*PSI))
+) + theme_Publication() + 
+  labs(y=expression(Delta*PSI), x="Splicing Case") + 
+  theme(legend.position = "none")
 
 # Save plot as PDF
 pdf(file_dpsi_es_plot, 
