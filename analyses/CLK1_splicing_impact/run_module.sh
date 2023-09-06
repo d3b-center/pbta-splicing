@@ -10,3 +10,7 @@ cat results/ctrl_vs_treated.de.tsv | awk -F "\t" '{print $8,"\t"$1"\t"$2"\t"$3"\
 
 ## perform GSEA on diff expression results
 Rscript 02-gsea-analysis.R
+
+## plot differential splicing events between untreated vs treated
+03-plot_diff-splice-events.R
+
