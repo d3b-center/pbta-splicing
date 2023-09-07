@@ -61,7 +61,7 @@ list_for_skipping_upsetR <- list("ATRT"=splice_event_df_ATRT$splicing_event,
                                  
 es_events <- upset(fromList(list_for_skipping_upsetR), 
                    mainbar.y.label = "", sets=c("ATRT","CPG","GNG","EPN","HGG","MB","LGG"), sets.x.label = "Histology", order.by = "freq",
-                   mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 2, line.size = 1.5, nsets = 7)
+                   mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 3, line.size = 1.5, nsets = 7)
 
 
 # Save plot as PDF
