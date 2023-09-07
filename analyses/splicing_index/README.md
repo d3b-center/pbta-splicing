@@ -1,4 +1,4 @@
-# Splicing index
+# Splicing Index
 
 Module authors: Ammar Naqvi (@naqvia)
 
