@@ -54,7 +54,7 @@ splice_index_A5SS_df <- readr::read_tsv(splice_index_A5SS_file)
 splice_index_A3SS_df <- readr::read_tsv(splice_index_A3SS_file)
 
 
-plot_sbi <- function(sbi_df, plot_file) { ## if conflicting intrep. take the call with most calls in CLNSIGCONF field
+plot_sbi <- function(sbi_df, plot_file) {
   
   # Set up the data.frame for plotting
   si_cdf_plot <- sbi_df %>%
