@@ -70,7 +70,7 @@ es_events
 dev.off()
 
 # Save plot tiff version
-tiff(upsetR_tiff_es_plot_file, height = 1200, width = 3600, res = 300)
+tiff(upsetR_tiff_es_plot_file, height = 1800, width = 3600, res = 300)
 print(es_events)
 dev.off()
 
@@ -164,7 +164,7 @@ ei_events
 dev.off()
 
 # Save plot tiff version
-tiff(upsetR_tiff_ei_plot_file, height = 1200, width = 3600, res = 300)
+tiff(upsetR_tiff_ei_plot_file, height = 1800, width = 3600, res = 300)
 print(ei_events)
 dev.off()
 
