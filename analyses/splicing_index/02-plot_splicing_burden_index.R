@@ -86,7 +86,8 @@ plot_sbi <- function(sbi_df, plot_file) { ## if conflicting intrep. take the cal
     ) +
 
     # Separate by histology
-    ggplot2::facet_wrap(~ Histology + sample_size, nrow = 1, strip.position = "bottom", labeller = ggplot2::label_wrap_gen(multi_line = FALSE)) +
+    ggplot2::facet_wrap(~ Histology + sample_size, nrow = 1, 
+                        strip.position = "bottom", labeller = ggplot2::label_wrap_gen(multi_line = FALSE)) +
     ggplot2::xlab("Histology") +
     ggplot2::ylab("Splicing Burden Index") +
 
@@ -99,12 +100,9 @@ plot_sbi <- function(sbi_df, plot_file) { ## if conflicting intrep. take the cal
       strip.placement = "outside"
     )
 
-  dev.set(dev.next())
-
   # Save plot
-  tiff(file.path(plots_dir, plot_file), height = 1200, width = 3000, res = 300)
-  print(si_plot)
-  dev.off()
+  ggsave(filename = plot_file, path = plots_dir, plot = si_plot,
+         height = 5, width = 10, units = "in")
 }
 
 ## plot SBI for each splicing case
