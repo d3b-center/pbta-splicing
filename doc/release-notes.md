@@ -6,10 +6,10 @@
 - status: available
 
 Additional files:
-- `morpholno.merged.rmats.tsv` : merged matrix of rMATs splice events, comparing morphilino treated vs untreated KNS42 cells
-- `ctrl_vs_morpho.rsem.genes.results.tsv`: count data matrix of morphilino treated and untreated KNS42 cells
-- `CLK1_CRISPR_depmap_score.csv` : DepMap portal database file for dependency
-- `OmicsDefaultModelProfiles.csv` : Profile mappings of cell lines and omics data
+- `ctrl-vs-morpholino-merged-rmats.tsv` : merged matrix of rMATs splice events, comparing morphilino treated vs untreated KNS42 cells
+- `ctrl-vs-morpholino-gene-counts-rsem-expected_count.tsv`: count data matrix of morphilino treated and untreated KNS42 cells
+- `CLK1-CRISPR-DepMap-score.csv` : DepMap portal database file for dependency obtain from [DepMap Portal](https://depmap.org/portal/download/all/), 05/2023
+- `OmicsDefaultModelProfiles.csv` : Profile mappings of cell lines and omics data obtain from [DepMap Portal](https://depmap.org/portal/download/all/), 05/2023
 
 ```
 v6
