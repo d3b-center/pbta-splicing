@@ -64,15 +64,16 @@ es_events <- upset(fromList(list_for_skipping_upsetR),
                    mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 3, line.size = 1.5, nsets = 7)
 
 
-# Save plot as PDF
-pdf(upsetR_es_plot_file, width = 16, height = 8)
-es_events
-dev.off()
+
+# Save plot
+ggsave(filename = upsetR_es_plot_file, path = plots_dir, plot = es_events,
+       height = 8, width = 16, units = "in")
+
 
 # Save plot tiff version
-tiff(upsetR_tiff_es_plot_file, height = 1800, width = 3600, res = 300)
-print(es_events)
-dev.off()
+ggsave(filename = upsetR_tiff_es_plot_file, path = plots_dir, plot = es_events,
+       height = 8, width = 16, units = "in")
+
 
 ## get splicing events unique to each histology
 ATRT <- setdiff(splice_event_df_ATRT$splicing_event, ( unique(c( splice_event_df_CPG$splicing_event,
@@ -158,15 +159,16 @@ ei_events <- upset(fromList(list_for_inclusion_upsetR),
                    mainbar.y.label = "", sets.x.label = "Histology", order.by = "freq",
                    mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 3, line.size = 1.5, nsets = 7)
 
-# Save plot as PDF
-pdf(upsetR_ei_plot_file, width = 16, height = 8)
-ei_events
-dev.off()
+# Save plot
+ggsave(filename = upsetR_ei_plot_file, path = plots_dir, plot = ei_events,
+       height = 8, width = 16, units = "in")
+
 
 # Save plot tiff version
-tiff(upsetR_tiff_ei_plot_file, height = 1800, width = 3600, res = 300)
-print(ei_events)
-dev.off()
+ggsave(filename = upsetR_tiff_ei_plot_file, path = plots_dir, plot = ei_events,
+       height = 8, width = 16, units = "in")
+
+
 
 ## get splicing events unique to each histology
 ATRT <- setdiff(splice_event_df_ATRT$splicing_event, ( unique(c( splice_event_df_CPG$splicing_event,

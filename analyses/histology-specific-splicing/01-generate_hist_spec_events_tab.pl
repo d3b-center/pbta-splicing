@@ -48,7 +48,7 @@ my %splicing_psi;
   }
   close(FIL);
 
-
+print "annotate and store histology information... ".localtime(time)."\n";
   # annotate histology file #
     # hash with BS and disease
     # make arrays of each histology of BS IDs
@@ -119,6 +119,7 @@ my %splicing_psi;
 # for each line, make unique splice id
   # gene + chr + SE + UEx + DEx   (make array)
   # store total splicing events and those that pass threshold for each sample
+print "process rMATs information... ".localtime(time)."\n";
 
 my (%splice_totals_per_sample, %splice_totals);
 ## process rMATS output (may take awhile) from merged input file
@@ -250,6 +251,8 @@ foreach my $sample(@bs_ids_uniq)
   }
 }
 
+print "report results...".localtime(time)."\n";
+
 my @ab_splicing_events_pos_uniq = do { my %seen; grep { !$seen{$_}++ } @ab_splicing_events_pos };
 my @ab_splicing_events_neg_uniq = do { my %seen; grep { !$seen{$_}++ } @ab_splicing_events_neg };
 
@@ -294,3 +297,4 @@ foreach $hist (@broad_hist_uniq)
 }
 
 close(TAB);
+print "finish... ".localtime(time)."\n";
