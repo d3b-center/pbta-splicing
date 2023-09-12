@@ -18,13 +18,9 @@ suppressPackageStartupMessages({
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
-## call plot publication theme script 
-source(file.path(root_dir, "figures", "theme_for_plots.R"))
-
-
 ## set directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data/")
+data_dir <- file.path(root_dir, "data")
 
 analysis_dir <- file.path(root_dir, "analyses", "KNS42_cell-line")
 input_dir   <- file.path(analysis_dir, "input")
@@ -44,9 +40,12 @@ if(!dir.exists(results_dir)){
 file_depmap_score_plot <- file.path(analysis_dir, "plots", "depmap_score_cell-lines.tiff")
 file_expr_vs_score_plot <- file.path(analysis_dir,"plots", "depmap_score_CLK1_vs_score_KNS42.tiff")
 
+## call plot publication theme script 
+source(file.path(root_dir, "figures", "theme_for_plots.R"))
+
 ## load dataset
-depmap_file = "CLK1_CRISPR_depmap_score.csv"
-depmap_data <- vroom(paste0(file.path(input_dir),"/", depmap_file), show_col_types = FALSE) %>% 
+depmap_file = "CLK1-CRISPR-DepMap-score.csv"
+depmap_data <- vroom(file.path(data_dir,depmap_file), show_col_types = FALSE) %>% 
   dplyr::rename("ModelID"=`Depmap ID`) %>% 
   filter( Lineage == 'CNS/Brain' ) 
 
@@ -69,9 +68,11 @@ gene_score_plot
 dev.off()
 
 ## compare distrubutions based on CLK1 expression 
-omics_id_mapping_df <- vroom("~/Downloads/OmicsDefaultModelProfiles.csv") %>% inner_join(depmap_data,by="ModelID")
+omics_mappings_file <- "OmicsDefaultModelProfiles.csv"
+tpm_file <- "OmicsExpressionTranscriptsTPMLogp1Profile.csv"
 
-depMap_transcr_expr <- vroom("~/Downloads/OmicsExpressionTranscriptsTPMLogp1Profile.csv") %>% 
+omics_id_mapping_df <- vroom(file.path(data_dir,omics_mappings_file) %>% inner_join(depmap_data,by="ModelID")
+depMap_transcr_expr <- vroom(file.path(data_dir,tpm_file)) %>% 
   dplyr::rename("ProfileID"=`...1`) %>%
   inner_join(omics_id_mapping_df,by="ProfileID")
 
