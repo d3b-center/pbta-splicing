@@ -8,7 +8,7 @@
 # usage: Rscript 02-plot_histology-specific_splicing_events.R
 ################################################################################
 
-##libraries 
+## libraries 
 suppressPackageStartupMessages({
   library("ggplot2")
   library("UpSetR")
@@ -17,6 +17,7 @@ suppressPackageStartupMessages({
   library("viridis")
   library("vroom")
   library("tidyverse")
+  library("ggplotify") 
 })
 
 #Get `magrittr` pipe
@@ -57,22 +58,20 @@ list_for_skipping_upsetR <- list("ATRT"=splice_event_df_ATRT$splicing_event,
                                  "HGG"=splice_event_df_HGG$splicing_event,
                                  "MB"=splice_event_df_MB$splicing_event,
                                  "LGG"=splice_event_df_LGG$splicing_event)
-                                 
-                                 
+                                
 es_events <- upset(fromList(list_for_skipping_upsetR), 
                    mainbar.y.label = "", sets=c("ATRT","CPG","GNG","EPN","HGG","MB","LGG"), sets.x.label = "Histology", order.by = "freq",
-                   mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 3, line.size = 1.5, nsets = 7)
-
+                   mb.ratio = c(0.5,0.50), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4),point.size = 2, line.size = 1, nsets = 7)
 
 
 # Save plot
-ggsave(filename = upsetR_es_plot_file, path = plots_dir, plot = es_events,
-       height = 8, width = 16, units = "in")
+tiff(upsetR_tiff_es_plot_file, height = 8, width = 16, units = "in", res = 300)
+print(es_events)
+dev.off()
 
-
-# Save plot tiff version
-ggsave(filename = upsetR_tiff_es_plot_file, path = plots_dir, plot = es_events,
-       height = 8, width = 16, units = "in")
+pdf(upsetR_es_plot_file, height = 8, width = 16)
+print(es_events)
+dev.off()
 
 
 ## get splicing events unique to each histology
@@ -157,17 +156,17 @@ list_for_inclusion_upsetR <- list("ATRT"=splice_event_df_ATRT$splicing_event,
 ## make upsetR plots
 ei_events <- upset(fromList(list_for_inclusion_upsetR), 
                    mainbar.y.label = "", sets.x.label = "Histology", order.by = "freq",
-                   mb.ratio = c(0.5,0.50), text.scale = c(1.3, 1.3, 1.3, 1.3, 2, 1.4),point.size = 3, line.size = 1.5, nsets = 7)
+                   mb.ratio = c(0.5,0.50), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4),point.size = 2, line.size = 1, nsets = 7)
 
 # Save plot
-ggsave(filename = upsetR_ei_plot_file, path = plots_dir, plot = ei_events,
-       height = 8, width = 16, units = "in")
 
+tiff(upsetR_tiff_ei_plot_file, height = 8, width = 16, units = "in", res = 300)
+print(ei_events)
+dev.off()
 
-# Save plot tiff version
-ggsave(filename = upsetR_tiff_ei_plot_file, path = plots_dir, plot = ei_events,
-       height = 8, width = 16, units = "in")
-
+pdf(upsetR_ei_plot_file, height = 8, width = 16)
+print(ei_events)
+dev.off()
 
 
 ## get splicing events unique to each histology
