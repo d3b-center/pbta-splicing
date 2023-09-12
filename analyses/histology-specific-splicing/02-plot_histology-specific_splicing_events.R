@@ -12,9 +12,6 @@
 suppressPackageStartupMessages({
   library("ggplot2")
   library("UpSetR")
-  library("grid")
-  library("cowplot")
-  library("viridis")
   library("vroom")
   library("tidyverse")
 })
