@@ -17,7 +17,6 @@ suppressPackageStartupMessages({
   library("viridis")
   library("vroom")
   library("tidyverse")
-  library("ggplotify") 
 })
 
 #Get `magrittr` pipe
