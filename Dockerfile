@@ -50,6 +50,7 @@ RUN ./install_bioc.r \
   cowplot \
   DGCA \
 	DESeq2 \
+  DOSE \
 	diptest \
 	EnhancedVolcano \
 	fgsea \
@@ -60,7 +61,9 @@ RUN ./install_bioc.r \
 	GSVA \
 	hrbrthemes \
 	limma \
+  msigdbr \
 	optparse \
+  org.Hs.eg.db \
 	patchwork \
 	pheatmap \
   reshape2 \
