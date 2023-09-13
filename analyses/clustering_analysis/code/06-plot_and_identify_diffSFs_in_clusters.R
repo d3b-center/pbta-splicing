@@ -11,6 +11,7 @@
 
 library("vroom")
 library("tidyverse")
+library("ggVennDiagram")
 
 #Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
@@ -40,9 +41,9 @@ venn_downregSFs_plot <- file.path(plots_dir, "venn_downreg_SFs.tiff")
 venn_diffSFs_plot <- file.path(plots_dir, "venn_diff_SFs.tiff")
 
 ## input files generated from previous scripts
-cl1_diff_file <- paste0(output_dir,"/diff_genes/", "non_expr_pan_cancer_splice_subset_km_euclidean_0_cluster_1_limma_output.tsv")
-cl2_diff_file <- paste0(output_dir,"/diff_genes/", "non_expr_pan_cancer_splice_subset_km_euclidean_0_cluster_2_limma_output.tsv")
-cl3_diff_file <- paste0(output_dir,"/diff_genes/", "non_expr_pan_cancer_splice_subset_km_euclidean_0_cluster_3_limma_output.tsv")
+cl1_diff_file <- paste0(output_dir,"/diff_genes/", "non_expr_pan_cancer_splice_subset_pam_pearson_0_cluster_1_limma_output.tsv")
+cl2_diff_file <- paste0(output_dir,"/diff_genes/", "non_expr_pan_cancer_splice_subset_pam_pearson_0_cluster_2_limma_output.tsv")
+cl3_diff_file <- paste0(output_dir,"/diff_genes/", "non_expr_pan_cancer_splice_subset_pam_pearson_0_cluster_3_limma_output.tsv")
 
 ## splicing factor gene list
 splicing_factor_list_file <- paste0(input_dir,"/","SF_compr.list.txt")
@@ -62,9 +63,9 @@ cl1_diff_SF_pos_df <- cl1_diff_df %>%  inner_join(SF_list, by="Gene") %>% filter
 cl2_diff_SF_pos_df <- cl2_diff_df %>%  inner_join(SF_list, by="Gene") %>% filter(logFC>0)
 cl3_diff_SF_pos_df <- cl3_diff_df %>%  inner_join(SF_list, by="Gene") %>% filter(logFC>0)
  
-cl1_diff_SF_total_df <- cl1_diff_df %>%  inner_join(SF_list, by="Gene")  %>% filter(abs(logFC)>4)
-cl2_diff_SF_total_df <- cl2_diff_df %>%  inner_join(SF_list, by="Gene")  %>% filter(abs(logFC)>4)
-cl3_diff_SF_total_df <- cl3_diff_df %>%  inner_join(SF_list, by="Gene")  %>% filter(abs(logFC)>4)
+cl1_diff_SF_total_df <- cl1_diff_df %>%  inner_join(SF_list, by="Gene")  %>% filter(abs(logFC)>0)
+cl2_diff_SF_total_df <- cl2_diff_df %>%  inner_join(SF_list, by="Gene")  %>% filter(abs(logFC)>0)
+cl3_diff_SF_total_df <- cl3_diff_df %>%  inner_join(SF_list, by="Gene")  %>% filter(abs(logFC)>0)
 
 ## plot venn diagram based on genes for each cluster (up/down/all)
 venn_downreg <- ggVennDiagram(x=list(cl1_diff_SF_neg_df$Gene, cl2_diff_SF_neg_df$Gene,cl3_diff_SF_neg_df$Gene), edge_lty = "dashed", edge_size = 2, 
