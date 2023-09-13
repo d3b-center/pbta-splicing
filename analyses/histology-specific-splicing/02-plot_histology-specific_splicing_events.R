@@ -227,3 +227,5 @@ ATRT <- as.data.frame(ATRT) %>% mutate(gene=str_match(ATRT, "(\\w+)\\:")[, 2])%>
 splicing_EIevents_uniq_combined <- rbind(ATRT,MB,CPG,EPN,GNG,HGG,LGG)
 write.table(splicing_EIevents_uniq_combined, paste0(results_dir,"/","histology-specific_events.en.total.tsv"), sep="\t",row.names = F, quote=FALSE, col.names = TRUE)
 
+## delete Rplots
+unlink(file.path("Rplots.pdf"))
