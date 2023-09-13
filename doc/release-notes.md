@@ -10,11 +10,15 @@ Additional files:
 - `ctrl-vs-morpholino-gene-counts-rsem-expected_count.tsv`: count data matrix of morphilino treated and untreated KNS42 cells
 - `CLK1-CRISPR-DepMap-score.csv` : DepMap portal database file for dependency obtain from [DepMap Portal](https://depmap.org/portal/download/all/), 05/2023
 - `OmicsDefaultModelProfiles.csv` : Profile mappings of cell lines and omics data obtain from [DepMap Portal](https://depmap.org/portal/download/all/), 05/2023
+- `OmicsExpressionTranscriptsTPMLogp1Profile.csv` : Transcript expression  of cell lines and omics data obtain from [DepMap Portal](https://depmap.org/portal/download/all/), 05/2023
 
 ```
 v6
+├── CLK1-CRISPR-DepMap-score.csv
 ├── cnv-consensus.seg.gz
 ├── consensus_wgs_plus_cnvkit_wxs.tsv.gz
+├── ctrl-vs-morpholino-merged-rmats.tsv
+├── ctrl_vs_morpho.rsem.genes.results.tsv
 ├── fusion-putative-oncogenic.tsv
 ├── gene-counts-rsem-expected_count-collapsed.rds
 ├── gene-expression-rsem-tpm-collapsed.rds
@@ -26,16 +30,13 @@ v6
 ├── independent-specimens.wgswxspanel.primary.prefer.wgs.tsv
 ├── independent-specimens.wgswxspanel.primary.prefer.wxs.tsv
 ├── md5sum.txt
+├── OmicsDefaultModelProfiles.csv
 ├── rMATS_merged.comparison.tsv.gz
 ├── release-notes.md
 ├── rna-isoform-expression-rsem-tpm.rds
 ├── snv-consensus-plus-hotspots.maf.tsv.gz
 ├── snv-mutation-tmb-coding.tsv
-├── splice-events-rmats.tsv.gz
-├── morpholno.merged.rmats.tsv
-├── ctrl_vs_morpho.rsem.genes.results.tsv
-├── CLK1_CRISPR_depmap_score.csv
-└── OmicsDefaultModelProfiles.csv
+└── splice-events-rmats.tsv.gz
 ```
 
 ## previous release (v5)
