@@ -82,4 +82,4 @@ Rscript code/03-diff-pathways-per-clusters.R \
 --output_dir "output/diff_pathways"
 
 ##plot cluster members categorized by SBI high vs low
-Rscript 05-plot-sbi_with_cluster-mem.R
+Rscript code/05-plot-sbi_with_cluster-mem.R
