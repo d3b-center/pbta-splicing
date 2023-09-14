@@ -134,13 +134,10 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
   pheatmap::pheatmap(DEpwys_es, scale = "row", 
                      treeheight_row = 20, 
                      treeheight_col = 20,
-                     fontsize_row = 10,
-                     fontsize = 12, 
                      show_colnames = F, 
-                     cellwidth = 0.5, cellheight = 11,
                      annotation = DEpwys_annot, 
                      annotation_colors = mycolors, 
                      cluster_cols = cluster_tree, 
                      filename = file.path(output_dir, paste0(prefix, '_top20_pathways.tiff')), 
-                     width = 19, height = 8)
+                     width = 16, height = 14)
 }
