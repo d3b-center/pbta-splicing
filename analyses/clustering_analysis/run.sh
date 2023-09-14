@@ -73,12 +73,12 @@ Rscript code/02-diff-genes-per-clusters.R \
 # get differential pathways per cluster using GSVA
 # this was done for k = 3 with pam  + pearson + 0% genes
 Rscript code/03-diff-pathways-per-clusters.R \
---input_mat "output/ccp_output/raw_counts_pbta_subset_pam_pearson_0_matrix.rds" \
+--input_mat "output/ccp_output/raw_counts_pbta_subset_pam_spearman_0_matrix.rds" \
 --input_clin "../../data/histologies.tsv" \
---cluster_output "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_pearson_0_ccp.rds" \
+--cluster_output "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_spearman_0_ccp.rds" \
 --n_cluster "8" \
 --gene_set "input/kegg_geneset_mrna.rds" \
---prefix "raw_counts_pbta_subset_pam_pearson_0" \
+--prefix "raw_counts_pbta_subset_pam_spearman_0" \
 --output_dir "output/diff_pathways"
 
 ##plot cluster members categorized by SBI high vs low
