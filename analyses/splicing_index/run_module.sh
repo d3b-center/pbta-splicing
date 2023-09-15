@@ -15,3 +15,6 @@ perl 01-generate_splicing-index_and_diff-events_table.pl $hist_file $rmats_file 
 ## plot values (SBI) generated from above script in CDF plot
 echo "plotting splicing burden indices"
 Rscript 02-plot_splicing_burden_index.R
+
+## perform differential gene expression analyses on high vs low SBI tumors (HGGs)
+Rscript 03-plot_diffExp_highlowSBI.R
