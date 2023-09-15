@@ -44,7 +44,7 @@ count_data <- vroom(paste0(data_dir, tpm_count_file)) %>%
 
 ## construct metadata
 design = data.frame(row.names = colnames(count_data)[-1],
-                    condition = c(rep("Treated",3), rep("Ctrl",3) ),
+                    condition = c(rep("Ctrl",3), rep("Treated",3) ),
                     libType   = c(rep("paired-end",6)))
 
 
