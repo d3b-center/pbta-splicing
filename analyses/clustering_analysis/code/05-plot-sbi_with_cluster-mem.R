@@ -38,9 +38,9 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 sbi_cluster_plot <- file.path(analysis_dir, "plots", 
                               "cluster_by_sbi.tiff")
 
-cc_members_file = "ccp_output/non_expr_pan_cancer_splice_subset_pam_pearson_0_ccp.rds"
+cc_members_file = "ccp_output/non_expr_pan_cancer_splice_subset_pam_spearman_0_ccp.rds"
 cc_members_df  <- readRDS(paste0(output_dir,"/",cc_members_file) )
-cc_members   <- cc_members_df[[3]]$consensusClass 
+cc_members   <- cc_members_df[[8]]$consensusClass 
 cc_members <- tibble::rownames_to_column(as.data.frame(cc_members), "Sample")
   
 sbi_file <- "splicing_index.total.txt"
@@ -61,7 +61,7 @@ summ_sbi_cl <- sbi_outliers %>% group_by(cc_members, level) %>%
   mutate(Freq = n/sum(n))
 
 sbi_vs_cl_barplot <- ggplot(summ_sbi_cl, aes(x = level, y = n, fill = level)) + geom_bar(stat = "identity") +
-                            facet_wrap( ~ cc_members, ncol = 3) + 
+                            facet_wrap( ~ cc_members, ncol = 4) + 
                             labs(x="SBI Level", y="Num samples") +  
                             coord_flip()  +
                             theme_Publication() + 
@@ -78,7 +78,7 @@ ggsave(
   device = NULL,
   path = NULL,
   scale = 1,
-  width =12,
+  width =10,
   height = 4,
   units = "in",
   dpi = 300,
