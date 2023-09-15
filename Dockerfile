@@ -1,4 +1,4 @@
-FROM rocker/tidyverse:4.2
+FROM --platform=linux/amd64 rocker/tidyverse:4.2
 MAINTAINER naqvia@chop.edu
 WORKDIR /rocker-build/
 
@@ -6,15 +6,14 @@ RUN RSPM="https://packagemanager.rstudio.com/cran/2022-10-07" \
   && echo "options(repos = c(CRAN='$RSPM'), download.file.method = 'libcurl')" >> /usr/local/lib/R/etc/Rprofile.site
 
 COPY scripts/install_bioc.r .
-
 COPY scripts/install_github.r .
 
 ### Install apt-getable packages to start
 #########################################
-RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialog
+RUN apt-get -y update && apt-get install -y --no-install-recommends
 
 # Install dev libraries and curl
-RUN apt update && apt install -y \
+RUN apt install -y  \
   bedtools \
 	build-essential \
 	bzip2 \
@@ -33,7 +32,7 @@ RUN apt update && apt install -y \
 	libssl-dev \
 	libv8-dev \
 	libxt-dev \
-	zlib1g-dev \
+	zlib1g-dev
 
 # Install java
 RUN apt-get update && apt-get -y --no-install-recommends install \
@@ -44,8 +43,8 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
 RUN ./install_bioc.r \
 	Biobase \
 	BiocManager \
-	colorblindr \
 	broom \
+  clusterProfiler \
 	ConsensusClusterPlus \
 	corrplot \
   cowplot \
