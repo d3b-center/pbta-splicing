@@ -83,7 +83,7 @@ names(plot_labels[['short_histology']]) <- short_histology_palettes$short_histol
 # make piechart
 piechart_hist_by_sbi <- ggplot(data = histology_counts_by_sbi, aes(x = "", y = n, fill = short_histology )) + 
   geom_bar(stat = "identity", position = position_fill()) +
-  geom_text(aes(label = n), position = position_fill(vjust = 0.5)) +
+  geom_text(aes(label = n), position = position_fill(vjust = 0.5),size=3) +
   coord_polar(theta = "y",start=0) +
   facet_wrap(~ SBI_level, ncol=1)  +
   scale_fill_manual(name = "Histology",values = mycolors[['short_histology']], labels=plot_labels[['short_histology']]) +
@@ -93,9 +93,10 @@ piechart_hist_by_sbi <- ggplot(data = histology_counts_by_sbi, aes(x = "", y = n
         axis.ticks = element_blank(),
         panel.grid  = element_blank(),
         legend.title = element_text(size=10),
-        legend.text = element_text(size=8))
+        legend.text = element_text(size=8), 
+        axis.title=element_text(size=10))
 
 # save plot tiff version
-tiff(piechart_hist_by_sbi_file, height = 1500, width = 1750, res = 300)
+tiff(piechart_hist_by_sbi_file, height = 1500, width = 1850, res = 300)
 print(piechart_hist_by_sbi)
 dev.off()  
