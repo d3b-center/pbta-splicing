@@ -44,6 +44,7 @@ RUN ./install_bioc.r \
 	Biobase \
 	BiocManager \
 	broom \
+	COINr \
   clusterProfiler \
 	ConsensusClusterPlus \
 	corrplot \
@@ -52,6 +53,7 @@ RUN ./install_bioc.r \
 	DESeq2 \
   DOSE \
 	diptest \
+	edgeR \
 	EnhancedVolcano \
 	fgsea \
 	ggpubr \
@@ -67,6 +69,7 @@ RUN ./install_bioc.r \
 	patchwork \
 	pheatmap \
   reshape2 \
+  rtracklayer \
   sva \
   survival \
   survminer \
