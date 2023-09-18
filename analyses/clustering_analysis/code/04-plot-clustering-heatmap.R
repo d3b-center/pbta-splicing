@@ -35,6 +35,7 @@ prefix <- opt$prefix
 CC_consensus_mat <- ccp_output[[n_cluster]]$consensusMatrix %>%
   as.data.frame()
 colnames(CC_consensus_mat) <- ccp_output[[n_cluster]]$consensusClass %>% names()
+rownames(CC_consensus_mat) <- ccp_output[[n_cluster]]$consensusClass %>% names()
 
 # get CCP tree
 CC_tree <- ccp_output[[n_cluster]]$consensusTree
@@ -42,6 +43,12 @@ CC_tree <- ccp_output[[n_cluster]]$consensusTree
 # get cluster assignments for samples
 CC_class <- ccp_output[[n_cluster]]$consensusClass
 CC_class <- data.frame(cluster_class = CC_class)
+# CC_class <- CC_class %>%
+#   arrange(cluster_class)
+# CC_consensus_mat <- CC_consensus_mat %>%
+#   dplyr::select(rownames(CC_class))
+
+stopifnot(identical(colnames(CC_consensus_mat), rownames(CC_class)))
 
 # color palette for short histology
 palettes_dir <- "../../palettes/"
@@ -87,9 +94,11 @@ pheatmap(CC_consensus_mat,
          fontsize = 10,
          main = "Consensus Matrix",
          show_colnames = F, 
-         show_rownames = F,
-         annotation_col = CC_annot, 
+         show_rownames = F, 
+         annotation_col = CC_annot %>% dplyr::select(Cluster),
          annotation_colors = mycolors, 
          cluster_cols = CC_tree, 
+         cluster_rows = CC_tree, 
+         treeheight_row = 0,
          filename = file.path(output_dir, paste0(prefix, '_ccp_heatmap.tiff')), 
          width = 10, height = 8)
