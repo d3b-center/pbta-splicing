@@ -83,3 +83,6 @@ Rscript code/03-diff-pathways-per-clusters.R \
 
 ##plot cluster members categorized by SBI high vs low
 Rscript code/05-plot-sbi_with_cluster-mem.R
+
+## plot histologies across clusters
+Rscript code/06-plot-histology-distr-across-clusters.R
