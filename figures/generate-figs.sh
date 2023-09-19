@@ -34,10 +34,10 @@ mkdir -p tiffs/fig1
 
 ##### Figure 1: Workflow and sample distribution ------------------------------------
 # Copy the main figure to final directory - panels A,B
-cp ${analyses_dir}/splicing_index/plots/SBI-plot.SE.tiff tiffs/fig1/.
+cp ${analyses_dir}/splicing_index/plots/SBI-plot.A5SS.tiff tiffs/fig1/.
 cp ${analyses_dir}/splicing_index/plots/enhancedVolcano_hgg_sbi.tiff tiffs/fig1/.
 cp ${analyses_dir}/histology-specific-splicing/plots/upsetR_histology-specific.es.tiff tiffs/fig1/.
 cp ${analyses_dir}/histology-specific-splicing/plots/upsetR_histology-specific.ei.tiff tiffs/fig1/.
 cp ${analyses_dir}/clustering_analysis/output/ccp_output/non_expr_pan_cancer_splice_subset_ccp_heatmap.tiff tiffs/fig1/.
-cp ${analyses_dir}/clustering_analysis/plots/cluster_membership.tiff tiffs/fig1/.
+#cp ${analyses_dir}/clustering_analysis/plots/cluster_membership.tiff tiffs/fig1/.
 cp ${analyses_dir}/clustering_analysis/output/diff_pathways/non_expr_pan_cancer_splice_subset_pam_spearman_0_top10_pathways.tiff tiffs/fig1/.
