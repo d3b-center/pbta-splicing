@@ -59,7 +59,7 @@ names(cols) <- gsub("^LGAT", "LGG",names(cols))
 
 
 tiff(file.path(plots_dir, "cluster_membership.tiff"), height = 1200, width = 2200, units = "px", res = 300)
-ggplot(histology_w_clusters_df, aes(fill=short_histology, x=cluster_assigned)) +
+ggplot(histology_w_clusters_df, aes(fill=short_histology, x= factor(cluster_assigned))) +
   geom_bar(stat="count", position="stack") + 
   xlab("Cluster") + ylab("Frequency") +
   scale_fill_manual("Histology", values = cols) + theme_Publication()
