@@ -28,26 +28,27 @@ input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
+##theme for all plots
+figures_dir <- file.path(root_dir, "figures")
+source(file.path(figures_dir, "theme_for_plots.R"))
+
 ## output file names for plots
 file_flip_events_plot <- file.path(analysis_dir, "plots", "flip_barplots.pdf")
 file_tiff_flip_events_plot <- file.path(analysis_dir,"plots","flip_barplots.tiff")
 
 ## retrieve psi values from tables
-file_psi_pos_total <- "/splicing_events.total.pos.tsv"
-file_psi_neg_total <- "/splicing_events.total.neg.tsv"
+file_psi_pos_total <- "splicing_events.total.pos.tsv"
+file_psi_neg_total <- "splicing_events.total.neg.tsv"
 
-file_psi_pos_func <- "/splicing_events.total.pos.intersectUnip.ggplot.txt"
-file_psi_neg_func <- "/splicing_events.total.neg.intersectUnip.ggplot.txt"
+file_psi_pos_func <- "splicing_events.total.pos.intersectUnip.ggplot.txt"
+file_psi_neg_func <- "splicing_events.total.neg.intersectUnip.ggplot.txt"
 
-psi_pos_func_tab <-  read.delim(paste0(results_dir, file_psi_pos_func), sep = "\t", row.names = NULL, header=TRUE)
-psi_pos_tab      <-  read.delim(paste0(results_dir, file_psi_pos_total), sep = "\t", row.names = NULL, header=TRUE)  %>% filter(flip == 1)
+psi_pos_func_tab <-  read.delim(file.path(results_dir, file_psi_pos_func), sep = "\t", row.names = NULL, header=TRUE)
+psi_pos_tab      <-  read.delim(file.path(results_dir, file_psi_pos_total), sep = "\t", row.names = NULL, header=TRUE)  %>% filter(flip == 1)
 
-psi_neg_func_tab <-  read.delim(paste0(results_dir, file_psi_neg_func), sep = "\t", row.names = NULL, header=TRUE)
-psi_neg_tab      <-  read.delim(paste0(results_dir, file_psi_neg_total), sep = "\t", row.names = NULL, header=TRUE)  %>% filter(flip == 1)
+psi_neg_func_tab <-  read.delim(file.path(results_dir, file_psi_neg_func), sep = "\t", row.names = NULL, header=TRUE)
+psi_neg_tab      <-  read.delim(file.path(results_dir, file_psi_neg_total), sep = "\t", row.names = NULL, header=TRUE)  %>% filter(flip == 1)
 
-##theme for all plots
-figures_dir <- file.path(root_dir, "figures")
-source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## num of sites that are undergo flip at functional sites
 flip_event_func_skipping  <- psi_pos_tab[psi_pos_func_tab$SpliceID %in% psi_pos_tab$gene, ]
@@ -78,9 +79,10 @@ plot_flip <- ggplot(num_of_hits_perc, aes(x = type, y = counts, fill = event)) +
          geom_bar(position="stack", stat="identity") + 
   scale_fill_manual(values=c("#FFC20A","#0C7BDC")) +
   xlab("Splicing Preference ") + 
-  ylab("% of splice variants") + 
+  ylab("Splice Variants (%)") + 
+  labs(fill='Event Type') +
   coord_flip() +
-  theme_Publication()
+  theme_Publication() + theme( legend.title = element_text(size=19), axis.text.x=element_text(size=18), axis.text.y=element_text(size=18))
 
 # Save plot as PDF
 pdf(file_flip_events_plot, 
