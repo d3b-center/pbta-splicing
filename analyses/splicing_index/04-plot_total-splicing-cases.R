@@ -1,9 +1,9 @@
-# plot_total-splicing-cases.R
+# 04-plot_total-splicing-cases.R
 # written by Ammar Naqvi
 #
 # This script plots total splicing cases across samples
 #
-# usage: Rscript plot_total-splicing-cases.R
+# usage: Rscript 04-plot_total-splicing-cases.R
 ################################################################################
 
 suppressPackageStartupMessages({
