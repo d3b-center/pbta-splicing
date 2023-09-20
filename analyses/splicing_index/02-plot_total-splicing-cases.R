@@ -13,8 +13,6 @@ suppressPackageStartupMessages({
   library("viridis")
   library("RColorBrewer")
   library("vroom")
-  
-  
 })
 
 # Get `magrittr` pipe
@@ -42,10 +40,18 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 piechart_plot_of_splicing_case <- file.path(plots_dir,"piechart_splice-types.tiff")
 
 ## get and setup input
-splice_case_file  <- file.path(results_dir,"splice_events.diff.total.txt")
-splice_case_df  <-  vroom(splice_case_file ,delim="\t") 
+splice_case_SE_file  <- file.path(results_dir,"splice_events.diff.SE.txt")
+splice_case_RI_file  <- file.path(results_dir,"splice_events.diff.RI.txt")
+splice_case_A5SS_file  <- file.path(results_dir,"splice_events.diff.A5SS.txt")
+splice_case_A3SS_file  <- file.path(results_dir,"splice_events.diff.A3SS.txt")
 
-splice_case_counts_df <- splice_case_df %>% dplyr::count(Case, Type) 
+splice_case_SE_df  <-  vroom(splice_case_SE_file ,delim="\t") 
+splice_case_RI_df  <-  vroom(splice_case_RI_file ,delim="\t") 
+splice_case_A5SS_df  <-  vroom(splice_case_A5SS_file ,delim="\t") 
+splice_case_A3SS_df  <-  vroom(splice_case_A3SS_file ,delim="\t") 
+
+splice_case_total <- rbind(splice_case_SE_df,splice_case_RI_df,splice_case_A5SS_df,splice_case_A3SS_df)
+splice_case_counts_df <- splice_case_total %>% dplyr::count(Case, Type) 
 
 # Specify colors
 safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#AA4499")
@@ -65,8 +71,8 @@ piechart_plot<- ggplot(data = splice_case_counts_df, aes(x = "", y = n, fill = C
   theme(axis.text = element_blank(),
         axis.ticks = element_blank(),
         panel.grid  = element_blank(),
-        legend.title = element_text(size=10),
-        legend.text = element_text(size=8))
+        legend.title = element_text(size=14),
+        legend.text = element_text(size=12))
 
 # save plot tiff version
 tiff(piechart_plot_of_splicing_case, height =2000, width = 1500, res = 300)
