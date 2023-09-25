@@ -62,10 +62,6 @@ splice_events_mixed_df <- inner_join(splice_events_skip_df,splice_events_incl_df
 
 write_tsv(splice_events_mixed_df,file = file.path(results_dir,"mixed_events.tsv"), quote = 'none')
 
-## add PSI from HGG samples
-splice_events_df <- vroom(file.path(data_dir,splice_events_file)) %>% 
-  inner_join(histologies_df, by=c('sample_id'='Kids_First_Biospecimen_ID'))
-
   
 
 

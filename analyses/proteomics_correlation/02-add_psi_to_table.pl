@@ -9,7 +9,7 @@ my @samples;
 
 my $histology = "../../data/histologies.tsv";
 my $rmats_tsv = "../../data/splice-events-rmats.tsv.gz";
-my $rmats_tsv_v2 = "../../data/test.tsv";
+#my $rmats_tsv_v2 = "../../data/test.tsv";
 
 
 ## open histology file and annotate DMG samples
@@ -28,11 +28,8 @@ while(<FIL>)
   my $patient_id = $cols[3];
   my $CNS_region = $cols[25];
 
-  ##keep only HGG midline samples
+  ##keep only HGG  samples
   next unless $hist=~/HGAT/;
-  #next unless($CNS_region=~/Midline/);
-  #print $hist,"\t",$CNS_region,"\t",$bs_id,"\n";
-
   $hgg_midline_samples{$bs_id} = $bs_id;
 }
 close(FIL);
@@ -47,14 +44,14 @@ while(<FIL>)
   my $splice_id = $cols[5];
   #print $splice_id,"\t",$_,"\n";
   $splice_id_entry{$splice_id} = $_;
-$genes_filter{$gene} = $gene;
+  $genes_filter{$gene} = $gene;
 
 }
 
 ## process rMATS output (may take awhile) from merged input file
 print "processing rMATs results...\n";
 open(FIL, "gunzip -c $rmats_tsv |") || die ("can’t open $rmats_tsv");
-open(FIL, $rmats_tsv_v2 ) || die ("can’t open $rmats_tsv_v2");
+#open(FIL, $rmats_tsv_v2 ) || die ("can’t open $rmats_tsv_v2");
 
 while(<FIL>)
 {
@@ -113,8 +110,7 @@ while(<FIL>)
 
    # annotate and re-name splice event IDs
    my $splice_id= $gene."_".$exonStart."-".$exonEnd;
-   print $splice_id,"\n";
-
+   #print $splice_id,"\n";
    next unless($splice_id_entry{$splice_id});
 
 
@@ -144,13 +140,13 @@ my @splicing_events_uniq = do { my %seen; grep { !$seen{$_}++ } @splicing_events
 open(TAB, ">results/splicing_events-psi.tsv");
 
 
-print TAB"gene\tchr\tstart\tend\tstrand\tSpliceID\tdPSI_Skip\tdPSI_Inc\t";
+print TAB "gene\tchr\tstart\tend\tstrand\tSpliceID\tdPSI_Skip\tdPSI_Inc\t";
 print TAB join "\t", @samples_uniq,"\n";
 
 foreach my $splice_event(@splicing_events_uniq)
 {
-  print TAB$splice_id_entry{$splice_event};
-  print TAB"\t";
+  print TAB $splice_id_entry{$splice_event};
+  print TAB "\t";
   foreach my $sample(@samples_uniq)
   {
     my $psi = $inc_levels{$splice_event}{$sample};
