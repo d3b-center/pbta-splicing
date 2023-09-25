@@ -33,8 +33,11 @@ splice_events_skipping_file <-"splicing_events.total.pos.intersectUnip.wo.total.
 splice_events_inclusion_file <- "splicing_events.total.neg.intersectUnip.wo.total.txt"
 histology_file <- "histologies.tsv"
 brain_goi_file <- "brain-goi-list-new.txt"
+splice_events_file = "splice-events-rmats.tsv.gz"
 
-histologies_df <- vroom(file.path(data_dir,histology_file))
+histologies_df <- vroom(file.path(data_dir,histology_file)) %>% 
+  filter(short_histology=='HGAT') 
+
 splice_events_skip_df <- vroom(file.path(input_dir,splice_events_skipping_file), col_names = c("chr","start","end","SpliceID","dPSI","strand")) %>%
   select("chr","start","end","SpliceID","dPSI","strand") %>% 
   separate(SpliceID, c("gene", "exon coordinates"), sep="_", remove = FALSE)
@@ -56,8 +59,12 @@ splice_events_mixed_df <- inner_join(splice_events_skip_df,splice_events_incl_df
   distinct() %>% 
   inner_join(brain_goi_df, by='gene')
 
+
 write_tsv(splice_events_mixed_df,file = file.path(results_dir,"mixed_events.tsv"), quote = 'none')
 
+## add PSI from HGG samples
+splice_events_df <- vroom(file.path(data_dir,splice_events_file)) %>% 
+  inner_join(histologies_df, by=c('sample_id'='Kids_First_Biospecimen_ID'))
 
   
 
