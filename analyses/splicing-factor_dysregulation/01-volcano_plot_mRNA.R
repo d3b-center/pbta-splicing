@@ -88,9 +88,6 @@ cds = DESeqDataSetFromMatrix(countData=round(filtered.counts_removed),
                              colData=design,
                              design= ~ condition)
 
-cds = estimateSizeFactors( cds )
-cds = estimateDispersions(cds)
-
 ## run deseq function to compute pvalues
 cds <- DESeq(cds)
 res <- results(cds)
@@ -128,97 +125,4 @@ ggsave(
 ## write significant genes to table for subsequent correlation analyses
 gene_sign_list <- as.data.frame(res) %>% mutate(gene = filtered.counts$gene) %>% filter(padj < 0.05) %>% filter(abs(log2FoldChange) > 1)  %>% select(gene) 
 write_delim(gene_sign_list,paste0(results_dir,"/","sign_genes.txt"), delim = "\t")
-
-
-## compute gene expression SF between Midline HGGs vs H3K28M
-clin_file = "histologies.tsv"
-
-## get cliincal histlogy file fitlered by HGG samples
-clin_tab_hgg <- read.delim(paste0(data_dir,"/",clin_file), sep = "\t", 
-                           header=TRUE) %>% filter(short_histology == 'HGAT') %>% 
-                                            filter(RNA_library == 'stranded') %>%
-                                            filter(cohort == 'PBTA') %>%
-                                            filter(CNS_region == 'Midline')  %>%
-                                            filter(pathology_diagnosis == 'High-grade glioma/astrocytoma (WHO grade III/IV)')
-## get DIPG samples
-clin_tab_dipg <- read.delim(paste0(data_dir,"/",clin_file), sep = "\t", 
-                            header=TRUE) %>% filter(short_histology == 'HGAT') %>% 
-                                             filter(RNA_library == 'stranded') %>%
-                                             filter(cohort == 'PBTA') %>%
-                                             filter(CNS_region == 'Midline')  %>%
-                                             filter(pathology_diagnosis == 'Brainstem glioma- Diffuse intrinsic pontine glioma')
-
-file_gene_counts = "gene-counts-rsem-expected_count-collapsed.rds" 
-count_data <- readRDS(paste0(data_dir, "/", file_gene_counts)) 
-
-## filter for only splicing factors from above SF list
-count_data_sf <-count_data[rownames(count_data) %in% sf_list$V1, ] 
-
-#filter for HGG and DIPG midline samples
-count_data_sf_hgg <- select(count_data_sf, any_of(clin_tab_hgg$Kids_First_Biospecimen_ID) )
-count_data_sf_dipg <- select(count_data_sf,any_of(clin_tab_dipg$Kids_First_Biospecimen_ID) )
-
-count_data_sf_hgg <- cbind(gene = rownames(count_data_sf_hgg), count_data_sf_hgg)
-rownames(count_data_sf_hgg) <- NULL
-
-count_data_sf_dipg <- cbind(gene = rownames(count_data_sf_dipg), count_data_sf_dipg)
-rownames(count_data_sf_dipg) <- NULL
-
-## combine in count table and filter
-gene_counts_combined <- inner_join(count_data_sf_hgg,count_data_sf_dipg, by = 'gene')
-filtered.counts <- gene_counts_combined[rowSums(gene_counts_combined>=2) >= 10, ]
-
-## construct metadata
-design = data.frame(row.names = colnames(filtered.counts$gene),
-                    condition = c(rep("Non-DIPG",40), rep("DIPG",13) ),
-                    libType   = c(rep("paired-end",53)))
-
-singleSamples = design$libType == "paired-end"
-new_countTable = (filtered.counts[ , singleSamples ])
-condition = design$condition[ singleSamples ]
-
-## remove first column
-filtered.counts_removed <- select(filtered.counts, -gene)
-
-cds = DESeqDataSetFromMatrix(countData=round(filtered.counts_removed),
-                             colData=design,
-                             design= ~ condition)
-
-cds = estimateSizeFactors( cds )
-cds = estimateDispersions(cds)
-
-## run deseq function to compute pvalues
-cds <- DESeq(cds)
-res <- results(cds)
-
-## label anything below <0.05 as significant
-res$Significant <- ifelse(res$pvalue< 0.05, "P-val < 0.05", "Not Sig")
-
-EnhancedVolcano(res,
-                lab = filtered.counts$gene, ## remove ensembleid portion
-                x = 'log2FoldChange',
-                y = 'pvalue',
-                ylim = c(0,5),
-                xlim = c(-3,3),
-                title = 'non-DIPG vs DIPG',
-                pCutoff = 0.05,
-                FCcutoff = 1,
-                pointSize = ,
-                labSize = 3)
-
-
-ggsave(
-  file_volc_H3K28_SF_plot,
-  plot = last_plot(),
-  device = NULL,
-  path = NULL,
-  scale = 1,
-  width =6.73,
-  height = 10.38,
-  units = "in",
-  dpi = 300,
-  limitsize = TRUE,
-  bg = NULL
-)
-
 
