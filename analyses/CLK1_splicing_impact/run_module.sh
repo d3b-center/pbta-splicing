@@ -16,3 +16,5 @@ Rscript 03-plot_diff-splice-events.R
 
 ## perform ORA of mis-spliced genes after morpholino treatment
 Rscript 04-ora-analysis.R
+
+rm Rplots.pdf
