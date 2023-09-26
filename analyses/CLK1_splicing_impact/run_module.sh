@@ -12,5 +12,7 @@ cat results/ctrl_vs_treated.de.tsv | awk -F "\t" '{print $8,"\t"$1"\t"$2"\t"$3"\
 Rscript 02-gsea-analysis.R
 
 ## plot differential splicing events between untreated vs treated
-03-plot_diff-splice-events.R
+Rscript 03-plot_diff-splice-events.R
 
+## perform ORA of mis-spliced genes after morpholino treatment
+Rscript 04-ora-analysis.R
