@@ -87,6 +87,7 @@ depmap_low_expr_df  <- dplyr::filter(depMap_transcr_CLK1_pct_expr, PCT_Expr < lo
 
 depmap_high_low <- rbind(depmap_low_expr_df,depmap_high_expr_df)
 
+set.seed(42)
 boxplot_expr_vs_score <- ggplot(depmap_high_low,aes(Expression_level,CRISPR_score)) + 
   geom_boxplot(aes(fill=Expression_level)) + 
   stat_compare_means() + 
