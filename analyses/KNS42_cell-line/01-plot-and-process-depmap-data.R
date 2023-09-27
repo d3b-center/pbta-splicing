@@ -24,7 +24,6 @@ data_dir <- file.path(root_dir, "data")
 
 analysis_dir <- file.path(root_dir, "analyses", "KNS42_cell-line")
 input_dir   <- file.path(analysis_dir, "input")
-results_dir <- file.path(analysis_dir, "results", "KNS42_cell-line")
 plots_dir <- file.path(analysis_dir, "plots", "KNS42_cell-line")
 
 
@@ -32,13 +31,10 @@ if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
 }
 
-if(!dir.exists(results_dir)){
-  dir.create(results_dir, recursive=TRUE)
-}
 
 ## output for plots
-file_depmap_score_plot <- file.path(analysis_dir, "plots", "depmap_score_cell-lines.tiff")
-file_expr_vs_score_plot <- file.path(analysis_dir,"plots", "depmap_score_CLK1_vs_score_KNS42.tiff")
+file_depmap_score_plot <- file.path(plots_dir, "depmap_score_cell-lines.tiff")
+file_expr_vs_score_plot <- file.path(plots_dir, "depmap_score_CLK1_vs_score_KNS42.tiff")
 
 ## call plot publication theme script 
 source(file.path(root_dir, "figures", "theme_for_plots.R"))
