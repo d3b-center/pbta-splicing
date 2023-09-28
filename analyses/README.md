@@ -16,6 +16,7 @@ Note that _nearly all_ modules use the harmonized clinical data file (`histologi
 | Module |Brief Description |
 |--------|------------------|
 | [`splicing_burden_index`](https://github.com/d3b-center/pbta-splicing/tree/main/analyses/splicing_index) | Compute and compare splicing burden indices for each tumor sample across pediatric brain histologies. Module also performs related analyses assessing global patterns based on SBI, including total make-up of splicing types, differential gene expression between high vs low SBI tumors, survival associations, and histology-specific/shared splicing signatures.
+| [`survival`](https://github.com/d3b-center/pbta-splicing/tree/main/analyses/survival) | Survival associations stratified by splicing burden, histologies, and subtypes
 | [`splicing-derived-clustering`](https://github.com/d3b-center/pbta-splicing/tree/main/analyses/clustering_analysis) | Consensus clustering and relevant associations of tumor splicing quantifications (PSI), including cluster-specific expression differences, gene-set enrichments and splicing burden associations.
 | [`splicing-factor_dysregulation`](https://github.com/d3b-center/pbta-splicing/tree/main/analyses/splicing_index) | Differential gene expression of known splicing factors comparing controls vs midline HGG tumors
 | [`splicing_events_functional_sites`](https://github.com/d3b-center/pbta-splicing/tree/main/analyses/splicing_events_functional_sites) | Identify signficiant recurrent aberrant splicing events that result in loss/gain of functional sites in midline HGGs
