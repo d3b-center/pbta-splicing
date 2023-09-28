@@ -20,12 +20,9 @@ suppressPackageStartupMessages({
 
 ##directory setup
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "splicing_index")
-
 results_dir <- file.path(analysis_dir, "results")
 plots_dir <- file.path(analysis_dir, "plots")
-input_dir <- file.path(analysis_dir, "input")
 
 if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
