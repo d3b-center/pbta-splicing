@@ -67,7 +67,8 @@ dev.off()
 omics_mappings_file <- "OmicsDefaultModelProfiles.csv"
 tpm_file <- "OmicsExpressionTranscriptsTPMLogp1Profile.csv"
 
-omics_id_mapping_df <- vroom(file.path(data_dir,omics_mappings_file),show_col_types = FALSE) %>% inner_join(depmap_data,by="ModelID")
+omics_id_mapping_df <- vroom(file.path(data_dir,omics_mappings_file),show_col_types = FALSE) %>% 
+inner_join(depmap_data,by="ModelID")
 depMap_transcr_expr <- vroom(file.path(data_dir,tpm_file),show_col_types = FALSE) %>% 
   dplyr::rename("ProfileID"=`...1`) %>%
   inner_join(omics_id_mapping_df,by="ProfileID")
