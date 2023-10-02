@@ -63,7 +63,7 @@ tiff(file_depmap_score_plot,
 gene_score_plot
 dev.off()
 
-## compare distrubutions based on CLK1 expression 
+## compare distributions based on CLK1 expression 
 omics_mappings_file <- "OmicsDefaultModelProfiles.csv"
 tpm_file <- "OmicsExpressionTranscriptsTPMLogp1Profile.csv"
 
