@@ -89,14 +89,24 @@ depmap_low_expr_df  <- dplyr::filter(depMap_transcr_CLK1_pct_expr, PCT_Expr < lo
 depmap_high_low <- rbind(depmap_low_expr_df,depmap_high_expr_df)
 
 set.seed(42)
-boxplot_expr_vs_score <- ggplot(depmap_high_low,aes(Expression_level,CRISPR_score)) + 
-  geom_boxplot(aes(fill=Expression_level)) + 
-  stat_compare_means() + 
-  geom_jitter() +
+boxplot_expr_vs_score <- ggplot(depmap_high_low, 
+                                aes(x = Expression_level, 
+                                    y = CRISPR_score, 
+                                    color = Expression_level)) + 
+  geom_boxplot(outlier.size = 0,
+               size = 0.5,
+               alpha = 0,
+               color = "black",
+               coef = 0) +
+  ggforce::geom_sina(aes(color = Expression_level) , size = 3) +
+  scale_color_manual(name = "Expression level", values = c(high = "#FFC20A", low = "#0C7BDC")) +
+  stat_compare_means(position = "identity", label.x = 1.5) + 
+  
   ylab("Dependency Score") + 
-  xlab("Exon4 Transcript Expression Levels") + 
-  scale_fill_manual(values=c("#FFC20A","#0C7BDC")) + 
+  xlab(expression(bold(bolditalic("CLK1")~"Exon4 Transcript Expression"))) +
   theme_Publication()
+
+boxplot_expr_vs_score
 
 # save plot tiff version
 tiff(file_expr_vs_score_plot, height =1500, width = 1700, res = 300)
