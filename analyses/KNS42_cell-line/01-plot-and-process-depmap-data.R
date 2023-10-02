@@ -54,7 +54,7 @@ gene_score_plot <- ggplot(data=depmap_data, aes(reorder(`Cell Line Name`,`CRISPR
   theme_Publication() + 
   theme(axis.text.x=element_blank(),axis.ticks.x=element_blank()) + 
   geom_point(data=depmap_data_KNS42, colour="red", size = 3) +
-  xlab("Cell Line") + ylab("Dependency Score") + ggtitle("CLK1 Pertubation") 
+  xlab("Cell Line") + ylab("Dependency Score") + ggtitle("CLK1 Perturbation") 
 
 
 # Save plot as tiff
