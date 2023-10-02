@@ -3,7 +3,7 @@
 To run analysis module from the command line:
 
 ```
-Rscript 01-plot-and-process-depmap-data.R
+Rscript --vanilla 01-plot-and-process-depmap-data.R
 ```
 ## Summary
 This module investigates the dependency of CLK1 in pediatric HGG cell line KNS42 relative to all other brain tumor cell lines. It produces two plots using DepMap portal showing 1. CLK1 dependency score highlighting KNS42 relative to all other brain tumor cell lines, and 2. Sina plot comparing the distributions of CRISPR scores betwenn cell lines with high vs low CLK1 Exon 4-containing transcript expression.
