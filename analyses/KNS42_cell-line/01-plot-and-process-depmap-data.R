@@ -64,12 +64,12 @@ gene_score_plot
 dev.off()
 
 ## compare distributions based on CLK1 expression 
-omics_mappings_file <- "OmicsDefaultModelProfiles.csv"
-tpm_file <- "OmicsExpressionTranscriptsTPMLogp1Profile.csv"
+omics_mappings_file <- file.path(data_dir,"OmicsDefaultModelProfiles.csv")
+tpm_file <- file.path(data_dir,"OmicsExpressionTranscriptsTPMLogp1Profile.csv")
 
-omics_id_mapping_df <- vroom(file.path(data_dir,omics_mappings_file),show_col_types = FALSE) %>% 
+omics_id_mapping_df <- vroom(omics_mappings_file,show_col_types = FALSE) %>% 
 inner_join(depmap_data,by="ModelID")
-depMap_transcr_expr <- vroom(file.path(data_dir,tpm_file),show_col_types = FALSE) %>% 
+depMap_transcr_expr <- vroom(tpm_file,show_col_types = FALSE) %>% 
   dplyr::rename("ProfileID"=`...1`) %>%
   inner_join(omics_id_mapping_df,by="ProfileID")
 
@@ -103,7 +103,7 @@ boxplot_expr_vs_score <- ggplot(depmap_high_low,
   stat_compare_means(position = "identity", label.x = 1.5) + 
   
   ylab("Dependency Score") + 
-  xlab(expression(bold(bolditalic("CLK1")~"Exon4 Transcript Expression"))) +
+  xlab(expression(bold(bolditalic("CLK1")~"Exon 4 Transcript Expression"))) +
   theme_Publication()
 
 boxplot_expr_vs_score
