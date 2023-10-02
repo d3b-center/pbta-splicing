@@ -41,7 +41,7 @@ source(file.path(root_dir, "figures", "theme_for_plots.R"))
 
 ## load dataset
 depmap_file = file.path(data_dir, "CLK1-CRISPR-DepMap-score.csv")
-depmap_data <- vroom(file.path(data_dir,depmap_file), show_col_types = FALSE) %>% 
+depmap_data <- vroom(depmap_file, show_col_types = FALSE) %>% 
   dplyr::rename("ModelID"=`Depmap ID`) %>% 
   filter( Lineage == 'CNS/Brain' ) 
 
