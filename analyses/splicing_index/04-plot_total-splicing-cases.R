@@ -34,7 +34,7 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## define output files
-piechart_plot_of_splicing_case <- file.path(plots_dir,"piechart_splice-types.tiff")
+plot_path <- file.path(plots_dir,"splice-types.pdf")
 
 ## get and setup input
 splice_case_SE_file  <- file.path(results_dir,"splice_events.diff.SE.txt")
@@ -48,30 +48,22 @@ splice_case_A5SS_df  <-  vroom(splice_case_A5SS_file ,delim="\t")
 splice_case_A3SS_df  <-  vroom(splice_case_A3SS_file ,delim="\t") 
 
 splice_case_total <- rbind(splice_case_SE_df,splice_case_RI_df,splice_case_A5SS_df,splice_case_A3SS_df)
-splice_case_counts_df <- splice_case_total %>% dplyr::count(Case, Type) 
+splice_case_counts_df <- splice_case_total %>% dplyr::count(Case, Type) %>% arrange(Type)
 
-# Specify colors
-safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#AA4499")
-                                        
-case_colors = list(
-  Case = c(A3SS=safe_colorblind_palette[1], A5SS=safe_colorblind_palette[3],RI=safe_colorblind_palette[4],SE=safe_colorblind_palette[5]) )
-
-
-piechart_plot<- ggplot(data = splice_case_counts_df, aes(x = "", y = n, fill = Case )) + 
-  geom_bar(stat = "identity", position = position_fill()) +
-  geom_text(aes(label = n), position = position_fill(vjust = 0.5)) +
-  coord_polar(theta = "y",start=0) +
-  facet_wrap(~ Type, ncol=1)  +
+lolliplot_plot <- ggplot(splice_case_counts_df, aes(x=Case, y=n)) +
+  geom_segment( aes(x=Case, xend=Case, y=0, yend=n))+
+  geom_point( color="black", size=2) +
   scale_fill_manual(name = "Splicing Case",values = case_colors[['Case']]) +
-  xlab("") + ylab("") +
   theme_Publication() + 
-  theme(axis.text = element_blank(),
-        axis.ticks = element_blank(),
-        panel.grid  = element_blank(),
-        legend.title = element_text(size=14),
-        legend.text = element_text(size=12))
+  xlab("Splice Case") +
+  ylab("# Splice Variants") + 
+  facet_wrap(Type ~ .) +
+  theme(
+    axis.title=element_text(size=14,face="bold")
+  )
+  
 
 # save plot tiff version
-tiff(piechart_plot_of_splicing_case, height =2000, width = 1500, res = 300)
-print(piechart_plot)
+pdf(plot_path, height =4, width = 8)
+print(lolliplot_plot)
 dev.off()
