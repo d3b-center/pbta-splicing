@@ -31,7 +31,7 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## define output files
-piechart_hist_by_sbi_file  <- file.path(plots_dir,"piechart_hist_by_sbi-level.tiff")
+plot_path  <- file.path(plots_dir,"hist_by_sbi-level_lolliplot.pdf")
 
 ## get and setup input
 sbi_coding_file  <- file.path(results_dir,"splicing_index.SE.txt")
@@ -80,23 +80,23 @@ plot_labels <- list()
 plot_labels[['short_histology']] <- short_histology_palettes$plot_group_display
 names(plot_labels[['short_histology']]) <- short_histology_palettes$short_histology
 
-# make piechart
-piechart_hist_by_sbi <- ggplot(data = histology_counts_by_sbi, aes(x = "", y = n, fill = short_histology )) + 
-  geom_bar(stat = "identity", position = position_fill()) +
-  geom_text(aes(label = n), position = position_fill(vjust = 0.5),size=3) +
-  coord_polar(theta = "y",start=0) +
-  facet_wrap(~ SBI_level, ncol=1)  +
-  scale_fill_manual(name = "Histology",values = mycolors[['short_histology']], labels=plot_labels[['short_histology']]) +
-  xlab("") + ylab("Number of Samples") +
+
+lolliplot_plot <- ggplot(histology_counts_by_sbi, aes(x=short_histology, y=n, color=short_histology)) +
+  geom_segment(aes(x=short_histology, xend=short_histology, y=0, yend=n)) +
+  scale_color_manual(name = "Histology",values = mycolors[['short_histology']], labels=plot_labels[['short_histology']]) + 
+  geom_point(size=4) +
+  xlab("") + ylab("# of Samples") +
+  facet_wrap(SBI_level ~ .) +
   theme_Publication() + 
-  theme(axis.text = element_blank(),
-        axis.ticks = element_blank(),
-        panel.grid  = element_blank(),
-        legend.title = element_text(size=10),
-        legend.text = element_text(size=8), 
-        axis.title=element_text(size=10))
+  theme(axis.text.x = element_blank(),
+      axis.ticks = element_blank(),
+      panel.grid  = element_blank(),
+      legend.title = element_text(size=10),
+      legend.text = element_text(size=12), 
+      axis.title=element_text(size=14)) 
+
 
 # save plot tiff version
-tiff(piechart_hist_by_sbi_file, height = 1500, width = 1850, res = 300)
-print(piechart_hist_by_sbi)
-dev.off()  
+pdf(plot_path, height = 4, width = 8)
+print(lolliplot_plot)
+dev.off()
