@@ -52,14 +52,13 @@ hs_hm_df <- hs_msigdb_df %>%
 ## extract splicing changes 
 rmats_merged_file  <- file.path(analysis_dir,"input","morpholno.merged.rmats.tsv")
 splicing_df  <-  vroom(rmats_merged_file, comment = "#", delim="\t") %>% 
-  filter(FDR <= 0.05 & PValue <= 0.05) 
+  filter(FDR < 0.05 & PValue < 0.05) 
 
 ## create a background set of mis-spliced genes
 background_set <- splicing_df %>% dplyr::select(geneSymbol) %>% unique()
 
 ## create a genes of interest list based on strong splicing 
 genes_of_interest <- splicing_df %>% 
-                              filter(FDR <= 0.05 & PValue <= 0.05) %>% 
                               filter( (IncLevelDifference >= .10) | (IncLevelDifference <= -.10)) %>% 
                               dplyr::select(geneSymbol) %>% 
                              unique()
