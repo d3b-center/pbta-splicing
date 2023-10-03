@@ -48,7 +48,7 @@ rmats_merged_file  <- file.path(analysis_dir,"input","morpholno.merged.rmats.tsv
 
 ## extract strong splicing changes 
 splicing_df  <-  vroom(rmats_merged_file, comment = "#", delim="\t") %>% 
-                 filter(FDR <= 0.05 & PValue <= 0.05) 
+                 filter(FDR < 0.05 & PValue < 0.05) 
 
 ## extract strong differential splicing cases (dPSI >= |.10|)
 splicing_df_ES <- splicing_df %>% filter(IncLevelDifference  >= .10) 
@@ -67,8 +67,8 @@ plot_es <- ggstatsplot::ggbetweenstats(
   notch = TRUE,
   mean.ci = TRUE,
   outlier.tagging = TRUE,
-  type = "robust",
   pairwise.comparisons = TRUE,
+  results.subtitle = FALSE,
   messages = FALSE
 ) + theme_Publication() + 
   labs(y=expression(Delta*PSI), x="Splicing Case") + 
@@ -86,8 +86,9 @@ plot_ei <- ggstatsplot::ggbetweenstats(
   notch = TRUE,
   mean.ci = TRUE,
   outlier.tagging = TRUE,
-  type = "robust",
   pairwise.comparisons = TRUE,
+  p.adjust.method = "fdr",
+  results.subtitle = FALSE,
   messages = FALSE
 ) + theme_Publication() + 
   labs(y=expression(Delta*PSI), x="Splicing Case") + 
