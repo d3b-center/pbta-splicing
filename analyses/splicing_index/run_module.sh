@@ -18,3 +18,6 @@ Rscript 02-plot_splicing_burden_index.R
 
 ## perform differential gene expression analyses on high vs low SBI tumors (HGGs)
 Rscript 03-plot_diffExp_highlowSBI.R
+
+## plot distrubution of splicing types/cases
+Rscript 04-plot_total-splicing-cases.R
