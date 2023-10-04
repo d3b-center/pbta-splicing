@@ -44,13 +44,16 @@ RUN ./install_bioc.r \
 	Biobase \
 	BiocManager \
 	broom \
+	COINr \
   clusterProfiler \
 	ConsensusClusterPlus \
 	corrplot \
   cowplot \
   DGCA \
 	DESeq2 \
+  DOSE \
 	diptest \
+	edgeR \
 	EnhancedVolcano \
 	fgsea \
 	ggpubr \
@@ -60,10 +63,13 @@ RUN ./install_bioc.r \
 	GSVA \
 	hrbrthemes \
 	limma \
+  msigdbr \
 	optparse \
+  org.Hs.eg.db \
 	patchwork \
 	pheatmap \
   reshape2 \
+  rtracklayer \
   sva \
   survival \
   survminer \
