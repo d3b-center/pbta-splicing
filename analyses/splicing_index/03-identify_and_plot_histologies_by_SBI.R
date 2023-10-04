@@ -40,7 +40,7 @@ sbi_coding_df  <-  vroom(sbi_coding_file, comment = "#",delim="\t") %>% mutate(K
 clin_file = file.path(data_dir,"histologies.tsv")
 clin_df_w_SBI  <-  vroom(clin_file, comment = "#",delim="\t",show_col_types = FALSE) %>% inner_join(sbi_coding_df, by="Kids_First_Biospecimen_ID")
 
-## compute quantiles to define high vs low Exon 4 SBI tumors
+## compute quantiles to define high vs low SBI tumors
 quartiles_sbi <- quantile(sbi_coding_df$SI, probs=c(.25, .75), na.rm = FALSE)
 IQR_sbi <- IQR(sbi_coding_df$SI)
 lower_sbi <- quartiles_sbi[1]
