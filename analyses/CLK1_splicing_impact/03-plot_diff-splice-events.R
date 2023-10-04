@@ -68,9 +68,10 @@ plot_es <- ggstatsplot::ggbetweenstats(
   mean.ci = TRUE,
   outlier.tagging = TRUE,
   pairwise.comparisons = TRUE,
+  #p.adjust.method = "fdr",
   results.subtitle = FALSE,
   messages = FALSE
-) + theme_Publication() + 
+) + theme_Publication() + ggtitle("Treated vs Control") +
   labs(y=expression(Delta*PSI), x="Splicing Case") + 
   theme(legend.position = "none")
 
@@ -87,21 +88,21 @@ plot_ei <- ggstatsplot::ggbetweenstats(
   mean.ci = TRUE,
   outlier.tagging = TRUE,
   pairwise.comparisons = TRUE,
-  p.adjust.method = "fdr",
+  #p.adjust.method = "fdr",
   results.subtitle = FALSE,
   messages = FALSE
-) + theme_Publication() + 
+) + theme_Publication() + ggtitle("Treated vs Control") +
   labs(y=expression(Delta*PSI), x="Splicing Case") + 
   theme(legend.position = "none")
 
 # Save plot as PDF
 pdf(file_dpsi_es_plot, 
-    width = 15, height = 5)
+    width = 15, height = 7)
 plot_es
 dev.off()
 
 # Save plot as PDF
 pdf(file_dpsi_ei_plot, 
-    width = 15, height = 5)
+    width = 15, height = 7)
 plot_ei
 dev.off()

@@ -80,16 +80,16 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
     out_file <- paste0(prefix, "_cluster_", i, "_pathway.tsv")
     readr::write_tsv(x = toptable_output %>% filter(P.Value < 0.05), file = file.path(output_dir, out_file))
     
-    #  pull 20 most significant pathways only
+    #  pull 10 most significant pathways only
     DEpwys <- toptable_output %>%
       arrange(adj.P.Val) %>%
       filter(adj.P.Val < 0.05) %>%
-      head(20) %>%
+      head(10) %>%
       pull(Geneset) 
     all_pathways <- c(all_pathways, DEpwys)
   }
   
-  # plot top 20 pathways
+  # plot top 10 pathways
   all_pathways <- unique(all_pathways)
   DEpwys_es <- Biobase::exprs(gsva_eset[all_pathways, ])
   DEpwys_annot <- pData(gsva_eset[DEpwys,])
@@ -132,15 +132,13 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
   DEpwys_annot$hex_code <- NULL
   
   pheatmap::pheatmap(DEpwys_es, scale = "row", 
+                     fontsize = 8,
                      treeheight_row = 20, 
                      treeheight_col = 20,
-                     fontsize_row = 10,
-                     fontsize = 12, 
                      show_colnames = F, 
-                     cellwidth = 0.5, cellheight = 11,
                      annotation = DEpwys_annot, 
                      annotation_colors = mycolors, 
                      cluster_cols = cluster_tree, 
-                     filename = file.path(output_dir, paste0(prefix, '_top20_pathways.tiff')), 
-                     width = 19, height = 8)
+                     filename = file.path(output_dir, paste0(prefix, '_top10_pathways.tiff')), 
+                     width = 12, height = 8)
 }
