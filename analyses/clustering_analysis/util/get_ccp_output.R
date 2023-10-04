@@ -39,10 +39,7 @@ get_ccp_output <- function(input_mat, data_type = c("raw_counts", "non_expr"), v
   # perform dip test if var_prop == 0 
   if(var_genes == 0){
     print("perform dip test")
-    input_mat <- perform_diptest(count_matrix = input_mat, 
-                                matrix_type = "normalized_count", 
-                                normalization_method = "none", 
-                                filter_low_expr = FALSE)
+    input_mat <- perform_diptest(count_matrix = input_mat)
   } else if(var_genes > 0){
     # filter for variability if var_prop > 0
     print("filter by % variability")
