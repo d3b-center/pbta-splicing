@@ -75,19 +75,19 @@ num_of_hits_perc <- data.frame(type,counts, event) %>%
   filter(event=="Flip")
 
 ##plot
-plot_flip <- ggplot(num_of_hits_perc, aes(x = type, y = counts, fill = event)) + 
+plot_flip <- ggplot(num_of_hits_perc, aes(x = type, y = counts, fill = type)) + 
          geom_bar(position="stack", stat="identity") + 
   scale_fill_manual(values=c("#FFC20A","#0C7BDC")) +
-  xlab("Splicing Preference ") + 
+  xlab("Type ") +
   ylab("Splice Variants (%)") + 
-  labs(fill='Event Type') +
   coord_flip() +
   theme_Publication() + 
-  theme( legend.title = element_text(size=19), axis.text.x=element_text(size=18), axis.text.y=element_text(size=18))
+  ggtitle("Flip Events") +
+  theme(legend.position="none", legend.title = element_text(size=19), axis.text.x=element_text(size=14), axis.text.y=element_text(size=14))
 
 # Save plot as PDF
 pdf(file_flip_events_plot, 
-    width = 10.1417, height = 3.84252)
+    width = 6, height = 3)
 plot_flip
 dev.off()
 
