@@ -34,20 +34,12 @@ if(!dir.exists(plots_dir)){
 figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
-
 ## input 
 optimal_cluster_tsv = "ccp_optimal_clusters.tsv"
 histology_file = "histologies.tsv"
 
-clusters_df <- vroom(file.path(output_dir,"optimal_clustering",optimal_cluster_tsv),show_col_types = FALSE) %>% 
-  rename("Kids_First_Biospecimen_ID" = sample)
-
-histology_w_clusters_df <- vroom(file.path(data_dir,histology_file),show_col_types = FALSE) %>% 
-  full_join(clusters_df, by="Kids_First_Biospecimen_ID" ) %>% 
-  filter(!is.na(as.numeric(cluster_assigned)))
-
-color_df <- vroom(file.path(root_dir,"palettes/histology_label_color_table.tsv"), delim="\t", col_names = TRUE, trim_ws = TRUE, show_col_types = FALSE)
-cols <- as.character(color_df$cancer_group_hex_codes)
+color_df <- vroom(file.path(root_dir,"palettes/short_histology_color_palette.tsv"), delim="\t", col_names = TRUE, trim_ws = TRUE, show_col_types = FALSE)
+cols <- as.character(color_df$hex_code)
 names(cols) <- as.character(color_df$short_histology)
 
 histology_w_clusters_df$short_histology <- gsub("^HGAT", "HGG", histology_w_clusters_df$short_histology)
@@ -56,11 +48,10 @@ histology_w_clusters_df$short_histology <- gsub("^LGAT", "LGG", histology_w_clus
 names(cols) <- gsub("^HGAT", "HGG",names(cols))
 names(cols) <- gsub("^LGAT", "LGG",names(cols))
 
-
-
-tiff(file.path(plots_dir, "cluster_membership.tiff"), height = 1200, width = 2200, units = "px", res = 300)
+pdf(file.path(plots_dir, "cluster_membership.pdf"), height = 4, width = 8)
 ggplot(histology_w_clusters_df, aes(fill=short_histology, x= factor(cluster_assigned))) +
   geom_bar(stat="count", position="stack") + 
   xlab("Cluster") + ylab("Frequency") +
-  scale_fill_manual("Histology", values = cols) + theme_Publication()
+  scale_fill_manual("Histology", values = cols,labels=plot_labels[['short_histology']]) + 
+  theme_Publication()
 dev.off()
