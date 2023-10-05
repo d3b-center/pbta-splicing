@@ -48,7 +48,7 @@ histology_w_clusters_df$short_histology <- gsub("^LGAT", "LGG", histology_w_clus
 names(cols) <- gsub("^HGAT", "HGG",names(cols))
 names(cols) <- gsub("^LGAT", "LGG",names(cols))
 
-tiff(file.path(plots_dir, "cluster_membership.tiff"), height = 1200, width = 2200, units = "px", res = 300)
+pdf(file.path(plots_dir, "cluster_membership.pdf"), height = 4, width = 8)
 ggplot(histology_w_clusters_df, aes(fill=short_histology, x= factor(cluster_assigned))) +
   geom_bar(stat="count", position="stack") + 
   xlab("Cluster") + ylab("Frequency") +
