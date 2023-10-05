@@ -34,7 +34,6 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## output file names for plots
 file_flip_events_plot <- file.path(analysis_dir, "plots", "flip_barplots.pdf")
-file_tiff_flip_events_plot <- file.path(analysis_dir,"plots","flip_barplots.tiff")
 
 ## retrieve psi values from tables
 file_psi_pos_total <- "splicing_events.total.pos.tsv"
@@ -72,7 +71,8 @@ type <- c("Skipping", "Skipping", "Inclusion", "Inclusion")
 counts <- c(num_flip_incl_func_perc,num_non_flip_incl_func_perc,
             num_flip_skip_func_perc,num_non_flip_skip_func_perc)
 event <- c("Flip", "Non-flip","Flip", "Non-flip")
-num_of_hits_perc <- data.frame(type,counts, event)
+num_of_hits_perc <- data.frame(type,counts, event) %>% 
+  filter(event=="Flip")
 
 ##plot
 plot_flip <- ggplot(num_of_hits_perc, aes(x = type, y = counts, fill = event)) + 
@@ -82,16 +82,13 @@ plot_flip <- ggplot(num_of_hits_perc, aes(x = type, y = counts, fill = event)) +
   ylab("Splice Variants (%)") + 
   labs(fill='Event Type') +
   coord_flip() +
-  theme_Publication() + theme( legend.title = element_text(size=19), axis.text.x=element_text(size=18), axis.text.y=element_text(size=18))
+  theme_Publication() + 
+  theme( legend.title = element_text(size=19), axis.text.x=element_text(size=18), axis.text.y=element_text(size=18))
 
 # Save plot as PDF
 pdf(file_flip_events_plot, 
-    width = 22.1417, height = 6.84252)
+    width = 10.1417, height = 3.84252)
 plot_flip
 dev.off()
 
-# Save plot tiff version
-tiff(file_tiff_flip_events_plot, height = 1200, width = 3200, res = 300)
-print(plot_flip)
-dev.off()
 
