@@ -157,12 +157,53 @@ while(<FIL>)
   ## retrieve exon coordinates
   my $chr          = $cols[5];
   my $str          = $cols[6];
-  my $exonStart    = $cols[7]+1; ## its 0-based so add 1
-  my $exonEnd      = $cols[8];
-  my $upstreamES   = $cols[15];
-  my $upstreamEE   = $cols[16];
-  my $downstreamES = $cols[17];
-  my $downstreamEE = $cols[18];
+
+  my $Start    = "";
+  my $End      = "";
+  my $prevES   = "";
+  my $prevEE   = "";
+  my $nextES = "";
+  my $nextEE = "";
+
+  if($splice_case=~/SE/)
+  {
+    $Start    = $cols[7]+1; ## its 0-based so add 1
+    $End      = $cols[8];
+    $prevES   = $cols[15];
+    $prevEE   = $cols[16];
+    $nextES = $cols[17];
+    $nextEE = $cols[18];
+  }
+  elsif($splice_case=~/RI/)
+  {
+    $Start    = $cols[13]+1; ## its 0-based so add 1
+    $End      = $cols[14];
+    $prevES   = $cols[15];
+    $prevEE   = $cols[16];
+    $nextES = $cols[17];
+    $nextEE = $cols[18];
+  }
+  elsif($splice_case=~/A5SS/)
+  {
+    $Start    = $cols[19]+1; ## its 0-based so add 1
+    $End      = $cols[20];
+    $prevES   = $cols[21];
+    $prevEE   = $cols[22];
+    $nextES = $cols[23];
+    $nextEE = $cols[24];
+
+  }
+  else{
+    $Start    = $cols[19]+1; ## its 0-based so add 1
+    $End      = $cols[20];
+    $prevES   = $cols[21];
+    $prevEE   = $cols[22];
+    $nextES = $cols[23];
+    $nextEE = $cols[24];
+    #print $Start,"\t",$End,"\t",$prevES,"\t",$prevEE,"\t",$nextES,"\t",$nextEE,"\n";
+
+  }
+
 
   ## retrieve inclusion level and junction count info
   my $inc_level = $cols[33];
@@ -179,7 +220,9 @@ while(<FIL>)
   next unless ($SJC >=10);
 
   ## create unique ID for splicing change
-  my $splice_id = $gene.":".$exonStart."-".$exonEnd."_".$upstreamES."-".$upstreamEE."_".$downstreamES."-".$downstreamEE;
+  #print $Start,"\t",$End,"\t",$prevES,"\t",$prevEE,"\t",$nextES,"\t",$nextEE,"\n";
+
+  my $splice_id = $gene.":".$Start."-".$End."_".$prevES."-".$prevEE."_".$nextES."-".$nextEE;
   $inc_levels{$splice_id}{$bs_id} = $inc_level;
 
   #print $splice_id,"\t",$inc_level,"\n";
@@ -218,6 +261,7 @@ my %absplice_totals_per_sample;
 my %absplice_totals_per_sample_pos;
 my %absplice_totals_per_sample_neg;
 open(EVENTS,">results/splice_events.diff.".$splice_case.".txt");
+print EVENTS "Splice ID\tCase\tType\n";
 foreach my $sample(@bs_ids_uniq)
 {
   foreach my $splice_event(@splicing_events_uniq)
@@ -230,7 +274,7 @@ foreach my $sample(@bs_ids_uniq)
     if($psi_tumor > ($mean_psi + ($std_psi + $std_psi)) )
     {
       $absplice_totals_per_sample_pos{$sample}++;
-      print EVENTS $splice_event,"\t".$$splice_case."\tSkipping\n";
+      print EVENTS $splice_event,"\t".$splice_case."\tSkipping\n";
     }
     # < -2 z-scores
     if($psi_tumor < ($mean_psi - ($std_psi + $std_psi)) )
