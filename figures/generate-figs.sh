@@ -24,7 +24,7 @@ analyses_dir="$BASEDIR/analyses"
 data_dir="$BASEDIR/data"
 
 # Make output folders for all figures
-mkdir -p tiffs/fig1
+mkdir -p pdfs/fig1
 
 ############################# Figure panels ##########################################
 
