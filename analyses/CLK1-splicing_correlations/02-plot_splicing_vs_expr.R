@@ -33,7 +33,7 @@ if(!dir.exists(plots_dir)){
 # theme for all plots
 figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
-source(paste0(analysis_dir, "/util/function-create-scatter-plot.E"))
+source(paste0(analysis_dir, "/util/function-create-scatter-plot.R"))
 
 
 ## define input files
@@ -44,6 +44,9 @@ rmats_file <- file.path(data_dir, "rMATS_merged.comparison.tsv.gz")
 ## define output file
 plot_total_hgg_path <- file.path(plots_dir, "CLK1-expr_vs_psi-totalHGG.tiff")
 plot_midline_hgg_path <- file.path(plots_dir, "CLK1-expr_vs_psi-midlineHGG.tiff")
+plot_total_hgg_SRSF1_path <- file.path(plots_dir, "SRSF1-expr_vs_psi-totalHGG.tiff")
+plot_midline_hgg_SRSF1_path <- file.path(plots_dir, "SRSF1-expr_vs_psi-midlineHGG.tiff")
+
 
 ## read in histology file and count data
 count_df <- readRDS(file_gene_counts)
@@ -75,7 +78,7 @@ rmats_df_hgg <-  vroom(rmats_file, comment = "#",delim="\t") %>%
   inner_join(clin_tab_hgg, by=c('sample_id'='Kids_First_Biospecimen_ID')) %>%
   select(sample_id, geneSymbol, IncLevel2) 
 
-## combine with psi values for scatter plot/correlation
+## combine CLK1 RNA with psi values for scatter plot/correlation 
 count_psi_midline_hgg_df <- filter(count_df,rownames(count_df) == 'CLK1')  %>% 
   select(any_of(rmats_df_midline_hgg$sample_id)) %>% 
   pivot_longer(cols = tidyselect::everything(),names_to=c("sample_id"), values_to="Expr") %>% inner_join(rmats_df_midline_hgg, by='sample_id')
@@ -84,33 +87,41 @@ count_psi_hgg_df <- filter(count_df,rownames(count_df) == 'CLK1')  %>%
   select(any_of(rmats_df_hgg$sample_id)) %>% 
   pivot_longer(cols = tidyselect::everything(),names_to=c("sample_id"), values_to="Expr") %>% inner_join(rmats_df_hgg, by='sample_id')
 
-## generate scatter plots and save to file
-scatterplot_midline_hgg <- ggscatter(count_psi_midline_hgg_df, x="IncLevel2", y="Expr", 
-          add = "reg.line", conf.int = TRUE, 
-          cor.coef = TRUE, cor.method = "pearson",
-          add.params = list(color = "red",
-                            fill = "pink"),
-          ticks = TRUE,
-          #xticks.by = .1, yticks.by = .1,
-          xlab = "Exon 4 Inclusion (PSI)", ylab = "CLK1 Expr (TPM)") + theme_Publication()
+## combine SRSF1 RNA with psi values for scatter plot/correlation 
+SRSF1_count_psi_midline_hgg_df <- filter(count_df,rownames(count_df) == 'SRSF1')  %>% 
+  select(any_of(rmats_df_midline_hgg$sample_id)) %>% 
+  pivot_longer(cols = tidyselect::everything(),names_to=c("sample_id"), values_to="Expr") %>% inner_join(rmats_df_midline_hgg, by='sample_id')
 
+SRSF1_count_psi_hgg_df <- filter(count_df,rownames(count_df) == 'SRSF1')  %>% 
+  select(any_of(rmats_df_hgg$sample_id)) %>% 
+  pivot_longer(cols = tidyselect::everything(),names_to=c("sample_id"), values_to="Expr") %>% inner_join(rmats_df_hgg, by='sample_id')
+
+## generate scatter plots and save to file
+scatterplot_midline_hgg <- create_scatterplot(count_psi_midline_hgg_df) 
 ggplot2::ggsave(plot_midline_hgg_path,
                 width=5,
                 height=5,
                 device="tiff",
                 dpi=300)
 
-scatterplot_total_hgg <- ggscatter(count_psi_hgg_df, x="IncLevel2", y="Expr", 
-          add = "reg.line", conf.int = TRUE, 
-          cor.coef = TRUE, cor.method = "pearson",
-          add.params = list(color = "red",
-                            fill = "pink"),
-          ticks = TRUE,
-          #xticks.by = .1, yticks.by = .1,
-          xlab = "Exon 4 Inclusion (PSI)", ylab = "CLK1 Expr (TPM)") + theme_Publication()
-
+scatterplot_total_hgg <- create_scatterplot(count_psi_hgg_df) 
 ggplot2::ggsave(plot_total_hgg_path,
                 width=5,
                 height=5,
                 device="tiff",
                 dpi=300)
+
+scatterplot_midline_hgg_SRSF1 <- create_scatterplot(SRSF1_count_psi_midline_hgg_df) 
+ggplot2::ggsave(plot_midline_hgg_SRSF1_path,
+                width=5,
+                height=5,
+                device="tiff",
+                dpi=300)
+
+scatterplot_total_hgg_SRSF1 <- create_scatterplot(SRSF1_count_psi_hgg_df) 
+ggplot2::ggsave(plot_total_hgg_SRSF1_path,
+                width=5,
+                height=5,
+                device="tiff",
+                dpi=300)
+
