@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Run all figure making scripts.
+# run all figure making scripts
 
 # enviroment settings
 set -e
@@ -26,16 +26,15 @@ data_dir="$BASEDIR/data"
 # Make output folders for all figures
 mkdir -p pdfs/fig1
 
-############################# Figure panels ##########################################
+############################# figure panels ####################################
 
 # Below, we establish figure panels in `figures/pdf/` for all manuscript figures.
-# For each, we first run any `figures/scripts/` scripts that generate figure panels,
-#  and then we copy any additional panels that were generated in `analyses/` modules.
+# For each, we first run any `figures/scripts/` scripts that generate figure
+# panels, and then we copy any additional panels that were generated in
+# `analyses/` modules.
 
-##### Figure 1: Workflow and sample distribution ------------------------------------
-# Copy the main figure to final directory - panels A,B
-
-##Figs 1
+## Figure 1: overall alternatice splicing abberations across tumor histologies
+# copy the main figure to final directory
 cp ${analyses_dir}/splicing_index/plots/splice-types.pdf pdfs/fig1/.
 cp ${analyses_dir}/splicing_index/plots/SBI-plot.SE.tiff pdfs/fig1/.
 cp ${analyses_dir}/splicing_index/plots/hist_by_sbi-level_lolliplot.pdf pdfs/fig1/.
@@ -45,3 +44,6 @@ cp ${analyses_dir}/survival/plots/forest_hgg_OS_subtype_SI.pdf pdfs/fig1/.
 cp ${analyses_dir}/splicing_index/plots/enhancedVolcano_hgg_sbi.pdf pdfs/fig1/.
 cp ${analyses_dir}/histology-specific-splicing/plots/upsetR_histology-specific.es.tiff pdfs/fig1/.
 cp ${analyses_dir}/histology-specific-splicing/plots/upsetR_histology-specific.ei.tiff pdfs/fig1/.
+
+## Figure 2: clustering based on splicing
+# copy the main figure to final directory
