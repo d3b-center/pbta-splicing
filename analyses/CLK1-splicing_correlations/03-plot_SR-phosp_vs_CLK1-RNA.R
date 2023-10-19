@@ -58,21 +58,18 @@ mat <- df %>%
   select(3:220) %>% 
   mutate_if(is.character, as.numeric)
 
-rownames(mat) <- paste0("col_", seq(nrow(mat)))
+rownames(mat) <- make.unique(as.character(c("CLK1","SRSF10","SRSF11","SRSF11","SRSF11","SRSF2","SRSF2","SRSF3","SRSF4","SRSF6","SRSF8","SRSF9")))
+
 
 row_annot <- df %>%
-  select("type", "gene")
+  select("type")
 rownames(row_annot) <- rownames(mat)
 
 # Specify colors
 safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
                                       "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
                                       
-annotation_colors = list(
-  gene = c(CLK1=safe_colorblind_palette[1], SRSF2=safe_colorblind_palette[3],SRSF3=safe_colorblind_palette[4],SRSF4=safe_colorblind_palette[5],
-           SRSF6=safe_colorblind_palette[7],SRSF8=safe_colorblind_palette[9], SRSF9=safe_colorblind_palette[10],
-           SRSF10=safe_colorblind_palette[11], SRSF11=safe_colorblind_palette[12]),
-  type = c(rna="#FFC20A", phospho="#0C7BDC"))
+annotation_colors = list(type = c(rna="#FFC20A", phospho="#0C7BDC"))
 
 pheatmap(mat = mat,
          annotation_row = row_annot,
@@ -80,10 +77,11 @@ pheatmap(mat = mat,
          cluster_cols = TRUE,
          cluster_rows = FALSE,
          show_colnames = FALSE,
-         show_rownames = FALSE,
+         show_rownames = TRUE,
+         legend_labels = c("Z-Score"),
          legend = TRUE,
          cellwidth = 12,
-         fontsize = 30,
+         fontsize = 25,
          height = 20,
          width = 42,
          #annotation = row_annot,
