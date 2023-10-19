@@ -20,12 +20,15 @@ suppressPackageStartupMessages({
 
 ## set directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing_correlations")
 
 input_dir   <- file.path(analysis_dir, "input")
-results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
+
+## check and create plots dir
+if(!dir.exists(plots_dir)){
+  dir.create(plots_dir, recursive=TRUE)
+}
 
 ## output files for final plots
 heatmap_output_file <- file.path(plots_dir,"heatmap_SR-phosp_CLK1-RNA_rna_prot.tiff") 
