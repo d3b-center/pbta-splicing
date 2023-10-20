@@ -35,6 +35,7 @@ if(!dir.exists(plots_dir)){
 ## output files for final plots
 file_circos_plot <- file.path(analysis_dir, "plots", "cohort_circos.pdf")
 
+
 # Load datasets and pre-process
 hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %>% 
   # filter
@@ -52,7 +53,7 @@ hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %
                                      cancer_group %in% c("Cavernoma", "Malignant peripheral nerve sheath tumor") ~ "Benign tumor",
                                      TRUE ~ broad_histology),
          cancer_group = case_when(sample_id == "7316-3066" ~ "Neurofibroma/Plexiform",
-                                  grepl("xanthogranuloma", pathology_free_text_diagnosis) & broad_histology == "Histiocytic tymor" & pathology_diagnosis == "Other" ~ "Juvenile xanthogranuloma",
+                                  grepl("xanthogranuloma", pathology_free_text_diagnosis) & broad_histology == "Histiocytic tumor" & pathology_diagnosis == "Other" ~ "Juvenile xanthogranuloma",
                                   broad_histology == "Choroid plexus tumor" ~ "Choroid plexus tumor",
                                   cancer_group == "Glial-neuronal tumor" ~ "Glial-neuronal tumor NOS",
                                   cancer_group == "Low-grade glioma" ~ "Low-grade glioma/astrocytoma",
@@ -68,7 +69,10 @@ hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %
                                   TRUE ~ cancer_group))
 
 # add cancer/plot group mapping file 
-map_file <- read_tsv(file.path(input_dir, "plot-mapping.tsv"))
+map_file <- read_tsv(file.path(input_dir, "plot-mapping.tsv")) %>%
+  # fix one hex code
+  mutate(plot_group_hex = case_when(plot_group == "DIPG or DMG" ~ "#ff40d9",
+                                    TRUE ~ plot_group_hex))
 
 # add plot mapping file and old plot groups, export this.
 combined_plot_map <- hist_df %>%
@@ -80,7 +84,7 @@ combined_plot_map <- hist_df %>%
 
 # add plot mapping to histlogy df
 combined_hist_map <- hist_df %>%
-  left_join(map_file, by = c("broad_histology", "cancer_group"))
+  left_join(map_file, by = c("broad_histology", "cancer_group")) 
   
 ## filter using independent specimens file
 independent_specimens_df <- read_tsv(file.path(data_dir,"independent-specimens.rnaseqpanel.primary-plus.tsv")) %>%
@@ -90,21 +94,45 @@ independent_specimens_df <- read_tsv(file.path(data_dir,"independent-specimens.r
 # Merge both meta datasets
 hist_indep_df <- combined_hist_map %>%
   right_join(independent_specimens_df, by="Kids_First_Biospecimen_ID") %>% 
+  unique()
+  
+uniq_plot_cols <- combined_plot_map %>%
+  select(plot_group, plot_group_hex) %>%
+  unique()
+
+hist_indep_df <- hist_indep_df %>%
+  # add labeling that shows wrapped groups with `(n=X)`
+  dplyr::count(plot_group) %>%
+  dplyr::distinct() %>%
+  dplyr::left_join(uniq_plot_cols) %>%
+  # Create wrapped with (n=X) factor column for cancer groups
+  dplyr::mutate(plot_group_n = glue::glue("{plot_group} (N={n})")) %>%
+  dplyr::inner_join(hist_indep_df) %>%
   unique() %>%
   # Columns of interest: Kids_First_Biospecimen_ID, plot group, CNS_region, OS status, reported_gender
-  dplyr::select(Kids_First_Biospecimen_ID, plot_group, CNS_region, reported_gender) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, plot_group_n, plot_group, plot_group_hex, CNS_region, reported_gender) %>%
   remove_rownames() %>% 
   column_to_rownames("Kids_First_Biospecimen_ID") %>%
-  arrange(plot_group, CNS_region, reported_gender) 
+  arrange(plot_group_n, plot_group_hex, CNS_region, reported_gender) 
+
+uniq_plot_cols <- uniq_plot_cols %>%
+  left_join(hist_indep_df[,c("plot_group_n", "plot_group_hex")]) %>%
+  unique() %>%
+  arrange(plot_group)
+
+# color palette for histology
+cols <- uniq_plot_cols$plot_group_hex
+names(cols) <- uniq_plot_cols$plot_group_n
+#sorted_cols <- cols[order(names(cols))]
+
+# remove hex from df
+hist_indep_df <- hist_indep_df %>%
+  select(-c(plot_group_hex, plot_group))
   
 # Create histology factors for splitting the Circos plot
 split <- factor(hist_indep_df$plot_group)
 
-# color palette for cancer group
-cols <- unique(map_file$plot_group_hex)
-names(cols) <- unique(as.character(map_file$plot_group))
-sorted_cols <- cols[order(names(cols))]
-
+# colors for others
 gender_cols <- c( "deeppink4", "navy", "lightgrey")
 names(gender_cols) <- c("Female", "Male", "Unknown")
 
@@ -114,7 +142,7 @@ names(loc_cols) <- c(sort(unique(hist_indep_df$CNS_region)))
 
 cols_all <- c(cols, loc_cols, gender_cols)
 
-pdf(file_circos_plot, width = 6.5, height = 6.5)
+pdf(file_circos_plot, width = 7, height = 7)
 # Reset Circos plot
 circos.clear()
 
@@ -129,13 +157,13 @@ for(sn in get.all.sector.index()) {
   set.current.cell(sector.index = sn, track.index = 1)
   circos.rect(CELL_META$cell.xlim[1], CELL_META$cell.ylim[1],
               CELL_META$cell.xlim[2], CELL_META$cell.ylim[2],
-              col = NA, border = unlist(cols_all)[sn])
+              col = NA, border = "black")
 }
 
 ## adding legends
 lgd_plot_group = Legend(title = "Histology", 
-                        at =  names(sorted_cols), 
-                        legend_gp = gpar(fill = sorted_cols))
+                        at =  names(cols), 
+                        legend_gp = gpar(fill = cols))
 
 lgd_tum_loc = Legend(title = "Tumor location", 
                        at =  names(loc_cols),
@@ -155,9 +183,9 @@ lgd_list2 = packLegend(lgd_tum_loc, max_height = unit(0.9*h, "inch"), direction 
 lgd_list3 = packLegend(lgd_gender, max_height = unit(0.9*h, "inch"), direction = "horizontal")
 
 # Add legends on plot
-draw(lgd_list1, x = unit(75, "mm"), y = unit(85, "mm"))
-draw(lgd_list2, x = unit(115, "mm"), y = unit(90, "mm"))
-draw(lgd_list3, x = unit(111, "mm"), y = unit(56, "mm"))
+draw(lgd_list1, x = unit(80, "mm"), y = unit(90, "mm"))
+draw(lgd_list2, x = unit(129, "mm"), y = unit(95, "mm"))
+draw(lgd_list3, x = unit(125, "mm"), y = unit(63, "mm"))
 circos.clear()
 dev.off()
 
