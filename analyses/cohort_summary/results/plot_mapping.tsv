@@ -11,7 +11,7 @@ Choroid plexus tumor	Choroid plexus carcinoma	Choroid plexus tumor	Choroid plexu
 Choroid plexus tumor	Choroid plexus cyst	Choroid plexus tumor	Choroid plexus tumor	#00441B	CPT	#00441B	8	Choroid plexus tumor
 Diffuse astrocytic and oligodendroglial tumor	High-grade glioma/astrocytoma	High-grade glioma	Other high-grade glioma	#ff80e5	Other HGG	#ffccf5	3	High-grade glioma
 Diffuse astrocytic and oligodendroglial tumor	Diffuse midline glioma	High-grade glioma	DIPG or DMG	#ff80e5	DMG	#ff40d9	3	High-grade glioma
-Diffuse astrocytic and oligodendroglial tumor	Diffuse intrinsic pontine glioma	High-grade glioma	DIPG or DMG	#ff80e5	DIPG	#bf0099	3	High-grade glioma
+Diffuse astrocytic and oligodendroglial tumor	Diffuse intrinsic pontine glioma	High-grade glioma	DIPG or DMG	#ff80e5	DIPG	#ff40d9	3	High-grade glioma
 Diffuse astrocytic and oligodendroglial tumor	Gliosarcoma	High-grade glioma	Other high-grade glioma	#ff80e5	Other HGG	#ffccf5	3	High-grade glioma
 Embryonal tumor	Medulloblastoma	Embryonal tumor	Medulloblastoma	#220040	MB	#a340ff	5	Embryonal tumor
 Embryonal tumor	CNS Embryonal tumor	Embryonal tumor	Other CNS embryonal tumor	#220040	Other ET	#b08ccf	5	Embryonal tumor
@@ -29,7 +29,6 @@ Germ cell tumor	NA	Germ cell tumor	Germ cell tumor	#0074d9	GCT	#0074d9	7	Germ ce
 Germ cell tumor	Mixed germ cell tumor	Germ cell tumor	Germ cell tumor	#0074d9	GCT	#0074d9	7	Germ cell tumor
 Histiocytic tumor	Langerhans Cell histiocytosis	Other tumor	Other tumor	#b5b5b5	Other tumor	#b5b5b5	13	Other tumor
 Histiocytic tumor	Rosai-Dorfman disease	Other tumor	Other tumor	#b5b5b5	Other tumor	#b5b5b5	13	Other tumor
-Histiocytic tumor	Histiocytic tumor	NA	NA	NA	NA	NA	NA	NA
 Histiocytic tumor	Juvenile xanthogranuloma	Other tumor	Other tumor	#b5b5b5	JXG	#b5b5b5	13	Other tumor
 Low-grade astrocytic tumor	Low-grade glioma/astrocytoma	Low-grade glioma	Low-grade glioma	#8f8fbf	Other LGG	#8f8fbf	1	Low-grade glioma
 Low-grade astrocytic tumor	Ganglioglioma	Mixed neuronal-glial tumor	Mixed neuronal-glial tumor	#685815	GNG	#685815	2	Low-grade glioma
