@@ -22,14 +22,18 @@ data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "cohort_summary")
 input_dir   <- file.path(analysis_dir, "input")
 plots_dir <- file.path(analysis_dir, "plots")
+results_dir <- file.path(analysis_dir, "results")
 
 if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
 }
 
+if(!dir.exists(plots_dir)){
+  dir.create(results_dir, recursive=TRUE)
+}
+
 ## output files for final plots
 file_circos_plot <- file.path(analysis_dir, "plots", "cohort_circos.pdf")
-
 
 # Load datasets and pre-process
 hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %>% 
@@ -41,31 +45,43 @@ hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %
   # collapse reported gender to 3 groups
   mutate(reported_gender = case_when(reported_gender == "Not Reported" ~ "Unknown",
                                      TRUE ~ reported_gender),
-         cancer_group = case_when(broad_histology %in% c("Non-tumor", "Benign Tumor") ~ NA_character_,
-                                  grepl("MPNST", pathology_diagnosis) ~ "Neurofibroma/Plexiform",
-                                  pathology_free_text_diagnosis == "meningioangiomatosis" ~ "Meningioma",
-                                  # move these from benign to other tumor
-                                  pathology_free_text_diagnosis %in% c("fibrous dysplasia",
-                                                                        "osteoblastoma",
-                                                                        "pituitary macroadenoma",
-                                                                        "pituitary adenoma",
-                                                                        "prolactinoma",
-                                                                        "perineuroma") ~ "Other tumor",
+         # update 7316-3066
+         broad_histology = case_when(sample_id == "7316-3066" ~ "Tumor of cranial and paraspinal nerves", 
+                                     broad_histology == "Other" ~ "Other tumor",
+                                     cancer_group == "Glial-neuronal tumor" ~ "Neuronal and mixed neuronal-glial tumor",
+                                     cancer_group %in% c("Cavernoma", "Malignant peripheral nerve sheath tumor") ~ "Benign tumor",
+                                     TRUE ~ broad_histology),
+         cancer_group = case_when(sample_id == "7316-3066" ~ "Neurofibroma/Plexiform",
+                                  grepl("xanthogranuloma", pathology_free_text_diagnosis) & broad_histology == "Histiocytic tymor" & pathology_diagnosis == "Other" ~ "Juvenile xanthogranuloma",
+                                  broad_histology == "Choroid plexus tumor" ~ "Choroid plexus tumor",
+                                  cancer_group == "Glial-neuronal tumor" ~ "Glial-neuronal tumor NOS",
+                                  cancer_group == "Low-grade glioma" ~ "Low-grade glioma/astrocytoma",
+                                  cancer_group %in% c("High-grade glioma", "Astrocytoma", "Astroblastoma", "Glioblastoma", "Diffuse hemispheric glioma",
+                                                      "Infant-type hemispheric glioma") ~ "High-grade glioma/astrocytoma",
+                                  broad_histology == "Ependymal tumor" ~ "Ependymoma",
                                   broad_histology == "Other tumor" ~ "Other tumor",
-                                  # pineoblastoma
-                                  pathology_free_text_diagnosis == "pnet - pineoblastoma with calcification" ~ "Pineoblastoma",
-                                  TRUE ~ as.character(cancer_group)))
-
+                                  broad_histology == "Diffuse astrocytic and oligodendroglial tumor" & (is.na(cancer_group) | cancer_group == "Oligodendroglioma") ~ "High-grade glioma/astrocytoma",
+                                  cancer_group %in% c("Non-germinomatous germ cell tumor", "Diffuse leptomeningeal glioneuronal tumor", "Malignant peripheral nerve sheath tumor") ~ NA_character_,
+                                  broad_histology == "Meningioma" ~ "Meningioma",
+                                  cancer_group == "Perineuroma" ~ "Neurofibroma/Plexiform",
+                                  is.na(cancer_group) & broad_histology == "Tumor of cranial and paraspinal nerves" ~ "Neurofibroma/Plexiform",
+                                  TRUE ~ cancer_group))
 
 # add cancer/plot group mapping file 
-map_file <- read_tsv(file.path(input_dir, "plot-mapping.tsv")) %>%
-  distinct()
+map_file <- read_tsv(file.path(input_dir, "plot-mapping.tsv"))
 
-# add plot mapping file and old plot groups
+# add plot mapping file and old plot groups, export this.
+combined_plot_map <- hist_df %>%
+  full_join(map_file, by = c("broad_histology", "cancer_group")) %>%
+  select(names(map_file)) %>%
+  unique() %>%
+  arrange(broad_histology) %>%
+  write_tsv(file.path(results_dir, "plot_mapping.tsv"))
+
+# add plot mapping to histlogy df
 combined_hist_map <- hist_df %>%
-  #left_join(hist_df) %>%
-  left_join(map_file, by = c("broad_histology", "cancer_group")) 
-
+  left_join(map_file, by = c("broad_histology", "cancer_group"))
+  
 ## filter using independent specimens file
 independent_specimens_df <- read_tsv(file.path(data_dir,"independent-specimens.rnaseqpanel.primary-plus.tsv")) %>%
   filter(cohort == "PBTA",
