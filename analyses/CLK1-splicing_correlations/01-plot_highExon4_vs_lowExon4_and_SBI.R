@@ -31,7 +31,7 @@ plots_dir   <- file.path(analysis_dir, "plots")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 # Path to save file as
-plot_file <- file.path(plots_dir,"boxplot_high_vs_low_SBI.tiff")
+plot_file <- file.path(plots_dir,"boxplot_high_vs_low_SBI.pdf")
 
 ## Load clinical file
 # Specify clinical file path
@@ -99,29 +99,18 @@ sbi_vs_inclEx4_by_extremePSI_df <- rbind(sbi_vs_inclEx4_lowPSI_df,sbi_vs_inclEx4
 
 
 ## Make box plot with stats
-boxplot_sbi_vs_incl <- ggboxplot(sbi_vs_inclEx4_by_extremePSI_df, 
-                                 # Specify x values
-                                 x = "PSI",
-                                 # Specify y values
-                                 y = "SI",
-                                 # Color in the box plot
-                                 fill = "PSI",
-                                 # Specify color palette
-                                 palette = "jco", 
-                                 # Add x-axis label
-                                 xlab="Exon 4 PSI Level",
-                                 # Add y-axis label
-                                 ylab="Splicing Burden Index",
-                                 # Add points
-                                 add = "jitter") +
-                       # Add p-value
-                       stat_compare_means(method = "t.test") +
-                       # Change theme
+set.seed(45)
+boxplot_sbi_vs_incl <- ggboxplot(sbi_vs_inclEx4_by_extremePSI_df,x = "PSI", y = "SI") +
+                       xlab(expression(bold(bolditalic("CLK1")~"Exon 4 PSI Level"))) +
+                       ylab(expression(bold("Splicing Burden Index"))) +
+                       ggforce::geom_sina(aes(color = PSI) , size = 3) +
+                       scale_color_manual(name = "PSI Level", values = c(high = "#FFC20A", low = "#0C7BDC")) +
+                       stat_compare_means(position = "identity", label.x = 1.5) +
                        theme_Publication()
 
 
 # Save plot tiff version
-tiff(plot_file, height = 1800, width = 2400, res = 300)
+pdf(plot_file, height = 10, width = 8)
 print(boxplot_sbi_vs_incl)
 dev.off()
 
