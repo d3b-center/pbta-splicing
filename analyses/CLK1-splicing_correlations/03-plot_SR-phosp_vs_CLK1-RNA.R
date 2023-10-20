@@ -31,7 +31,7 @@ if(!dir.exists(plots_dir)){
 }
 
 ## output files for final plots
-heatmap_output_file <- file.path(plots_dir,"heatmap_SR-phosp_CLK1-RNA_rna_prot.tiff") 
+heatmap_output_file <- file.path(plots_dir,"heatmap_SR-phosp_CLK1-RNA_rna_prot.pdf") 
 
 ## get CPTAC output table 
 cptac_output_file <- file.path(input_dir,"CPTACT_SR_CLK1.xls") 
