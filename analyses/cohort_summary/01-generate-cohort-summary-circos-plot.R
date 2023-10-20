@@ -1,7 +1,7 @@
 ################################################################################
 # 01-generate-cohort-summary-circos-plot.R
 # Generate circos summary plot of cohort used
-# Author: Ammar Naqvi and Shehbeel Arif
+# Author: Ammar Naqvi, Shehbeel Arif, Jo Lynne Rokita
 # Usage: Rscript 01-generate-cohort-summary-circos-plot.R
 ################################################################################
 
@@ -112,9 +112,6 @@ loc_cols <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
                              "#44AA99", "#882255", "#6699CC")
 names(loc_cols) <- c(sort(unique(hist_indep_df$CNS_region)))
 
-#os_cols <- c("red", "green","black")
-#names(os_cols) <- c("DECEASED", "LIVING", "NA")
-
 cols_all <- c(cols, loc_cols, gender_cols)
 
 pdf(file_circos_plot, width = 6.5, height = 6.5)
@@ -126,10 +123,6 @@ circos.par(points.overflow.warning = FALSE)
 circos.heatmap(hist_indep_df,
                split=split, # Specify how to split plot into sectors
                col = unlist(cols_all))#, # Add in color list
-        
-               #show.sector.labels = T, # To show labels of the main sectors of plot
-               #cell.border = "black", # To show individual sample cells
-               #track.height = 0.3, # Adjust the width of the plot
       
 # add border colors to sectors
 for(sn in get.all.sector.index()) {
@@ -152,11 +145,6 @@ lgd_gender = Legend(title = "Sex",
                     at =  names(gender_cols), 
                     legend_gp = gpar(fill = gender_cols))
 
-#lgd_os = Legend(title = "OS Status", 
- #                   at =  names(os_cols), 
-  #                  legend_gp = gpar(fill = os_cols))
-
-
 ## Placement of legend based on device size
 h = dev.size()[2]
 circle_size = unit(1, "snpc")
@@ -165,13 +153,11 @@ circle_size = unit(1, "snpc")
 lgd_list1 = packLegend(lgd_plot_group, max_height = unit(0.9*h, "inch"), direction = "horizontal")
 lgd_list2 = packLegend(lgd_tum_loc, max_height = unit(0.9*h, "inch"), direction = "horizontal")
 lgd_list3 = packLegend(lgd_gender, max_height = unit(0.9*h, "inch"), direction = "horizontal")
-#lgd_list4 = packLegend(lgd_os, max_height = unit(0.5*h, "inch"), direction = "horizontal")
 
 # Add legends on plot
 draw(lgd_list1, x = unit(75, "mm"), y = unit(85, "mm"))
 draw(lgd_list2, x = unit(115, "mm"), y = unit(90, "mm"))
 draw(lgd_list3, x = unit(111, "mm"), y = unit(56, "mm"))
-#draw(lgd_list4, x = unit(114, "mm"), y = unit(85, "mm"))
 circos.clear()
 dev.off()
 
