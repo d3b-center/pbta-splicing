@@ -44,8 +44,10 @@ RUN ./install_bioc.r \
 	Biobase \
 	BiocManager \
 	broom \
+  circlize \
 	COINr \
   clusterProfiler \
+  ComplexHeatmap \
 	ConsensusClusterPlus \
 	corrplot \
   cowplot \
@@ -69,6 +71,7 @@ RUN ./install_bioc.r \
 	patchwork \
 	pheatmap \
   reshape2 \
+  rstatix \
   rtracklayer \
   sva \
   survival \
@@ -78,6 +81,10 @@ RUN ./install_bioc.r \
 # install R packages from GitHub
 RUN ./install_github.r \
 	PoisonAlien/maftools
+
+# Patchwork for plot compositions
+RUN ./install_github.r  'thomasp85/patchwork' --ref 'c67c6603ba59dd46899f17197f9858bc5672e9f4'
+RUN ./install_github.r 'clauswilke/colorblindr' --ref '90d64f8fc50bee7060be577f180ae019a9bbbb84'
 
 # install perl packages
 RUN cpanm install Statistics::Lite
