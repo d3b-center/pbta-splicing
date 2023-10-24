@@ -5,7 +5,7 @@
 # This script uses CPTAC data to generate and plot heatmap of RNA vs phosp of 
 # CLK1 and SRSF phospho-levels
 #
-# usage: Rscript 03-plot_SR-phosp_vs_CLK1-RNA.R
+# usage: Rscript --vanilla 03-plot_SR-phosp_vs_CLK1-RNA.R
 ################################################################################
 
 ## load packages
