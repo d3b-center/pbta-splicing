@@ -10,9 +10,10 @@
 
 ## load packages
 suppressPackageStartupMessages({
-  library("readxl")
-  library("pheatmap")
-  library("dplyr")
+  library(readxl)
+  library(circlize)
+  library(tidyverse)
+  library(ComplexHeatmap)
 })
 
 # Get `magrittr` pipe
@@ -36,54 +37,66 @@ heatmap_output_file <- file.path(plots_dir,"heatmap_SR-phosp_CLK1-RNA_rna_prot.p
 ## get CPTAC output table 
 cptac_output_file <- file.path(input_dir,"CPTACT_SR_CLK1.xls") 
 
-# The problem with the dataframe was that it contained both 
-# "NA" the string and NA for null, so I first made all "NA"s 
-# as NA and then replaced them with 0.
-
-
 # Load dataset
-df <- read_excel(cptac_output_file) 
-# Replace string "NA" with NA
-df[df == "NA"] <- NA
-
-# Convert dataframe to matrix and replace NAs with 0
-df <- df %>% 
-  as.matrix() %>% 
-  replace(is.na(.), 0) %>% 
-  as.data.frame() %>% 
+cptac_data <- read_excel(cptac_output_file, na = "NA")  %>%
   # Only look at RNA and Protein data
-  filter(type %in% c("rna", "phospho"))
+  filter(type %in% c("rna", "phospho")) %>%
+  # remove any samples which have NA
+  select_if(~ !any(is.na(.)))
 
-mat <- df %>%
-  select(3:220) %>% 
-  mutate_if(is.character, as.numeric)
+# some genes have duplicate phos sites, so make them unique ids for later rownaming
+cptac_data$suffix <- ave(cptac_data$gene, cptac_data$gene, FUN = function(x) 1 + seq_along(x) - 1)
 
-rownames(mat) <- make.unique(as.character(c("CLK1","SRSF10","SRSF11","SRSF11","SRSF11","SRSF2","SRSF2","SRSF3","SRSF4","SRSF6","SRSF8","SRSF9")))
+cptac_data_suffixed <- cptac_data %>%
+  mutate(gene = ifelse(duplicated(gene) | rev(duplicated(rev(gene))), glue::glue("{gene}-{suffix}"), gene))
+# preserve gene names for rownames
+rownames <- cptac_data_suffixed$gene
 
+# convert to matrix and then add rownames
+mat <- cptac_data_suffixed %>%
+  select(3:(ncol(cptac_data_suffixed)-1))
 
-row_annot <- df %>%
-  select("type")
+# set rownames, convert to matrix
+rownames(mat) <- rownames
+mat <- as.matrix(mat)
+
+# select row annotations
+row_annot <- cptac_data_suffixed %>%
+  select("type") %>%
+  dplyr::rename(`Assay` = type) %>%
+  as.data.frame()
+
+# add rownames
 rownames(row_annot) <- rownames(mat)
+  
+# create anno colors
+anno_col <- list(`Assay` = c(rna = "#CD5C5C", phospho = "#0C7BDC"))
 
-# Specify colors
-safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
-                                      "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
-                                      
-annotation_colors = list(type = c(rna="#FFC20A", phospho="#0C7BDC"))
+# Heatmap annotation
+row_anno = rowAnnotation(df = row_annot,
+                         col = anno_col, show_legend = TRUE)
 
-pheatmap(mat = mat,
-         annotation_row = row_annot,
-         gaps_row = c(1,1,1),
-         cluster_cols = TRUE,
-         cluster_rows = FALSE,
-         show_colnames = FALSE,
-         show_rownames = TRUE,
-         legend_labels = c("Z-Score"),
-         legend = TRUE,
-         cellwidth = 12,
-         fontsize = 25,
-         height = 20,
-         width = 42,
-         #annotation = row_annot,
-         annotation_colors  = annotation_colors,
-         filename = heatmap_output_file)
+
+# Make heatmap without legends
+heat_plot <- Heatmap(mat,
+                     name = "Z-score",
+                     col = colorRamp2(c(-2, 0, 2), c("orange", "white", "purple")),
+                     cluster_rows = FALSE,
+                     row_split = row_annot$type, 
+                     column_gap = 0.5,
+                     show_row_names = TRUE,
+                     show_column_names = FALSE,
+                     show_heatmap_legend=TRUE,
+                     cluster_columns = TRUE, 
+                     right_annotation = row_anno,
+                     #rect_gp = gpar(col = "white"),
+                     row_title = NULL, 
+                     column_title = NULL, 
+                     column_title_side = "top")
+
+heat_plot
+
+pdf(heatmap_output_file, width = 8, height = 6)
+print(heat_plot)
+dev.off()
+
