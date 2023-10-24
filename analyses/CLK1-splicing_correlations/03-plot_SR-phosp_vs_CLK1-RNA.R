@@ -96,7 +96,7 @@ heat_plot <- Heatmap(mat,
 
 heat_plot
 
-pdf(heatmap_output_file, width = 8, height = 6)
+pdf(heatmap_output_file, width = 7, height = 5)
 print(heat_plot)
 dev.off()
 
