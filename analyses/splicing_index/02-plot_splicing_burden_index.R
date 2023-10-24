@@ -75,14 +75,18 @@ plot_sbi <- function(sbi_df, plot_file) {
     # Now we will plot these as cumulative distribution plots
     ggplot2::ggplot(ggplot2::aes(
       x = group_rank,
-      y = log2(SI * 100)
+      y = SI 
     )) +
-    ggplot2::geom_point(color = "black", alpha = 0.7, shape = 1) +
+    ggplot2::geom_point(color = "red", alpha = 0.7, size = 3) +
 
     # Add summary line for median
     ggplot2::geom_segment(
-      x = 0, xend = 1, color = "red", linetype = 2,
-      ggplot2::aes(y = log2(group_mean * 100), yend = log2(group_mean * 100))
+      x = .3, xend = .7, color = "black", linetype = 2, size = 1,
+      ggplot2::aes(y = group_mean, yend = group_mean)
+    ) +
+    scale_y_continuous(
+      #trans = "log1p",
+      limits = c(0,0.6),
     ) +
 
     # Separate by histology
@@ -93,17 +97,19 @@ plot_sbi <- function(sbi_df, plot_file) {
 
     # Making it pretty
     ggplot2::theme(legend.position = "none") +
-    theme_Publication() +
-    ggplot2::theme(
+    ggpubr::theme_pubr() +
+    theme(
       axis.text.x = ggplot2::element_blank(),
       axis.ticks.x = ggplot2::element_blank(),
       strip.placement = "outside",
-      text = element_text(size=20)
-    )
+      strip.text = ggplot2::element_text(size = 10, angle = 90, hjust = 1),
+      strip.background = ggplot2::element_rect(fill = NA, color = NA),
+      legend.position = "none"
+    ) 
 
   # Save plot
   ggsave(filename = plot_file, path = plots_dir, plot = si_plot,
-         height = 12, width = 45)
+         height = 10, width = 40)
 }
 
 ## plot SBI for each splicing case
