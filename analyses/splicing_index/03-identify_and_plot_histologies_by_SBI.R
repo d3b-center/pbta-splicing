@@ -12,7 +12,7 @@ suppressPackageStartupMessages({
   library("tidyverse")
   library("vroom")
   library("ggplot2")
-} )
+})
 
 #Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
