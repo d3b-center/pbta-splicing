@@ -21,7 +21,6 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses","splicing_index")
 input_dir   <- file.path(analysis_dir, "input")
-data_dir   <- file.path(root_dir, "data")
 results_dir   <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
@@ -35,10 +34,20 @@ plot_path  <- file.path(plots_dir,"hist_by_sbi-level_lolliplot.pdf")
 
 ## get and setup input
 sbi_coding_file  <- file.path(results_dir,"splicing_index.SE.txt")
-sbi_coding_df  <-  vroom(sbi_coding_file, comment = "#",delim="\t") %>% mutate(Kids_First_Biospecimen_ID=Sample) 
+sbi_coding_df  <-  vroom(sbi_coding_file, comment = "#",delim="\t") %>% 
+  dplyr::rename(Kids_First_Biospecimen_ID=Sample) 
 
-clin_file = file.path(data_dir,"histologies.tsv")
-clin_df_w_SBI  <-  vroom(clin_file, comment = "#",delim="\t",show_col_types = FALSE) %>% inner_join(sbi_coding_df, by="Kids_First_Biospecimen_ID")
+clin_file = file.path(results_dir,"histologies-plot-group.tsv") 
+histologies_df <- vroom(clin_file) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, plot_group) %>% 
+  dplyr::rename(Histology = plot_group)
+
+sbi_coding_df %>% inner_join(sbi_coding_df, by="Kids_First_Biospecimen_ID")
+
+clin_df_w_SBI  <-  vroom(clin_file, comment = "#",delim="\t",show_col_types = FALSE) %>% 
+  inner_join(sbi_coding_df, by="Kids_First_Biospecimen_ID") %>%
+  dplyr::select(Kids_First_Biospecimen_ID, SI, plot_group) %>% 
+  dplyr::rename(Histology = plot_group)
 
 ## compute quantiles to define high vs low SBI tumors
 quartiles_sbi <- quantile(sbi_coding_df$SI, probs=c(.25, .75), na.rm = FALSE)
@@ -55,48 +64,43 @@ clin_df_w_SBI <- clin_df_w_SBI %>%
 clin_df_w_highSBI <- clin_df_w_SBI %>% filter(SBI_level=="High SBI")
 clin_df_w_lowSBI <- clin_df_w_SBI %>% filter(SBI_level=="Low SBI")
 
-histology_counts_by_sbi <- clin_df_w_SBI %>% dplyr::count(SBI_level, short_histology) %>%
+histology_counts_by_sbi <- clin_df_w_SBI %>% dplyr::count(SBI_level, Histology) %>%
   dplyr::mutate(SBI_level = fct_relevel(SBI_level,
                                         c("Low SBI", "High SBI")))
 
 
-# create color palette for short histology
-palette_dir   <- file.path(root_dir, "palettes")
-palette_df <- file.path(palette_dir, "short_histology_color_palette.tsv") %>% read_tsv()
+## create color palette 
+palette_file <- file.path(results_dir, "histologies-plot-group.tsv")
 
-short_histology_palettes <- palette_df %>%
-  dplyr::select(short_histology, hex_code) %>%
+## make plot colors list
+palette_df <- read_tsv(palette_file) %>%
+  dplyr::rename(Histology = plot_group) %>%
+  select(Histology, plot_group_hex) %>%
   unique()
 
-short_histology_palettes <- palette_df %>%
-  dplyr::select(short_histology,plot_group_display, hex_code) %>%
-  unique()
-
-mycolors <- list()
-mycolors[['short_histology']] <- short_histology_palettes$hex_code
-names(mycolors[['short_histology']]) <- short_histology_palettes$short_histology
+plot_colors <- list()
+plot_colors[['Histology']] <- palette_df$plot_group_hex
 
 plot_labels <- list()
-plot_labels[['short_histology']] <- short_histology_palettes$plot_group_display
-names(plot_labels[['short_histology']]) <- short_histology_palettes$short_histology
+plot_labels[['Histology']]  <- palette_df$Histology
+#names(plot_labels) <- palette_df$Histology
 
-
-lolliplot_plot <- ggplot(histology_counts_by_sbi, aes(x=short_histology, y=n, color=short_histology)) +
-  geom_segment(aes(x=short_histology, xend=short_histology, y=0, yend=n)) +
-  scale_color_manual(name = "Histology",values = mycolors[['short_histology']], labels=plot_labels[['short_histology']]) + 
+lolliplot_plot <- ggplot(histology_counts_by_sbi, aes(x=Histology, y=n, color=Histology)) +
+  geom_segment(aes(x=Histology, xend=Histology, y=0, yend=n)) +
+  scale_color_manual(name = "Histology",values = plot_colors[['Histology']]) + 
   geom_point(size=4) +
   xlab("") + ylab("# of Samples") +
   facet_wrap(SBI_level ~ .) +
   theme_Publication() + 
   theme(axis.text.x = element_blank(),
-      axis.ticks = element_blank(),
-      panel.grid  = element_blank(),
-      legend.title = element_text(size=10),
-      legend.text = element_text(size=12), 
-      axis.title=element_text(size=14)) 
+        axis.ticks = element_blank(),
+        panel.grid  = element_blank(),
+        legend.title = element_text(size=10),
+        legend.text = element_text(size=12), 
+        axis.title=element_text(size=14)) 
 
 
-# save plot tiff version
-pdf(plot_path, height = 4, width = 8)
+# save plot pdf version
+pdf(plot_path, height = 4, width = 14)
 print(lolliplot_plot)
 dev.off()
