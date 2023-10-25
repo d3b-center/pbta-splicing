@@ -32,10 +32,10 @@ if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
 }
 
-file_si_SE_plot = "SBI-plot.SE.pdf"
-file_si_RI_plot = "SBI-plot.RI.pdf"
-file_si_A5SS_plot = "SBI-plot.A5SS.pdf"
-file_si_A3SS_plot = "SBI-plot.A3SS.pdf"
+file_si_SE_plot = "sbi-plot-SE.pdf"
+file_si_RI_plot = "sbi-plot-RI.pdf"
+file_si_A5SS_plot = "sbi-plot-A5SS.pdf"
+file_si_A3SS_plot = "sbi-plot-A3SS.pdf"
 
 # theme for all plots
 # source functions
@@ -58,10 +58,11 @@ plot_sbi <- function(sbi_df, plot_file) {
   
   # Set up the data.frame for plotting
   si_cdf_plot <- sbi_df %>%
+    as_tibble() %>%
     # Group by specified column
     dplyr::group_by(Histology) %>%
     # Only keep groups with the specified minimum number of samples
-    dplyr::filter(dplyr::n() > 1) %>%
+   # dplyr::filter(dplyr::n() > 1) %>%
     # Calculate group median
     dplyr::mutate(
       group_mean = mean(SI, na.rm = TRUE),
@@ -71,13 +72,11 @@ plot_sbi <- function(sbi_df, plot_file) {
     dplyr::ungroup() %>%
     dplyr::mutate(Histology = reorder(Histology, group_mean))
 
-  si_plot <- si_cdf_plot %>%
-    # Now we will plot these as cumulative distribution plots
-    ggplot2::ggplot(ggplot2::aes(
+  si_plot <- ggplot(si_cdf_plot, aes(
       x = group_rank,
       y = SI 
     )) +
-    ggplot2::geom_point(color = "red", alpha = 0.7, size = 3) +
+    ggplot2::geom_point(color = plot_group_hex, alpha = 0.7) +
 
     # Add summary line for median
     ggplot2::geom_segment(
@@ -93,7 +92,7 @@ plot_sbi <- function(sbi_df, plot_file) {
     ggplot2::facet_wrap(~ Histology + sample_size, nrow = 1, 
                         strip.position = "bottom", labeller = ggplot2::label_wrap_gen(multi_line = TRUE)) +
     ggplot2::xlab("Histology") +
-    ggplot2::ylab("Splicing Burden Index") +
+    ggplot2::ylab("Splicing Burden Index (SBI)") +
 
     # Making it pretty
     ggplot2::theme(legend.position = "none") +
@@ -102,14 +101,14 @@ plot_sbi <- function(sbi_df, plot_file) {
       axis.text.x = ggplot2::element_blank(),
       axis.ticks.x = ggplot2::element_blank(),
       strip.placement = "outside",
-      strip.text = ggplot2::element_text(size = 10, angle = 90, hjust = 1),
+      strip.text = ggplot2::element_text(size = 9, angle = 90, hjust = 1),
       strip.background = ggplot2::element_rect(fill = NA, color = NA),
       legend.position = "none"
     ) 
 
   # Save plot
   ggsave(filename = plot_file, path = plots_dir, plot = si_plot,
-         height = 10, width = 40)
+         height = 6, width = 10, useDingbats = FALSE)
 }
 
 ## plot SBI for each splicing case
