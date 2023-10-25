@@ -69,7 +69,7 @@ histology_counts_by_sbi <- clin_df_w_SBI %>% dplyr::count(SBI_level, Histology) 
 # make colors
 plot_colors <- palette_df$plot_group_hex
 names(plot_colors) <- palette_df$Histology
-plot_colors <- list(plot_colors)
+#plot_colors <- list(plot_colors)
 
 # plot 
 lolliplot_plot <- ggplot(histology_counts_by_sbi, 
