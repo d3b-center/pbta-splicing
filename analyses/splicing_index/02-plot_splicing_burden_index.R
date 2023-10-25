@@ -32,17 +32,12 @@ if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
 }
 
-file_si_SE_plot = "sbi-plot-SE.pdf"
-file_si_RI_plot = "sbi-plot-RI.pdf"
-file_si_A5SS_plot = "sbi-plot-A5SS.pdf"
-file_si_A3SS_plot = "sbi-plot-A3SS.pdf"
-
 # theme for all plots
 # source functions
 figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
-# read in SI file
+# read in SI files
 splice_index_SE_file   <- file.path(results_dir, "splicing_index.SE.txt")
 splice_index_RI_file   <- file.path(results_dir, "splicing_index.RI.txt")
 splice_index_A5SS_file <- file.path(results_dir, "splicing_index.A5SS.txt")
@@ -53,70 +48,104 @@ splice_index_RI_df   <- readr::read_tsv(splice_index_RI_file)
 splice_index_A5SS_df <- readr::read_tsv(splice_index_A5SS_file)
 splice_index_A3SS_df <- readr::read_tsv(splice_index_A3SS_file)
 
+# read in color palette
+palette_file <- file.path(results_dir, "histologies-plot-group.tsv")
+
+palette_df <- read_tsv(palette_file) %>%
+  dplyr::rename(Histology = plot_group) %>%
+  select(Histology, plot_group_hex) %>%
+  unique()
+
+plot_colors <- palette_df$plot_group_hex
+names(plot_colors) <- palette_df$Histology
+plot_colors <- list(plot_colors)
+
+# Function to calculate medians and ranks
+prepare_data_for_plot <- function(df, grouping_variable = NULL, min_samples = 5) {
+  df %>%
+    # Group by specified column
+    group_by({{grouping_variable}}) %>%
+    # Only keep groups with the specified minimum number of samples
+    filter(n() > min_samples) %>%
+    # Calculate group median
+    mutate(
+      group_median = median(SI, na.rm = TRUE),
+      group_rank = rank(SI, ties.method = "first") / n(),
+      sample_size = paste0("n = ", n())
+    ) %>%
+    ungroup() 
+}
+
+# create filenames for plots
+file_si_SE_plot = "sbi-plot-SE.pdf"
+file_si_RI_plot = "sbi-plot-RI.pdf"
+file_si_A5SS_plot = "sbi-plot-A5SS.pdf"
+file_si_A3SS_plot = "sbi-plot-A3SS.pdf"
 
 plot_sbi <- function(sbi_df, plot_file) {
   
-  # Set up the data.frame for plotting
   si_cdf_plot <- sbi_df %>%
     as_tibble() %>%
-    # Group by specified column
-    dplyr::group_by(Histology) %>%
-    # Only keep groups with the specified minimum number of samples
-   # dplyr::filter(dplyr::n() > 1) %>%
-    # Calculate group median
-    dplyr::mutate(
-      group_mean = mean(SI, na.rm = TRUE),
-      group_rank = rank(SI, ties.method = "first") / dplyr::n(),
-      sample_size = paste0("n = ", dplyr::n())
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(Histology = reorder(Histology, group_mean))
-
-  si_plot <- ggplot(si_cdf_plot, aes(
+    select(Sample, SI, Histology) %>%
+    left_join(palette_df) %>%
+    drop_na(Histology) %>%
+    # Perform calculations needed for plot
+    prepare_data_for_plot(grouping_variable = Histology) %>%
+    # remove "Other" cancer group
+   # filter(Histology != "Other") %>%
+    # Order cancer groups by median TMB
+    mutate(Histology = str_wrap(Histology, 18),
+           Histology = fct_reorder(Histology, SI, .fun = median)
+    ) 
+  
+  p <- ggplot(si_cdf_plot) + 
+    aes(
       x = group_rank,
       y = SI 
-    )) +
-    ggplot2::geom_point(color = plot_group_hex, alpha = 0.7) +
-
+    ) 
+  
+  p <- p + #geom_point(color = si_cdf_plot$plot_group_hex, 
+            #          alpha = 0.7, shape = 21) +
+    geom_point(aes(colour=plot_group_hex, fill=plot_group_hex), 
+               shape = 21, colour = "black") + 
+  
     # Add summary line for median
-    ggplot2::geom_segment(
-      x = .3, xend = .7, color = "black", linetype = 2, size = 1,
-      ggplot2::aes(y = group_mean, yend = group_mean)
+    geom_segment(
+      x = 0, xend = 1, color = "black",
+      aes(y = group_median, yend = group_median)
     ) +
+    xlim(-1, 1.1) +
     scale_y_continuous(
-      #trans = "log1p",
+      #trans = "log10",
       limits = c(0,0.6),
+     # limits = c(0, 400),
+      #breaks = c(0, 3, 10, 30, 100, 300)
     ) +
+    
+    # add labels
+    labs(x = expression(bold("Histology")),
+         y = expression(bold("Splicing Burden Index (SBI)"))
+         ) +
 
-    # Separate by histology
-    ggplot2::facet_wrap(~ Histology + sample_size, nrow = 1, 
-                        strip.position = "bottom", labeller = ggplot2::label_wrap_gen(multi_line = TRUE)) +
-    ggplot2::xlab("Histology") +
-    ggplot2::ylab("Splicing Burden Index (SBI)") +
-
-    # Making it pretty
-    ggplot2::theme(legend.position = "none") +
     ggpubr::theme_pubr() +
     theme(
-      axis.text.x = ggplot2::element_blank(),
-      axis.ticks.x = ggplot2::element_blank(),
+      axis.text.x = element_blank(),
+      axis.ticks.x = element_blank(),
       strip.placement = "outside",
-      strip.text = ggplot2::element_text(size = 9, angle = 90, hjust = 1),
-      strip.background = ggplot2::element_rect(fill = NA, color = NA),
+      strip.text = element_text(size = 12, angle = 90, hjust = 1),
+      strip.background = element_rect(fill = NA, color = NA),
       legend.position = "none"
-    ) 
+    ) +
+    
+    facet_wrap(~Histology + sample_size, nrow = 1, strip.position = "bottom")  +
+    scale_color_identity() 
 
   # Save plot
-  ggsave(filename = plot_file, path = plots_dir, plot = si_plot,
+  ggsave(filename = plot_file, path = plots_dir, plot = p,
          height = 6, width = 10, useDingbats = FALSE)
 }
 
 ## plot SBI for each splicing case
-splice_index_SE_df   <- readr::read_tsv(splice_index_SE_file) %>% as.data.frame(stringsAsFactors = FALSE)
-splice_index_RI_df   <- readr::read_tsv(splice_index_RI_file) %>% as.data.frame(stringsAsFactors = FALSE)
-splice_index_A5SS_df <- readr::read_tsv(splice_index_A5SS_file) %>% as.data.frame(stringsAsFactors = FALSE)
-splice_index_A3SS_df <- readr::read_tsv(splice_index_A3SS_file) %>% as.data.frame(stringsAsFactors = FALSE)
-
 plot_sbi(splice_index_SE_df,file_si_SE_plot)
 plot_sbi(splice_index_RI_df,file_si_RI_plot)
 plot_sbi(splice_index_A5SS_df,file_si_A5SS_plot)

@@ -19,7 +19,8 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "splicing_index")
-input_dir   <- file.path(analysis_dir, "input")
+input_dir   <- file.path(root_dir, "analyses", "cohort_summary", "results")
+results_dir <- file.path(analysis_dir, "results")
 
 # Load datasets and pre-process
 hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %>% 
@@ -59,4 +60,5 @@ map_file <- read_tsv(file.path(input_dir, "plot_mapping.tsv"))
 # add plot mapping to histlogy df
 combined_hist_map <- hist_df %>%
   left_join(map_file, by = c("broad_histology", "cancer_group")) %>% 
-  write_tsv(file.path(input_dir, "histologies-plot_group.tsv"))
+  write_tsv(file.path(results_dir, "histologies-plot-group.tsv"))
+
