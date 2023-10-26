@@ -107,14 +107,14 @@ plot_sbi <- function(sbi_df, plot_file) {
   p <- p + #geom_point(color = si_cdf_plot$plot_group_hex, 
             #          alpha = 0.7, shape = 21) +
     geom_point(aes(colour=plot_group_hex, fill=plot_group_hex), 
-               shape = 21, colour = "black") + 
+               shape = 21, colour = "black", size = 3) + 
   
     # Add summary line for median
     geom_segment(
       x = 0, xend = 1, color = "black",
       aes(y = group_median, yend = group_median)
     ) +
-    xlim(-1, 1.1) +
+    xlim(-1, 1.2) +
     scale_y_continuous(
       #trans = "log10",
       limits = c(0,0.6),
@@ -150,3 +150,4 @@ plot_sbi(splice_index_SE_df,file_si_SE_plot)
 plot_sbi(splice_index_RI_df,file_si_RI_plot)
 plot_sbi(splice_index_A5SS_df,file_si_A5SS_plot)
 plot_sbi(splice_index_A3SS_df,file_si_A3SS_plot)
+
