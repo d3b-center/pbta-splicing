@@ -9,8 +9,10 @@
 
 ## load libraries
 suppressPackageStartupMessages({
-  library("tidyverse")
-  library("ggplot2")
+  library(tidyverse)
+  library(ggplot2)
+  library(grid)
+  library(gridExtra)
 })
 
 #Get `magrittr` pipe
@@ -29,7 +31,8 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## define output files
-plot_path  <- file.path(plots_dir,"hist_by_sbi-level_lolliplot.pdf")
+lolli_path  <- file.path(plots_dir,"hist_by_sbi_level_lolliplot.pdf")
+barplot_path <- file.path(plots_dir, "hist_by_sbi_level_barplot.pdf")
 
 ## get and setup input files
 sbi_coding_file  <- file.path(results_dir,"splicing_index.SE.txt")
@@ -58,18 +61,34 @@ clin_df_w_SBI <- sbi_coding_df %>%
                                SI < lower_sbi ~ "Low SBI")) %>% 
   filter(!is.na(SBI_level))
 
-clin_df_w_highSBI <- clin_df_w_SBI %>% filter(SBI_level=="High SBI")
-clin_df_w_lowSBI <- clin_df_w_SBI %>% filter(SBI_level=="Low SBI")
+clin_df_w_highSBI <- clin_df_w_SBI %>% 
+  filter(SBI_level=="High SBI") %>%
+  dplyr::count(SBI_level, Histology) %>%
+  dplyr::rename(High_SBI = n) %>%
+  select(-SBI_level)
 
-histology_counts_by_sbi <- clin_df_w_SBI %>% dplyr::count(SBI_level, Histology) %>%
+clin_df_w_lowSBI <- clin_df_w_SBI %>% 
+  filter(SBI_level=="Low SBI") %>%
+  dplyr::count(SBI_level, Histology) %>%
+  dplyr::rename(Low_SBI = n) %>%
+  select(-SBI_level)
+
+plot_df <- clin_df_w_highSBI %>%
+  full_join(clin_df_w_lowSBI) %>%
+  left_join(palette_df) %>%
+  mutate(Histology = fct_reorder(Histology, High_SBI))
+
+
+histology_counts_by_sbi <- clin_df_w_SBI %>% 
+  dplyr::count(SBI_level, Histology) %>%
   dplyr::mutate(SBI_level = fct_relevel(SBI_level,
                                         c("Low SBI", "High SBI"))) %>%
-  left_join(palette_df)
+  left_join(palette_df) %>%
+  as.data.frame()
 
 # make colors
 plot_colors <- palette_df$plot_group_hex
 names(plot_colors) <- palette_df$Histology
-#plot_colors <- list(plot_colors)
 
 # plot 
 lolliplot_plot <- ggplot(histology_counts_by_sbi, 
@@ -87,9 +106,66 @@ lolliplot_plot <- ggplot(histology_counts_by_sbi,
         legend.text = element_text(size=12), 
         axis.title=element_text(size=14)) 
 
-lolliplot_plot
-
-# save plot pdf version
-pdf(plot_path, height = 4, width = 10)
+# save lollipop plot
+while (!is.null(dev.list()))  dev.off()
+pdf(lolli_path, height = 4, width = 10)
 print(lolliplot_plot)
 dev.off()
+
+g.mid <- ggplot(plot_df,aes(x=1,y=Histology)) +
+  geom_text(aes(label=Histology), size = 4) +
+  ggtitle("")+
+  ylab(NULL)+
+  scale_x_continuous(expand=c(0,0),limits=c(0.94,1.06))+
+  theme(axis.title=element_blank(),
+        panel.grid=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.background=element_blank(),
+        axis.text.x=element_text(color=NA),
+        axis.ticks.x=element_line(color=NA),
+        plot.margin = unit(c(2,1,1,2), "mm")) 
+
+g1 <- ggplot(data = plot_df, aes(x = Histology, y = Low_SBI)) +
+  geom_bar(stat = "identity", aes(fill = Histology), show.legend = FALSE) + 
+  scale_fill_manual(values = plot_colors) +
+  ggtitle("Number of samples with Low SBI") +
+  theme_Publication() +
+  theme(axis.title.x = element_blank(), 
+        axis.title.y = element_blank(), 
+        axis.text.y = element_blank(), 
+        axis.ticks.y = element_blank(), 
+        plot.margin = unit(c(2,1,1,1), "mm"),
+        axis.line.y.left = element_blank(),
+        panel.grid.major.y = element_blank(),  # Remove major grid lines
+        panel.grid.minor.y = element_blank())  + # Remove minor grid lines
+  scale_y_reverse(limits = c(200,0)) + 
+  coord_flip() +
+  geom_hline(yintercept = 0, color = "black", linetype = "solid", linewidth = 0.75)
+
+g2 <- ggplot(data = plot_df, aes(x = Histology, y = High_SBI)) +xlab(NULL)+
+  geom_bar(stat = "identity", aes(fill = Histology), show.legend = FALSE) +
+  scale_fill_manual(values = plot_colors) +
+  ggtitle("Number of samples with High SBI") +
+  theme_Publication() +
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank(), 
+        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        plot.margin = unit(c(1,1,1,2), "mm"),
+        axis.line.y.left = element_blank(),
+        panel.grid.major.y = element_blank(),  # Remove major grid lines
+        panel.grid.minor.y = element_blank())  + # Remove minor grid lines) +
+  scale_y_continuous(limits = c(0,200)) +
+  coord_flip() +
+  geom_hline(yintercept = 0, color = "black", linetype = "solid", linewidth = 0.75)
+
+gg1 <- ggplot_gtable(ggplot_build(g1))
+gg2 <- ggplot_gtable(ggplot_build(g2))
+gg.mid <- ggplot_gtable(ggplot_build(g.mid))
+
+
+# save barplot 
+while (!is.null(dev.list()))  dev.off()
+pdf(barplot_path, height = 5, width = 11)
+grid.arrange(gg1,gg.mid,gg2,ncol=3,widths=c(3/8,2/8,3/8))
+dev.off()
+
