@@ -1,6 +1,6 @@
 # Splicing Index
 
-Module authors: Ammar Naqvi (@naqvia)
+Module authors: Ammar Naqvi (@naqvia), Jo Lynne Rokita (@jharenza)
 
 The purpose of this module is to compute the splicing index of each tumor (proportion of mis-spliced events)
 
