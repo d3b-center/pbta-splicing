@@ -66,6 +66,7 @@ lolliplot_plot <- ggplot(splice_case_counts_df, aes(x=Case, y=n)) +
   
 
 # save plot tiff version
-pdf(plot_path, height = 4, width = 5.5)
+pdf(plot_path, height = 5, width = 5.5)
 print(lolliplot_plot)
 dev.off()
+
