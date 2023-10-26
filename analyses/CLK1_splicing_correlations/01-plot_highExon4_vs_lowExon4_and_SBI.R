@@ -7,21 +7,26 @@
 
 # Load libraries
 suppressPackageStartupMessages({
-  library(vroom)
   library(dplyr)
   library(ggplot2)
   library(ggpubr)
-  
-})
+  library(vroom)
+  })
 
 
 ## Set directories
 # Input directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
-analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing_correlations")
+analysis_dir <- file.path(root_dir, "analyses", "CLK1_splicing_correlations")
 figures_dir <- file.path(root_dir, "figures")
-input_dir   <- file.path(analysis_dir, "input")
+input_dir   <- file.path(root_dir, "analyses", "splicing_index", "results")
+
+
+# Specify file paths
+sbi_file <-  file.path(input_dir,"splicing_index.SE.txt")
+clin_file  <- file.path(data_dir,"histologies.tsv")
+rmats_file <- file.path(data_dir, "rMATS_merged.comparison.tsv.gz")
 
 # Output directories
 results_dir <- file.path(analysis_dir, "results")
@@ -34,46 +39,33 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 plot_file <- file.path(plots_dir,"boxplot_high_vs_low_SBI.pdf")
 
 ## Load clinical file
-# Specify clinical file path
-clin_file  <- file.path(data_dir,"histologies.tsv")
-
-# Load clinical file
-clin_HGG_midlin_str_df  <-  vroom(clin_file, comment = "#",delim="\t") %>%
+clin_HGG_midline_str_df  <-  read_tsv(clin_file) %>%
   # Select only "RNA-Seq" samples
   filter(experimental_strategy=="RNA-Seq",
          # Select only "HGAT" samples
          short_histology=="HGAT",
          # Select only "Midline" HGATs
-         CNS_region=="Midline",
+         CNS_region %in% c("Midline", "Spine"),
          # Select the "stranded" RNA library samples
          #RNA_library=="stranded" 
          ) 
 
 ## Load rmats file
-# Specify rmats file path
-rmats_file <- file.path(data_dir, "rMATS_merged.comparison.tsv.gz")
-# Load rmats file
 rmats_df <-  vroom(rmats_file, comment = "#",delim="\t") %>%
   # Select CLK1 gene
   filter(geneSymbol=="CLK1") %>% 
   # Select exon 4
   filter(exonStart_0base=="200860124", exonEnd=="200860215") %>% 
   # Join rmats data with clinical data
-  inner_join(clin_HGG_midlin_str_df, by=c('sample_id'='Kids_First_Biospecimen_ID')) %>%
+  inner_join(clin_HGG_midline_str_df, by=c('sample_id'='Kids_First_Biospecimen_ID')) %>%
   # Select "sample", "geneSymbol", and "IncLevel1" columns
   select(sample_id, geneSymbol, IncLevel2) 
 
-
 ## Load SBI file from previous module
-# Specify SBI file path
-sbi_file <-  file.path(input_dir,"splicing_index.SE.txt")
-
-# Load SBI file
-sbi_vs_inclEx4_df <-  vroom(sbi_file, comment = "#",delim="\t") %>% 
+sbi_vs_inclEx4_df <-  read_tsv(sbi_file) %>% 
   inner_join(rmats_df, by=c("Sample"="sample_id")) 
 
 ## Compute quantiles to define high vs low Exon 4 PSI groups
-# Compute quantiles
 quartiles_psi <- quantile(sbi_vs_inclEx4_df$IncLevel2, probs=c(.25, .75), na.rm = FALSE)
 # Calculate IQR
 IQR_psi <- IQR(sbi_vs_inclEx4_df$IncLevel2)
@@ -82,35 +74,32 @@ lower_psi <- quartiles_psi[1]
 # Get upper quantile (75%)
 upper_psi <- quartiles_psi[2] 
 
-# Create dataframe with low PSI values
-sbi_vs_inclEx4_lowPSI_df <- sbi_vs_inclEx4_df %>%
-  dplyr::filter(sbi_vs_inclEx4_df$IncLevel2 < lower_psi) %>%
-  mutate(PSI="low") %>% 
-  dplyr::select(Sample, SI, PSI)
+# Create df with high/low PSI
+sbi_vs_inclEx4_by_extremePSI_df <- sbi_vs_inclEx4_df %>% 
+  mutate(PSI = case_when(sbi_vs_inclEx4_df$IncLevel2 > upper_psi ~ "high",
+                         sbi_vs_inclEx4_df$IncLevel2 < lower_psi ~ "low",
+                         TRUE ~ NA_character_)
+         ) %>% 
+  filter(!is.na(PSI)) %>%
+  select(Sample,SI,PSI)
 
-# Create dataframe with high PSI values
-sbi_vs_inclEx4_highPSI_df <- sbi_vs_inclEx4_df %>% 
-  dplyr::filter(sbi_vs_inclEx4_df$IncLevel2 > upper_psi) %>% 
-  mutate(PSI="high") %>% 
-  dplyr::select(Sample,SI,PSI)
-
-# Combine both high and low PSI dataframes
-sbi_vs_inclEx4_by_extremePSI_df <- rbind(sbi_vs_inclEx4_lowPSI_df,sbi_vs_inclEx4_highPSI_df)
-
+# add a little extra room for wilcoxon test
+ylim_max <- max(sbi_vs_inclEx4_by_extremePSI_df$SI)+0.10*(max(sbi_vs_inclEx4_by_extremePSI_df$SI))
 
 ## Make box plot with stats
 set.seed(45)
 boxplot_sbi_vs_incl <- ggboxplot(sbi_vs_inclEx4_by_extremePSI_df,x = "PSI", y = "SI") +
-                       xlab(expression(bold(bolditalic("CLK1")~"Exon 4 PSI Level"))) +
-                       ylab(expression(bold("Splicing Burden Index"))) +
-                       ggforce::geom_sina(aes(color = PSI) , size = 3) +
-                       scale_color_manual(name = "PSI Level", values = c(high = "#FFC20A", low = "#0C7BDC")) +
-                       stat_compare_means(position = "identity", label.x = 1.5) +
-                       theme_Publication()
+  xlab(expression(bold(bolditalic("CLK1")~"Exon 4 PSI Level"))) +
+  ylab(expression(bold("Splicing Burden Index"))) +
+  lims(y = c(0,ylim_max)) + 
+  ggforce::geom_sina(aes(color = PSI), size = 2) +
+  scale_color_manual(name = "PSI Level", values = c(high = "#FFC20A", low = "#0C7BDC")) +
+  stat_compare_means(position = "identity", label.x = 1) +
+  theme_Publication()
 
 
 # Save plot tiff version
-pdf(plot_file, height = 10, width = 8)
+pdf(plot_file, height = 4, width = 4)
 print(boxplot_sbi_vs_incl)
 dev.off()
 
