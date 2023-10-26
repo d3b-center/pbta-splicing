@@ -133,13 +133,13 @@ g1 <- ggplot(data = plot_df, aes(x = Histology, y = `Samples with Low SBI (N)`))
   scale_fill_manual(values = plot_colors) +
   theme_Publication() +
   theme(#axis.title.x = element_blank(), 
-        axis.title.y = element_blank(), 
-        axis.text.y = element_blank(), 
-        axis.ticks.y = element_blank(), 
-        plot.margin = unit(c(2,1,1,1), "mm"),
-        axis.line.y.left = element_blank(),
-        panel.grid.major.y = element_blank(),  # Remove major grid lines
-        panel.grid.minor.y = element_blank())  + # Remove minor grid lines
+    axis.title.y = element_blank(), 
+    axis.text.y = element_blank(), 
+    axis.ticks.y = element_blank(), 
+    plot.margin = unit(c(2,1,1,1), "mm"),
+    axis.line.y.left = element_blank(),
+    panel.grid.major.y = element_blank(),  # Remove major grid lines
+    panel.grid.minor.y = element_blank())  + # Remove minor grid lines
   scale_y_reverse(limits = c(200,0)) + 
   coord_flip() +
   #labs(x = "Number of samples with Low SBI") +
@@ -150,14 +150,14 @@ g2 <- ggplot(data = plot_df, aes(x = Histology, y = `Samples with High SBI (N)`)
   scale_fill_manual(values = plot_colors) +
   theme_Publication() +
   theme(#axis.title.x = element_blank(), 
-        axis.title.y = element_blank(), 
-        axis.text.y = element_blank(), 
-        axis.ticks.y = element_blank(),
-        plot.margin = unit(c(1,1,1,2), "mm"),
-        axis.line.y.left = element_blank(),
-        panel.grid.major.y = element_blank(),  # Remove major grid lines
-        panel.grid.minor.y = element_blank())  + # Remove minor grid lines) +
- # labs(x = "Number of samples with High SBI") +
+    axis.title.y = element_blank(), 
+    axis.text.y = element_blank(), 
+    axis.ticks.y = element_blank(),
+    plot.margin = unit(c(1,1,1,2), "mm"),
+    axis.line.y.left = element_blank(),
+    panel.grid.major.y = element_blank(),  # Remove major grid lines
+    panel.grid.minor.y = element_blank())  + # Remove minor grid lines) +
+  # labs(x = "Number of samples with High SBI") +
   scale_y_continuous(limits = c(0,200)) +
   coord_flip() +
   geom_hline(yintercept = 0, color = "black", linetype = "solid", linewidth = 0.75)
@@ -172,4 +172,3 @@ while (!is.null(dev.list()))  dev.off()
 pdf(barplot_path, height = 5, width = 11)
 grid.arrange(gg1,gg.mid,gg2,ncol=3,widths=c(3/8,2/8,3/8))
 dev.off()
-
