@@ -14,12 +14,12 @@ perl 01-generate_splicing-index_and_diff-events_table.pl $hist_file $rmats_file 
 
 ## plot values (SBI) generated from above script in CDF plot
 echo "plotting splicing burden indices"
-Rscript 02-plot_splicing_burden_index.R
+Rscript --vanilla 02-plot_splicing_burden_index.R
 
 ## plot tumors based on high vs low SBI
-Rscript 03-identify_and_plot_histologies_by_SBI.R
+Rscript --vanilla 03-identify_and_plot_histologies_by_SBI.R
 
 ## plot distrubution of splicing types/cases
-Rscript 04-plot_total-splicing-cases.R
+Rscript --vanilla 04-plot_total-splicing-cases.R
 
 rm Rplots.pdf

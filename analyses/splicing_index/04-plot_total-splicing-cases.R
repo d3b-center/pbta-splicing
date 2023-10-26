@@ -52,8 +52,8 @@ splice_case_counts_df <- splice_case_total %>% dplyr::count(Case, Type) %>% arra
 
 lolliplot_plot <- ggplot(splice_case_counts_df, aes(x=Case, y=n)) +
   geom_segment( aes(x=Case, xend=Case, y=0, yend=n))+
-  geom_point( color="black", size=2) +
-  scale_fill_manual(name = "Splicing Case",values = case_colors[['Case']]) +
+  geom_point( color="black", size=4) +
+#  scale_fill_manual(name = "Splicing Case",values = case_colors[['Case']]) +
   theme_Publication() + 
   xlab("Splice Case") +
   ylab("# Splice Variants") + 
