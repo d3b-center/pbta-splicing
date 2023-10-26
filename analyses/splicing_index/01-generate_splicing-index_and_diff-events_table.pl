@@ -6,7 +6,7 @@ use Statistics::Lite qw(:all);
 #
 # Compute splicing index for each sample and generate splicing burden index tables
 ############################################################################################################
-my ($histology,$rmats_tsv,$primary_tumor_dat,$primary_tumor_plus_dat, $splice_case) = ($ARGV[0], $ARGV[1], $ARGV[2],$ARGV[3],$ARGV[4]);
+my ($histology,$rmats_tsv,$primary_tumor_plus_dat, $splice_case) = ($ARGV[0], $ARGV[1], $ARGV[2],$ARGV[3]);
 my (@broad_hist, @bs_id, @splicing_events);
 my (%histology_ids, %inc_levels, %bs_id_hist, %hist_check, %hist_count);
 my @splicing_events;
@@ -26,23 +26,6 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
 
   my %primary_initial_sample_list;
 
-  ## store primary tumor samples
-  open(FIL,$primary_tumor_dat) || die("Cannot Open File");
-  while(<FIL>)
-  {
-    chomp;
-    my @header = split "\t";
-    my $bs_id = $header[1];
-    my $cohort = $header[2];
-    my $exp_strategy = $header[4];
-    my $tumor_descr = $header[5];
-
-    next unless ($cohort=~/PBTA/);
-
-    $primary_initial_sample_list{$bs_id} = $bs_id;
-
-  }
-  close(FIL);
 
   ## store primary tumor samples
   open(FIL,$primary_tumor_plus_dat) || die("Cannot Open File");
@@ -72,7 +55,8 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
     {
       chomp;
       my @cols       = split "\t";
-      my $hist       = $cols[53];
+      #my $hist       = $cols[53];
+      my $hist = $cols[-6];
       my $bs_id      = $cols[0];
       my $patient_id = $cols[3];
       my $CNS_region = $cols[32];
@@ -80,24 +64,7 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
 
       next unless ($primary_initial_sample_list{$bs_id});
 
-      ## filter histologies of interests
-      next unless ( ($hist=~/HGAT/)  ||
-                    ($hist=~/LGAT/)  ||
-                    #($hist=~/Oligodendroglioma/) ||
-                    ($hist=~/Medulloblastoma/)   ||
-                    ($hist=~/Ganglioglioma/)  ||
-                    ($hist=~/Ependymoma/)||
-                    ($hist=~/ATRT/)  ||
-                    ($hist=~/Craniopharyngioma/) );
 
-      ## convert histology names
-      $hist =~s/Oligodendroglioma/OGG/;
-      $hist =~s/Medulloblastoma/MB/;
-      $hist =~s/Ganglioglioma/GNG/;
-      $hist =~s/Ependymoma/EPN/;
-      $hist =~s/Craniopharyngioma/CPG/;
-      $hist =~s/HGAT/HGG/;
-      $hist =~s/LGAT/LGG/;
 
     ## make an array and store histology information and BS IDs
     push @broad_hist, $hist;
@@ -113,6 +80,7 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
 
     ## histology counter for downstream analysis
     $hist_count{$hist}++;
+    #print $hist,"\n";
 
   }
 

@@ -30,10 +30,10 @@ independent-specimens.rnaseqpanel.primary-plus.tsv
 ├── 02-plot_splicing_burden_index.R
 ├── README.md
 ├── plots
-│   ├── SBI-plot.A3SS.tiff
-│   ├── SBI-plot.A5SS.tiff
-│   ├── SBI-plot.RI.tiff
-│   └── SBI-plot.SE.tiff
+│   ├── sbi-plot-A3SS.tiff
+│   ├── sbi-plot-A5SS.tiff
+│   ├── sbi-plot-RI.tiff
+│   └── sbi-plot-SE.tiff
 ├── results
 │   ├── splice_events.diff.A3SS.txt
 │   ├── splice_events.diff.A5SS.txt
