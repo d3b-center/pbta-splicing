@@ -1,6 +1,6 @@
 ################################################################################
 # 01-plot_highExon4_vs_lowExon4_and_SBI.R
-# written by Ammar Naqvi
+# written by Ammar Naqvi and Jo Lynne Rokita
 #
 # usage: Rscript 01-plot_highExon4_vs_lowExon4_and_SBI.R
 ################################################################################
