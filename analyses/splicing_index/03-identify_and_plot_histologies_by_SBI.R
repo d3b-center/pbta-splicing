@@ -1,6 +1,6 @@
 ################################################################################
 # 03-identify_and_plot_histologies_by_SBI.R
-# written by Ammar S Naqvi
+# written by Ammar S Naqvi, Jo Lynne Rokita
 #
 # script identifies high vs low SBI tumors and creates piechart of their hist 
 #
@@ -31,7 +31,6 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## define output files
-lolli_path  <- file.path(plots_dir,"hist_by_sbi_level_lolliplot.pdf")
 barplot_path <- file.path(plots_dir, "hist_by_sbi_level_barplot.pdf")
 
 ## get and setup input files
@@ -80,42 +79,12 @@ plot_df <- clin_df_w_highSBI %>%
   dplyr::rename(`Samples with High SBI (N)` = High_SBI,
                 `Samples with Low SBI (N)` = Low_SBI)
 
-
-histology_counts_by_sbi <- clin_df_w_SBI %>% 
-  dplyr::count(SBI_level, Histology) %>%
-  dplyr::mutate(SBI_level = fct_relevel(SBI_level,
-                                        c("Low SBI", "High SBI"))) %>%
-  left_join(palette_df) %>%
-  as.data.frame()
-
 # make colors
 plot_colors <- palette_df$plot_group_hex
 names(plot_colors) <- palette_df$Histology
 
-# plot 
-lolliplot_plot <- ggplot(histology_counts_by_sbi, 
-                         aes(x=Histology, y=n, color=Histology)) +
-  geom_segment(aes(x=Histology, xend=Histology, y=0, yend=n)) +
-  scale_color_manual(name = "Histology", values = plot_colors) + 
-  geom_point(size = 4) +
-  xlab("") + ylab("# of Samples") +
-  facet_wrap(SBI_level ~ .) +
-  theme_Publication() + 
-  theme(axis.text.x = element_blank(),
-        axis.ticks = element_blank(),
-        panel.grid  = element_blank(),
-        legend.title = element_text(size=10),
-        legend.text = element_text(size=12), 
-        axis.title=element_text(size=14)) 
-
-# save lollipop plot
-while (!is.null(dev.list()))  dev.off()
-pdf(lolli_path, height = 4, width = 10)
-print(lolliplot_plot)
-dev.off()
-
 g.mid <- ggplot(plot_df,aes(x=1,y=Histology)) +
-  geom_text(aes(label=Histology), size = 4) +
+  geom_text(aes(label=Histology), size = 4.25) +
   ylab(NULL)+
   xlab(NULL) +
   scale_x_continuous(expand=c(0,0),limits=c(0.94,1.06))+
