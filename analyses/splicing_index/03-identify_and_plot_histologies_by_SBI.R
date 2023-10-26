@@ -76,7 +76,9 @@ clin_df_w_lowSBI <- clin_df_w_SBI %>%
 plot_df <- clin_df_w_highSBI %>%
   full_join(clin_df_w_lowSBI) %>%
   left_join(palette_df) %>%
-  mutate(Histology = fct_reorder(Histology, High_SBI))
+  mutate(Histology = fct_reorder(Histology, High_SBI)) %>%
+  dplyr::rename(`Samples with High SBI (N)` = High_SBI,
+                `Samples with Low SBI (N)` = Low_SBI)
 
 
 histology_counts_by_sbi <- clin_df_w_SBI %>% 
@@ -114,8 +116,8 @@ dev.off()
 
 g.mid <- ggplot(plot_df,aes(x=1,y=Histology)) +
   geom_text(aes(label=Histology), size = 4) +
-  ggtitle("")+
   ylab(NULL)+
+  xlab(NULL) +
   scale_x_continuous(expand=c(0,0),limits=c(0.94,1.06))+
   theme(axis.title=element_blank(),
         panel.grid=element_blank(),
@@ -124,14 +126,13 @@ g.mid <- ggplot(plot_df,aes(x=1,y=Histology)) +
         panel.background=element_blank(),
         axis.text.x=element_text(color=NA),
         axis.ticks.x=element_line(color=NA),
-        plot.margin = unit(c(2,1,1,2), "mm")) 
+        plot.margin = unit(c(2,1,10,2), "mm")) 
 
-g1 <- ggplot(data = plot_df, aes(x = Histology, y = Low_SBI)) +
+g1 <- ggplot(data = plot_df, aes(x = Histology, y = `Samples with Low SBI (N)`)) +
   geom_bar(stat = "identity", aes(fill = Histology), show.legend = FALSE) + 
   scale_fill_manual(values = plot_colors) +
-  ggtitle("Number of samples with Low SBI") +
   theme_Publication() +
-  theme(axis.title.x = element_blank(), 
+  theme(#axis.title.x = element_blank(), 
         axis.title.y = element_blank(), 
         axis.text.y = element_blank(), 
         axis.ticks.y = element_blank(), 
@@ -141,19 +142,22 @@ g1 <- ggplot(data = plot_df, aes(x = Histology, y = Low_SBI)) +
         panel.grid.minor.y = element_blank())  + # Remove minor grid lines
   scale_y_reverse(limits = c(200,0)) + 
   coord_flip() +
+  #labs(x = "Number of samples with Low SBI") +
   geom_hline(yintercept = 0, color = "black", linetype = "solid", linewidth = 0.75)
 
-g2 <- ggplot(data = plot_df, aes(x = Histology, y = High_SBI)) +xlab(NULL)+
+g2 <- ggplot(data = plot_df, aes(x = Histology, y = `Samples with High SBI (N)`)) +
   geom_bar(stat = "identity", aes(fill = Histology), show.legend = FALSE) +
   scale_fill_manual(values = plot_colors) +
-  ggtitle("Number of samples with High SBI") +
   theme_Publication() +
-  theme(axis.title.x = element_blank(), axis.title.y = element_blank(), 
-        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+  theme(#axis.title.x = element_blank(), 
+        axis.title.y = element_blank(), 
+        axis.text.y = element_blank(), 
+        axis.ticks.y = element_blank(),
         plot.margin = unit(c(1,1,1,2), "mm"),
         axis.line.y.left = element_blank(),
         panel.grid.major.y = element_blank(),  # Remove major grid lines
         panel.grid.minor.y = element_blank())  + # Remove minor grid lines) +
+ # labs(x = "Number of samples with High SBI") +
   scale_y_continuous(limits = c(0,200)) +
   coord_flip() +
   geom_hline(yintercept = 0, color = "black", linetype = "solid", linewidth = 0.75)
