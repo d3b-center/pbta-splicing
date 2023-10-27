@@ -33,6 +33,9 @@ if(!dir.exists(plots_dir)){
 ## output files for final plots
 upsetR_es_plot_file          <- file.path(analysis_dir, "plots", "upsetR_histology-specific.es.pdf")
 upsetR_ei_plot_file          <- file.path(analysis_dir, "plots", "upsetR_histology-specific.ei.pdf")
+uniq_es_tsv_out <- file.path(results_dir, "unique_events-es.tsv")
+uniq_ei_tsv_out <- file.path(results_dir, "unique_events-ei.tsv")
+
 
 # Load the data using vroom
 splice_event_df <- vroom::vroom(paste0(results_dir, "/", "splicing_events.hist-labeled_list.thr2freq.txt"), delim = "\t", trim_ws = TRUE, col_names = TRUE)
@@ -55,6 +58,31 @@ pdf(upsetR_es_plot_file, height = 10, width = 20)
 print(es_events)
 dev.off()
 
+# Create an empty list to store the results
+unique_items_list <- vector("list", length(list_for_skipping_upsetR))
+
+# Loop through each sublist and find unique items
+for (i in seq_along(list_for_skipping_upsetR)) {
+  current_sublist <- unlist(list_for_skipping_upsetR[[i]])
+  other_sublists <- unlist(list_for_skipping_upsetR[-i])
+  unique_items <- current_sublist[!(current_sublist %in% other_sublists)]
+  histology = names(list_for_skipping_upsetR)[i]
+  unique_items_list[[histology]] <- unique_items
+}
+
+# Iterate through the sub-lists and create one larger list to write to a TSV file
+unique_events_es_df <- data.frame()
+for (Histology in names(unique_items_list)) {
+  
+  # Create a data frame with list values
+  df <- data.frame(SpliceID=unlist(unique_items_list[[Histology]])) %>% mutate(Histology=paste(Histology,sep="")) 
+  
+  # append to larger df of unique events
+  unique_events_es_df <- rbind(unique_events_es_df,df)
+  
+}
+write_tsv(unique_events_es_df, uniq_es_tsv_out)
+
 ## make list out of all inclusion events
 list_for_inclusion_upsetR <- splice_event_df %>%
   filter(type == 'inclusion') %>%
@@ -72,6 +100,34 @@ ei_events <- upset(fromList(list_for_inclusion_upsetR), order.by = "freq",keep.o
 pdf(upsetR_ei_plot_file, height = 10, width = 20)
 print(ei_events)
 dev.off()
+
+# Create an empty list to store the results
+unique_items_list <- vector("list", length(list_for_inclusion_upsetR))
+
+# Loop through each sublist and find unique items
+for (i in seq_along(list_for_inclusion_upsetR)) {
+  current_sublist <- unlist(list_for_inclusion_upsetR[[i]])
+  other_sublists <- unlist(list_for_inclusion_upsetR[-i])
+  unique_items <- current_sublist[!(current_sublist %in% other_sublists)]
+  histology = names(list_for_inclusion_upsetR)[i]
+  unique_items_list[[histology]] <- unique_items
+}
+
+# Iterate through the sub-lists and create one larger list to write to a TSV file
+unique_events_ei_df <- data.frame()
+for (Histology in names(unique_items_list)) {
+  
+  # Create a data frame with list values
+  df <- data.frame(SpliceID=unlist(unique_items_list[[Histology]])) %>% mutate(Histology=paste(Histology,sep="")) 
+  
+  # Define the file name based on the list name
+  file_name <- file.path(file.path(results_dir), paste("unique_events-es.",Histology, ".tsv", sep = ""))
+  
+  # append to larger df of unique events
+  unique_events_ei_df <- rbind(unique_events_ei_df,df)
+  
+}
+write_tsv(unique_events_ei_df, uniq_ei_tsv_out)
 
 ## delete Rplots
 unlink(file.path("Rplots.pdf"))
