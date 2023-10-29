@@ -35,96 +35,72 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(root_dir, "figures", "theme_for_plots.R"))
 source(file.path(analysis_dir, "util", "function-create-scatter-plot.R"))
 
-
 ## define input files
 clin_file <- file.path(data_dir,"histologies.tsv")
 file_gene_counts <- file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds")
 rmats_file <- file.path(data_dir, "rMATS_merged.comparison.tsv.gz")
 
-## define output file
-plot_total_hgg_path <- file.path(plots_dir, "CLK1_expr_vs_psi_totalHGG.pdf")
-plot_midline_hgg_path <- file.path(plots_dir, "CLK1_expr_vs_psi_midlineHGG.pdf")
-plot_total_hgg_SRSF1_path <- file.path(plots_dir, "SRSF1_expr_vs_psi_totalHGG.pdf")
-plot_midline_hgg_SRSF1_path <- file.path(plots_dir, "SRSF1_expr_vs_psi_midlineHGG.pdf")
-
-
 ## read in histology file and count data
-count_df <- readRDS(file_gene_counts)
-
 ## filter histology file for all HGG
-clin_tab_hgg <- read_tsv(clin_file) %>% 
+all_hgg_bsids <- read_tsv(clin_file) %>% 
   filter(short_histology == 'HGAT',
          RNA_library == 'stranded',
-         cohort == 'PBTA')
+         cohort == 'PBTA') %>%
+  select(Kids_First_Biospecimen_ID, CNS_region)
 
-## filter histology file for midline HGG
-clin_tab_midline_hgg <- clin_tab_hgg %>%
-  filter(CNS_region %in% c('Midline', 'Spine'))
+# keep only hgg ids
+count_df <- readRDS(file_gene_counts) %>%
+  select(all_hgg_bsids$Kids_First_Biospecimen_ID)
 
-## load rmats input
-# create df for each case (midline HGG and all HGGs)
-rmats_df_midline_hgg <-  vroom(rmats_file, comment = "#",delim="\t") %>%
+## load rmats input for CLK1
+clk1_rmats <- vroom(rmats_file, comment = "#", delim="\t") %>%
   # filter for CLK1 and exon 4
   filter(geneSymbol=="CLK1",
-         exonStart_0base=="200860124", exonEnd=="200860215") %>% 
-  # join with clinical data
-  inner_join(clin_tab_midline_hgg, by=c('sample_id'='Kids_First_Biospecimen_ID')) %>%
-  select(sample_id, geneSymbol, IncLevel2) 
+         exonStart_0base=="200860124", 
+         exonEnd=="200860215") %>% 
+  # select minimal info
+  select(sample_id, IncLevel2) 
 
-rmats_df_hgg <-  vroom(rmats_file, comment = "#",delim="\t") %>%
-  # filter for CLK1 and exon 4
-  filter(geneSymbol=="CLK1",exonStart_0base=="200860124", exonEnd=="200860215") %>% 
-  # join with clinical data
-  inner_join(clin_tab_hgg, by=c('sample_id'='Kids_First_Biospecimen_ID')) %>%
-  select(sample_id, geneSymbol, IncLevel2) 
+## combine RNA with psi values for scatter plot/correlation for goi 
+goi_list <- c("CLK1", "SRSF1")
+region_list <- c("midline", "all")
 
-## combine CLK1 RNA with psi values for scatter plot/correlation 
-count_psi_midline_hgg_df <- filter(count_df,rownames(count_df) == 'CLK1')  %>% 
-  select(any_of(rmats_df_midline_hgg$sample_id)) %>% 
-  pivot_longer(cols = tidyselect::everything(),names_to=c("sample_id"), values_to="Expr") %>% 
-  inner_join(rmats_df_midline_hgg, by='sample_id')
-
-count_psi_hgg_df <- filter(count_df,rownames(count_df) == 'CLK1')  %>% 
-  select(any_of(rmats_df_hgg$sample_id)) %>% 
-  pivot_longer(cols = tidyselect::everything(),names_to=c("sample_id"), values_to="Expr") %>% 
-  inner_join(rmats_df_hgg, by='sample_id')
-
-## combine SRSF1 RNA with psi values for scatter plot/correlation 
-SRSF1_count_psi_midline_hgg_df <- filter(count_df,rownames(count_df) == 'SRSF1')  %>% 
-  select(any_of(rmats_df_midline_hgg$sample_id)) %>% 
-  pivot_longer(cols = tidyselect::everything(),names_to=c("sample_id"), values_to="Expr") %>% 
-  inner_join(rmats_df_midline_hgg, by='sample_id')
-
-SRSF1_count_psi_hgg_df <- filter(count_df,rownames(count_df) == 'SRSF1')  %>% 
-  select(any_of(rmats_df_hgg$sample_id)) %>% 
-  pivot_longer(cols = tidyselect::everything(),names_to=c("sample_id"), values_to="Expr") %>% 
-  inner_join(rmats_df_hgg, by='sample_id')
-
-## generate scatter plots and save to file
-scatterplot_midline_hgg <- create_scatterplot(count_psi_midline_hgg_df) 
-ggplot2::ggsave(plot_midline_hgg_path,
-                width=4,
-                height=4,
-                device="pdf",
-                dpi=300)
-
-scatterplot_total_hgg <- create_scatterplot(count_psi_hgg_df) 
-ggplot2::ggsave(plot_total_hgg_path,
-                width=4,
-                height=4,
-                device="pdf",
-                dpi=300)
-
-scatterplot_midline_hgg_SRSF1 <- create_scatterplot(SRSF1_count_psi_midline_hgg_df) 
-ggplot2::ggsave(plot_midline_hgg_SRSF1_path,
-                width=4,
-                height=4,
-                device="pdf",
-                dpi=300)
-
-scatterplot_total_hgg_SRSF1 <- create_scatterplot(SRSF1_count_psi_hgg_df) 
-ggplot2::ggsave(plot_total_hgg_SRSF1_path,
-                width=4,
-                height=4,
-                device="pdf",
-                dpi=300)
+for (gene in goi_list) {
+  for (brain_region in region_list) {
+    
+    if (brain_region == "all"){
+      # take all hgg bs ids
+      bs_id_list <- all_hgg_bsids$Kids_First_Biospecimen_ID
+    }
+    
+    else if (brain_region == "midline"){
+      # take only midline and spine
+      bs_id_list <- all_hgg_bsids %>%
+        filter(CNS_region %in% c("Midline", "Spine")) %>%
+        pull(Kids_First_Biospecimen_ID)
+    }
+    
+  # filter RMATs file for the bs ids of interest
+    rmats_df <- clk1_rmats %>%
+    # filter for bs ids of interest and CLK1 and exon 4
+    filter(sample_id %in% bs_id_list)
+    
+  # filter count data
+    rmats_exp_df <- count_df %>%
+      filter(rownames(.) == gene)  %>% 
+      select(bs_id_list) %>% 
+      pivot_longer(cols = tidyselect::everything(),
+                   names_to=c("sample_id"), 
+                   values_to="Expr") %>% 
+      inner_join(rmats_df, by= "sample_id") %>%
+      # need to add this so that we can use this in the plot axis
+      mutate(geneSymbol = paste0(gene))
+    
+  # make scatterplot
+    p <- create_scatterplot(rmats_exp_df) 
+    # save plot 
+    pdf(file.path(paste(plots_dir, "/", gene, "_exp_vs_CLK1_psi_", brain_region, "_hgg.pdf", sep = "")), width = 4.5, height = 4.5)
+    print(p)
+    dev.off()
+  }
+}
