@@ -33,17 +33,33 @@ groups <- c("ATRT", "CPG", "EPN", "GNG",
             "LGG, WT",
             "MB, Group3", "MB, Group 4", "MB, SHH")
 
+dir_names <- c("ATRT", "CPG", "EPN", "GNG",
+               "HGG", 
+               "LGG", 
+               "MB", "CPG", "EPN",
+               rep("HGG", 2), "GNG",
+               rep("LGG", 3), rep("MB", 3))
+names(dir_names) <- groups
+
 # Define identifiers for model files
 file_names <- c("atrt", "cpg", "epn", 
                 "gng", "hgg",
                 "lgg", "mb",
-                "cranio_ADAM", "epn_PF A", "hgg_k28", "hgg_WT", "gng_gnt_Other",
+                "cranio_ADAM", "epn_PF A", "hgg_K28", "hgg_wildtype", "gng_gnt_Other",
                 "lgg_BRAF", "lgg_Other", "lgg_WT", "mb_Group3", "mb_Group4", "mb_SHH")
 names(file_names) <- groups
 
 # Loop through histology groups and subtypes to generate Kaplan-Meier plots from models
 
 for (group in groups){
+  
+  input_dir <- file.path(analysis_dir, "results", dir_names[group])
+  plots_dir <- file.path(analysis_dir, "plots", dir_names[group])
+  
+  if (!dir.exists(plots_dir)) {
+    dir.create(plots_dir)
+    
+  }
   
   km_os_result <- read_rds(
     file.path(input_dir,
@@ -81,6 +97,9 @@ file_names["EPN, PF A"] <- "epn_PF-A"
 
 for (group in groups){
   
+  input_dir <- file.path(analysis_dir, "results", dir_names[group])
+  plots_dir <- file.path(analysis_dir, "plots", dir_names[group])
+  
   if (grepl("GNG|LGG", group)){
     os_survival_result <- read_rds(
       file.path(input_dir,
@@ -103,7 +122,7 @@ for (group in groups){
   
   ggsave(os_forest_pdf, os_forest_plot, width = 8, height = 3)
   
-  # Forest plots for PFS
+  # Forest plots for EFS
   
   if (grepl("GNG|LGG", group)){
     efs_survival_result <- read_rds(
@@ -136,6 +155,9 @@ for (group in groups){
 
 
 for (group in groups){
+  
+  input_dir <- file.path(analysis_dir, "results", dir_names[group])
+  plots_dir <- file.path(analysis_dir, "plots", dir_names[group])
   
   # Forest plots for OS
   
