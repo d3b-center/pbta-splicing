@@ -1,7 +1,7 @@
 ################################################################################
 # 02-plot_splicing_vs_expr.R 
 # Plot scatter and compute R for CLK1 expression and PSI values for HGGs
-# written by Ammar S Naqvi
+# written by Ammar S Naqvi, Jo Lynne Rokita
 # Usage: Rscript 02-plot_splicing_vs_expr.R
 ################################################################################
 
