@@ -38,7 +38,7 @@ uniq_ei_tsv_out <- file.path(results_dir, "unique_events-ei.tsv")
 
 
 # Load the data using vroom
-splice_event_df <- vroom::vroom(paste0(results_dir, "/", "splicing_events.hist-labeled_list.thr2freq.txt"), delim = "\t", trim_ws = TRUE, col_names = TRUE)
+splice_event_df <- vroom::vroom(file.path(results_dir, "splicing_events.hist-labeled_list.thr2freq.txt"), delim = "\t", trim_ws = TRUE, col_names = TRUE)
 
 ## make list out of all skipping events
 list_for_skipping_upsetR <- splice_event_df %>%
@@ -51,10 +51,10 @@ list_for_skipping_upsetR <- splice_event_df %>%
 
 # Generate the UpSetR plot
 es_events <- upset(fromList(list_for_skipping_upsetR), order.by = "freq",keep.order = TRUE, mainbar.y.label = "", sets.x.label = "Histology",
-                   mb.ratio = c(0.6,0.4), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4),point.size = 2, line.size = 1, nsets = 17)
+                   mb.ratio = c(0.6,0.4), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4), point.size = 3, line.size = 1, nsets = 17, )
 
 # Save plot
-pdf(upsetR_es_plot_file, height = 10, width = 20)
+pdf(upsetR_es_plot_file, height = 9, width = 15)
 print(es_events)
 dev.off()
 
@@ -94,10 +94,10 @@ list_for_inclusion_upsetR <- splice_event_df %>%
 
 # Generate the UpSetR plot
 ei_events <- upset(fromList(list_for_inclusion_upsetR), order.by = "freq",keep.order = TRUE, mainbar.y.label = "", sets.x.label = "Histology",
-                   mb.ratio = c(0.6,0.4), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4),point.size = 2, line.size = 1, nsets = 17)
+                   mb.ratio = c(0.6,0.4), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4),point.size = 3, line.size = 1, nsets = 17)
 
 # Save plot
-pdf(upsetR_ei_plot_file, height = 10, width = 20)
+pdf(upsetR_ei_plot_file, height = 9, width = 15)
 print(ei_events)
 dev.off()
 
@@ -128,6 +128,3 @@ for (Histology in names(unique_items_list)) {
   
 }
 write_tsv(unique_events_ei_df, uniq_ei_tsv_out)
-
-## delete Rplots
-unlink(file.path("Rplots.pdf"))
