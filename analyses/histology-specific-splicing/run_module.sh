@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ## histology and rmats file
-hist_file="input/histologies-plot-group.tsv"
+hist_file="../splicing_index/results/histologies-plot-group.tsv"
 rmats_file="../../data/splice-events-rmats.tsv.gz"
 indep_samples_plus="../../data/independent-specimens.rnaseqpanel.primary-plus.tsv"
 
