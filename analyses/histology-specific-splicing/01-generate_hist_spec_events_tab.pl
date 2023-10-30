@@ -5,7 +5,7 @@ use Statistics::Lite qw(:all);
 ############################################################################################################
 # 04-generate_hist_spec_events_tab.pl
 #
-# ./04-generate_hist_spec_events_tab.pl <hist file> <rmats file> <indep_samples> <indep_samples-plus>
+# ./04-generate_hist_spec_events_tab.pl <hist file> <rmats file> <indep_samples-plus>
 ############################################################################################################
 my ($histology,$rmats_tsv,$primary_tumor_plus_dat) = ($ARGV[0], $ARGV[1],$ARGV[2]);
 my (@broad_hist, @bs_id, @splicing_events);
