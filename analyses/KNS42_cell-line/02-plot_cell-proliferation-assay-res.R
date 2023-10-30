@@ -24,6 +24,7 @@ input_dir <- file.path(analysis_dir, "input")
 plots_dir <- file.path(analysis_dir, "plots")
 
 ## theme for all plots
+source(paste0(root_dir, "/figures/theme_for_plots.R"))
 figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
