@@ -40,25 +40,27 @@ if(!dir.exists(results_dir)){
 }
 
 ## output files for final plots
-file_volc_hgat_SF_plot <- file.path(analysis_dir, "plots", 
-                                    "enhancedVolcano_ctrl_hgat_SFs.tiff")
-file_volc_H3K28_SF_plot <- file.path(analysis_dir, "plots", 
-                                     "enhancedVolcano_ctrl_h3k28_SFs.tiff")
+file_volc_hgg_SF_plot <- file.path(analysis_dir, "plots", 
+                                    "enhancedVolcano_ctrl_hggs_SFs.pdf")
+
+## input files
+sf_file <- file.path(input_dir,"splicing_factors.txt")
+clin_file <- file.path(data_dir,"histologies.tsv")
+file_gene_counts = file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds")
+file_nontumor_count = file.path(input_dir,"rsem_counts.non_tumor.tsv")
+
 
 ## get splicing factor list to subset later
-sf_file = "splicing_factors.txt"
-sf_list <- read.csv(paste0(input_dir, "/", sf_file),  header=FALSE)
+sf_list <- read.csv(sf_file, header=FALSE)
 
 ## get clinical histlogy file filtered by HGG samples
-clin_file = "histologies.tsv"
-clin_tab <- read.delim(paste0(data_dir,"/",clin_file), sep = "\t", header=TRUE) %>% 
+clin_tab <- read.delim(clin_file, sep = "\t", header=TRUE) %>% 
   filter(short_histology == 'HGAT') %>% filter(RNA_library == 'stranded') %>%
                                           filter(cohort == 'PBTA') %>%
                                           filter(CNS_region == 'Midline')
 
 ## get gene count table with splicing factors and midline HGGs filter
-file_gene_counts = "gene-counts-rsem-expected_count-collapsed.rds" 
-count_data <- readRDS(paste0(data_dir,"/", file_gene_counts)) 
+count_data <- readRDS(file_gene_counts)
 
 #filter for only splicing factors from above SF list
 count_data_sf <- count_data[rownames(count_data) %in% sf_list$V1, ]  %>% 
@@ -69,8 +71,7 @@ count_data_sf <- cbind(gene = rownames(count_data_sf), count_data_sf)
 rownames(count_data_sf) <- NULL
 
 ## get corresponding non-brain tumor samples
-file_nontumor_count = "rsem_counts.non_tumor.tsv"
-gene_counts_nontumor  <-  read.delim(paste0(input_dir, "/",file_nontumor_count),header=TRUE, sep = "\t")
+gene_counts_nontumor  <-  read.delim(file_nontumor_count,header=TRUE, sep = "\t")
 
 gene_counts_combined <- inner_join(gene_counts_nontumor,count_data_sf, by = 'gene')
 filtered.counts <- gene_counts_combined[rowSums(gene_counts_combined>=2) >= 1, ]
@@ -79,7 +80,6 @@ filtered.counts <- gene_counts_combined[rowSums(gene_counts_combined>=2) >= 1, ]
 design = data.frame(row.names = colnames(filtered.counts$gene),
                     condition = c(rep("Healthy",10), rep("Tumor",53) ),
                     libType   = c(rep("paired-end",63)))
-
 
 ## remove first column
 filtered.counts_removed <- select(filtered.counts, -gene)
@@ -104,12 +104,12 @@ EnhancedVolcano(res,
                 title = 'non-Tumor versus HGG',
                 pCutoff = 0.05,
                 FCcutoff = 1,
-                pointSize = ,
-                labSize = 3)
+                pointSize = 3,
+                labSize = 5)
 
 
 ggsave(
-  file_volc_hgat_SF_plot,
+  file_volc_hgg_SF_plot,
   plot = last_plot(),
   device = NULL,
   path = NULL,
@@ -124,5 +124,5 @@ ggsave(
 
 ## write significant genes to table for subsequent correlation analyses
 gene_sign_list <- as.data.frame(res) %>% mutate(gene = filtered.counts$gene) %>% filter(padj < 0.05) %>% filter(abs(log2FoldChange) > 1)  %>% select(gene) 
-write_delim(gene_sign_list,paste0(results_dir,"/","sign_genes.txt"), delim = "\t")
+write_delim(gene_sign_list,file.path(results_dir,"sign_genes.txt"), delim = "\t")
 
