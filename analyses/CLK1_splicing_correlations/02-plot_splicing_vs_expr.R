@@ -74,9 +74,9 @@ for (gene in goi_list) {
     }
     
     else if (brain_region == "midline"){
-      # take only midline and spine
+      # take only midline bs ids
       bs_id_list <- all_hgg_bsids %>%
-        filter(CNS_region %in% c("Midline", "Spine")) %>%
+        filter(CNS_region == "Midline") %>%
         pull(Kids_First_Biospecimen_ID)
     }
     
