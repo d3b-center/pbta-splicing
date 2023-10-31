@@ -43,15 +43,20 @@ cptac_output_file2 <- file.path(input_dir,"CPTAC3-pbt.xls")
 cptac_data <- readxl::read_excel(cptac_output_file2) %>%
   # select only rows with CLK1 or SRFs, remove muts
   filter(grepl("CLK1|SRSF", idx),
-         !`Data type` %in% c("mut", "cnv", "proteo")) %>%
+         !`Data type` %in% c("mut", "cnv")) %>%
   # remove extra info from cols
   rename_with(~ gsub("X7316.", "7316-", .), everything()) %>%
   dplyr::rename(Assay = `Data type`) %>%
   # create new display name for phospho proteins
-  mutate(phos_site = case_when(Assay == "phospho" ~ str_split(idx, "phospho", simplify = TRUE)[, 2],
+  mutate(Assay = case_when(Assay == "proteo" ~ "Whole Cell Proteomics",
+                           Assay == "phospho" ~ "Phospho-Proteomics",
+                           Assay == "rna" ~ "RNA-Seq"),
+         Assay = fct_relevel(Assay, c("RNA-Seq", "Whole Cell Proteomics", "Phospho-Proteomics")),
+         phos_site = case_when(Assay == "Phospho-Proteomics" ~ str_split(idx, "phospho", simplify = TRUE)[, 2],
                                TRUE ~ NA_character_),
-         display_name = case_when(Assay == "phospho" ~ paste(`Gene symbol`, phos_site, sep = " "),
-                                  Assay == "proteo" ~ paste(`Gene symbol`, Assay, sep = " "),
+         display_name = case_when(Assay == "Phospho-Proteomics" ~ paste(`Gene symbol`, phos_site, sep = " "),
+                                  # add a space after the gene to trick into thinking the rownames are not duplicated
+                                  Assay == "Whole Cell Proteomics" ~ paste(`Gene symbol`, " ", sep = " "),
                                   TRUE ~ `Gene symbol`)
   ) %>%
   select(display_name, Assay, starts_with("7316")) %>%
@@ -64,6 +69,8 @@ rownames <- cptac_data$display_name
 mat <- cptac_data %>%
   select(3:(ncol(cptac_data))) %>%
   as.matrix()
+storage.mode(mat) <- "numeric"
+class(mat)
 
 
 # set rownames, convert to matrix
@@ -80,7 +87,7 @@ rownames(row_annot) <- rownames(mat)
 
 
 # create anno colors
-anno_col <- list(Assay = c(rna = "#CD5C5C", phospho = "#0C7BDC"))
+anno_col <- list(Assay = c("RNA-Seq" = "#DC3220", "Phospho-Proteomics" = "#005AB5", "Whole Cell Proteomics" = "#40B0A6"))
 
 # Heatmap annotation
 row_anno = rowAnnotation(df = row_annot,
@@ -88,9 +95,9 @@ row_anno = rowAnnotation(df = row_annot,
 
 
 # Make heatmap without legends
-heat_plot <- Heatmap(mat[,1:5],
+heat_plot <- Heatmap(mat,
                      name = "Z-score",
-                     col = colorRamp2(c(-2, 0, 2), c("orange", "white", "purple")),
+                     col = colorRamp2(c(-2, 0, 2), c("#E66100", "white", "#5D3A9B")),
                      cluster_rows = FALSE,
                      row_split = row_annot$Assay, 
                      column_gap = 0.5,
@@ -99,7 +106,7 @@ heat_plot <- Heatmap(mat[,1:5],
                      show_heatmap_legend=TRUE,
                      cluster_columns = TRUE, 
                      right_annotation = row_anno,
-                     #na_col = "lightgrey",
+                     na_col = "lightgrey",
                      #rect_gp = gpar(col = "white"),
                      row_title = NULL, 
                      column_title = NULL, 
@@ -107,8 +114,6 @@ heat_plot <- Heatmap(mat[,1:5],
 
 heat_plot
 
-pdf(heatmap_output_file, width = 15, height = 7)
+pdf(heatmap_output_file, width = 8, height = 6)
 print(heat_plot)
 dev.off()
-
-mat[1:5,1:5]
