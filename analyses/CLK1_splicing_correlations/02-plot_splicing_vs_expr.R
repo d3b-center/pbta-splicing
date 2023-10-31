@@ -21,18 +21,15 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1_splicing_correlations")
-
-results_dir <- file.path(analysis_dir, "results")
 plots_dir <- file.path(analysis_dir, "plots")
-input_dir <- file.path(analysis_dir, "input")
+figures_dir <- file.path(root_dir, "figures")
 
 if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
 }
 
 # theme for all plots
-figures_dir <- file.path(root_dir, "figures")
-source(file.path(root_dir, "figures", "theme_for_plots.R"))
+source(file.path(figures_dir, "theme_for_plots.R"))
 source(file.path(analysis_dir, "util", "function-create-scatter-plot.R"))
 
 ## define input files
@@ -41,11 +38,11 @@ file_gene_counts <- file.path(data_dir,"gene-counts-rsem-expected_count-collapse
 rmats_file <- file.path(data_dir, "rMATS_merged.comparison.tsv.gz")
 
 ## read in histology file and count data
-## filter histology file for all HGG
-all_hgg_bsids <- read_tsv(clin_file) %>% 
-  filter(short_histology == 'HGAT',
-         RNA_library == 'stranded',
-         cohort == 'PBTA') %>%
+## filter histology file for all HGG, only stranded samples
+all_hgg_bsids <- read_tsv(clin_file, guess_max = 10000) %>% 
+  filter(short_histology == "HGAT",
+         RNA_library == "stranded",
+         cohort == "PBTA") %>%
   select(Kids_First_Biospecimen_ID, CNS_region)
 
 # keep only hgg ids
@@ -60,6 +57,8 @@ clk1_rmats <- vroom(rmats_file, comment = "#", delim="\t") %>%
          exonEnd=="200860215") %>% 
   # select minimal info
   select(sample_id, IncLevel2) 
+
+set.seed(2023)
 
 ## combine RNA with psi values for scatter plot/correlation for goi 
 goi_list <- c("CLK1", "SRSF1")
@@ -88,7 +87,7 @@ for (gene in goi_list) {
   # filter count data
     rmats_exp_df <- count_df %>%
       filter(rownames(.) == gene)  %>% 
-      select(bs_id_list) %>% 
+      select(all_of(bs_id_list)) %>% 
       pivot_longer(cols = tidyselect::everything(),
                    names_to=c("sample_id"), 
                    values_to="Expr") %>% 
