@@ -1,6 +1,6 @@
 ################################################################################
 # 03-plot_SR-phosp_vs_CLK1-RNA.R
-# written by Shehbeel Arif, Ammar Naqvi, Jo Lynne Rokita
+# written by Ammar Naqvi, Jo Lynne Rokita
 #
 # This script uses CPTAC data to generate and plot heatmap of RNA vs phosp of 
 # CLK1 and SRSF phospho-levels
@@ -47,11 +47,12 @@ cptac_data <- readxl::read_excel(cptac_output_file2) %>%
   # remove extra info from cols
   rename_with(~ gsub("X7316.", "7316-", .), everything()) %>%
   dplyr::rename(Assay = `Data type`) %>%
-  # create new display name for phospho proteins
+  # clean up naming for plotting
   mutate(Assay = case_when(Assay == "proteo" ~ "Whole Cell Proteomics",
                            Assay == "phospho" ~ "Phospho-Proteomics",
                            Assay == "rna" ~ "RNA-Seq"),
          Assay = fct_relevel(Assay, c("RNA-Seq", "Whole Cell Proteomics", "Phospho-Proteomics")),
+         # create new display name for phospho proteins to include phos site
          phos_site = case_when(Assay == "Phospho-Proteomics" ~ str_split(idx, "phospho", simplify = TRUE)[, 2],
                                TRUE ~ NA_character_),
          display_name = case_when(Assay == "Phospho-Proteomics" ~ paste(`Gene symbol`, phos_site, sep = " "),
@@ -60,6 +61,7 @@ cptac_data <- readxl::read_excel(cptac_output_file2) %>%
                                   TRUE ~ `Gene symbol`)
   ) %>%
   select(display_name, Assay, starts_with("7316")) %>%
+  # remove NAs
   select_if(~ !any(is.na(.)))
 
 # preserve gene names for rownames
@@ -75,7 +77,6 @@ class(mat)
 
 # set rownames, convert to matrix
 rownames(mat) <- rownames
-# mat <- as.matrix(mat)
 
 # select row annotations
 row_annot <- cptac_data %>%
@@ -106,7 +107,7 @@ heat_plot <- Heatmap(mat,
                      show_heatmap_legend=TRUE,
                      cluster_columns = TRUE, 
                      right_annotation = row_anno,
-                     na_col = "lightgrey",
+                     #na_col = "lightgrey",
                      #rect_gp = gpar(col = "white"),
                      row_title = NULL, 
                      column_title = NULL, 
