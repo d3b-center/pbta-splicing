@@ -31,8 +31,8 @@ if(!dir.exists(plots_dir)){
 }
 
 ## output files for final plots
-upsetR_es_plot_file          <- file.path(analysis_dir, "plots", "upsetR_histology-specific.es.pdf")
-upsetR_ei_plot_file          <- file.path(analysis_dir, "plots", "upsetR_histology-specific.ei.pdf")
+upsetR_es_plot_file <- file.path(analysis_dir, "plots", "upsetR_histology-specific.es.pdf")
+upsetR_ei_plot_file <- file.path(analysis_dir, "plots", "upsetR_histology-specific.ei.pdf")
 uniq_es_tsv_out <- file.path(results_dir, "unique_events-es.tsv")
 uniq_ei_tsv_out <- file.path(results_dir, "unique_events-ei.tsv")
 
@@ -51,7 +51,7 @@ list_for_skipping_upsetR <- splice_event_df %>%
 
 # Generate the UpSetR plot
 es_events <- upset(fromList(list_for_skipping_upsetR), order.by = "freq",keep.order = TRUE, mainbar.y.label = "", sets.x.label = "Histology",
-                   mb.ratio = c(0.6,0.4), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4), point.size = 3, line.size = 1, nsets = 17, )
+                   mb.ratio = c(0.6,0.4), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4), point.size = 3, line.size = 1, nsets = 17)
 
 # Save plot
 pdf(upsetR_es_plot_file, height = 9, width = 15)
