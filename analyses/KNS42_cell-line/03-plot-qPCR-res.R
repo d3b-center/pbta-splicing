@@ -61,7 +61,7 @@ qpcr_ddct_transform <- as.data.frame(qpcr_fc_df) %>%
   group_by(SJ) %>%
   summarise_all(mean) %>%
   
-  ## calculuate dct and ddct values
+  ## calculate dct and ddct values
   mutate(across(Control:`10uM`,  ~ last(.) - . )) %>% 
   mutate(across(`1uM`:`10uM`, ~ Control - .  )) %>% 
   mutate(across(Control, ~ 1  )) %>% 
