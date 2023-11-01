@@ -11,9 +11,10 @@
 
 ## load packages
 suppressPackageStartupMessages({
-  library("readxl")
-  library("pheatmap")
-  library("dplyr")
+  library(readxl)
+  library(circlize)
+  library(tidyverse)
+  library(ComplexHeatmap)
 })
 
 # Get `magrittr` pipe
@@ -21,103 +22,99 @@ suppressPackageStartupMessages({
 
 ## set directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "splicing-factor_dysregulation")
+data_dir   <- file.path(root_dir, "data")
 
 input_dir   <- file.path(analysis_dir, "input")
-results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
-## output files for final plots
-heatmap_output_file <- file.path(plots_dir,"heatmap_SFs_rna_prot.tiff") 
+## check and create plots dir
+if(!dir.exists(plots_dir)){
+  dir.create(plots_dir, recursive=TRUE)
+}
+
+## file paths
+heatmap_output_file <- file.path(plots_dir,"SR_phos_CLK1_exp_heatmap.pdf") 
 
 ## get CPTAC output table 
-cptac_output_file <- file.path(input_dir,"CPTAC3-pbt.xls") 
-
-# The problem with the dataframe was that it contained both 
-# "NA" the string and NA for null, so I first made all "NA"s 
-# as NA and then replaced them with 0.
+cptac_output_file <- file.path(input_dir,"CPTAC3-pbt_SF.xls") 
 
 # Load dataset
-df <- read_excel(cptac_output_file) 
-# Replace string "NA" with NA
-df[df == "NA"] <- NA
+cptac_data <- readxl::read_excel(cptac_output_file) %>%
+  # select only rows with CLK1 or SRFs, remove muts
+  filter(grepl("MSI1|NOVA2|RBM15|SAMD4A", idx),
+         !`Data type` %in% c("mut", "cnv")) %>%
+  # remove extra info from cols
+  rename_with(~ gsub("X7316.", "7316-", .), everything()) %>%
+  dplyr::rename(Assay = `Data type`) %>%
+  # clean up naming for plotting
+  mutate(Assay = case_when(Assay == "proteo" ~ "Whole Cell Proteomics",
+                           Assay == "phospho" ~ "Phospho-Proteomics",
+                           Assay == "rna" ~ "RNA-Seq"),
+         Assay = fct_relevel(Assay, c("RNA-Seq", "Whole Cell Proteomics", "Phospho-Proteomics")),
+         # create new display name for phospho proteins to include phos site
+         phos_site = case_when(Assay == "Phospho-Proteomics" ~ str_split(idx, "phospho", simplify = TRUE)[, 2],
+                               TRUE ~ NA_character_),
+         display_name = case_when(Assay == "Phospho-Proteomics" ~ paste(`Gene symbol`, phos_site, sep = " "),
+                                  # add a space after the gene to trick into thinking the rownames are not duplicated
+                                  Assay == "Whole Cell Proteomics" ~ paste(`Gene symbol`, " ", sep = " "),
+                                  TRUE ~ `Gene symbol`)
+  ) %>%
+  select(display_name, Assay, starts_with("7316")) %>%
+  # remove NAs
+  select_if(~ !any(is.na(.)))
 
-# Convert dataframe to matrix and replace NAs with 0
-df <- df %>% 
-  as.matrix() %>% 
-  replace(is.na(.), 0) %>% 
-  as.data.frame() %>% 
-  # Only look at RNA and Protein data
-  filter(type %in% c("rna", "proteo"))
+# preserve gene names for rownames
+rownames <- cptac_data$display_name
 
-mat <- df %>%
-  select(3:220) %>% 
-  mutate_if(is.character, as.numeric) %>% 
-  t() 
-colnames(mat) <- paste0("row_", seq(ncol(mat)))
+# convert to matrix and then add rownames
+mat <- cptac_data %>%
+  select(3:(ncol(cptac_data))) %>%
+  as.matrix()
+storage.mode(mat) <- "numeric"
+class(mat)
 
-col_annot <- df %>%
-  select("type", "gene")
-rownames(col_annot) <- colnames(mat)
 
-#col_annot$type <- factor(col_annot$type, levels = c("proteo", "rna"))
-#col_annot$gene <- factor(col_annot$gene, levels = c("MSI1", "NOVA2", "RBM15", "SAMD4A"))
+# set rownames, convert to matrix
+rownames(mat) <- rownames
 
-pheatmap(mat = mat,
-         annotation_col = col_annot,
-         gaps_col = c(2,4,6),
-         cluster_cols = FALSE,
-         cluster_rows = TRUE,
-         show_colnames = FALSE,
-         show_rownames = TRUE,
-         height = 10,
-         width = 7,
-         filename = heatmap_output_file
-)
-################################################################################
-## SAMPLES as rows
-# Load dataset
-df <- read_excel(cptac_output_file) 
-# Replace string "NA" with NA
-df[df == "NA"] <- NA
+# select row annotations
+row_annot <- cptac_data %>%
+  select(Assay) %>%
+  as.data.frame()
 
-# Convert dataframe to matrix and replace NAs with 0
-df <- df %>% 
-  as.matrix() %>% 
-  replace(is.na(.), 0) %>% 
-  as.data.frame() %>% 
-  # Only look at RNA and Protein data
-  filter(type %in% c("rna", "proteo"))
-
-mat <- df %>%
-  select(3:220) %>% 
-  mutate_if(is.character, as.numeric)
-
-rownames(mat) <- paste0("col_", seq(nrow(mat)))
-
-row_annot <- df %>%
-  select("type", "gene")
+# add rownames
 rownames(row_annot) <- rownames(mat)
 
-# Specify colors
-annotation_colors = list(
-  gene = c(MSI1="#994F00", NOVA2="#40B0A6", RBM15="#E66100", SAMD4A ="#5D3A9B"),
-  type = c(rna="#FFC20A", proteo="#0C7BDC"))
 
-pheatmap(mat = mat,
-         annotation_row = row_annot,
-         gaps_row = c(2,4,6),
-         cluster_cols = TRUE,
-         cluster_rows = FALSE,
-         show_colnames = FALSE,
-         show_rownames = FALSE,
-         legend = TRUE,
-         cellwidth = 8,
-         fontsize = 30,
-         height = 10,
-         width = 30,
-         #annotation = row_annot,
-         annotation_colors  = annotation_colors,
-         filename = heatmap_output_file
-)
+# create anno colors
+anno_col <- list(Assay = c("RNA-Seq" = "#DC3220", "Phospho-Proteomics" = "#005AB5", "Whole Cell Proteomics" = "#40B0A6"))
+
+# Heatmap annotation
+row_anno = rowAnnotation(df = row_annot,
+                         col = anno_col, show_legend = TRUE)
+
+
+# Make heatmap without legends
+heat_plot <- Heatmap(mat,
+                     name = "Z-score",
+                     col = colorRamp2(c(-2, 0, 2), c("#E66100", "white", "#5D3A9B")),
+                     cluster_rows = FALSE,
+                     row_split = row_annot$Assay, 
+                     column_gap = 0.5,
+                     show_row_names = TRUE,
+                     show_column_names = FALSE,
+                     show_heatmap_legend=TRUE,
+                     cluster_columns = TRUE, 
+                     right_annotation = row_anno,
+                     #na_col = "lightgrey",
+                     #rect_gp = gpar(col = "white"),
+                     row_title = NULL, 
+                     column_title = NULL, 
+                     column_title_side = "top")
+
+heat_plot
+
+pdf(heatmap_output_file, width = 8, height = 6)
+print(heat_plot)
+dev.off()
