@@ -30,6 +30,9 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 ## output for plot
 file_line_plot = file.path(plots_dir,"cell_prolif-line.pdf")
 
+## input file
+cell_prolif_res_file <- file.path(input_dir,"cell_prolif_res.tsv")
+
 cell_prolif_df <- vroom(cell_prolif_res_file, delim = "\t", col_names = TRUE) %>% 
   pivot_longer(
     c(-Time), 
