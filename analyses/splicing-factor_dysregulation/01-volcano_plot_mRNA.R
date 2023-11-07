@@ -104,7 +104,7 @@ levels(cds$condition)
 res <- results(cds)
 
 ## label anything below <0.05 as signficant
-res$Significant <- ifelse(res$pvalue< 0.05, "P-val < 0.05", "Not Sig")
+res$Significant <- ifelse(res$padj< 0.05, "P-val < 0.05", "Not Sig")
 
 volc <- EnhancedVolcano(res,
                 lab = filtered_counts$gene, ## remove ensembleid portion
@@ -116,11 +116,11 @@ volc <- EnhancedVolcano(res,
                 ylim = c(0,21),
                 xlim = c(-3,3),
                 title = 'Midline HGG vs. non-tumor brainstem control',
+                drawConnectors = TRUE,
                 pCutoff = 0.05,
                 FCcutoff = 1,
                 pointSize = 4,
                 labSize = 5) 
-
 # print plot
 pdf(file_volc_hgg_SF_plot, height = 8, width = 7, useDingbats = FALSE)
 print(volc)
