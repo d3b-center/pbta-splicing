@@ -57,7 +57,9 @@ RUN ./install_bioc.r \
 	diptest \
 	edgeR \
 	EnhancedVolcano \
+	factoextra \
 	fgsea \
+	fpc \
 	ggpubr \
 	ggstatsplot \
   ggthemes \
@@ -65,6 +67,7 @@ RUN ./install_bioc.r \
 	GSVA \
 	hrbrthemes \
 	limma \
+	lspline \
   msigdbr \
 	optparse \
   org.Hs.eg.db \
