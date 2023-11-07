@@ -52,6 +52,13 @@ suppressPackageStartupMessages({
   library(tidyverse)
   library(DGCA)
   library(rtracklayer)
+  library(DESeq2)
+  library(edgeR)
+  library(lspline)
+  library(survival)
+  library(factoextra)
+  library(fpc)
+  library(broom)
   library(COINr)
 })
 
