@@ -97,18 +97,18 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
   DEpwys_annot$cluster_class <- as.character(DEpwys_annot$cluster_class)
   
   # color palette for short histology
-  palettes_dir <- "../../palettes/"
-  palette_file <- file.path(palettes_dir, "short_histology_color_palette.tsv") %>% read_tsv()
+  #palettes_dir <- "../../palettes/"
+  #palette_file <- file.path(palettes_dir, "short_histology_color_palette.tsv") %>% read_tsv()
   DEpwys_annot <- DEpwys_annot %>%
     rownames_to_column("Kids_First_Biospecimen_ID") %>%
     inner_join(input_clin, by = "Kids_First_Biospecimen_ID") %>%
-    inner_join(palette_file, by = "short_histology") %>%
-    dplyr::select(Kids_First_Biospecimen_ID, cluster_class, plot_group_display, hex_code) %>%
+    #inner_join(palette_file, by = "short_histology") %>%
+    dplyr::select(Kids_First_Biospecimen_ID, cluster_class, plot_group, hex_code) %>%
     column_to_rownames("Kids_First_Biospecimen_ID")
   
   # rename annotation columns
   DEpwys_annot <- DEpwys_annot %>%
-    dplyr::rename("Histology" = "plot_group_display",
+    dplyr::rename("Histology" = "plot_group",
                   "Cluster" = "cluster_class")
   
   # create annotation for cluster class
