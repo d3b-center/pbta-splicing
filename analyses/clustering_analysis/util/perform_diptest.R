@@ -27,6 +27,7 @@ suppressPackageStartupMessages({
   library(DESeq2)
   library(edgeR)
   library(tidyverse)
+  library(diptest)
 })
 
 perform_diptest <- function(count_matrix,
