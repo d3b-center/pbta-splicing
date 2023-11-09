@@ -118,7 +118,7 @@ volc <- EnhancedVolcano(res,
                 title = 'Midline HGG vs. non-tumor brainstem control',
                 drawConnectors = TRUE,
                 pCutoff = 0.05,
-                FCcutoff = 1,
+                FCcutoff = 2,
                 pointSize = 4,
                 labSize = 5) 
 # print plot
