@@ -37,80 +37,53 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## output files for final plots
-file_dpsi_skip_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_pos.pdf")
-file_dpsi_incl_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_neg.pdf")
-file_tiff_dpsi_skip_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_pos.tiff")
-file_tiff_dpsi_incl_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_neg.tiff")
+#file_dpsi_skip_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_pos.pdf")
+#file_dpsi_incl_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_neg.pdf")
+file_dpsi_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites.pdf")
+
 
 ## retrieve psi values from tables
 file_psi_pos_func <-  file.path(results_dir,"splicing_events.total.pos.intersectUnip.ggplot.txt")
 file_psi_neg_func <-  file.path(results_dir,"splicing_events.total.neg.intersectUnip.ggplot.txt")
 
+## get gene_lsits
+gene_list_df = vroom(file.path(input_dir,"gene_lists.tsv")) %>% 
+  ## reformat and rename to plot
+  pivot_longer(cols=c('Kinase','Epigenetic','SWISNF','Cancer','SF'), 
+               names_to = "Annotation",
+               values_to = "gene") %>% 
+  filter(Annotation != 'SWISNF')
+
 ## read table of recurrent functional splicing (skipping)
-dpsi_unip_pos <- read.table(file_psi_pos_func, header=TRUE,sep = "\t") %>% mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\_")[, 2]) 
+dpsi_unip_pos <- read.table(file_psi_pos_func, header=TRUE,sep = "\t") %>% 
+  mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\_")[, 2]) %>%
+  mutate('Type'="skipping")
 
 ## read table of recurrent functional splicing (inclusion) 
-dpsi_unip_neg <- read.table(file_psi_neg_func, header=TRUE,sep = "\t") %>% mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\_")[, 2]) 
+dpsi_unip_neg <- read.table(file_psi_neg_func, header=TRUE,sep = "\t") %>% 
+  mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\_")[, 2]) %>% 
+  mutate('Type'="inclusion")
 
-## ggstatplot across functional sites
-set.seed(123)
-plot_incl <- ggstatsplot::ggbetweenstats(
-  data = dpsi_unip_neg, 
-  x = Uniprot, 
-  y = dPSI,
-  k = 3,
-  nboot = 15,
-  outlier.label = gene, # label to attach to outlier values
-  outlier.label.args = list(color = "red", size=1.8), # outlier point label color
-  notch = TRUE,
-  mean.ci = TRUE,
-  outlier.tagging = TRUE,
-  type = "robust",
-  xlab = "Unipro-defined Site",
-  pairwise.comparisons = FALSE,
-  #options(ggrepel.max.overlaps = 30),
-  messages = FALSE
-) + theme_Publication() + labs(y=expression(Delta*PSI)) 
-
-# Save plot as PDF
-pdf(file_dpsi_incl_plot, 
-    width = 15, height = 5)
-plot_incl
-dev.off()
-
-# Save plot tiff version
-tiff(file_tiff_dpsi_incl_plot, height = 1200, width = 3600, res = 300)
-print(plot_incl)
-dev.off()
+dpsi_unip_total <- rbind(dpsi_unip_pos,dpsi_unip_neg) %>% 
+  full_join(gene_list_df,by='gene',relationship = "many-to-many") %>% 
+  replace(is.na(.), "Other") %>% 
+  mutate(dPSI=abs(as.numeric(dPSI))) %>% 
+  mutate(outlier = ifelse(find_outlier(dPSI), dPSI, NA))
 
 
-set.seed(123)
-plot_skip <- ggstatsplot::ggbetweenstats(
-  data = dpsi_unip_pos, 
-  x = Uniprot, 
-  y = dPSI,
-  k = 3,
-  nboot = 15,
-  outlier.label = gene, # label to attach to outlier values
-  outlier.label.args = list(color = "red", size = 1.8), # outlier point label color
-  notch = TRUE,
-  mean.ci = TRUE,
-  outlier.tagging = TRUE,
-  type = "robust",
-  xlab = "Unipro-defined Site",
-  pairwise.comparisons = FALSE,
-  options(ggrepel.max.overlaps = 10),
-  messages = FALSE
-) + theme_Publication() + labs(y=expression(Delta*PSI)) 
+dpsi_unip_total$Annotation <- factor(dpsi_unip_total$Annotation, levels = c('Kinase','Epigenetic','SF','Cancer','Other')) 
+
+## make plot
+set.seed(45)
+sbi_vs_incl_plot <- ggplot(dpsi_unip_total,aes(Uniprot,dPSI)) +  
+  xlab(expression(bold("Uniprot Annotation"))) + ylab(expression(bold("dPSI"))) +
+  facet_grid(rows = vars(Annotation)) + 
+  ggforce::geom_sina(aes(color = Type), size = 1,method="density") +
+  scale_color_manual(name = "Type", values = c(skipping = "#FFC20A", inclusion = "#0C7BDC")) + 
+  theme_Publication()
 
 # Save plot as PDF
-pdf(file_dpsi_skip_plot, 
+pdf(file_dpsi_plot, 
     width = 15, height = 5)
-plot_skip
+sbi_vs_incl_plot
 dev.off()
-
-# Save plot tiff version
-tiff(file_tiff_dpsi_skip_plot, height = 1200, width = 3600, res = 300)
-print(plot_skip)
-dev.off()
-
