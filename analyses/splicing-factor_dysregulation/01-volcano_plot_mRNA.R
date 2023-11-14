@@ -41,9 +41,9 @@ if(!dir.exists(results_dir)){
 
 ## output files for final plots
 file_volc_hgg_SF_plot <- file.path(analysis_dir, "plots", 
-                                    "enhancedVolcano_hggs_v_ctrl_SFs.pdf")
+                                    "midline_hggs_v_ctrl_SFs_volcano.pdf")
 
-gene_sign_list_file <- file.path(results_dir,"hggs_v_ctrl_SFs_sig_genes.txt")
+gene_sign_list_file <- file.path(results_dir,"midline_hggs_v_ctrl_SFs_sig_genes.txt")
 
 ## input files
 sf_file <- file.path(input_dir,"splicing_factors.txt")
@@ -68,7 +68,8 @@ count_data <- readRDS(file_gene_counts) %>%
   select(any_of(clin_tab$Kids_First_Biospecimen_ID))
 
 ##  filter for only splicing factors from above SF list
-count_data_sf <- count_data[rownames(count_data) %in% sf_list, ] %>%
+count_data_sf <- count_data[rownames(count_data) %in% sf_list, ] 
+count_data_sf <- count_data_sf %>%
   mutate(gene = rownames(count_data_sf)) %>%
   # rearrange
   select(gene, any_of(clin_tab$Kids_First_Biospecimen_ID))
@@ -104,17 +105,18 @@ levels(cds$condition)
 res <- results(cds)
 
 ## label anything below <0.05 as signficant
-res$Significant <- ifelse(res$padj< 0.05, "P-val < 0.05", "Not Sig")
+res$Significant <- ifelse(res$padj < 0.05, "P-val < 0.05", "Not Sig")
+res$gene <- filtered_counts$gene
 
 volc <- EnhancedVolcano(res,
-                lab = filtered_counts$gene, ## remove ensembleid portion
+                lab = res$gene, # Use the new label column
                 subtitle = "",
                 x = 'log2FoldChange',
                 y = 'pvalue',
                 xlab = expression(bold("log"[2]*" Fold Change")),
                 ylab = expression(bold("-log"[10]*" p-value")),
-                ylim = c(0,21),
-                xlim = c(-3,3),
+                #ylim = c(0,21),
+              #  xlim = c(-3,3),
                 title = 'Midline HGG vs. non-tumor brainstem control',
                 drawConnectors = TRUE,
                 pCutoff = 0.05,
@@ -122,15 +124,15 @@ volc <- EnhancedVolcano(res,
                 pointSize = 4,
                 labSize = 5) 
 # print plot
-pdf(file_volc_hgg_SF_plot, height = 8, width = 7, useDingbats = FALSE)
+pdf(file_volc_hgg_SF_plot, height = 7, width = 7, useDingbats = FALSE)
 print(volc)
 dev.off()
 
 ## write significant genes to table for subsequent correlation analyses
 gene_sign_list <- res %>%
   as.data.frame() %>%
-  mutate(gene = filtered_counts$gene) %>% 
   filter(padj < 0.05,
          abs(log2FoldChange) > 1) %>%
+  select(gene, everything(res)) %>%
 write_tsv(gene_sign_list_file)
 
