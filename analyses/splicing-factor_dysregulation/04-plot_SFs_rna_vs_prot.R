@@ -1,6 +1,6 @@
 ################################################################################
 # 04-plot_SFs_rna_vs_prot.R
-# written by Shehbeel Arif
+# written by Ammar Naqvi, Jo Lynne Rokita
 #
 # This script usesCPTAC data to generate and plot heatmap of RNA vs proteomics
 # of select splicing factors that was previously identified in 
@@ -112,8 +112,6 @@ heat_plot <- Heatmap(mat,
                      row_title = NULL, 
                      column_title = NULL, 
                      column_title_side = "top")
-
-heat_plot
 
 pdf(heatmap_output_file, width = 8, height = 6)
 print(heat_plot)
