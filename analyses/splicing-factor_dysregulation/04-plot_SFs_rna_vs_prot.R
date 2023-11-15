@@ -51,7 +51,7 @@ cptac_data <- readxl::read_excel(cptac_output_file) %>%
   mutate(Assay = case_when(Assay == "proteo" ~ "Whole Cell Proteomics",
                            Assay == "phospho" ~ "Phospho-Proteomics",
                            Assay == "rna" ~ "RNA-Seq"),
-         Assay = fct_relevel(Assay, c("RNA-Seq", "Whole Cell Proteomics", "Phospho-Proteomics")),
+         #Assay = fct_relevel(Assay, c("RNA-Seq", "Whole Cell Proteomics", "Phospho-Proteomics")),
          # create new display name for phospho proteins to include phos site
          phos_site = case_when(Assay == "Phospho-Proteomics" ~ str_split(idx, "phospho", simplify = TRUE)[, 2],
                                TRUE ~ NA_character_),
@@ -61,6 +61,9 @@ cptac_data <- readxl::read_excel(cptac_output_file) %>%
                                   TRUE ~ `Gene symbol`)
   ) %>%
   select(display_name, Assay, starts_with("7316")) #%>%
+  #group_by(Assay) %>%
+  #select(where( ~!any(is.na(.x))))
+
   # remove NAs
   #select_if(~ !any(is.na(.)))
 
@@ -84,10 +87,7 @@ row_annot <- cptac_data %>%
   as.data.frame()
 
 # add rownames
-rownames(row_annot) <- rownames(mat)
-
-rownames(row_annot) <- make.names(rownames(mat), unique = TRUE)
-
+#rownames(row_annot) <- rownames(mat)
 
 
 # create anno colors
@@ -114,8 +114,9 @@ heat_plot <- Heatmap(mat,
                      #rect_gp = gpar(col = "white"),
                      row_title = NULL, 
                      column_title = NULL, 
+                     row_names_gp = grid::gpar(fontsize = 6),
                      column_title_side = "top")
 
-pdf(heatmap_output_file, width = 8, height = 6)
+pdf(heatmap_output_file, width = 6, height = 12)
 print(heat_plot)
 dev.off()
