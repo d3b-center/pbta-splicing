@@ -37,7 +37,7 @@ if(!dir.exists(plots_dir)){
 heatmap_output_file <- file.path(plots_dir,"SF_RNA_vs_protein_levels_heatmap.pdf") 
 
 ## get CPTAC output table 
-cptac_output_file <- file.path(input_dir,"CPTAC3-pbt_SF_plus.xls") 
+cptac_output_file <- file.path(input_dir,"CPTAC3-pbt_SF_fam.xls") 
 
 # Load dataset
 cptac_data <- readxl::read_excel(cptac_output_file) %>%
@@ -60,12 +60,7 @@ cptac_data <- readxl::read_excel(cptac_output_file) %>%
                                   Assay == "Whole Cell Proteomics" ~ paste(`Gene symbol`, " ", sep = " "),
                                   TRUE ~ `Gene symbol`)
   ) %>%
-  select(display_name, Assay, starts_with("7316")) #%>%
-  #group_by(Assay) %>%
-  #select(where( ~!any(is.na(.x))))
-
-  # remove NAs
-  #select_if(~ !any(is.na(.)))
+  select(display_name, Assay, starts_with("7316"))
 
 # preserve gene names for rownames
 rownames <- cptac_data$display_name
