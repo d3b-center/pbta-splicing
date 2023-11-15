@@ -49,7 +49,7 @@ gene_sign_list_file <- file.path(results_dir,"midline_hggs_v_ctrl_SFs_sig_genes.
 sf_file <- file.path(input_dir,"splicing_factors.txt")
 clin_file <- file.path(data_dir,"histologies.tsv")
 file_gene_counts <- file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds")
-file_nontumor_count <- file.path(input_dir,"rsem_counts.non_tumor.tsv")
+file_nontumor_count <- file.path(input_dir,"gene_counts_normals_final.csv")
 
 
 ## get splicing factor list to subset later
@@ -75,16 +75,22 @@ count_data_sf <- count_data_sf %>%
   select(gene, any_of(clin_tab$Kids_First_Biospecimen_ID))
 
 ## get corresponding non-brain tumor samples
-gene_counts_nontumor  <-  read_tsv(file_nontumor_count)
+gene_counts_nontumor  <-  read_csv(file_nontumor_count) %>% 
+  mutate(gene=str_replace(gene, "ENSG[1234567890]+_", "") )
 
 gene_counts_combined <- inner_join(count_data_sf, gene_counts_nontumor, by = 'gene')
-# filter for rows with >= 1 count
-filtered_counts <- gene_counts_combined[rowSums(gene_counts_combined>=2) >= 1, ]
+
+# filter for rows with >= 10 count
+filtered_counts <- gene_counts_combined[rowSums(gene_counts_combined>2) == 62, ]
+
+filtered_counts <- gene_counts_combined %>% 
+  filter(sum(c_across(where(is.numeric))) >= 620) %>%
+  ungroup
 
 ## construct metadata
 design <- data.frame(row.names = colnames(filtered_counts$gene),
-                    condition = c(rep("HGG",53), rep("Control",10)),
-                    libType   = c(rep("paired-end",63))) %>%
+                    condition = c(rep("HGG",53), rep("Control",9)),
+                    libType   = c(rep("paired-end",62))) %>%
   # the DESEQ analysis will automatically use alphabetical order, so relevel to get the correct comparison
   mutate(condition = fct_relevel(condition, c("HGG", "Control")))
 
@@ -108,21 +114,21 @@ res <- results(cds)
 res$Significant <- ifelse(res$padj < 0.05, "P-val < 0.05", "Not Sig")
 res$gene <- filtered_counts$gene
 
-volc <- EnhancedVolcano(res,
-                lab = res$gene, # Use the new label column
-                subtitle = "",
-                x = 'log2FoldChange',
-                y = 'pvalue',
-                xlab = expression(bold("log"[2]*" Fold Change")),
-                ylab = expression(bold("-log"[10]*" p-value")),
-                #ylim = c(0,21),
-              #  xlim = c(-3,3),
-                title = 'Midline HGG vs. non-tumor brainstem control',
-                drawConnectors = TRUE,
-                pCutoff = 0.05,
-                FCcutoff = 2,
-                pointSize = 4,
-                labSize = 5) 
+  volc <- EnhancedVolcano(res,
+                  lab = res$gene, # Use the new label column
+                  subtitle = "",
+                  x = 'log2FoldChange',
+                  y = 'pvalue',
+                  xlab = expression(bold("log"[2]*" Fold Change")),
+                  ylab = expression(bold("-log"[10]*" p-value")),
+                 # ylim = c(0,21),
+                # xlim = c(-3,3),
+                  title = 'Midline HGG vs. Bainstem control',
+                  drawConnectors = TRUE,
+                  pCutoff = 0.05,
+                  FCcutoff = 1,
+                  pointSize = 4,
+                  labSize = 5) 
 # print plot
 pdf(file_volc_hgg_SF_plot, height = 7, width = 7, useDingbats = FALSE)
 print(volc)
