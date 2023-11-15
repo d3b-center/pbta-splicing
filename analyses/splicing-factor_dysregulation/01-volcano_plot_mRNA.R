@@ -125,14 +125,14 @@ volc <- EnhancedVolcano(res,
                   ylab = expression(bold("-log"[10]*" p-value")),
                  # ylim = c(0,21),
                 # xlim = c(-3,3),
-                  title = 'Midline HGG vs. Bainstem control',
+                  title = 'Midline HGG vs. Non-tumor Brainstem',
                   drawConnectors = TRUE,
                   pCutoff = 0.05,
                   FCcutoff = 1,
                   pointSize = 2,
                   labSize = 4) 
 # print plot
-pdf(file_volc_hgg_SF_plot, height = 7, width = 7, useDingbats = FALSE)
+pdf(file_volc_hgg_SF_plot, height = 10, width = 10, useDingbats = FALSE)
 print(volc)
 dev.off()
 
