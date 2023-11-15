@@ -3,7 +3,7 @@
 #
 # Plot and visualize dependency scores across brain tumors and CLK1 expr
 #
-# author: Ammar S Naqvi
+# author: Ammar S Naqvi, Jo Lynne Rokita
 # usage: Rscript 01-plotting-depMap-data.R
 ################################################################################# 
 
