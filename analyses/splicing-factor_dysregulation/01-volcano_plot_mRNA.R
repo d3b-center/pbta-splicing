@@ -42,6 +42,8 @@ if(!dir.exists(results_dir)){
 ## output files for final plots
 file_volc_hgg_SF_plot <- file.path(analysis_dir, "plots", 
                                     "midline_hggs_v_ctrl_SFs_volcano.pdf")
+file_family_SF_plot <- file.path(analysis_dir, "plots", 
+                                   "pval_family_barplot.pdf")
 
 gene_sign_list_file <- file.path(results_dir,"midline_hggs_v_ctrl_SFs_sig_genes.txt")
 
@@ -114,7 +116,7 @@ res <- results(cds)
 res$Significant <- ifelse(res$padj < 0.05, "P-val < 0.05", "Not Sig")
 res$gene <- filtered_counts$gene
 
-  volc <- EnhancedVolcano(res,
+volc <- EnhancedVolcano(res,
                   lab = res$gene, # Use the new label column
                   subtitle = "",
                   x = 'log2FoldChange',
@@ -142,7 +144,18 @@ gene_sign_list <- res %>%
   select(gene, everything(res)) %>%
 write_tsv(gene_sign_list_file)
 
-plot_df <- gene_sign_list %>% filter(grepl("SRSF|HNRNP", gene)
-                                     
+## plot and focus on the two major splicing factor families (well known control exon-splicing)
+plot_df <- gene_sign_list %>% filter(grepl("SRSF|HNRNP", gene))
+
+plot_barplot_family <- ggplot(plot_df, aes(x = reorder(gene,-padj), y = -log2(padj))) + 
+  geom_bar(stat="identity", colour="black", fill="red") + 
+  theme_Publication() + 
+  xlab("Splicing Factor") + ylab("-log2 (padj)") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# print plot
+pdf(file_family_SF_plot, height = 4, width = 4, useDingbats = FALSE)
+print(plot_barplot_family)
+dev.off()
 
 
