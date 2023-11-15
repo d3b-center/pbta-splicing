@@ -37,13 +37,13 @@ if(!dir.exists(plots_dir)){
 heatmap_output_file <- file.path(plots_dir,"SF_RNA_vs_protein_levels_heatmap.pdf") 
 
 ## get CPTAC output table 
-cptac_output_file <- file.path(input_dir,"CPTAC3-pbt_SF.xls") 
+cptac_output_file <- file.path(input_dir,"CPTAC3-pbt_SF_plus.xls") 
 
 # Load dataset
 cptac_data <- readxl::read_excel(cptac_output_file) %>%
   # select only rows with CLK1 or SRFs, remove muts
-  filter(grepl("MSI1|NOVA2|RBM15|SAMD4A", idx),
-         !`Data type` %in% c("mut", "cnv")) %>%
+  filter(grepl("\\srna|\\spro|\\sphos", idx), 
+               !`Data type` %in% c("mut", "cnv")) %>%
   # remove extra info from cols
   rename_with(~ gsub("X7316.", "7316-", .), everything()) %>%
   dplyr::rename(Assay = `Data type`) %>%
@@ -60,9 +60,9 @@ cptac_data <- readxl::read_excel(cptac_output_file) %>%
                                   Assay == "Whole Cell Proteomics" ~ paste(`Gene symbol`, " ", sep = " "),
                                   TRUE ~ `Gene symbol`)
   ) %>%
-  select(display_name, Assay, starts_with("7316")) %>%
+  select(display_name, Assay, starts_with("7316")) #%>%
   # remove NAs
-  select_if(~ !any(is.na(.)))
+  #select_if(~ !any(is.na(.)))
 
 # preserve gene names for rownames
 rownames <- cptac_data$display_name
@@ -85,6 +85,9 @@ row_annot <- cptac_data %>%
 
 # add rownames
 rownames(row_annot) <- rownames(mat)
+
+rownames(row_annot) <- make.names(rownames(mat), unique = TRUE)
+
 
 
 # create anno colors
