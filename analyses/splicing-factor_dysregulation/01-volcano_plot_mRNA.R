@@ -127,8 +127,8 @@ res$gene <- filtered_counts$gene
                   drawConnectors = TRUE,
                   pCutoff = 0.05,
                   FCcutoff = 1,
-                  pointSize = 4,
-                  labSize = 5) 
+                  pointSize = 2,
+                  labSize = 4) 
 # print plot
 pdf(file_volc_hgg_SF_plot, height = 7, width = 7, useDingbats = FALSE)
 print(volc)
