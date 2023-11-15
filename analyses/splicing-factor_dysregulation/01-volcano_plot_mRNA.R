@@ -142,3 +142,7 @@ gene_sign_list <- res %>%
   select(gene, everything(res)) %>%
 write_tsv(gene_sign_list_file)
 
+plot_df <- gene_sign_list %>% filter(grepl("SRSF|HNRNP", gene)
+                                     
+
+
