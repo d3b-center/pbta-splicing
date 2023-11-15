@@ -1,7 +1,7 @@
 ################################################################################
 # 02-plot_cell-proliferation-assay-res.R
 # script that generates line graph and compares Treatment absorbance levels
-# written by Ammar Naqvi
+# written by Ammar Naqvi, Jo Lynne Rokita
 #
 # usage: Rscript 02-plot_cell-proliferation-assay-res.R 
 ################################################################################
@@ -39,31 +39,39 @@ cell_prolif_df <- vroom(cell_prolif_res_file, delim = "\t", col_names = TRUE) %>
     names_pattern = "(.+)_([0-9])", 
     names_to = c("Treatment", "Rep"),
     values_to = "Absorbance"
-  ) 
+  ) %>%
+  mutate(Treatment = case_when(Treatment == "CLK1" ~ "CKL1 Exon 4 morpholino",
+                               Treatment == "Ctrl" ~ "Non-targeting morpholino",
+                               Treatment == "Untreated" ~ "No morpholino"),
+         Time = as.factor(Time)) 
 
-## stat test with ref
-stat.test_ref <- cell_prolif_df %>%
+# Subset the data to include only the two treatments of interest for stats
+filtered_df <- cell_prolif_df %>%
+  filter(Treatment %in% c("CKL1 Exon 4 morpholino", "Non-targeting morpholino"))
+
+# Perform statistical tests
+stat_results <- filtered_df %>%
   group_by(Time) %>%
-  t_test(Absorbance ~ Treatment, ref.group = "CLK1") 
+  t_test(Absorbance ~ Treatment, paired = TRUE) %>%  # Adjust as per your study design
+  mutate(p_sig = case_when(p < 0.05 ~ paste0("*", round(p, 2)),
+                          TRUE ~ ""),
+         y_pos = 20000,
+         x_pos = Time)
+# plot
+ribbon_plot <- ggplot(cell_prolif_df, aes(x = Time, y = Absorbance)) + 
+  stat_summary(aes(colour = Treatment, group = Treatment), fun = mean, geom = "line") +
+  stat_summary(aes(fill = Treatment, group = Treatment), fun.data = mean_sd, geom = "ribbon", alpha = 0.25) +
+  geom_text(data = stat_results, aes(x = Time, y = y_pos, label = p_sig), size = 3.5) + # Add p-values
+  xlab("Time") + 
+  ylab("Absorbance") +
+  ylim(c(10000,60000)) +
+# boo, this does not work to remove space between 0 and the y-axis while maintaining space on the right.
+ # scale_x_discrete(expand = expansion(add = c(0, 0))) + # Adjust x-axis
+  theme_Publication()
 
+ribbon_plot
 
-# Save plot as PDF
-pdf(file_line_plot, width = 10, height = 5)
-
-# create a line plot with error bars (mean +/- sd)
-lp <- ggline(
-  cell_prolif_df, x = "Time", y = "Absorbance", add = "mean_sd", 
-  color = "Treatment", palette = c("red", "blue", "darkgreen")
-)
-
-# add p-values onto the line plots
-stat.test_ref <- stat.test_ref %>%
-  add_xy_position(fun = "mean_sd", x = "Time") 
-
-lp + stat_pvalue_manual(
-  stat.test_ref,  label = "p.adj.signif", 
-  tip.length = 0, linetype  = "blank",hjust = 0, vjust = 7
-) + theme_Publication()
-
+pdf(file_line_plot, width = 6.5, height = 3)
+print(ribbon_plot)
 dev.off()
 
