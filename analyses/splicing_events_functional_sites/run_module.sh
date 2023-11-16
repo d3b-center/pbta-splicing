@@ -34,4 +34,4 @@ rm results/splicing_events.total.*intersectUnipMod.wo.txt
 ## make plots
 echo "make plots ...";
 Rscript 04-plot_splicing_across_functional_sites.R
-Rscript 05-plot-flip_mixed_events.R
+Rscript 05-plot-splice-patterns.R

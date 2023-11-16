@@ -1,14 +1,13 @@
 ################################################################################
-# 05-plot-flip_mixed_events.R
-# script that plots a table of flip-like splicing events across functional sites
+# 05-plot-splice-patterns.R
+# Script that plots a patterns of splicing events across total sites
 # written by Ammar Naqvi
 #
-# usage: Rscript 05-plot-flip_mixed_events.R 
+# usage: Rscript 05-plot-splice-patterns.R
 ################################################################################
 
 ## libraries needed
 suppressPackageStartupMessages({
-  library("ggstatsplot")
   library("dplyr")
   library("ggplot2")
   library("dplyr")
