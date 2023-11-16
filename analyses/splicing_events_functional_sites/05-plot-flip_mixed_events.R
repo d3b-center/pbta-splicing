@@ -33,62 +33,71 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## output file names for plots
-file_flip_events_plot <- file.path(analysis_dir, "plots", "flip_barplots.pdf")
+file_splice_pattern_plot <- file.path(analysis_dir, "plots", "splicing_pattern_plot.pdf")
 
 ## retrieve psi values from tables
+file_psi_pos_func  <- "splicing_events.total.pos.intersectUnip.ggplot.txt"
+file_psi_neg_func  <- "splicing_events.total.neg.intersectUnip.ggplot.txt"
 file_psi_pos_total <- "splicing_events.total.pos.tsv"
 file_psi_neg_total <- "splicing_events.total.neg.tsv"
 
-file_psi_pos_func <- "splicing_events.total.pos.intersectUnip.ggplot.txt"
-file_psi_neg_func <- "splicing_events.total.neg.intersectUnip.ggplot.txt"
+psi_pos_tab      <-  read.delim(file.path(results_dir, file_psi_pos_total), sep = "\t", row.names = NULL, header=TRUE)
+psi_neg_tab      <-  read.delim(file.path(results_dir, file_psi_neg_total), sep = "\t", row.names = NULL, header=TRUE)
 
-psi_pos_func_tab <-  read.delim(file.path(results_dir, file_psi_pos_func), sep = "\t", row.names = NULL, header=TRUE)
-psi_pos_tab      <-  read.delim(file.path(results_dir, file_psi_pos_total), sep = "\t", row.names = NULL, header=TRUE)  %>% filter(flip == 1)
+psi_pos_func_tab      <-  read.delim(file.path(results_dir, file_psi_pos_func), sep = "\t", row.names = NULL, header=TRUE)
+psi_neg_func_tab      <-  read.delim(file.path(results_dir, file_psi_neg_func), sep = "\t", row.names = NULL, header=TRUE)
 
-psi_neg_func_tab <-  read.delim(file.path(results_dir, file_psi_neg_func), sep = "\t", row.names = NULL, header=TRUE)
-psi_neg_tab      <-  read.delim(file.path(results_dir, file_psi_neg_total), sep = "\t", row.names = NULL, header=TRUE)  %>% filter(flip == 1)
+mixed_events_df <- inner_join(psi_pos_tab,psi_neg_tab, by='gene') %>%
+  mutate(type="Mixed") %>% 
+  select(gene, type) %>% 
+  dplyr::rename("SpliceID"=gene)
 
 
-## num of sites that are undergo flip at functional sites
-flip_event_func_skipping  <- psi_pos_tab[psi_pos_func_tab$SpliceID %in% psi_pos_tab$gene, ]
-flip_event_func_inclusion <- psi_neg_tab[psi_neg_func_tab$SpliceID %in% psi_neg_tab$gene, ]
+psi_pos_non_mixed_df <-  psi_pos_tab %>% 
+  filter(!gene %in% mixed_events_df$SpliceID) %>% 
+  mutate(type = case_when(flip == 1 ~ "Flip",
+                          flip == 0 ~ "Non-flip")) %>%
+  select(gene,type) %>% 
+  dplyr::rename("SpliceID"=gene)
 
-##calculate number of totals and percentages 
-## get skipping counts
-num_flip_skip_func <- c(nrow(flip_event_func_skipping))
-num_skip_func      <- c(nrow(psi_pos_func_tab))
-num_flip_skip_func_perc <- (num_flip_skip_func/(num_skip_func)) * 100
-num_non_flip_skip_func_perc      <- ( (num_skip_func-num_flip_skip_func)/(num_skip_func)) * 100
+psi_neg_non_mixed_df <- psi_neg_tab %>% 
+  filter(!gene %in% mixed_events_df$SpliceID) %>% 
+  mutate(type = case_when(flip == 1 ~ "Flip",
+                          flip == 0 ~ "Non-flip")) %>%
+  select(gene,type) %>% 
+  dplyr::rename("SpliceID"=gene)
 
-## getting inclusion counts
-num_flip_incl_func <- c(nrow(flip_event_func_inclusion))
-num_incl_func <- c(nrow(psi_neg_func_tab))
-num_flip_incl_func_perc <- (num_flip_incl_func/(num_incl_func)) * 100
-num_non_flip_incl_func_perc      <- ( (num_incl_func-num_flip_incl_func)/(num_incl_func)) * 100
 
-##create dataframe for plotting
-type <- c("Skipping", "Skipping", "Inclusion", "Inclusion")
-counts <- c(num_flip_incl_func_perc,num_non_flip_incl_func_perc,
-            num_flip_skip_func_perc,num_non_flip_skip_func_perc)
-event <- c("Flip", "Non-flip","Flip", "Non-flip")
-num_of_hits_perc <- data.frame(type,counts, event) %>% 
-  filter(event=="Flip")
+psi_anno_df <- rbind(mixed_events_df,psi_pos_non_mixed_df,psi_neg_non_mixed_df) %>% 
+  mutate(Impact="Non-functional")
 
-##plot
-plot_flip <- ggplot(num_of_hits_perc, aes(x = type, y = counts, fill = type)) + 
-         geom_bar(position="stack", stat="identity") + 
-  scale_fill_manual(values=c("#FFC20A","#0C7BDC")) +
-  xlab("Type ") +
-  ylab("Splice Variants (%)") + 
-  coord_flip() +
-  theme_Publication() + 
-  ggtitle("Flip Events") +
-  theme(legend.position="none", legend.title = element_text(size=19), axis.text.x=element_text(size=14), axis.text.y=element_text(size=14))
+psi_anno_func_df <- rbind(psi_pos_func_tab,psi_neg_func_tab) %>%
+  select(SpliceID)
+
+psi_anno_functional_df <- inner_join(psi_anno_df,psi_anno_func_df, by="SpliceID") %>% distinct() %>% 
+  mutate(Impact="Functional")
+
+psi_anno_df <- psi_anno_df %>% anti_join(psi_anno_functional_df, by='SpliceID')
+
+psi_anno_total <- rbind(psi_anno_df,psi_anno_functional_df) 
+
+plot_pattern <- ggplot(psi_anno_total,
+  aes(x = type, fill= Impact)) +
+  geom_bar(position="fill",stat="count", color="black")    + 
+  scale_fill_manual(values=c("#FFC20A","#0C7BDC"),
+                    name = "Impact")      + 
+  theme(legend.position = "none",
+        legend.title = element_text(size=19), 
+        axis.text.x=element_text(size=14), 
+        axis.text.y=element_text(size=14)) + 
+  xlab("Splicing Pattern") + ylab("Percentage of variants") + 
+  geom_text(stat='count',aes(label=..count..), position = position_fill(vjust = 0.5)) +
+  theme_Publication() 
 
 # Save plot as PDF
-pdf(file_flip_events_plot, 
-    width = 6, height = 3)
-plot_flip
+pdf(file_splice_pattern_plot, 
+    width = 6, height = 4)
+plot_pattern
 dev.off()
 
 
