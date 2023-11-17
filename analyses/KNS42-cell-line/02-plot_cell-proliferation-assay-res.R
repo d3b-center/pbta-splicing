@@ -65,8 +65,6 @@ ribbon_plot <- ggplot(cell_prolif_df, aes(x = Time, y = Absorbance)) +
   xlab("Time") + 
   ylab("Absorbance") +
   ylim(c(10000,60000)) +
-# boo, this does not work to remove space between 0 and the y-axis while maintaining space on the right.
- # scale_x_discrete(expand = expansion(add = c(0, 0))) + # Adjust x-axis
   theme_Publication()
 
 ribbon_plot
