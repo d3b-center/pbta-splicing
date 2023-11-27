@@ -47,7 +47,7 @@ cell_prolif_df <- vroom(cell_prolif_res_file, delim = "\t", col_names = TRUE) %>
 
 # Subset the data to include only the two treatments of interest for stats
 filtered_df <- cell_prolif_df %>%
-  filter(Treatment %in% c("CKL1 Exon 4 morpholino", "Non-targeting morpholino"))
+  filter(Treatment %in% c("CLK1 Exon 4 morpholino", "Non-targeting morpholino"))
 
 # Perform statistical tests
 stat_results <- filtered_df %>%
