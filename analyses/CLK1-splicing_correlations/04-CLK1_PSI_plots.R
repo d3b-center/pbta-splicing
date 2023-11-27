@@ -40,6 +40,9 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 CLK1_plot_path <- file.path(plots_dir, "CLK1_hgg_stacked.pdf")
 
 ## get SRSF11 psi values in tumors and ctrls
+indep_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary-plus.tsv")
+indep_df <- read_tsv(indep_file)
+
 rmats_file <- file.path(data_dir,"rMATS_merged.comparison.tsv.gz")
 
 ## load rmats input for CLK1
@@ -55,30 +58,31 @@ clk1_rmats <- vroom(rmats_file, comment = "#", delim="\t") %>%
   ## reformat and rename to plot
   pivot_longer(!sample_id, 
                names_to = "Type",
-               values_to = "PSI") 
+               values_to = "PSI") %>% 
+  dplyr::rename(Kids_First_Biospecimen_ID=sample_id) %>% 
+  filter(Kids_First_Biospecimen_ID %in% indep_df$Kids_First_Biospecimen_ID)
 
 # Make a column for exposure of interest to order samples by
 samples_in_order <- clk1_rmats %>%
   filter(Type == "Inclusion") %>%
-  select(PSI, sample_id) %>%
+  select(PSI, Kids_First_Biospecimen_ID) %>%
   arrange(-PSI) %>%
-  pull(sample_id)
+  pull(Kids_First_Biospecimen_ID)
 
 # create df for plotting and reorder
 plot_df <- clk1_rmats %>%
-mutate(sample_id = factor(sample_id,
+mutate(Kids_First_Biospecimen_ID = factor(Kids_First_Biospecimen_ID,
                           levels = samples_in_order))
 
-stacked_barplot <- ggplot(plot_df, aes(x = sample_id, y = PSI, fill= Type )) +
+stacked_barplot <- ggplot(plot_df, aes(x = Kids_First_Biospecimen_ID, y = PSI, fill= Type )) +
   geom_bar(position="stack", stat="identity") + 
   #geom_col(position = "dodge", width=0.9) + 
-  scale_fill_manual(values=c("#FFC20A","#0C7BDC")) + 
-  theme_Publication() + ylab("CLK1 Isoform %") + xlab("Sample") + 
-  theme(axis.text.x=element_blank(), 
-      text=element_text(size=15),
-      axis.ticks.x=element_blank()) 
+  scale_fill_manual(values=c("#FFC20A","#0C7BDC"), name="Exon 4") + 
+  theme_Publication() + ylab(expression(bold(bolditalic("CLK1")~" Isoform Fraction"))) + xlab("Sample") + 
+  theme(
+      axis.text.x = element_text(angle = 75, hjust = 1)) 
 
 # Save plot as pdf
-pdf(CLK1_plot_path, height = 4, width = 8, useDingbats = FALSE)
+pdf(CLK1_plot_path, height = 6, width = 14, useDingbats = FALSE)
 print(stacked_barplot)
 dev.off()
