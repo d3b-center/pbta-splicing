@@ -115,14 +115,13 @@ dpsi_unip_both_kinase <- rbind(dpsi_unip_pos_kinase,dpsi_unip_neg_kinase)
 
 ## make sina plot
 set.seed(45)
-kinase_dpsi_plot <- ggplot(dpsi_unip_both_kinase,aes(Preference,dPSI)) +  
+kinase_dpsi_plot <- ggplot(dpsi_unip_both_kinase,aes(Preference,dPSI) ) +  
   ylab(expression(bold("dPSI"))) +
   geom_violin() +
   ggforce::geom_sina(aes(color = Preference), size = 2,method="density") +
-  geom_label_repel(box.padding = 0.5, min.segment.length = 0.5,max.overlaps =Inf, aes(label = gene), data=dpsi_unip_both_kinase %>% subset(gene %in% gene_mixed_cases$gene), size=2) +
+  geom_label_repel(box.padding = 0.5, min.segment.length = 0.5,max.overlaps =Inf, aes(label = gene), data=dpsi_unip_both_kinase %>% subset(gene =="CLK1"), size=2) +
   scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) + 
   theme_Publication() + labs(y=expression(Delta*PSI)) + 
-  stat_compare_means(position = "identity", label.x = 1) + 
   theme(legend.position="none")
 
 pdf(file_dpsi_kinase_plot, 
