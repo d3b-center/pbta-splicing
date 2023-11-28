@@ -12,7 +12,9 @@ suppressPackageStartupMessages({
   library("ggplot2")
   library("dplyr")
   library("tidyverse")
-
+  library("clusterProfiler")
+  library("msigdbr")
+  library("org.Hs.eg.db")
 })
 
 # Get `magrittr` pipe
@@ -117,7 +119,7 @@ kinase_dpsi_plot <- ggplot(dpsi_unip_both_kinase,aes(Preference,dPSI)) +
   ylab(expression(bold("dPSI"))) +
   geom_violin() +
   ggforce::geom_sina(aes(color = Preference), size = 2,method="density") +
-  geom_label_repel(box.padding = 0.5, min.segment.length = 0.5,max.overlaps =Inf, aes(label = gene), data=dpsi_unip_both_kinase %>% subset(gene=='CLK1'), size=2) +
+  geom_label_repel(box.padding = 0.5, min.segment.length = 0.5,max.overlaps =Inf, aes(label = gene), data=dpsi_unip_both_kinase %>% subset(gene %in% gene_mixed_cases$gene), size=2) +
   scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) + 
   theme_Publication() + labs(y=expression(Delta*PSI)) + 
   stat_compare_means(position = "identity", label.x = 1) + 
@@ -127,3 +129,47 @@ pdf(file_dpsi_kinase_plot,
     width = 5, height = 5)
 kinase_dpsi_plot
 dev.off()
+
+## ORA for kinases
+# plot output path
+ora_dotplot_path = file.path(plots_dir,"kinases-ora-plot.pdf")
+
+# get gene sets relevant to H. sapiens
+hs_msigdb_df <- msigdbr(species = "Homo sapiens")
+
+## filter for kegg pathways that are included in the curated gene sets
+hs_hm_df <- hs_msigdb_df %>%
+  #dplyr::filter(gs_cat == "H"
+  dplyr::filter(gs_cat == "C2", gs_subcat == "CP:KEGG"
+  )
+
+## create a background set of mis-spliced genes
+background_set <- dpsi_unip_both_kinase$gene %>% unique()
+
+## create a genes of interest list based on strong splicing 
+genes_of_interest <- known_kinase_df$gene
+
+
+## run enrichR to compute and identify significant over-repr pathways
+ora_results <- enricher(
+  gene = dpsi_unip_both_kinase$gene, # A vector of your genes of interest
+  pvalueCutoff = 0.005, 
+  pAdjustMethod = "BH", 
+  TERM2GENE = dplyr::select(
+    hs_hm_df,
+    gs_name,
+    human_gene_symbol
+  )
+)
+
+ora_result_df <- data.frame(ora_results@result)
+enrich_plot <- enrichplot::dotplot(ora_results) + 
+  theme_Publication() 
+enrich_plot
+
+## save ORA dotplot as tiff
+ggplot2::ggsave(ora_dotplot_path,
+                width=8,
+                height=8,
+                device="pdf")
+
