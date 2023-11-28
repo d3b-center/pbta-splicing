@@ -71,7 +71,7 @@ samples_in_order <- clk1_rmats %>%
 
 # create df for plotting and reorder
 plot_df <- clk1_rmats %>%
-mutate(Kids_First_Biospecimen_ID = factor(Kids_First_Biospecimen_ID,
+mutate(Kids_First_Biospecimen_ID = factor(sample_id,
                           levels = samples_in_order))
 
 stacked_barplot <- ggplot(plot_df, aes(x = Kids_First_Biospecimen_ID, y = PSI, fill= Type )) +
