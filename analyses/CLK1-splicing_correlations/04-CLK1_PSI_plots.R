@@ -74,7 +74,7 @@ plot_df <- clk1_rmats %>%
 mutate(Kids_First_Biospecimen_ID = factor(sample_id,
                           levels = samples_in_order))
 
-stacked_barplot <- ggplot(plot_df, aes(x = Kids_First_Biospecimen_ID, y = PSI, fill= Type )) +
+stacked_barplot <- ggplot(plot_df, aes(x = sample_id, y = PSI, fill= Type )) +
   geom_bar(position="stack", stat="identity") + 
   #geom_col(position = "dodge", width=0.9) + 
   scale_fill_manual(values=c("#FFC20A","#0C7BDC"), name="Exon 4") + 
