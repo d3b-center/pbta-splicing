@@ -1,8 +1,8 @@
-# Proteomics_correlation
+# Total Protein Abundance Distributions
 
 Module authors: Joseph Dybas (@JosephDybas)
 
-The purpose of this module is to compare the differential splicing in HGGs total and phospho proteomics abundances.
+The purpose of this module is to compare the total protein distributions for each of the samples in the HOPE cohort.
 
 ## Usage
 ### Scripts and files to run analysis
@@ -16,8 +16,7 @@ Hope_phosphosite_imputed_data_ischemia_removed_liftover.tsv: File containing pho
 Hope-GBM-histologies-base.tsv: Histologies file with relevant IDs
 ```
 ## Folder content
-* `WCPproteomics-abundance-volcanoplots.R` creates volcano plots of the distributions of protein abundances in identified samples with abundance of specific gene highlighted
-* `RNAsplicing-PHOSproteomics-scatterplots.R` Creates scatter plot of differential splicing Psi value and corresponding phosphorylation abundance for specified gene, splicing event, and phosphorylation event
+* `WCPproteomics-abundance-volcanoplots.R` Creates violin plots of the distributions of protein abundances in each sample with abundance of specific protein highlighted
 
 ### Directory structure
 ```
@@ -35,6 +34,5 @@ Hope-GBM-histologies-base.tsv: Histologies file with relevant IDs
 │   ├── SampleAbundanceDist_YAP1_violin.pdf
 │   ├── SampleAbundanceDist_CHRD_violin.pdf
 │   ├── SampleAbundanceDist_ATRX_violin.pdf
-│   ├── PsiPhosAbd_CLK1_scatter.pdf
 ```
 

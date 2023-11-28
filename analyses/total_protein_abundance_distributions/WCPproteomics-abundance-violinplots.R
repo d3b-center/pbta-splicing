@@ -12,10 +12,10 @@ input_dir <- "./input"
 #directory to store plots
 plot_dir <- "./plots"
 
-#read histology file to data frame
-histologyfile <- "Hope-GBM-histologies-base.tsv"
-HISTdata <- readr::read_tsv(file.path(input_dir, histologyfile))
-#
+######read histology file to data frame
+#####histologyfile <- "Hope-GBM-histologies-base.tsv"
+#####HISTdata <- readr::read_tsv(file.path(input_dir, histologyfile))
+######
 
 #read whole cell proteomics data to data frame
 totalprotfile <- "Hope_proteome_imputed_data_liftover.tsv"
@@ -26,14 +26,14 @@ WCPdata <- readr::read_tsv(file.path(input_dir, totalprotfile))
 WCP_KFid <- colnames(WCPdata)[4:ncol(WCPdata)]
 #
 
-#read phosphoproteomics data to data frame
-phosprotfile <- "Hope_phosphosite_imputed_data_ischemia_removed_liftover.tsv"
-PHOSdata <- readr::read_tsv(file.path(input_dir, phosprotfile))
-#
-
-#get all PHOS samples ids
-PHOS_KFid <- colnames(PHOSdata)[9:ncol(PHOSdata)]
-#
+######read phosphoproteomics data to data frame
+#####phosprotfile <- "Hope_phosphosite_imputed_data_ischemia_removed_liftover.tsv"
+#####PHOSdata <- readr::read_tsv(file.path(input_dir, phosprotfile))
+######
+#####
+######get all PHOS samples ids
+#####PHOS_KFid <- colnames(PHOSdata)[9:ncol(PHOSdata)]
+######
 
 #read splicing events data to data frame
 splicingfile <- "splicing_events-psi.tsv"
@@ -76,7 +76,7 @@ MakeAbundanceViolinPlots <- function(select_gene, WCPdata, WCP_KFid){
   }
   #
   #violin plot 
-  file_name<-paste("SampleAbundanceDist", select_gene, "violin_NEW.pdf", sep="_")
+  file_name<-paste("SampleAbundanceDist", select_gene, "violin.pdf", sep="_")
   pdf(file.path(".", plot_dir, file_name), height=6, width=12)
   AllSamples_AbdTotDataframe_violin<-ggplot(AllSamples_AbdTotDataframe, aes(x=Condition, y=Abd, fill=Condition)) +
     geom_violin(alpha=.3, width=0.5) +
