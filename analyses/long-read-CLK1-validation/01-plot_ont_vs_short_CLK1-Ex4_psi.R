@@ -47,7 +47,7 @@ cl_KNS42_file     = file.path(input_dir,"KNS42.CLK1.processed.txt")
 cl_7316_1763_df <- vroom(cl_7316_1763_file,comment = "#", 
                          delim = "\t", 
                          col_names = c("transcript","tpm"), show_col_types = FALSE) %>% 
-                   dplyr::mutate(cell_line="7316_1763") %>%
+                   dplyr::mutate(cell_line="7316-1763") %>%
                    dplyr::filter(transcript=='STRG.1.2'| transcript=='STRG.1.1' ) %>% 
                    dplyr::mutate(Isoform = case_when(
                                 transcript == "STRG.1.2" ~ "Inclusion",
@@ -55,13 +55,13 @@ cl_7316_1763_df <- vroom(cl_7316_1763_file,comment = "#",
                   dplyr::mutate(type="long") %>% 
                   dplyr::mutate(PSI = (tpm / sum(tpm)) * 100 ) %>% 
                   # manual add rMATs results for short reads
-                  add_row( cell_line = "7316_1763", type = "short", Isoform="Skipping", PSI = 59.8) %>%
-                  add_row( cell_line = "7316_1763", type = "short", Isoform="Inclusion", PSI = 40.2) 
+                  add_row( cell_line = "7316-1763", type = "short", Isoform="Skipping", PSI = 59.8) %>%
+                  add_row( cell_line = "7316-1763", type = "short", Isoform="Inclusion", PSI = 40.2) 
   
 cl_7316_1769_df <- vroom(cl_7316_1769_file,comment = "#", 
                          delim = "\t", 
                          col_names = c("transcript","tpm"), show_col_types = FALSE) %>% 
-                    mutate(cell_line="7316_1769") %>% 
+                    mutate(cell_line="7316-1769") %>% 
                     dplyr::filter(transcript=='STRG.2.2'| transcript=='STRG.2.1' ) %>% 
                     dplyr::mutate(Isoform = case_when(
                                   transcript == "STRG.2.1" ~ "Inclusion",
@@ -69,8 +69,8 @@ cl_7316_1769_df <- vroom(cl_7316_1769_file,comment = "#",
                     dplyr::mutate(type="long") %>% 
                     dplyr::mutate(PSI = (tpm / sum(tpm)) * 100 ) %>% 
                     # manual add rMATs results for short reads
-                    add_row( cell_line = "7316_1769", type = "short", Isoform="Skipping", PSI = 14.9) %>%
-                    add_row( cell_line = "7316_1769", type = "short", Isoform="Inclusion", PSI = 85.1) 
+                    add_row( cell_line = "7316-1769", type = "short", Isoform="Skipping", PSI = 14.9) %>%
+                    add_row( cell_line = "7316-1769", type = "short", Isoform="Inclusion", PSI = 85.1) 
 
 cl_KNS42_df <- vroom(cl_KNS42_file,comment = "#", 
                          delim = "\t", 
