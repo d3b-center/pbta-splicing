@@ -1,6 +1,6 @@
 ################################################################################
 # 05-plot-splice-patterns.R
-# Script that plots a patterns of splicing events across total sites
+# Script that plots a patterns of splicing events across total sites. 
 # written by Ammar Naqvi
 #
 # usage: Rscript 05-plot-splice-patterns.R
@@ -34,7 +34,7 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 ## output file names for plots
 file_splice_pattern_plot <- file.path(analysis_dir, "plots", "splicing_pattern_plot.pdf")
 
-## retrieve psi values from tables
+## retrieve psi values from txt/tsv files generated from previous scripts (01, 02)
 file_psi_pos_func  <- "splicing_events.total.pos.intersectUnip.ggplot.txt"
 file_psi_neg_func  <- "splicing_events.total.neg.intersectUnip.ggplot.txt"
 file_psi_pos_total <- "splicing_events.total.pos.tsv"
