@@ -24,6 +24,8 @@ Input files:
 * `01-plot_highExon4_vs_lowExon4_and_SBI.R` correlate high vs low levels of overall splicing burden with CLK1 exon 4 inclusion levels
 * `02-plot_splicing_vs_expr.R` correlate CLK1 exon 4 inclusion levels with RNA expression, including CLK1 and SRSF1
 * `03-plot_CLK1-Ex4-splicing_vs_SRSF1-expr.R` correlate CLK1 RNA expression with RNA SRSFs, phospho, and total proteomics across brain tumor types
+* `04-CLK1_PSI_plots.R` generates stacked barplot of relative inclusion/skipping of exon 4 across midline HGG tumors with differential splicing in CLK1.
+
 
 ## Directory structure
 ```
@@ -31,6 +33,7 @@ Input files:
 ├── 01-plot_highExon4_vs_lowExon4_and_SBI.R
 ├── 02-plot_splicing_vs_expr.R
 ├── 03-plot_SR-phosp_vs_CLK1-RNA.R
+├── 04-CLK1_PSI_plots.R
 ├── README.md
 ├── input
 │   └── CPTAC3-pbt.xls
