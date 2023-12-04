@@ -40,7 +40,7 @@ file_psi_neg_func  <- "splicing_events.total.neg.intersectUnip.ggplot.txt"
 file_psi_pos_total <- "splicing_events.total.pos.tsv"
 file_psi_neg_total <- "splicing_events.total.neg.tsv"
 
-psi_pos_tab      <-  read.delim(file.path(results_dir, file_psi_pos_total), sep = "\t", row.names = NULL, header=TRUE)
+psi_pos_tab      <-  read_tsv(file.path(results_dir, file_psi_pos_total))
 psi_neg_tab      <-  read.delim(file.path(results_dir, file_psi_neg_total), sep = "\t", row.names = NULL, header=TRUE)
 
 psi_pos_func_tab      <-  read.delim(file.path(results_dir, file_psi_pos_func), sep = "\t", row.names = NULL, header=TRUE)
