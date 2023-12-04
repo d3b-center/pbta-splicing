@@ -40,18 +40,21 @@ file_psi_neg_func  <- "splicing_events.total.neg.intersectUnip.ggplot.txt"
 file_psi_pos_total <- "splicing_events.total.pos.tsv"
 file_psi_neg_total <- "splicing_events.total.neg.tsv"
 
+## creaete df for total splice events for skipping and inclusion events, respectively
 psi_pos_tab      <-  read_tsv(file.path(results_dir, file_psi_pos_total))
 psi_neg_tab      <-  read.delim(file.path(results_dir, file_psi_neg_total), sep = "\t", row.names = NULL, header=TRUE)
 
+## creaete df for 'functional' splice events for skipping and inclusion events, respectively
 psi_pos_func_tab      <-  read.delim(file.path(results_dir, file_psi_pos_func), sep = "\t", row.names = NULL, header=TRUE)
 psi_neg_func_tab      <-  read.delim(file.path(results_dir, file_psi_neg_func), sep = "\t", row.names = NULL, header=TRUE)
 
+## mixed events are defined as events that are both skipped and included (they will be in both types of dataframes created above)
 mixed_events_df <- inner_join(psi_pos_tab,psi_neg_tab, by='gene') %>%
   mutate(type="Mixed") %>% 
   dplyr::select(gene, type) %>% 
   dplyr::rename("SpliceID"=gene)
 
-
+## get events that are 'functional' that are not considered mixed and create another column indicating that
 psi_pos_non_mixed_df <-  psi_pos_tab %>% 
   filter(!gene %in% mixed_events_df$SpliceID) %>% 
   mutate(type = case_when(flip == 1 ~ "Flip",
@@ -66,7 +69,7 @@ psi_neg_non_mixed_df <- psi_neg_tab %>%
   dplyr::select(gene,type) %>% 
   dplyr::rename("SpliceID"=gene)
 
-
+## combine all dataframes together for plotting
 psi_anno_df <- rbind(mixed_events_df,psi_pos_non_mixed_df,psi_neg_non_mixed_df) %>% 
   mutate(Impact="Non-functional")
 
