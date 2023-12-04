@@ -39,7 +39,7 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 ## output files for final plots
 CLK1_plot_path <- file.path(plots_dir, "CLK1_exon4_inclustion_fraction_hgg_stacked.pdf")
 
-## get SRSF11 psi values in tumors and ctrls
+## get CLK1 psi values in tumors and ctrls
 indep_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 indep_df <- read_tsv(indep_file) %>% dplyr::filter(cohort=='PBTA')
 
