@@ -8,9 +8,9 @@ The purpose of this module is to identify differential splicing and expression b
 
 ## Usage
 ### Make summary table of strong splicing events and relevant filtered tables that overlap functional sites:
-<br>**Run shell script to make tables and subsequent plots below**
+<br>**Run script to make tables and subsequent plots below**
 ```
-./run_module.sh
+Rscript --vanilla 01-diffExpr-ctrl_vs_morph.R
 ```
 
 *Input files:*
