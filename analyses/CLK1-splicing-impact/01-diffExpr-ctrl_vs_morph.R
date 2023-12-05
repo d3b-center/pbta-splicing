@@ -45,14 +45,12 @@ file_volc_plot = "ctrl_vs_clk1-morp_volcano.pdf"
 tpm_count_file <- "ctrl-vs-morpholino-gene-counts-rsem-expected_count.tsv" 
 
 # gene lists
+genelistreference_file <- file.path(input_dir,'genelistreference.txt')
+genelist_goi_file <- file.path(input_dir,'oncoprint-goi-lists-OpenPedCan-gencode-v39.csv') 
 known_rbp_file <- file.path(input_dir,'RBP_known.txt')
 known_kinase_file <- file.path(input_dir,'kinase_known.txt')
-known_tf_file <- file.path(input_dir,'tf_known.txt')
-known_kinase_file <- file.path(input_dir,'kinase_known.txt')
 known_epi_file <- file.path(input_dir,'epi_known.txt')
-known_ts_file <- file.path(input_dir,'ts_known.txt')
-known_onco_file <- file.path(input_dir,'onco_known.txt')
-brain_goi_file <- file.path(input_dir,'brain-goi-list-new.txt')
+
 
 count_data <- vroom(paste0(data_dir, tpm_count_file)) %>% 
                filter( (CTRL1 + CTRL2 + CTRL3 > 10) & (Treated1 + Treated2 + Treated3 > 10) )
@@ -113,45 +111,91 @@ write_delim(
 )
 
 ## subset with gene lists
-brain_goi_data <- read.table(brain_goi_file, header=TRUE)
+genelist_ref_df <- vroom(genelistreference_file) 
+known_kinase <- genelist_ref_df %>% 
+  mutate(Class = if_else(grepl("Kinase", type), 'Kinase', NA)) %>%
+  na.omit() %>%
+  select(Gene_Symbol,Class)
+
+known_tf<- genelist_ref_df %>% 
+  mutate(Class = if_else(grepl("TranscriptionFactor", type), "TF", NA)) %>%
+  na.omit() %>%
+  select(Gene_Symbol,Class)
+  
+known_ts <- genelist_ref_df %>% 
+    mutate(Class = if_else(grepl("TumorSuppressorGene", type), "TS", NA)) %>%
+    na.omit() %>%
+  select(Gene_Symbol,Class)
+    
+known_onco <- genelist_ref_df %>% 
+  mutate(Class = if_else(grepl("Oncogene", type), "Onco", NA)) %>%
+  na.omit() %>%
+  select(Gene_Symbol,Class)
+
+genelist_braingoi_df <- vroom(genelist_goi_file) %>% 
+  select(LGAT,`Embryonal tumor`,HGAT,Other ) %>% 
+  pivot_longer(cols=c("LGAT", `Embryonal tumor`,"HGAT" ,"Other"), 
+               names_to='tumor',
+               values_to="Gene_Symbol") %>% 
+  mutate(Class="BrainGOI") %>%
+  select(Gene_Symbol,Class) %>% 
+  distinct()
+
 known_rbp <- read.table(known_rbp_file,header=FALSE) %>% 
-  rename('gene' = V1)
+  rename('Gene_Symbol' = V1)
 known_epi <- read.table(known_epi_file,header=FALSE) %>% 
-  rename('gene' = V1)
-known_kinase <- read.table(known_kinase_file,header=FALSE) %>% 
-  rename('gene' = V1)
-known_tf <- read.table(known_tf_file,header=FALSE) %>% 
-  rename('gene' = V1)
-known_onco <- read.table(known_onco_file,header=FALSE) %>% 
-  rename('gene' = V1)
-known_ts <- read.table(known_ts_file,header=FALSE) %>% 
-  rename('gene' = V1)
+  rename('Gene_Symbol' = V1)
+
+
+
+res <- as.data.frame(res) %>% dplyr::rename('Gene_Symbol'=gene)
 
 res_rbp <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
-  inner_join(known_rbp, by="gene") %>% mutate(Class="RBP")
+  dplyr::rename('Gene_Symbol'=gene) %>% 
+  inner_join(known_rbp, by="Gene_Symbol") %>%
+  mutate(Class="RBP")
+
 res_tf <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
-  inner_join(known_tf, by="gene") %>% mutate(Class="TF")
+  dplyr::rename('Gene_Symbol'=gene) %>% 
+  inner_join(known_tf, by="Gene_Symbol") %>% 
+  mutate(Class="TF")
+
 res_kinase <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
-  inner_join(known_kinase, by="gene") %>% mutate(Class="kinase")
+  dplyr::rename('Gene_Symbol'=gene) %>% 
+  inner_join(known_kinase, by="Gene_Symbol") %>% 
+  mutate(Class="Kinase")
+
 res_epi <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
-  inner_join(known_epi, by="gene") %>% mutate(Class="Epi")
+  dplyr::rename('Gene_Symbol'=gene) %>% 
+  inner_join(known_epi, by="Gene_Symbol") %>% 
+  mutate(Class="Epi")
+
 res_ts <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
-  inner_join(known_ts, by="gene") %>% mutate(Class="TS")
+  dplyr::rename('Gene_Symbol'=gene) %>% 
+  inner_join(known_ts, by="Gene_Symbol") %>% 
+  mutate(Class="TS")
+
 res_onco <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
-  inner_join(known_onco, by="gene") %>% mutate(Class="Onco")
+  dplyr::rename('Gene_Symbol'=gene) %>% 
+  inner_join(known_onco, by="Gene_Symbol") %>% 
+  mutate(Class="Onco")
+
 res_brain <- as.data.frame(res) %>% 
-  dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
-  inner_join(brain_goi_data, by="gene") %>% mutate(Class="Brain_GOI")
+  dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>%
+  dplyr::rename('Gene_Symbol'=gene) %>% 
+  inner_join(genelist_braingoi_df, by="Gene_Symbol") %>% 
+  mutate(Class="BrainGOI")
 
 res_all_regl_df <- rbind(res_rbp, res_tf, res_kinase, res_epi, res_brain)
+
 EnhancedVolcano(res_all_regl_df,
-                lab = res_all_regl_df$gene, 
+                lab = res_all_regl_df$Gene_Symbol, 
                 x = 'log2FoldChange',
                 y = 'pvalue',
                 drawConnectors = TRUE,
