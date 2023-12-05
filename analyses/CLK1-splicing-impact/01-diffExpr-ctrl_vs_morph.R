@@ -51,6 +51,8 @@ known_rbp_file <- file.path(input_dir,'RBP_known.txt')
 known_kinase_file <- file.path(input_dir,'kinase_known.txt')
 known_epi_file <- file.path(input_dir,'epi_known.txt')
 
+## hgnc file for liftover
+hgnc_file <- file.path(input_dir,"hgnc_complete_set.txt")
 
 count_data <- vroom(paste0(data_dir, tpm_count_file)) %>% 
                filter( (CTRL1 + CTRL2 + CTRL3 > 10) & (Treated1 + Treated2 + Treated3 > 10) )
@@ -147,9 +149,6 @@ known_epi <- read.table(known_epi_file,header=FALSE) %>%
   rename('Gene_Symbol' = V1)
 
 
-
-res <- as.data.frame(res) %>% dplyr::rename('Gene_Symbol'=gene)
-
 res_rbp <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
   dplyr::rename('Gene_Symbol'=gene) %>% 
@@ -192,7 +191,17 @@ res_brain <- as.data.frame(res) %>%
   inner_join(genelist_braingoi_df, by="Gene_Symbol") %>% 
   mutate(Class="BrainGOI")
 
-res_all_regl_df <- rbind(res_rbp, res_tf, res_kinase, res_epi, res_brain)
+## combine results and liftover geneSymbols to new names
+liftover_df <- vroom(hgnc_file) %>%
+  select(symbol, prev_symbol)
+
+res_all_regl_df <- rbind(res_rbp, res_tf, res_kinase, res_epi, res_brain) %>%
+  ## liftover geneSymbols
+  left_join(liftover_df, by=c('Gene_Symbol'='prev_symbol')) %>% 
+  mutate(Gene_Symbol = case_when(
+    is.na(symbol) ~ Gene_Symbol,
+    TRUE ~ symbol
+  )) 
 
 EnhancedVolcano(res_all_regl_df,
                 lab = res_all_regl_df$Gene_Symbol, 
@@ -204,8 +213,8 @@ EnhancedVolcano(res_all_regl_df,
                 title = 'Treated vs Ctrl',
                 pCutoff = 0.05,
                 FCcutoff = 1,
-                pointSize = 3,
-                labSize = 3)
+                pointSize = 2,
+                labSize = 4)
 
 ggsave(
   paste0(plots_dir,"/", "ctrl_vs_clk1-morp_volcano.goi.pdf"),
