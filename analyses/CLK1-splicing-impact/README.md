@@ -20,7 +20,6 @@ input/hgnc_complete_set.txt
 input/genelistreference.txt
 input/oncoprint-goi-lists-OpenPedCan-gencode-v39.csv
 input_dir/RBP_known.txt
-input_dir/kinase_known.txt
 input_dir/epi_known.txt
 ```
 
