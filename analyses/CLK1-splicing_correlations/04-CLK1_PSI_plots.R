@@ -41,7 +41,7 @@ CLK1_plot_path <- file.path(plots_dir, "CLK1_exon4_inclustion_fraction_hgg_stack
 
 ## get CLK1 psi values in tumors and ctrls
 indep_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
-indep_df <- read_tsv(indep_file) %>% dplyr::filter(cohort=='PBTA')
+indep_df <- vroom(indep_file) %>% dplyr::filter(cohort=='PBTA')
 
 rmats_file <- file.path(data_dir,"rMATS_merged.comparison.tsv.gz")
 hist_file <- file.path(data_dir,"histologies.tsv")
@@ -51,7 +51,7 @@ histologies_df <- vroom(hist_file) %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% indep_df$Kids_First_Biospecimen_ID)
 
 ## load rmats input for CLK1
-clk1_rmats <- vroom(rmats_file, comment = "#", delim="\t") %>%
+clk1_rmats <- vroom(rmats_file) %>%
   # filter for CLK1 and exon 4
   dplyr::filter(geneSymbol=="CLK1",
          exonStart_0base=="200860124", 
