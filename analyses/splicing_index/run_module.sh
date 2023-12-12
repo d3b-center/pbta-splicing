@@ -22,4 +22,7 @@ Rscript --vanilla 03-identify_and_plot_histologies_by_SBI.R
 ## plot distrubution of splicing types/cases
 Rscript --vanilla 04-plot_total-splicing-cases.R
 
+## plot tmb vs sbi
+Rscript --vanilla 05-plot_tmb_vs_sbi.R
+
 rm Rplots.pdf
