@@ -38,7 +38,7 @@ if(!dir.exists(results_dir)){
 de_output = "ctrl_vs_treated.de.tsv"
 de_reg_output = "ctrl_vs_treated.de.regl.tsv"
 file_volc_plot = "ctrl_vs_clk1-morp_volcano.pdf"
-
+file_gene_family_plot = "gene-fam-DE-plot.pdf"
 
 ## input files
 # count data
@@ -117,36 +117,36 @@ genelist_ref_df <- vroom(genelistreference_file)
 known_kinase <- genelist_ref_df %>% 
   mutate(Class = if_else(grepl("Kinase", type), 'Kinase', NA)) %>%
   na.omit() %>%
-  select(Gene_Symbol,Class)
+  dplyr::select(Gene_Symbol,Class)
 
 known_tf<- genelist_ref_df %>% 
   mutate(Class = if_else(grepl("TranscriptionFactor", type), "TF", NA)) %>%
   na.omit() %>%
-  select(Gene_Symbol,Class)
+  dplyr::select(Gene_Symbol,Class)
   
 known_ts <- genelist_ref_df %>% 
     mutate(Class = if_else(grepl("TumorSuppressorGene", type), "TS", NA)) %>%
     na.omit() %>%
-  select(Gene_Symbol,Class)
+  dplyr::select(Gene_Symbol,Class)
     
 known_onco <- genelist_ref_df %>% 
   mutate(Class = if_else(grepl("Oncogene", type), "Onco", NA)) %>%
   na.omit() %>%
-  select(Gene_Symbol,Class)
+  dplyr::select(Gene_Symbol,Class)
 
 genelist_braingoi_df <- vroom(genelist_goi_file) %>% 
-  select(LGAT,`Embryonal tumor`,HGAT,Other ) %>% 
+  dplyr::select(LGAT,`Embryonal tumor`,HGAT,Other ) %>% 
   pivot_longer(cols=c("LGAT", `Embryonal tumor`,"HGAT" ,"Other"), 
                names_to='tumor',
                values_to="Gene_Symbol") %>% 
   mutate(Class="BrainGOI") %>%
-  select(Gene_Symbol,Class) %>% 
+  dplyr::select(Gene_Symbol,Class) %>% 
   distinct()
 
 known_rbp <- read.table(known_rbp_file,header=FALSE) %>% 
-  rename('Gene_Symbol' = V1)
+  dplyr::rename('Gene_Symbol' = V1)
 known_epi <- read.table(known_epi_file,header=FALSE) %>% 
-  rename('Gene_Symbol' = V1)
+  dplyr::rename('Gene_Symbol' = V1)
 
 
 res_rbp <- as.data.frame(res) %>% 
@@ -193,7 +193,7 @@ res_brain <- as.data.frame(res) %>%
 
 ## combine results and liftover geneSymbols to new names
 liftover_df <- vroom(hgnc_file) %>%
-  select(symbol, prev_symbol)
+  dplyr::select(symbol, prev_symbol)
 
 res_all_regl_df <- rbind(res_rbp, res_tf, res_kinase, res_epi, res_brain) %>%
   ## liftover geneSymbols
@@ -203,39 +203,35 @@ res_all_regl_df <- rbind(res_rbp, res_tf, res_kinase, res_epi, res_brain) %>%
     TRUE ~ symbol
   )) 
 
-EnhancedVolcano(res_all_regl_df,
-                lab = res_all_regl_df$Gene_Symbol, 
-                x = 'log2FoldChange',
-                y = 'pvalue',
-                drawConnectors = TRUE,
-                #ylim = c(0,21),
-                #xlim = c(-3,3),
-                title = 'Treated vs Ctrl',
-                pCutoff = 0.05,
-                FCcutoff = 1,
-                pointSize = 2,
-                labSize = 4)
+## write significant genes to table for subsequent correlation analyses
+sign_regl_gene_df <- res_all_regl_df %>%
+  as.data.frame() %>%
+  dplyr::filter(padj < 0.05,
+         abs(log2FoldChange) >= 1) 
 
-ggsave(
-  paste0(plots_dir,"/", "ctrl_vs_clk1-morp_volcano.goi.pdf"),
-  plot = last_plot(),
-  device = NULL,
-  path = NULL,
-  scale = 1,
-  width =6.73,
-  height = 10.38,
-  units = "in",
-  dpi = 300,
-  limitsize = TRUE,
-  bg = NULL
-)
+plot_barplot_family <- ggplot(sign_regl_gene_df,
+       aes(x = Class, fill= Class)) +
+  geom_bar(stat="count", color="black")    + 
+  theme(legend.position = "none",
+        legend.title = element_text(size=19), 
+        axis.text.x=element_text(size=14), 
+        axis.text.y=element_text(size=14)) + 
+  xlab("Gene Class") + ylab("Num of Differentially Expressed Genes") + 
+  scale_fill_manual(values = c("red","red", 
+                               "red","red","red")) + 
+  geom_text(stat='count',aes(label=..count..), position = position_fill(vjust = 55)) +
+  theme_Publication() + 
+  theme(legend.position="none")
+  
 
-## write to file
-write_delim(
-  as_tibble(res_all_regl_df),
-  paste0(results_dir,"/", de_reg_output),
-  delim = "\t"
-)
+
+
+# print plot
+pdf(file_gene_family_plot, height = 4, width = 4, useDingbats = FALSE)
+print(plot_barplot_family)
+dev.off()
+
+
 
 
 unlink(file.path("Rplots.pdf"))
