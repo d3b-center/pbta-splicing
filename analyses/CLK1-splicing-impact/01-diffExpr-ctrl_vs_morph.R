@@ -153,13 +153,13 @@ res_rbp <- as.data.frame(res) %>%
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
   dplyr::rename('Gene_Symbol'=gene) %>% 
   inner_join(known_rbp, by="Gene_Symbol") %>%
-  mutate(Class="RBP")
+  mutate(Class="RNA-binding")
 
 res_tf <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
   dplyr::rename('Gene_Symbol'=gene) %>% 
   inner_join(known_tf, by="Gene_Symbol") %>% 
-  mutate(Class="TF")
+  mutate(Class="Transcription Factor")
 
 res_kinase <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
@@ -171,31 +171,31 @@ res_epi <- as.data.frame(res) %>%
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
   dplyr::rename('Gene_Symbol'=gene) %>% 
   inner_join(known_epi, by="Gene_Symbol") %>% 
-  mutate(Class="Epi")
+  mutate(Class="Epigenetic")
 
 res_ts <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
   dplyr::rename('Gene_Symbol'=gene) %>% 
   inner_join(known_ts, by="Gene_Symbol") %>% 
-  mutate(Class="TS")
+  mutate(Class="Tumor Suppr")
 
 res_onco <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
   dplyr::rename('Gene_Symbol'=gene) %>% 
   inner_join(known_onco, by="Gene_Symbol") %>% 
-  mutate(Class="Onco")
+  mutate(Class="Oncogene")
 
 res_brain <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>%
   dplyr::rename('Gene_Symbol'=gene) %>% 
   inner_join(genelist_braingoi_df, by="Gene_Symbol") %>% 
-  mutate(Class="BrainGOI")
+  mutate(Class="Brain Tumor-specific Cancer")
 
 ## combine results and liftover geneSymbols to new names
 liftover_df <- vroom(hgnc_file) %>%
   dplyr::select(symbol, prev_symbol)
 
-res_all_regl_df <- rbind(res_rbp, res_tf, res_kinase, res_epi, res_brain) %>%
+res_all_regl_df <- rbind(res_rbp, res_tf, res_kinase, res_epi, res_brain, res_ts,res_onco) %>%
   ## liftover geneSymbols
   left_join(liftover_df, by=c('Gene_Symbol'='prev_symbol')) %>% 
   mutate(Gene_Symbol = case_when(
@@ -213,20 +213,19 @@ sign_regl_gene_df <- res_all_regl_df %>%
 
 
 ## plot num of hits per gene fam
-plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_infreq(Class), fill= Direction)) +
+plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(Class)), fill= Direction)) +
                        geom_bar(stat="count", position='dodge', color="black") + 
                        xlab("Gene Family")     + 
-                       ylab("Num of DE Genes") + 
+                       ylab("Num of Signficantly DE Genes") + 
                        scale_fill_manual(name = "Direction",
                                          values=c("#FFC20A","#0C7BDC")) + 
                        geom_text(stat='count',aes(label=..count..), 
                                  position = position_dodge(width = 1),
-                                 vjust = -0.5, size = 4) +
-                      theme_Publication() 
+                                 hjust = -0.5, size = 4) +
+                      theme_Publication() + 
+                      coord_flip()
 
-# print plot
-pdf(file_gene_family_plot, height = 4, width = 6, useDingbats = FALSE)
+# print and save plot
+pdf(file_gene_family_plot, height = 10.38, width = 6.73, useDingbats = FALSE) 
 print(plot_barplot_family)
 dev.off()
-
-unlink(file.path("Rplots.pdf"))
