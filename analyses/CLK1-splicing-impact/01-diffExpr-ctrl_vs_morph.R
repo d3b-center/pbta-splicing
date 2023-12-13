@@ -38,7 +38,7 @@ if(!dir.exists(results_dir)){
 de_output = "ctrl_vs_treated.de.tsv"
 de_reg_output = "ctrl_vs_treated.de.regl.tsv"
 file_volc_plot = "ctrl_vs_clk1-morp_volcano.pdf"
-file_gene_family_plot = "gene-fam-DE-plot.pdf"
+file_gene_family_plot = file.path(plots_dir,"gene-fam-DE-plot.pdf")
 
 ## input files
 # count data
@@ -207,31 +207,26 @@ res_all_regl_df <- rbind(res_rbp, res_tf, res_kinase, res_epi, res_brain) %>%
 sign_regl_gene_df <- res_all_regl_df %>%
   as.data.frame() %>%
   dplyr::filter(padj < 0.05,
-         abs(log2FoldChange) >= 1) 
-
-plot_barplot_family <- ggplot(sign_regl_gene_df,
-       aes(x = Class, fill= Class)) +
-  geom_bar(stat="count", color="black")    + 
-  theme(legend.position = "none",
-        legend.title = element_text(size=19), 
-        axis.text.x=element_text(size=14), 
-        axis.text.y=element_text(size=14)) + 
-  xlab("Gene Class") + ylab("Num of Differentially Expressed Genes") + 
-  scale_fill_manual(values = c("red","red", 
-                               "red","red","red")) + 
-  geom_text(stat='count',aes(label=..count..), position = position_fill(vjust = 55)) +
-  theme_Publication() + 
-  theme(legend.position="none")
-  
+         abs(log2FoldChange) >= 1) %>%
+  mutate(Direction= case_when(log2FoldChange<1 ~ 'Down',
+                              log2FoldChange>1 ~ 'Up'))
 
 
+## plot num of hits per gene fam
+plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_infreq(Class), fill= Direction)) +
+                       geom_bar(stat="count", position='dodge', color="black") + 
+                       xlab("Gene Family")     + 
+                       ylab("Num of DE Genes") + 
+                       scale_fill_manual(name = "Direction",
+                                         values=c("#FFC20A","#0C7BDC")) + 
+                       geom_text(stat='count',aes(label=..count..), 
+                                 position = position_dodge(width = 1),
+                                 vjust = -0.5, size = 4) +
+                      theme_Publication() 
 
 # print plot
-pdf(file_gene_family_plot, height = 4, width = 4, useDingbats = FALSE)
+pdf(file_gene_family_plot, height = 4, width = 6, useDingbats = FALSE)
 print(plot_barplot_family)
 dev.off()
-
-
-
 
 unlink(file.path("Rplots.pdf"))
