@@ -69,7 +69,6 @@ plot_incl <- ggstatsplot::ggbetweenstats(
   type = "robust",
   xlab = "Unipro-defined Site",
   pairwise.comparisons = FALSE,
-  options(ggrepel.max.overlaps = 10),
   messages = FALSE
 ) + theme_Publication() + labs(y=expression(Delta*PSI)) 
 
@@ -94,7 +93,6 @@ plot_skip <- ggstatsplot::ggbetweenstats(
   type = "robust",
   xlab = "Unipro-defined Site",
   pairwise.comparisons = FALSE,
-  options(ggrepel.max.overlaps = 10),
   messages = FALSE) + 
   theme_Publication() + labs(y=expression(Delta*PSI)) 
 
@@ -106,8 +104,7 @@ dev.off()
 
 # kinase gene list
 known_kinase_file <- file.path(input_dir,'kinase_known.txt')
-known_kinase_df <- read.table(known_kinase_file,header=FALSE) %>% 
-  rename('gene' = V1)
+known_kinase_df <- vroom(known_kinase_file, delim = "\t", col_names = 'gene') 
 
 dpsi_unip_pos_kinase <- dplyr::inner_join(dpsi_unip_pos, known_kinase_df, by='gene') %>% mutate(Preference="Skipping")
 dpsi_unip_neg_kinase <- dplyr::inner_join(dpsi_unip_neg, known_kinase_df, by='gene') %>% mutate(Preference="Inclusion")
