@@ -7,13 +7,12 @@ The purpose of this module is to identify differential splicing and expression b
 
 
 ## Usage
-### Make summary table of strong splicing events and relevant filtered tables that overlap functional sites:
-<br>**Run script**
+### Run script
 ```
 bash run_module.sh
 ```
 
-*Input files:*
+### Input
 ```
 data/ctrl-vs-morpholino-gene-counts-rsem-expected_count.tsv
 input/hgnc_complete_set.txt
@@ -23,7 +22,7 @@ input_dir/RBP_known.txt
 input_dir/epi_known.txt
 ```
 
-*Output:*
+### Output
 ```
 results/ctrl_vs_treated.de.tsv
 results/ctrl_vs_treated.de.regl.tsv
