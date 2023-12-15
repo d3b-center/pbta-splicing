@@ -16,8 +16,8 @@ input/qpcr-raw-triplicates.tsv
 ```
 
 ## Folder Content
-```01-plot-and-process-depmap-data.R``` is script plotting CLK1 dependency scores and CLK1 transcript expression for brain tumor cell lines available in the DepMap Portal
-```02-plot_cell-proliferation-assay-res.R``` plots the results from the cell proliferation assay of treated vs ctrl/untreated cells
+```01-plot-and-process-depmap-data.R``` is script plotting CLK1 dependency scores and CLK1 transcript expression for brain tumor cell lines available in the DepMap Portal<br>
+```02-plot_cell-proliferation-assay-res.R``` plots the results from the cell proliferation assay of treated vs ctrl/untreated cells<br>
 ```03-plot-qPCR-res.R``` visualizes qRT-PCR results
 
 ## Directory Structure
