@@ -1,5 +1,5 @@
-# CLK1 dependency on KNS42 Cell Line
-This module investigates the dependency of CLK1 in pediatric HGG cell line KNS42 relative to all other brain tumor cell lines. It produces two plots using DepMap portal showing 1. CLK1 dependency score highlighting KNS42 relative to all other brain tumor cell lines, and 2. Sina plot comparing the distributions of CRISPR scores betwenn cell lines with high vs low CLK1 Exon 4-containing transcript expression.
+# KNS42 Cell Line
+This module investigates the dependency of CLK1 in pediatric HGG cell line KNS42 relative to all other brain tumor cell lines using DepMap portal data, and generates visualizations of KNS42 morpholino treated cells and functional validations (experimental) of CLK1 exon 4 splicing on cell proliferation.  
 
 ## Usage
 To run analysis module from the command line:
@@ -17,9 +17,7 @@ input/qpcr-raw-triplicates.tsv
 
 ## Folder Content
 ```01-plot-and-process-depmap-data.R``` is script plotting CLK1 dependency scores and CLK1 transcript expression for brain tumor cell lines available in the DepMap Portal
-
 ```02-plot_cell-proliferation-assay-res.R``` plots the results from the cell proliferation assay of treated vs ctrl/untreated cells
-
 ```03-plot-qPCR-res.R``` visualizes qRT-PCR results
 
 ## Directory Structure
