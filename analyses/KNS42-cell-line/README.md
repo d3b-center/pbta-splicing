@@ -1,25 +1,45 @@
-## Usage
-
-To run analysis module from the command line:
-
-```
-Rscript --vanilla 01-plot-and-process-depmap-data.R
-```
-## Summary
+# CLK1 dependency on KNS42 Cell Line
 This module investigates the dependency of CLK1 in pediatric HGG cell line KNS42 relative to all other brain tumor cell lines. It produces two plots using DepMap portal showing 1. CLK1 dependency score highlighting KNS42 relative to all other brain tumor cell lines, and 2. Sina plot comparing the distributions of CRISPR scores betwenn cell lines with high vs low CLK1 Exon 4-containing transcript expression.
 
+## Usage
+To run analysis module from the command line:
+```
+bash run_module.sh
+```
+
+### Input
+```
+input/CLK1_CRISPR_depmap_score.csv
+input/OmicsDefaultModelProfiles.csv
+input/cell_prolif_res.tsv
+input/qpcr-raw-triplicates.tsv
+```
+
+## Folder Content
 ```01-plot-and-process-depmap-data.R``` is script plotting CLK1 dependency scores and CLK1 transcript expression for brain tumor cell lines available in the DepMap Portal
 
-## Results
-We confirm that CLK1 is essential to KNS42. Furthermore, high ex4 transcript expression is significantly more essential than low exon 4 transcript expression.
+```02-plot_cell-proliferation-assay-res.R``` plots the results from the cell proliferation assay of treated vs ctrl/untreated cells
+
+```03-plot-qPCR-res.R``` visualizes qRT-PCR results
 
 ## Directory Structure
 ```
+.
 ├── 01-plot-and-process-depmap-data.R
+├── 02-plot_cell-proliferation-assay-res.R
+├── 03-plot-qPCR-res.R
+├── README.md
 ├── input
+│   ├── 2023-03-22 162604_JLRmod.xls
 │   ├── CLK1_CRISPR_depmap_score.csv
-│   └── OmicsDefaultModelProfiles.csv
-└── plots
-    ├── depmap_score_CLK1_vs_score_KNS42.tiff
-    └── depmap_score_cell-lines.tiff
+│   ├── OmicsDefaultModelProfiles.csv
+│   ├── cell_prolif_res.tsv
+│   └── qpcr-raw-triplicates.tsv
+├── plots
+│   ├── cell_prolif-line.pdf
+│   ├── depmap_score_CLK1_vs_score_KNS42.pdf
+│   ├── depmap_score_all_cell_lines.pdf
+│   ├── depmap_score_cns_cell_lines.pdf
+│   └── qPCR-morp.pdf
+└── run_module.sh
 ```
