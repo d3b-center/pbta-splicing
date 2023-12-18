@@ -37,14 +37,14 @@ indep_wgs_file <- file.path(data_dir, "independent-specimens.wgswxspanel.primary
 rmats_file <- file.path(data_dir, "rMATS_merged.comparison.tsv.gz")
 
 indep_rna_df <- vroom(indep_rna_file)  %>% 
-  filter(cancer_group=='High-grade glioma',
+  dplyr::filter(cancer_group=='High-grade glioma',
          cohort == 'PBTA') %>% 
-  rename('Tumor_Sample_Barcode'=Kids_First_Biospecimen_ID)
+  dplyr::rename('Tumor_Sample_Barcode'=Kids_First_Biospecimen_ID)
 
 indep_wgs_df <- vroom(indep_wgs_file)  %>% 
   filter(cancer_group=='High-grade glioma',
          cohort == 'PBTA') %>% 
-  rename('Tumor_Sample_Barcode'=Kids_First_Biospecimen_ID)
+  dplyr::rename('Tumor_Sample_Barcode'=Kids_First_Biospecimen_ID)
 
 ## filter for samples that have both RNA and WGS
 indep_sample_rna_wgs <- inner_join(indep_wgs_df,indep_rna_df, by='Kids_First_Participant_ID')
@@ -57,19 +57,25 @@ histologies_df <- vroom(clin_file)  %>%
 
 ## get splicing events and subset based on samples with both wgs/rna
 splice_df<-   data.table::fread(rmats_file, data.table = FALSE) %>%
-  filter(splicing_case == 'SE', 
+  dplyr::filter(splicing_case == 'SE', 
          IncLevelDifference >= abs(.20) ) %>%
-  rename('Kids_First_Biospecimen_ID'=sample_id) %>% 
+  dplyr::rename('Kids_First_Biospecimen_ID'=sample_id) %>% 
   inner_join(histologies_df, by='Kids_First_Biospecimen_ID') %>%
-  select(Kids_First_Participant_ID,geneSymbol) %>%
-  rename('Tumor_Sample_Barcode'=Kids_First_Participant_ID, 'Hugo_Symbol'=geneSymbol) %>%
+  dplyr::mutate(geneSymbol=paste0(geneSymbol,"_spl")) %>%
+  dplyr::select(Kids_First_Participant_ID,geneSymbol) %>%
+  dplyr::rename('Tumor_Sample_Barcode'=Kids_First_Participant_ID, 'Hugo_Symbol'=geneSymbol) %>%
   mutate(Variant_Classification='Splicing', Variant_Type='Other')
 
 ## filter maf table for samples with RNA splicing + HGGs + midline + req'd cols
-maf_df <- data.table::fread(maf_file, data.table = FALSE)
-maf__fil_df <- maf_df %>%
+maf_df <- data.table::fread(maf_file, data.table = FALSE) %>% 
+  dplyr::mutate(vaf = t_alt_count / (t_ref_count + t_alt_count))
+
+maf_fil_df <- maf_df %>%
   dplyr::filter(Tumor_Sample_Barcode %in% histologies_df$Tumor_Sample_Barcode.x) %>%
-  mutate(Tumor_Sample_Barcode=Kids_First_Participant_ID) %>% 
+  dplyr::rename('Kids_First_Biospecimen_ID'=Tumor_Sample_Barcode) %>% 
+  inner_join(histologies_df, by='Kids_First_Biospecimen_ID') %>% 
+  dplyr::mutate('Tumor_Sample_Barcode'=Kids_First_Participant_ID) %>% 
+  #dplyr::filter(vaf >0.05) %>% 
   dplyr::select(
     Hugo_Symbol,
     Entrez_Gene_Id,
@@ -87,14 +93,16 @@ maf__fil_df <- maf_df %>%
     t_ref_count,
     t_alt_count,
     Consequence
-  ) 
+  ) %>%
+  dplyr::mutate(Hugo_Symbol=paste0(Hugo_Symbol,"_mut"))
+
 
 ## rename histologies_df Kids_First_Participant_ID to Tumor_Sample_Barcode
 histologies_df <- histologies_df %>%  
   dplyr::rename('Tumor_Sample_Barcode'=Kids_First_Participant_ID)
   
 ## combine mutation and splicing info
-combined_maf <- bind_rows(maf__fil_df, splice_df)
+combined_maf <- bind_rows(maf_fil_df, splice_df)
 
 
 maf = read.maf(maf = combined_maf, 
@@ -147,5 +155,5 @@ oncoplot(maf,annotationFontSize = 1, gene_mar = 7, barcode_mar = 6,
          showTitle = F, logColBar = T, colors = colors, removeNonMutated= T,clinicalFeatures = c("molecular_subtype"))
 
 somaticInteractions(maf = maf, top = 25, pvalue = c(0.05, 0.1))
-co_occurrence_df <- somaticInteractions(maf = maf, top = 25, pvalue = c(0.05, 0.1))
-
+co_occurrence_df <- somaticInteractions(maf = maf) %>% 
+  dplyr::filter(pValue < 0.05)
