@@ -2,7 +2,6 @@
 # written by Ammar Naqvi
 #
 # This script plots TMB based on high vs low splicing burden 
-#
 # usage: Rscript 05-plot-tmb-sbi.R
 ################################################################################
 
@@ -77,6 +76,37 @@ upper_tmb <- quartiles_tmb[2]
 high_tmb_df <- dplyr::filter(sbi_vs_tmb_innerjoin_df, tmb > upper_tmb) %>% dplyr::mutate(TMB_level="High")
 low_tmb_df  <- dplyr::filter(sbi_vs_tmb_innerjoin_df, tmb < lower_tmb) %>% dplyr::mutate(TMB_level="Low")
 high_vs_low_TMB_df <- rbind(low_tmb_df,high_tmb_df)
+
+
+## remove hyper/ultra-mutant samples
+high_vs_low_hyper_rem_df <- high_vs_low_df %>% dplyr::filter(tmb < 10)
+ggplot(high_vs_low_hyper_rem_df,aes(SBI_level,log10(tmb)) ) +  
+  geom_violin(aes(SBI_level)) +
+  ggforce::geom_sina(aes(color = SBI_level), size = 2,method="density") +
+  stat_compare_means() + 
+  scale_color_manual(name = "SBI_level", values = c(High = "#0C7BDC", Low = "#FFC20A")) + 
+  theme_Publication() + labs(y="log10 (TMB)", x="Splicing Burden Level") + 
+  theme(legend.position="none")
+
+## look at samples with low TMB
+high_vs_low_lowTMB_df <- high_vs_low_df %>% dplyr::filter(tmb <= lower_tmb)
+sbi_tmb_plot <- ggplot(high_vs_low_lowTMB_df,aes(SBI_level,log10(tmb)) ) +  
+  geom_violin(aes(SBI_level)) +
+  ggforce::geom_sina(aes(color = SBI_level), size = 2,method="density") +
+  stat_compare_means() + 
+  scale_color_manual(name = "SBI_level", values = c(High = "#0C7BDC", Low = "#FFC20A")) + 
+  theme_Publication() + labs(y="log10 (TMB)", x="Splicing Burden Level") + 
+  theme(legend.position="none")
+
+## look at samples with high TMB
+high_vs_low_highTMB_df <- high_vs_low_df %>% dplyr::filter(tmb >= upper_tmb)
+sbi_tmb_plot <- ggplot(high_vs_low_highTMB_df,aes(SBI_level,log10(tmb)) ) +  
+  geom_violin(aes(SBI_level)) +
+  ggforce::geom_sina(aes(color = SBI_level), size = 2,method="density") +
+  stat_compare_means() + 
+  scale_color_manual(name = "SBI_level", values = c(High = "#0C7BDC", Low = "#FFC20A")) + 
+  theme_Publication() + labs(y="log10 (TMB)", x="Splicing Burden Level") + 
+  theme(legend.position="none")
 
 ## generate two boxplots (SBI and TMB)
 sbi_tmb_plot <- ggplot(high_vs_low_df,aes(SBI_level,log10(tmb)) ) +  
