@@ -90,7 +90,7 @@ ggplot(high_vs_low_hyper_rem_df,aes(SBI_level,log10(tmb)) ) +
 
 ## look at samples with low TMB
 high_vs_low_lowTMB_df <- high_vs_low_df %>% dplyr::filter(tmb <= lower_tmb)
-sbi_tmb_plot <- ggplot(high_vs_low_lowTMB_df,aes(SBI_level,log10(tmb)) ) +  
+ggplot(high_vs_low_lowTMB_df,aes(SBI_level,log10(tmb)) ) +  
   geom_violin(aes(SBI_level)) +
   ggforce::geom_sina(aes(color = SBI_level), size = 2,method="density") +
   stat_compare_means() + 
@@ -100,7 +100,7 @@ sbi_tmb_plot <- ggplot(high_vs_low_lowTMB_df,aes(SBI_level,log10(tmb)) ) +
 
 ## look at samples with high TMB
 high_vs_low_highTMB_df <- high_vs_low_df %>% dplyr::filter(tmb >= upper_tmb)
-sbi_tmb_plot <- ggplot(high_vs_low_highTMB_df,aes(SBI_level,log10(tmb)) ) +  
+ggplot(high_vs_low_highTMB_df,aes(SBI_level,log10(tmb)) ) +  
   geom_violin(aes(SBI_level)) +
   ggforce::geom_sina(aes(color = SBI_level), size = 2,method="density") +
   stat_compare_means() + 
