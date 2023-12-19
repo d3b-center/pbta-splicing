@@ -38,36 +38,48 @@ rmats_file <- file.path(data_dir, "rMATS_merged.comparison.tsv.gz")
 
 indep_rna_df <- vroom(indep_rna_file)  %>% 
   dplyr::filter(cancer_group=='High-grade glioma',
-         cohort == 'PBTA') %>% 
-  dplyr::rename('Tumor_Sample_Barcode'=Kids_First_Biospecimen_ID)
+         cohort == 'PBTA') 
 
 indep_wgs_df <- vroom(indep_wgs_file)  %>% 
   filter(cancer_group=='High-grade glioma',
-         cohort == 'PBTA') %>% 
-  dplyr::rename('Tumor_Sample_Barcode'=Kids_First_Biospecimen_ID)
+         cohort == 'PBTA') 
 
 ## filter for samples that have both RNA and WGS
-indep_sample_rna_wgs <- inner_join(indep_wgs_df,indep_rna_df, by='Kids_First_Participant_ID')
+indep_sample_rna_wgs <- inner_join(indep_wgs_df,indep_rna_df, by='Kids_First_Participant_ID') %>% 
+  dplyr::rename('DNA_id'=Kids_First_Biospecimen_ID.x, 'RNA_id'=Kids_First_Biospecimen_ID.y)
 
 histologies_df <- vroom(clin_file)  %>% 
   filter(short_histology == 'HGAT',
          cohort == 'PBTA',
-         CNS_region == 'Midline') %>% 
-  inner_join(indep_sample_rna_wgs, by='Kids_First_Participant_ID') 
+         CNS_region == 'Midline'
+        ) %>% 
+  inner_join(indep_sample_rna_wgs, by='Kids_First_Participant_ID') %>% 
+  filter(short_histology == 'HGAT',
+         cohort == 'PBTA',
+         CNS_region == 'Midline'
+  ) %>%
+  filter(experimental_strategy == 'RNA-Seq' |
+         experimental_strategy == 'WGS' |
+          experimental_strategy == 'WXS')
+
+  
 
 ## get splicing events and subset based on samples with both wgs/rna
-splice_df<-   data.table::fread(rmats_file, data.table = FALSE) %>%
+splice_df <-  vroom(rmats_file) %>%
   dplyr::filter(splicing_case == 'SE', 
-         IncLevelDifference >= abs(.20) ) %>%
-  dplyr::rename('Kids_First_Biospecimen_ID'=sample_id) %>% 
-  inner_join(histologies_df, by='Kids_First_Biospecimen_ID') %>%
+               IncLevelDifference >= abs(.20) ) %>%
+  dplyr::rename('RNA_id'=sample_id) %>% 
+  inner_join(histologies_df, by='RNA_id', relationship = "many-to-many") %>%
   dplyr::mutate(geneSymbol=paste0(geneSymbol,"_spl")) %>%
   dplyr::select(Kids_First_Participant_ID,geneSymbol) %>%
   dplyr::rename('Tumor_Sample_Barcode'=Kids_First_Participant_ID, 'Hugo_Symbol'=geneSymbol) %>%
   mutate(Variant_Classification='Splicing', Variant_Type='Other')
 
 ## filter maf table for samples with RNA splicing + HGGs + midline + req'd cols
-maf_df <- data.table::fread(maf_file, data.table = FALSE) %>% 
+maf_df <- vroom(maf_file
+                #, 
+                #data.table = FALSE
+                ) %>% 
   dplyr::mutate(vaf = t_alt_count / (t_ref_count + t_alt_count))
 
 maf_fil_df <- maf_df %>%
@@ -75,7 +87,7 @@ maf_fil_df <- maf_df %>%
   dplyr::rename('Kids_First_Biospecimen_ID'=Tumor_Sample_Barcode) %>% 
   inner_join(histologies_df, by='Kids_First_Biospecimen_ID') %>% 
   dplyr::mutate('Tumor_Sample_Barcode'=Kids_First_Participant_ID) %>% 
-  #dplyr::filter(vaf >0.05) %>% 
+  dplyr::filter(vaf > 0.05) %>% 
   dplyr::select(
     Hugo_Symbol,
     Entrez_Gene_Id,
