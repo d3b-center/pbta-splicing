@@ -40,8 +40,7 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## output files for final plots
-file_dpsi_skip_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_pos.HGG.pdf")
-file_dpsi_incl_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_neg.HGG.pdf")
+file_dpsi_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites.HGG.pdf")
 file_dpsi_kinase_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_kinase.HGG.pdf")
 
 ## retrieve psi values from tables
@@ -71,7 +70,7 @@ plot_dsp <-  ggplot(psi_comb,aes(Uniprot,dPSI) ) +
   theme_Publication() + labs(y=expression(PSI))
 
 # Save plot as PDF
-pdf(file_dpsi_incl_plot, 
+pdf(file_dpsi_plot, 
     width = 15, height = 5)
 plot_dsp
 dev.off()
@@ -112,7 +111,7 @@ hs_hm_df <- hs_msigdb_df %>%
   )
 
 ## create a background set of mis-spliced genes
-background_set <- psi_unip_both_kinase$gene %>% unique()
+background_set <- psi_unip_kinase$gene %>% unique()
 
 ## create a genes of interest list based on strong splicing 
 genes_of_interest <- known_kinase_df$gene
@@ -120,7 +119,7 @@ genes_of_interest <- known_kinase_df$gene
 
 ## run enrichR to compute and identify significant over-repr pathways
 ora_results <- enricher(
-  gene = psi_unip_both_kinase$gene, # A vector of your genes of interest
+  gene = psi_unip_kinase$gene, # A vector of your genes of interest
   pvalueCutoff = 0.005, 
   pAdjustMethod = "BH", 
   TERM2GENE = dplyr::select(
