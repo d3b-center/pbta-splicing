@@ -15,6 +15,7 @@ suppressPackageStartupMessages({
   library("clusterProfiler")
   library("msigdbr")
   library("org.Hs.eg.db")
+  library("ggrepel")
 })
 
 # Get `magrittr` pipe
@@ -39,84 +40,55 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## output files for final plots
-file_dpsi_skip_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_pos.pdf")
-file_dpsi_incl_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_neg.pdf")
-file_dpsi_kinase_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_kinase.pdf")
+file_dpsi_skip_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_pos.HGG.pdf")
+file_dpsi_incl_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_neg.HGG.pdf")
+file_dpsi_kinase_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_kinase.HGG.pdf")
 
 ## retrieve psi values from tables
-file_psi_pos_func <-  file.path(results_dir,"splicing_events.total.pos.intersectUnip.ggplot.txt")
-file_psi_neg_func <-  file.path(results_dir,"splicing_events.total.neg.intersectUnip.ggplot.txt")
+file_psi_pos_func <-  file.path(results_dir,"splicing_events.total.HGG.pos.intersectUnip.ggplot.txt")
+file_psi_neg_func <-  file.path(results_dir,"splicing_events.total.HGG.neg.intersectUnip.ggplot.txt")
 
 ## read table of recurrent functional splicing (skipping)
-dpsi_unip_pos <- read.table(file_psi_pos_func, header=TRUE,sep = "\t") %>% mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\_")[, 2]) 
+dpsi_unip_pos <- vroom(file_psi_pos_func) %>% 
+  mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) %>%
+  mutate(Preference='Inclusion')
 
 ## read table of recurrent functional splicing (inclusion) 
-dpsi_unip_neg <- read.table(file_psi_neg_func, header=TRUE,sep = "\t") %>% mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\_")[, 2]) 
+dpsi_unip_neg <- vroom(file_psi_neg_func) %>% 
+  mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) %>% 
+  mutate(Preference='Skipping')
+
+psi_comb <- rbind(dpsi_unip_neg,dpsi_unip_pos)
 
 ## ggstatplot across functional sites
 set.seed(123)
-plot_incl <- ggstatsplot::ggbetweenstats(
-  data = dpsi_unip_neg, 
-  x = Uniprot, 
-  y = dPSI,
-  k = 3,
-  nboot = 15,
-  outlier.label = gene, # label to attach to outlier values
-  outlier.label.args = list(color = "red", size=1.8), # outlier point label color
-  notch = TRUE,
-  mean.ci = TRUE,
-  outlier.tagging = TRUE,
-  type = "robust",
-  xlab = "Unipro-defined Site",
-  pairwise.comparisons = FALSE,
-  messages = FALSE
-) + theme_Publication() + labs(y=expression(Delta*PSI)) 
+plot_dsp <-  ggplot(psi_comb,aes(Uniprot,dPSI) ) +  
+  ylab(expression(bold("dPSI"))) +
+  #geom_violin() +
+  ggforce::geom_sina(aes(color = Preference), size = 2,method="density") +
+  geom_label_repel(box.padding = 0.5, min.segment.length = 0.5,max.overlaps =Inf, aes(label = gene), data=dpsi_unip_both_kinase %>% subset(gene =="CLK1"), size=2) +
+  scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A"))  + 
+  theme_Publication() + labs(y=expression(PSI))
 
 # Save plot as PDF
 pdf(file_dpsi_incl_plot, 
     width = 15, height = 5)
-plot_incl
+plot_dsp
 dev.off()
 
-set.seed(123)
-plot_skip <- ggstatsplot::ggbetweenstats(
-  data = dpsi_unip_pos, 
-  x = Uniprot, 
-  y = dPSI,
-  k = 3,
-  nboot = 15,
-  outlier.label = gene, # label to attach to outlier values
-  outlier.label.args = list(color = "red", size = 1.8), # outlier point label color
-  notch = TRUE,
-  mean.ci = TRUE,
-  outlier.tagging = TRUE,
-  type = "robust",
-  xlab = "Unipro-defined Site",
-  pairwise.comparisons = FALSE,
-  messages = FALSE) + 
-  theme_Publication() + labs(y=expression(Delta*PSI)) 
-
-# Save plot as PDF
-pdf(file_dpsi_skip_plot, 
-    width = 15, height = 5)
-plot_skip
-dev.off()
 
 # kinase gene list
 known_kinase_file <- file.path(input_dir,'kinase_known.txt')
 known_kinase_df <- vroom(known_kinase_file, delim = "\t", col_names = 'gene') 
-
-dpsi_unip_pos_kinase <- dplyr::inner_join(dpsi_unip_pos, known_kinase_df, by='gene') %>% mutate(Preference="Skipping")
-dpsi_unip_neg_kinase <- dplyr::inner_join(dpsi_unip_neg, known_kinase_df, by='gene') %>% mutate(Preference="Inclusion")
-dpsi_unip_both_kinase <- rbind(dpsi_unip_pos_kinase,dpsi_unip_neg_kinase) 
+psi_unip_kinase <- dplyr::inner_join(psi_comb, known_kinase_df, by='gene') 
 
 ## make sina plot
 set.seed(45)
-kinase_dpsi_plot <- ggplot(dpsi_unip_both_kinase,aes(Preference,dPSI) ) +  
+kinase_dpsi_plot <- ggplot(psi_unip_kinase,aes(Preference,dPSI) ) +  
   ylab(expression(bold("dPSI"))) +
   geom_violin() +
   ggforce::geom_sina(aes(color = Preference), size = 2,method="density") +
-  geom_label_repel(box.padding = 0.5, min.segment.length = 0.5,max.overlaps =Inf, aes(label = gene), data=dpsi_unip_both_kinase %>% subset(gene =="CLK1"), size=2) +
+  geom_label_repel(box.padding = 0.5, min.segment.length = 0.5,max.overlaps =Inf, aes(label = gene), data=psi_unip_kinase %>% subset(gene %in% c("CLK1")), size=2) +
   scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) + 
   theme_Publication() + labs(y=expression(Delta*PSI)) + 
   theme(legend.position="none")
@@ -140,7 +112,7 @@ hs_hm_df <- hs_msigdb_df %>%
   )
 
 ## create a background set of mis-spliced genes
-background_set <- dpsi_unip_both_kinase$gene %>% unique()
+background_set <- psi_unip_both_kinase$gene %>% unique()
 
 ## create a genes of interest list based on strong splicing 
 genes_of_interest <- known_kinase_df$gene
@@ -148,7 +120,7 @@ genes_of_interest <- known_kinase_df$gene
 
 ## run enrichR to compute and identify significant over-repr pathways
 ora_results <- enricher(
-  gene = dpsi_unip_both_kinase$gene, # A vector of your genes of interest
+  gene = psi_unip_both_kinase$gene, # A vector of your genes of interest
   pvalueCutoff = 0.005, 
   pAdjustMethod = "BH", 
   TERM2GENE = dplyr::select(
