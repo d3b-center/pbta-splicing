@@ -28,7 +28,7 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
   my %primary_initial_sample_list;
 
 
-  ## store primary tumor samples
+  ## store primary tumor samples to filter on later
   open(FIL,$primary_tumor_file) || die("Cannot Open File");
   while(<FIL>)
   {
@@ -47,22 +47,18 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
   close(FIL);
 
 
-  # annotate histology file #
-    # hash with BS and disease
-    # make arrays of each histology of BS IDs
-
-  open(FIL,$histology) || die("Cannot Open File");
-    while(<FIL>)
-    {
-      chomp;
-      my @cols       = split "\t";
-      #my $hist       = $cols[53];
-      my $hist = $cols[-2];
-      my $bs_id      = $cols[0];
-      my $CNS_region = $cols[25];
+## annotate and store histology information
+open(FIL,$histology) || die("Cannot Open File");
+  while(<FIL>)
+  {
+    chomp;
+    my @cols       = split "\t";
+    my $hist = $cols[-2];
+    my $bs_id      = $cols[0];
+    my $CNS_region = $cols[25];
 
 
-      next unless ($primary_initial_sample_list{$bs_id});
+    next unless ($primary_initial_sample_list{$bs_id});
 
 
 
@@ -82,34 +78,16 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
     $hist_count{$hist}++;
 
   }
+close(FIL);
 
-  close(FIL);
 
-
-#Exon-specific
-# For every alternatively spliced exon
-#-------------------------------------
-  #1. Compute mean of exon inclusion (PSI)
-  #2. Compute STD
-
-#-Look at each tumor --> is it 2 standard deviations from the mean?
-  #--Yes --> aberrant
-  #--No  --> non-aberrant
-
-# store each library (using file name)
-# for each line, make unique splice id
-  # gene + chr + SE + UEx + DEx   (make array)
-  # store total splicing events and those that pass threshold for each sample
-
+## process rMATs output
 my (%splice_totals_per_sample, %splice_totals,%chr, %str);
 my %splice_event_hist;
 
 ## process rMATS output (may take awhile) from merged input file
 print "processing rMATs results... ".(localtime)."\n";
 open(FIL, "gunzip -c $rmats_tsv |") || die ("can’t open $rmats_tsv");
-#open(FIL, "scr/events-rmats-head.tsv") || die ("can’t open $rmats_tsv");
-
-
 while(<FIL>)
 {
   chomp;
@@ -175,7 +153,6 @@ while(<FIL>)
 
   }
 
-
   ## retrieve inclusion level and junction count info
   my $inc_level = $cols[33];
   my $IJC        = $cols[25];
@@ -185,27 +162,26 @@ while(<FIL>)
   my $inc_len  = $cols[29];
   my $skip_len = $cols[30];
 
+  ## chr and strand
+  $chr{$splice_id} = $chr;
+  $str{$splice_id} = $str;
+
   ## only look at strong changes,  tumor junction reads > 10 reads
   next unless ($IJC >=10);
   next unless ($SJC >=10);
 
   ## create unique ID for splicing change
-  #print $Start,"\t",$End,"\t",$prevES,"\t",$prevEE,"\t",$nextES,"\t",$nextEE,"\n";
-
   my $splice_id = $gene.":".$Start."-".$End."_".$prevES."-".$prevEE."_".$nextES."-".$nextEE;
   my $hist = $bs_id_hist{$bs_id};
 
   ##remove .0 in coord
   $splice_id=~s/\.0//g;
 
+  ## store PSI for event and sample
   $inc_levels{$splice_id}{$bs_id} = $inc_level;
-  $chr{$splice_id} = $chr;
-  $str{$splice_id} = $str;
-
 
   ## filter for HGG/histology of interest
-  #next unless $hist=~/HGAT/;
-  #next unless $cns_regions{$bs_id}=~/Midline/;
+  next unless $hist=~/HGAT/;
 
   push @splicing_events, $splice_id;
   push @{$splicing_psi{$splice_id}}, $inc_level;
@@ -214,7 +190,6 @@ while(<FIL>)
   $splice_totals{$splice_id}++;
 
   $splice_event_hist{$splice_id}{$hist}=$hist;
-  #print $splice_id,"\t",$hist,"\n";
 }
 close(FIL);
 
@@ -226,12 +201,10 @@ my @splicing_events_uniq = do { my %seen; grep { !$seen{$_}++ } @splicing_events
 my (%std_dev_psi,%count_psi,%mean_psi);
 
 print "## calculate mean and sd for each splicing event...\n";
-## calculate mean and sd for each splicing event
 
+## calculate mean and sd for each splicing event
 foreach my $splice_event(@splicing_events_uniq)
 {
-
-
   my $mean     = mean  (@{$splicing_psi{$splice_event}});
   my $count    = count (@{$splicing_psi{$splice_event}});
   my $std_dev  = stddev(@{$splicing_psi{$splice_event}});
@@ -239,7 +212,6 @@ foreach my $splice_event(@splicing_events_uniq)
   $std_dev_psi{$splice_event} = $std_dev;
   $count_psi{$splice_event}   = $count;
   $mean_psi{$splice_event}    = $mean;
-  #print $splice_event,"\t",$mean,"\t",$count,"\t",$std_dev,"\n";
 }
 
 ## assess each tumor samples to identify if it is aberrant (2 standard deviations from the mean)
@@ -250,12 +222,10 @@ open(BEDNEG, ">results/splicing_events.SE.total.neg.bed");
 
 foreach my $sample(@bs_ids_uniq)
 {
-  #next unless $bs_id_hist{$sample}=~/HGAT/;
   foreach my $splice_event(@splicing_events_uniq)
   {
     ## look at splicing events that are present in sample and are recurrent
     next unless $inc_levels{$splice_event}{$sample};
-
     next if $count_psi{$splice_event} < 2;
     next unless $mean_psi{$splice_event};
 
@@ -269,13 +239,13 @@ foreach my $sample(@bs_ids_uniq)
     my $mean_psi  = $mean_psi{$splice_event};
 
     #> +2 z-scores
-    #print $sample,"\t",$splice_event,"\tPSI:",$psi_tumor,"\tMeanPSI:",$mean_psi,"\tSTDPSI:",$std_psi,"\n";
 
     if($psi_tumor > ($mean_psi + ($std_psi + $std_psi)) )
     {
 
       print EVENTS $splice_event,"\t".$splice_case,"\t",$sample,"\t",$bs_id_hist{$sample},"\t",$cns_regions{$sample},"\tInclusion\n";
       print BEDPOS $chr{$splice_event},"\t";
+
       ## get exon coords for bed to intersect w Uniprot later
       if($splice_event=~/(\w+)\:(\d+\-\d+)/)
       {
@@ -285,13 +255,13 @@ foreach my $sample(@bs_ids_uniq)
 
       }
     }
-    # < -2 z-scores
+    # < -2 z-scores, inclusion events
     if($psi_tumor < ($mean_psi - ($std_psi + $std_psi)) )
     {
-      #print $splice_event,"\tPSI:",$psi_tumor,"\tMeanPSI:",$mean_psi,"\tSTDPSI:",$std_psi,"\n";
 
       print EVENTS $splice_event,"\t".$splice_case,"\t",$sample,"\t",$bs_id_hist{$sample},"\t",$cns_regions{$sample},"\tSkipping\n";
       print BEDNEG $chr{$splice_event},"\t";
+
       ## get exon coords for bed to intersect w Uniprot later
       if($splice_event=~/(\w+)\:(\d+\-\d+)/)
       {
@@ -305,33 +275,3 @@ foreach my $sample(@bs_ids_uniq)
 close(EVENTS);
 close(BEDPOS);
 close(BEDNEG);
-
-## function to calculate stdev given an array of dPSI values
-sub stdev{
-        my($data) = @_;
-        if(@$data == 1){
-
-                return "1";
-        }
-        my $average = &average($data);
-        my $sqtotal = 0;
-        foreach(@$data) {
-                $sqtotal += ($average-$_) ** 2;
-        }
-        my $std = ($sqtotal / (@$data-1)) ** 0.5;
-        return $std;
-}
-
-## function to calculate avg given an array of dPSI values
-sub average{
-        my($data) = @_;
-        if (not @$data) {
-                die("Empty arrayn");
-        }
-        my $total = 0;
-        foreach (@$data) {
-                $total += $_;
-        }
-        my $average = $total / @$data;
-        return $average;
-}
