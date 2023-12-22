@@ -2,7 +2,7 @@
 
 Module authors: Ammar Naqvi (@naqvia)
 
-The purpose of this module is to identify splicing events that result in loss/gain of functional sites (as defined by Uniprot)
+The purpose of this module is to identify splicing events that result in loss/gain of functional sites (as defined by Uniprot) amongst identified differential splicing events
 
 ## Usage
 ### Make summary table of strong splicing events and relevant filtered tables that overlap functional sites:
@@ -14,7 +14,7 @@ The purpose of this module is to identify splicing events that result in loss/ga
 *Input files:*
 ```
 data/histologies.tsv
-data/rMATS_merged.comparison.tsv.gz
+data/splice-events-rmats.tsv.gz
 ```
 
 *input bed files obtained from unipro needed to  run*
@@ -24,12 +24,17 @@ unipDomain.hg38.col.bed
 unipLocSignal.hg38.col.bed
 unipMod.hg38.col.bed
 unipOther.hg38.col.bed
+
 ```
 
 *Output files:*
 ```
-results/splicing_events.total.pos.intersectUnip.ggplot.txt
-results/splicing_events.total.neg.intersectUnip.ggplot.txt
+results/splice_events.diff.SE.HGG.txt
+results/splicing_events.SE.total.HGG.pos.bed
+results/splicing_events.SE.total.HGG.neg.bed
+results/splicing_events.total.HGG.pos.intersectUnip.ggplot.txt
+results/splicing_events.total.HGG.neg.intersectUnip.ggplot.txt
+
 ```
 
 ## Folder content
@@ -38,4 +43,4 @@ results/splicing_events.total.neg.intersectUnip.ggplot.txt
 * `02-run_bedtools_intersect.sh` runs bedtools intersect to find exon coordinates corresponding to Uniprot sites
 * `03-format_for_ggplot.sh` formats and appends file into table for plotting
 * `04-plot_splicing_across_functional_sites.R` generates ggplot violin plots of average dPSI per event identidied overlapping a functional site, outputting to `plots/*png`
-* `05-plot-flip_mixed_events.R` generates plots for special flip splicing events into `plots` folder
+* `05-plot-splice-patterns` generates plots for visualizing splicing event types into `plots` folder
