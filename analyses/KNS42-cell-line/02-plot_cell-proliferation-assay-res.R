@@ -8,7 +8,6 @@
 
 ## libraries used 
 suppressPackageStartupMessages({
-  library("vroom")
   library("tidyverse")
   library("ggpubr")
   library("rstatix")
@@ -33,14 +32,14 @@ file_line_plot = file.path(plots_dir,"cell_prolif-line.pdf")
 ## input file
 cell_prolif_res_file <- file.path(input_dir,"cell_prolif_res.tsv")
 
-cell_prolif_df <- vroom(cell_prolif_res_file, delim = "\t", col_names = TRUE) %>% 
+cell_prolif_df <- read_tsv(cell_prolif_res_file) %>% 
   pivot_longer(
     c(-Time), 
     names_pattern = "(.+)_([0-9])", 
     names_to = c("Treatment", "Rep"),
     values_to = "Absorbance"
   ) %>%
-  mutate(Treatment = case_when(Treatment == "CLK1" ~ "CKL1 Exon 4 morpholino",
+  mutate(Treatment = case_when(Treatment == "CLK1" ~ "CLK1 Exon 4 morpholino",
                                Treatment == "Ctrl" ~ "Non-targeting morpholino",
                                Treatment == "Untreated" ~ "No morpholino"),
          Time = as.factor(Time)) 
