@@ -20,5 +20,15 @@ differential splicing events: ```./analyses/splicing_events_functional_sites/res
 #### Output:
 ```results/co-occurence-sign.tsv``` <br>
 
-## Folder content
+## Scripts
 * `01-co-occurence-interactions.R` identifies genes that have signficant co-occuring variants in differentially spliced genes in HGG tumors
+
+## Directory Structure
+```
+.
+├── 01-co-occurrence-interactions.R
+├── README.md
+├── plots
+└── results
+    └── co-occurence-sign.tsv
+```
