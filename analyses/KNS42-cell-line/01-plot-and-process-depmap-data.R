@@ -40,6 +40,9 @@ file_depmap_cns_score_plot <- file.path(plots_dir, "depmap_score_cns_cell_lines.
 ## call plot publication theme script 
 source(file.path(root_dir, "figures", "theme_for_plots.R"))
 
+# set seed
+set.seed(2023)
+
 ## load dataset
 depmap_file = file.path(data_dir, "CLK1-CRISPR-DepMap-score.csv")
 depmap_data <- vroom(depmap_file, show_col_types = FALSE) %>% 
