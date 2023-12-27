@@ -20,7 +20,7 @@ echo "process rMATS with .20 dPSI and 10 junction read counts...";
 
 ## Process rMATS files given histologies file. Keep only HGG midlines samples and storng splicing events
 
-perl 01-extract_recurrent_splicing_events_hgg.pl $input_file $primary_specimens $primary_plus_specimens
+perl 01-extract_recurrent_splicing_events_hgg.pl $input_file $primary_specimens $primary_plus_specimens SE
 
 echo "bedtools intersect...";
 bash 02-run_bedtools_intersect.sh
