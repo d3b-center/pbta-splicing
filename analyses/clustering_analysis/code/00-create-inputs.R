@@ -22,14 +22,13 @@ input_dir <- file.path(analysis_dir, "input")
 
 
 # read histologies file
-#clin_file <- "../../data/histologies-plot-group.tsv" %>% read_tsv()
 clin_file <- file.path(input_dir, "histologies-plot-group.tsv") %>% read_tsv() %>% 
   dplyr::select(-short_histology) %>% 
   dplyr::rename(short_histology=plot_group) %>% 
   filter(experimental_strategy == "RNA-Seq")
 
 # read splice dataset
-splice_mat <- readRDS(file.path(input_dir, "pan_cancer_splicing_SE.gene.RDS"))
+splice_mat <- readRDS(file.path(input_dir, "pan_cancer_splicing_SE.gene.rds"))
 
 
 # remove histologies with <= 5 samples
@@ -47,7 +46,7 @@ clin_file <- clin_file %>%
 splice_mat <- splice_mat %>%
   dplyr::select(any_of(clin_file$Kids_First_Biospecimen_ID))
 
-saveRDS(splice_mat, file = file.path(input_dir, 'non_expr_pan_cancer_splice_subset.rds'))
+saveRDS(splice_mat, file = file.path(input_dir, 'non_expr_pan_cancer_splice.rds'))
 
 # 2) read pbta dataset, filter to samples and genes in pbta splice matrix and save
 pbta_subset <- file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds") %>% readRDS()
