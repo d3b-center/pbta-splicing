@@ -66,8 +66,6 @@ ribbon_plot <- ggplot(cell_prolif_df, aes(x = Time, y = Absorbance)) +
   ylim(c(10000,60000)) +
   theme_Publication()
 
-ribbon_plot
-
 pdf(file_line_plot, width = 6.5, height = 3)
 print(ribbon_plot)
 dev.off()
