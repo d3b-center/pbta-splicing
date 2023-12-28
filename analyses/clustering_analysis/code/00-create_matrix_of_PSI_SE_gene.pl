@@ -10,7 +10,7 @@ use List::Util qw(max);
 # usage: ./create_matrix_of_PSI_removeDups.pl <histology file> <rMATs_file_paths.txt>
 #                                             <primary tumor file> <primary plus file>
 ################################################################################
-my ($histology,$rmats_tsv,$primary_tumor_plus_dat) = ($ARGV[0], $ARGV[1], $ARGV[2],$ARGV[3]);
+my ($histology,$rmats_tsv,$primary_tumor_dat) = ($ARGV[0], $ARGV[1], $ARGV[2],$ARGV[3]);
 my (@broad_hist, @bs_id, @splicing_events);
 my (%histology_ids, %inc_levels, %bs_id_hist, %hist_check, %hist_count);
 
@@ -22,7 +22,7 @@ my %primary_initial_sample_list;
 
 
 ## store primary tumor samples
-open(FIL,$primary_tumor_plus_dat) || die("Cannot Open File");
+open(FIL,$primary_tumor_dat) || die("Cannot Open File");
 while(<FIL>)
 {
   chomp;
@@ -154,7 +154,6 @@ my %hist_check_gene;
     push @splicing_events, $splice_id;
 
     ##store gene / hsitology
-    #$hist_check_gene{$gene}{$hist_of_sample}++;
     $hist_check_gene{$gene}++;
 
 
@@ -171,7 +170,7 @@ my @genes_uniq = do { my %seen; grep { !$seen{$_}++ } @genes };
 # go through each splicing event
   # order by disease library
   # print splice id, inc level
-my $out_file = "input/pan_cancer_splicing_SE.gene.dev.txt";
+my $out_file = "input/pan_cancer_splicing_SE.gene.txt";
 open(OUT,">",$out_file) || die("Cannot Open File");
 
 ## save and print header info for output file
@@ -200,20 +199,11 @@ foreach my $event (@genes_uniq)
   $num_events_per_gene = $hist_check_gene{$event};
   next if ($num_events_per_gene < 2);
 
-  ## @{$histology_ids{$broad_hist}}
-  #my $thresh_for_hist_prev = 1;
-  #print "event:",$event,"\n";
-  #foreach my $hist (sort @broad_hist_uniq){
+  ##threshold for prevalence per sample (n)
+  my $hist_prev_thr = 2;  ## must be recurrent event in histology (n>=2)
+  my $prev_in_hist = 0;
+  if($hist_check_gene{$event}) { $prev_in_hist = $hist_check{$event} };
 
-      ##threshold for prevalence per sample (n)
-      my $hist_prev_thr = 2;  ## must be recurrent event in histology (n>=2)
-      my $prev_in_hist = 0;
-      if($hist_check_gene{$event}) { $prev_in_hist = $hist_check{$event} };
-      # if($prev_in_hist < $hist_prev_thr) {
-      #   #$thresh_for_hist_prev = 0;
-      # }
-  #}
-  #next if ($prev_in_hist == 0);
   print OUT $event;
 
   foreach my $hist (sort @broad_hist_uniq)
