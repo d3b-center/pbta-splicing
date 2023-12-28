@@ -13,14 +13,15 @@ cd "$script_directory" || exit
 ## histology input file (column orders important)
 input_file="../../data/histologies.tsv"
 primary_specimens="../../data/independent-specimens.rnaseqpanel.primary.tsv"
-primary_plus_specimens="../../data/independent-specimens.rnaseqpanel.primary-plus.tsv"
+rmats_file="../../data/splice-events-rmats.tsv.gz"
 
-echo "input file:" $input_file
-echo "process rMATS with .20 dPSI and 10 junction read counts...";
+echo "input files:" $input_file ;
+echo $primary_specimens ;
+echo $rmats_file ;
 
 ## Process rMATS files given histologies file. Keep only HGG midlines samples and storng splicing events
 
-perl 01-extract_recurrent_splicing_events_hgg.pl $input_file $primary_specimens $primary_plus_specimens SE
+perl 01-extract_recurrent_splicing_events_hgg.pl $input_file $rmats_file $primary_specimens SE
 
 echo "bedtools intersect...";
 bash 02-run_bedtools_intersect.sh
@@ -34,4 +35,3 @@ rm results/splicing_events.total.*intersectUnipMod.wo.txt
 ## make plots
 echo "make plots ...";
 Rscript 04-plot_splicing_across_functional_sites.R
-Rscript 05-plot-flip_mixed_events.R
