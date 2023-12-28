@@ -1,16 +1,16 @@
 #!/bin/sh
 
 ## histology and rmats file
-hist_file="input/histologies-plot_group.tsv"
+hist_file="input/histologies-plot-group.tsv"
 rmats_file="../../data/splice-events-rmats.tsv.gz"
-indep_samples_plus="../../data/independent-specimens.rnaseqpanel.primary-plus.tsv"
+indep_samples="../../data/independent-specimens.rnaseqpanel.primary.tsv"
 
 
 ## process PSI and generate SBI tables
-perl 01-generate_splicing-index_and_diff-events_table.pl $hist_file $rmats_file $indep_samples_plus SE
-perl 01-generate_splicing-index_and_diff-events_table.pl $hist_file $rmats_file $indep_samples_plus A3SS
-perl 01-generate_splicing-index_and_diff-events_table.pl $hist_file $rmats_file $indep_samples_plus A5SS
-perl 01-generate_splicing-index_and_diff-events_table.pl $hist_file $rmats_file $indep_samples_plus RI
+perl 01-generate_splicing-index_and_diff-events_table.pl $hist_file $rmats_file $indep_samples SE
+perl 01-generate_splicing-index_and_diff-events_table.pl $hist_file $rmats_file $indep_samples A3SS
+perl 01-generate_splicing-index_and_diff-events_table.pl $hist_file $rmats_file $indep_samples A5SS
+perl 01-generate_splicing-index_and_diff-events_table.pl $hist_file $rmats_file $indep_samples RI
 
 ## plot values (SBI) generated from above script in CDF plot
 echo "creating SBI CDF plots"
