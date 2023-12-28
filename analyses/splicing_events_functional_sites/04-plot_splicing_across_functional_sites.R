@@ -8,7 +8,7 @@
 
 suppressPackageStartupMessages({
   library("ggstatsplot")
-  library("dplyr")
+  library("vroom")
   library("ggplot2")
   library("dplyr")
   library("tidyverse")
@@ -16,6 +16,8 @@ suppressPackageStartupMessages({
   library("msigdbr")
   library("org.Hs.eg.db")
   library("ggrepel")
+  library("cowplot")
+  
 })
 
 # Get `magrittr` pipe
@@ -90,7 +92,6 @@ psi_unip_kinase <- dplyr::inner_join(psi_comb, known_kinase_df, by='gene')
 set.seed(45)
 kinase_dpsi_plot <- ggplot(psi_unip_kinase,aes(Preference,dPSI*100) ) +  
   ylab(expression(bold("dPSI"))) +
-  #geom_violin() +
   ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 4, method="density") +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
   ggforce::geom_sina(aes(color = Preference), size = 2,method="density") +
@@ -106,7 +107,7 @@ pdf(file_dpsi_kinase_plot,
 kinase_dpsi_plot
 dev.off()
 
-## ORA for kinases
+## over-repr analysis for kinases
 # plot output path
 ora_dotplot_path = file.path(plots_dir,"kinases-ora-plot.pdf")
 
@@ -114,22 +115,21 @@ ora_dotplot_path = file.path(plots_dir,"kinases-ora-plot.pdf")
 hs_msigdb_df <- msigdbr(species = "Homo sapiens")
 
 ## filter for kegg pathways that are included in the curated gene sets
-hs_hm_df <- hs_msigdb_df %>%
-  #dplyr::filter(gs_cat == "H"
+hs_kegg_df <- hs_msigdb_df %>%
   dplyr::filter(gs_cat == "C2", gs_subcat == "CP:KEGG"
   )
 
-## create a background set of mis-spliced genes
-background_set <- psi_unip_kinase$gene %>% unique()
+hs_hm_df <- hs_msigdb_df %>%
+  dplyr::filter(gs_cat == "H"  )
 
-## create a genes of interest list based on strong splicing 
-genes_of_interest <- known_kinase_df$gene
+## skipping vs incl 
+kinase_skip_pref <- psi_unip_kinase %>% dplyr::filter(Preference=='Skipping') 
+kinase_incl_pref <- psi_unip_kinase %>% dplyr::filter(Preference=='Inclusion') 
 
-
-## run enrichR to compute and identify significant over-repr pathways
-ora_results <- enricher(
-  gene = psi_unip_kinase$gene, # A vector of your genes of interest
-  pvalueCutoff = 0.005, 
+## hallmark gene set
+ora_incl_hm_results <- enricher(
+  gene = kinase_incl_pref$gene, # A vector of your genes of interest
+  pvalueCutoff = 0.05, 
   pAdjustMethod = "BH", 
   TERM2GENE = dplyr::select(
     hs_hm_df,
@@ -138,14 +138,57 @@ ora_results <- enricher(
   )
 )
 
-ora_result_df <- data.frame(ora_results@result)
-enrich_plot <- enrichplot::dotplot(ora_results) + 
+ora_skip_hm_results <- enricher(
+  gene = kinase_skip_pref$gene, # A vector of your genes of interest
+  pvalueCutoff = 0.05, 
+  pAdjustMethod = "BH", 
+  TERM2GENE = dplyr::select(
+    hs_hm_df,
+    gs_name,
+    human_gene_symbol
+  )
+)
+
+##kegg gene set
+ora_incl_kegg_results <- enricher(
+  gene = kinase_incl_pref$gene, # A vector of your genes of interest
+  pvalueCutoff = 0.05, 
+  pAdjustMethod = "BH", 
+  TERM2GENE = dplyr::select(
+    hs_kegg_df,
+    gs_name,
+    human_gene_symbol
+  )
+)
+
+ora_skip_kegg_results <- enricher(
+  gene = kinase_skip_pref$gene, # A vector of your genes of interest
+  pvalueCutoff = 0.05, 
+  pAdjustMethod = "BH", 
+  TERM2GENE = dplyr::select(
+    hs_kegg_df,
+    gs_name,
+    human_gene_symbol
+  )
+)
+
+enrich_skip_hm_plot <- enrichplot::dotplot(ora_skip_hm_results) + 
   theme_Publication() 
-enrich_plot
+enrich_incl_hm_plot <- enrichplot::dotplot(ora_incl_hm_results) + 
+  theme_Publication() 
+
+enrich_skip_kegg_plot <- enrichplot::dotplot(ora_skip_kegg_results) + 
+  theme_Publication() 
+enrich_incl_kegg_plot <- enrichplot::dotplot(ora_incl_kegg_results) + 
+  theme_Publication() 
+
+## since kegg pathways have and show more enrichment, we will save those
+plot_pathways_kegg <- plot_grid(enrich_skip_kegg_plot,enrich_incl_kegg_plot,align="hv",labels = c('Skipping', 'Inclusion'))
+plot_pathways_kegg
 
 ## save ORA dotplot as tiff
 ggplot2::ggsave(ora_dotplot_path,
-                width=8,
-                height=8,
+                width=20,
+                height=6,
                 device="pdf")
 
