@@ -61,17 +61,22 @@ psi_comb <- rbind(dpsi_unip_neg,dpsi_unip_pos)
 
 ## ggstatplot across functional sites
 set.seed(123)
-plot_dsp <-  ggplot(psi_comb,aes(Uniprot,dPSI) ) +  
+plot_dsp <-  ggplot(psi_comb,aes(Uniprot, dPSI*100) ) +  
   ylab(expression(bold("dPSI"))) +
-  #geom_violin() +
-  ggforce::geom_sina(aes(color = Preference), size = 2,method="density") +
-  geom_label_repel(box.padding = 0.5, min.segment.length = 0.5,max.overlaps =Inf, aes(label = gene), data=dpsi_unip_both_kinase %>% subset(gene =="CLK1"), size=2) +
+  ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 4, method="density") +
+  geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
+  facet_wrap("Preference") +
+  stat_compare_means() + 
+
+  #ggforce::geom_sina(aes(color = Preference), size = 2,method="density") +
   scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A"))  + 
-  theme_Publication() + labs(y=expression(PSI))
+  theme_Publication() + 
+  labs(y=expression('Percent Spliced In'), x= "Uniprot-defined Functional Site") + 
+  theme(legend.position="none")
 
 # Save plot as PDF
 pdf(file_dpsi_plot, 
-    width = 15, height = 5)
+    width = 10, height = 4)
 plot_dsp
 dev.off()
 
@@ -83,17 +88,21 @@ psi_unip_kinase <- dplyr::inner_join(psi_comb, known_kinase_df, by='gene')
 
 ## make sina plot
 set.seed(45)
-kinase_dpsi_plot <- ggplot(psi_unip_kinase,aes(Preference,dPSI) ) +  
+kinase_dpsi_plot <- ggplot(psi_unip_kinase,aes(Preference,dPSI*100) ) +  
   ylab(expression(bold("dPSI"))) +
-  geom_violin() +
+  #geom_violin() +
+  ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 4, method="density") +
+  geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
   ggforce::geom_sina(aes(color = Preference), size = 2,method="density") +
   geom_label_repel(box.padding = 0.5, min.segment.length = 0.5,max.overlaps =Inf, aes(label = gene), data=psi_unip_kinase %>% subset(gene %in% c("CLK1")), size=2) +
   scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) + 
-  theme_Publication() + labs(y=expression(Delta*PSI)) + 
+  theme_Publication() +
+  labs(y=expression('Percent Spliced In')) + 
+  
   theme(legend.position="none")
 
 pdf(file_dpsi_kinase_plot, 
-    width = 5, height = 5)
+    width = 4, height = 4)
 kinase_dpsi_plot
 dev.off()
 
