@@ -28,11 +28,11 @@ source(file.path(root_dir, "figures", "theme_for_plots.R"))
 
 ## define output files
 boxplot_sbi_vs_tmb_file  <- file.path(plots_dir,"boxplot_sbi-tmb.pdf")
-boxplot_tmb_vs_sbi_file  <- file.path(plots_dir,"boxplot_tmb-sbi.pdf")
 
 ## input file
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 indep_wgs_file <- file.path(data_dir, "independent-specimens.wgswxspanel.primary.prefer.wgs.tsv")
+
 # OPC v13
 tmb_coding_file  <- file.path(input_dir,"snv-mutation-tmb-coding.tsv")
 sbi_coding_file  <- file.path(results_dir,"splicing_index.SE.txt")
@@ -53,7 +53,9 @@ indep_sample_wgs_rna <- inner_join(indep_wgs_df, indep_rna_df)
 tmb_coding_df  <-  read_tsv(tmb_coding_file)  %>% 
   dplyr::rename(Kids_First_Biospecimen_ID_DNA = Tumor_Sample_Barcode) %>%
   select(-experimental_strategy) %>%
-  right_join(indep_wgs_df) %>%
+  right_join(indep_wgs_df) #
+
+tmb_coding_df <- tmb_coding_df %>%
   mutate(mutation_status = case_when(tmb <10 ~ "Normal",
                                      tmb >=10 & tmb < 100 ~ "Hypermutant",
                                      tmb >=100 ~ "Ultra-hypermutant"))
@@ -84,10 +86,7 @@ high_vs_low_df$SBI_level <- factor(high_vs_low_df$SBI_level, levels = c("Low", "
 high_vs_low_hyper_rem_df <- high_vs_low_df %>% 
   dplyr::filter(mutation_status == "Normal")
 
-ggplot(high_vs_low_df,aes(SBI_level,log10(tmb))) +  
-#  geom_boxplot(outlier.size = 0, size = 0.5, color = "black", alpha = 0,
-               # remove whiskers
- #              coef = 0) +
+sbi_tmb_plot <- ggplot(high_vs_low_df,aes(SBI_level,log10(tmb))) +  
   ggforce::geom_sina(aes(color = SBI_level, alpha = 0.4), pch = 16, size = 4, method="density") +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
   stat_compare_means() + 
@@ -98,61 +97,11 @@ ggplot(high_vs_low_df,aes(SBI_level,log10(tmb))) +
   ylim(c(-3,3)) +
   theme(legend.position="none")
 
-
-ggplot(high_vs_low_hyper_rem_df,aes(SBI_level,log10(tmb)) ) +  
-  geom_violin(aes(SBI_level)) +
-  ggforce::geom_sina(aes(color = SBI_level), size = 2, method="density") +
-  stat_compare_means() + 
-  scale_color_manual(name = "SBI_level", values = c(High = "#0C7BDC", Low = "#FFC20A")) + 
-  theme_Publication() + labs(y="log10 (TMB)", x="Splicing Burden Level") + 
-  theme(legend.position="none")
-
-## look at samples with low TMB
-high_vs_low_lowTMB_df <- high_vs_low_df %>% dplyr::filter(tmb <= lower_tmb)
-ggplot(high_vs_low_lowTMB_df,aes(SBI_level,log10(tmb)) ) +  
-  geom_violin(aes(SBI_level)) +
-  ggforce::geom_sina(aes(color = SBI_level), size = 2,method="density") +
-  stat_compare_means() + 
-  scale_color_manual(name = "SBI_level", values = c(High = "#0C7BDC", Low = "#FFC20A")) + 
-  theme_Publication() + labs(y="log10 (TMB)", x="Splicing Burden Level") + 
-  theme(legend.position="none")
-
-## look at samples with high TMB
-high_vs_low_highTMB_df <- high_vs_low_df %>% dplyr::filter(tmb >= upper_tmb)
-ggplot(high_vs_low_highTMB_df,aes(SBI_level,log10(tmb)) ) +  
-  geom_violin(aes(SBI_level)) +
-  ggforce::geom_sina(aes(color = SBI_level), size = 2,method="density") +
-  stat_compare_means() + 
-  scale_color_manual(name = "SBI_level", values = c(High = "#0C7BDC", Low = "#FFC20A")) + 
-  theme_Publication() + labs(y="log10 (TMB)", x="Splicing Burden Level") + 
-  theme(legend.position="none")
-
-## generate two boxplots (SBI and TMB)
-sbi_tmb_plot <- ggplot(high_vs_low_df,aes(SBI_level,log10(tmb)) ) +  
-  geom_violin(aes(SBI_level)) +
-  ggforce::geom_sina(aes(color = SBI_level), size = 2,method="density") +
-  stat_compare_means() + 
-  scale_color_manual(name = "SBI_level", values = c(High = "#0C7BDC", Low = "#FFC20A")) + 
-  theme_Publication() + labs(y="log10 (TMB)", x="Splicing Burden Level") + 
-  theme(legend.position="none")
-
 ## save pdf
 pdf(boxplot_sbi_vs_tmb_file, 
-    width = 5, height = 5)
+    width = 8, height = 4)
 sbi_tmb_plot
 dev.off()
 
-tmb_sbi_plot <- ggplot(high_vs_low_TMB_df,aes(TMB_level,SI) ) +  
-  geom_violin(aes(TMB_level)) +
-  ggforce::geom_sina(aes(color = TMB_level), size = 2,method="density") +
-  stat_compare_means() + 
-  scale_color_manual(name = "TMB_level", values = c(High = "#0C7BDC", Low = "#FFC20A")) + 
-  theme_Publication() + labs(y="Splicing Burden Index", x="Tumor Mutation Burden Level") + 
-  theme(legend.position="none")
 
-## save pdf
-pdf(boxplot_tmb_vs_sbi_file, 
-    width = 5, height = 5)
-tmb_sbi_plot
-dev.off()
 
