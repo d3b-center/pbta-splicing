@@ -29,6 +29,7 @@ plots_dir   <- file.path(analysis_dir, "plots")
 # source function for theme for plots survival
 figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
+if(!interactive()) pdf(NULL)
 
 ## define output files
 barplot_path <- file.path(plots_dir, "hist_by_sbi_level_barplot.pdf")
@@ -135,9 +136,7 @@ gg1 <- ggplot_gtable(ggplot_build(g1))
 gg2 <- ggplot_gtable(ggplot_build(g2))
 gg.mid <- ggplot_gtable(ggplot_build(g.mid))
 
-
 # save barplot 
-while (!is.null(dev.list()))  dev.off()
 pdf(barplot_path, height = 5, width = 11)
 grid.arrange(gg1,gg.mid,gg2,ncol=3,widths=c(3/8,2/8,3/8))
 dev.off()
