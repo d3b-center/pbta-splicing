@@ -21,6 +21,7 @@ suppressPackageStartupMessages({
 ## set up directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses","splicing_index")
+map_dir <- file.path(root_dir, "analyses", "cohort_summary", "results")
 input_dir   <- file.path(analysis_dir, "input")
 results_dir   <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
@@ -36,7 +37,7 @@ barplot_path <- file.path(plots_dir, "hist_by_sbi_level_barplot.pdf")
 
 ## get and setup input files
 sbi_coding_file  <- file.path(results_dir,"splicing_index.SE.txt")
-palette_file <- file.path(results_dir,"histologies-plot-group.tsv") 
+palette_file <- file.path(map_dir,"histologies-plot-group.tsv") 
 
 # read in files, join palette with sbi file
 sbi_coding_df  <-  read_tsv(sbi_coding_file, comment = "#") %>% 

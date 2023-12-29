@@ -18,6 +18,7 @@ suppressPackageStartupMessages({
 ## set up directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses", "splicing_index")
+map_dir <- file.path(root_dir, "analyses", "cohort_summary", "results")
 input_dir   <- file.path(analysis_dir, "input")
 data_dir   <- file.path(root_dir, "data")
 results_dir   <- file.path(analysis_dir, "results")
@@ -35,10 +36,14 @@ indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary
 indep_wgs_file <- file.path(data_dir, "independent-specimens.wgswxspanel.primary.prefer.wgs.tsv")
 tmb_coding_file  <- file.path(input_dir,"snv-mutation-tmb-coding.tsv") # OPC v13 TMB file
 sbi_coding_file  <- file.path(results_dir,"splicing_index.SE.txt")
-hist_file <- file.path(data_dir, "histologies.tsv")
+palette_file <- file.path(map_dir,"histologies-plot-group.tsv") 
 
 # read in files
-hist <- read_tsv(hist_file, guess_max = 10000)
+hist_pal <- read_tsv(palette_file) %>%
+  filter(!is.na(pathology_diagnosis),
+         !is.na(plot_group)) %>%
+  select(Kids_First_Biospecimen_ID, cancer_group, plot_group)
+
 indep_rna_df <- read_tsv(indep_rna_file) %>% 
   filter(cohort == "PBTA") %>%
   dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>%
@@ -65,9 +70,9 @@ sbi_coding_df  <-  read_tsv(sbi_coding_file) %>%
 ## intersect tmb values with SBI tumors
 sbi_vs_tmb_innerjoin_df <- tmb_coding_df %>%
   inner_join(sbi_coding_df, by="Kids_First_Participant_ID") %>%
-  dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_DNA) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
   # add histology
-  left_join(hist[,c("Kids_First_Biospecimen_ID", "cancer_group", "short_histology")])
+  left_join(hist_pal)
 
 ## identify samples by high vs low SBI tumors
 quartiles_sbi <- quantile(sbi_vs_tmb_innerjoin_df$SI, probs=c(.25, .75), na.rm = TRUE)
@@ -110,14 +115,11 @@ quantile_data <- sbi_vs_tmb_innerjoin_df %>%
   # remove samples without either TMB or SI data
   filter(!is.na(SI),
          !is.na(mutation_status),
-         !is.na(cancer_group)) %>%
-  # group HGGs and cranios
-  mutate(cancer_group = case_when(grepl("Adamant", cancer_group) ~ "Craniopharyngioma",
-                                  TRUE ~ cancer_group)) %>%
-  group_by(cancer_group) %>%
+         !is.na(plot_group)) %>%
+  group_by(plot_group) %>%
   summarize(lower_quantile = quantile(SI, 0.25),
             upper_quantile = quantile(SI, 0.75)) %>%
-  inner_join(sbi_vs_tmb_innerjoin_df, by = "cancer_group")
+  inner_join(sbi_vs_tmb_innerjoin_df, by = "plot_group")
 
 by_hist <- quantile_data %>%
   mutate(SBI_level = case_when(SI > upper_quantile ~ "High",
@@ -129,25 +131,25 @@ by_hist <- quantile_data %>%
 by_hist$SBI_level <- factor(by_hist$SBI_level, levels = c("Low", "High"))
 # calculate n per group and retain those n >= 3
 counts <- by_hist %>%
-  group_by(cancer_group) %>%
+  group_by(plot_group) %>%
   count(SBI_level) %>%
   filter(n >=3)
   
 by_hist <- by_hist %>%
-  filter(cancer_group %in% counts$cancer_group)
+  filter(plot_group %in% counts$plot_group)
   
 # plot
 pdf(boxplot_sbi_vs_tmb_by_cg_file, width = 8, height = 10)
 ggplot(by_hist, aes(SBI_level, log10(tmb))) +  
   ggforce::geom_sina(aes(color = SBI_level, alpha = 0.4), pch = 16, size = 4, method="density") +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
-  stat_compare_means(label.y = 1.5) + 
-  facet_wrap("cancer_group", labeller = labeller(cancer_group = label_wrap_gen(width = 25))) +
+  stat_compare_means(label.y = 2) + 
+  facet_wrap("plot_group", labeller = labeller(plot_group = label_wrap_gen(width = 20))) +
   scale_color_manual(name = "SBI_level", values = c(High = "#0C7BDC", Low = "#FFC20A")) + 
   theme_Publication() + 
   labs(y="log10 (TMB)", x="Splicing Burden Level") + 
-  ylim(c(-2,2.2)) +
-  theme(legend.position = "none", strip.text = element_text(size = 9))  # Adjust the size here
+  ylim(c(-2,2.5)) +
+  theme(legend.position = "none", strip.text = element_text(size = 11))  # Adjust the size here
 dev.off()
 
 
