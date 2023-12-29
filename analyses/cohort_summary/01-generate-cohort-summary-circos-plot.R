@@ -39,8 +39,7 @@ file_circos_plot <- file.path(analysis_dir, "plots", "cohort_circos.pdf")
 # Load datasets and pre-process
 hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %>% 
   # filter
-  filter(experimental_strategy == "RNA-Seq",
-         cohort == "PBTA",
+  filter(cohort == "PBTA",
          !is.na(pathology_diagnosis),
          composition != "Derived Cell Line") %>%
   # collapse reported gender to 3 groups
@@ -85,8 +84,12 @@ combined_plot_map <- hist_df %>%
 # add plot mapping to histlogy df
 combined_hist_map <- hist_df %>%
   left_join(map_file, by = c("broad_histology", "cancer_group")) %>%
-  write_tsv(file.path(results_dir, "histologies-plot-group.tsv")))
-  
+  write_tsv(file.path(results_dir, "histologies-plot-group.tsv"))
+
+combined_hist_map <- combined_hist_map %>%
+  filter(experimental_strategy == "RNA-Seq",
+         !is.na(pathology_diagnosis))
+
 ## filter using independent specimens file
 independent_specimens_df <- read_tsv(file.path(data_dir,"independent-specimens.rnaseqpanel.primary-plus.tsv")) %>%
   filter(cohort == "PBTA",
