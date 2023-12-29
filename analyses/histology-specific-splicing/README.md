@@ -29,12 +29,10 @@ independent-specimens.rnaseqpanel.primary-plus.tsv
 ├── 02-plot_histology-specific_splicing_events.R
 ├── plots
 │   ├── upsetR_histology-specific.ei.pdf
-│   ├── upsetR_histology-specific.ei.tiff
-│   ├── upsetR_histology-specific.es.pdf
-│   └── upsetR_histology-specific.es.tiff
+│   └── upsetR_histology-specific.es.pdf
 ├── results
-│   ├── histology-specific_events.en.total.tsv
-│   ├── histology-specific_events.es.total.tsv
+│   ├── unique_events-ei.tsv
+│   ├── unique_events-es.tsv
 │   └── splicing_events.hist-labeled_list.thr2freq.txt
 └── run_module.sh
 ```
