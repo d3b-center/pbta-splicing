@@ -40,89 +40,122 @@ if(!dir.exists(results_dir)){
 }
 
 ## output files for final plots
-file_volc_hgat_SF_plot <- file.path(analysis_dir, "plots", 
-                                    "enhancedVolcano_ctrl_hgat_SFs.tiff")
-file_volc_H3K28_SF_plot <- file.path(analysis_dir, "plots", 
-                                     "enhancedVolcano_ctrl_h3k28_SFs.tiff")
+file_volc_hgg_SF_plot <- file.path(analysis_dir, "plots", 
+                                    "midline_hggs_v_ctrl_SFs_volcano.pdf")
+file_family_SF_plot <- file.path(analysis_dir, "plots", 
+                                   "pval_family_barplot.pdf")
+
+gene_sign_list_file <- file.path(results_dir,"midline_hggs_v_ctrl_SFs_sig_genes.txt")
+
+## input files
+sf_file <- file.path(input_dir,"splicing_factors.txt")
+clin_file <- file.path(data_dir,"histologies.tsv")
+file_gene_counts <- file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds")
+file_nontumor_count <- file.path(input_dir,"gene_counts_normals_final.csv")
+
 
 ## get splicing factor list to subset later
-sf_file = "splicing_factors.txt"
-sf_list <- read.csv(paste0(input_dir, "/", sf_file),  header=FALSE)
+sf_list <- read_lines(sf_file)
 
 ## get clinical histlogy file filtered by HGG samples
-clin_file = "histologies.tsv"
-clin_tab <- read.delim(paste0(data_dir,"/",clin_file), sep = "\t", header=TRUE) %>% 
-  filter(short_histology == 'HGAT') %>% filter(RNA_library == 'stranded') %>%
-                                          filter(cohort == 'PBTA') %>%
-                                          filter(CNS_region == 'Midline')
+clin_tab <- read_tsv(clin_file, guess_max = 100000) %>% 
+  filter(short_histology == 'HGAT',
+         RNA_library == 'stranded',
+         cohort == 'PBTA',
+         CNS_region == 'Midline')
 
 ## get gene count table with splicing factors and midline HGGs filter
-file_gene_counts = "gene-counts-rsem-expected_count-collapsed.rds" 
-count_data <- readRDS(paste0(data_dir,"/", file_gene_counts)) 
+count_data <- readRDS(file_gene_counts) %>%
+  #filter for HGG midline samples
+  select(any_of(clin_tab$Kids_First_Biospecimen_ID))
 
-#filter for only splicing factors from above SF list
-count_data_sf <- count_data[rownames(count_data) %in% sf_list$V1, ]  %>% 
-                select(any_of(clin_tab$Kids_First_Biospecimen_ID))       
-
-#filter for HGG midline samples
-count_data_sf <- cbind(gene = rownames(count_data_sf), count_data_sf)
-rownames(count_data_sf) <- NULL
+##  filter for only splicing factors from above SF list
+count_data_sf <- count_data[rownames(count_data) %in% sf_list, ] 
+count_data_sf <- count_data_sf %>%
+  mutate(gene = rownames(count_data_sf)) %>%
+  # rearrange
+  select(gene, any_of(clin_tab$Kids_First_Biospecimen_ID))
 
 ## get corresponding non-brain tumor samples
-file_nontumor_count = "rsem_counts.non_tumor.tsv"
-gene_counts_nontumor  <-  read.delim(paste0(input_dir, "/",file_nontumor_count),header=TRUE, sep = "\t")
+gene_counts_nontumor  <-  read_csv(file_nontumor_count) %>% 
+  mutate(gene=str_replace(gene, "ENSG[1234567890]+_", "") )
 
-gene_counts_combined <- inner_join(gene_counts_nontumor,count_data_sf, by = 'gene')
-filtered.counts <- gene_counts_combined[rowSums(gene_counts_combined>=2) >= 1, ]
+gene_counts_combined <- inner_join(count_data_sf, gene_counts_nontumor, by = 'gene')
+
+# filter for rows with >= 10 count
+filtered_counts <- gene_counts_combined[rowSums(gene_counts_combined>2) == 62, ]
+
+filtered_counts <- gene_counts_combined %>% 
+  filter(sum(c_across(where(is.numeric))) >= 620) %>%
+  ungroup
 
 ## construct metadata
-design = data.frame(row.names = colnames(filtered.counts$gene),
-                    condition = c(rep("Healthy",10), rep("Tumor",53) ),
-                    libType   = c(rep("paired-end",63)))
-
+design <- data.frame(row.names = colnames(filtered_counts$gene),
+                    condition = c(rep("HGG",53), rep("Control",9)),
+                    libType   = c(rep("paired-end",62))) %>%
+  # the DESEQ analysis will automatically use alphabetical order, so relevel to get the correct comparison
+  mutate(condition = fct_relevel(condition, c("HGG", "Control")))
 
 ## remove first column
-filtered.counts_removed <- select(filtered.counts, -gene)
+filtered_counts_gene_rm <- select(filtered_counts, -gene)
 
-cds = DESeqDataSetFromMatrix(countData=round(filtered.counts_removed),
+cds = DESeqDataSetFromMatrix(countData=round(filtered_counts_gene_rm),
                              colData=design,
                              design= ~ condition)
 
 ## run deseq function to compute pvalues
 cds <- DESeq(cds)
+
+## check levels so they are in the right order with HGG first
+levels(cds$condition)
+
+# get results
 res <- results(cds)
 
 ## label anything below <0.05 as signficant
-res$Significant <- ifelse(res$pvalue< 0.05, "P-val < 0.05", "Not Sig")
+res$Significant <- ifelse(res$padj < 0.05, "P-val < 0.05", "Not Sig")
+res$gene <- filtered_counts$gene
 
-EnhancedVolcano(res,
-                lab = filtered.counts$gene, ## remove ensembleid portion
-                x = 'log2FoldChange',
-                y = 'pvalue',
-                ylim = c(0,21),
-                xlim = c(-3,3),
-                title = 'non-Tumor versus HGG',
-                pCutoff = 0.05,
-                FCcutoff = 1,
-                pointSize = ,
-                labSize = 3)
-
-
-ggsave(
-  file_volc_hgat_SF_plot,
-  plot = last_plot(),
-  device = NULL,
-  path = NULL,
-  scale = 1,
-  width =6.73,
-  height = 10.38,
-  units = "in",
-  dpi = 300,
-  limitsize = TRUE,
-  bg = NULL
-)
+volc <- EnhancedVolcano(res,
+                  lab = res$gene, # Use the new label column
+                  subtitle = "",
+                  x = 'log2FoldChange',
+                  y = 'pvalue',
+                  xlab = expression(bold("log"[2]*" Fold Change")),
+                  ylab = expression(bold("-log"[10]*" p-value")),
+                 # ylim = c(0,21),
+                # xlim = c(-3,3),
+                  title = 'Midline HGG vs. Non-tumor Brainstem',
+                  drawConnectors = TRUE,
+                  pCutoff = 0.05,
+                  FCcutoff = 1,
+                  pointSize = 2,
+                  labSize = 4) 
+# print plot
+pdf(file_volc_hgg_SF_plot, height = 10, width = 10, useDingbats = FALSE)
+print(volc)
+dev.off()
 
 ## write significant genes to table for subsequent correlation analyses
-gene_sign_list <- as.data.frame(res) %>% mutate(gene = filtered.counts$gene) %>% filter(padj < 0.05) %>% filter(abs(log2FoldChange) > 1)  %>% select(gene) 
-write_delim(gene_sign_list,paste0(results_dir,"/","sign_genes.txt"), delim = "\t")
+gene_sign_list <- res %>%
+  as.data.frame() %>%
+  filter(padj < 0.05,
+         abs(log2FoldChange) > 1) %>%
+  select(gene, everything(res)) %>%
+write_tsv(gene_sign_list_file)
+
+## plot and focus on the two major splicing factor families (well known control exon-splicing)
+plot_df <- gene_sign_list %>% filter(grepl("SRSF|HNRNP", gene))
+
+plot_barplot_family <- ggplot(plot_df, aes(x = reorder(gene,-padj), y = -log2(padj))) + 
+  geom_bar(stat="identity", colour="black", fill="red") + 
+  theme_Publication() + 
+  xlab("Splicing Factor") + ylab("-log2 (padj)") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# print plot
+pdf(file_family_SF_plot, height = 4, width = 4, useDingbats = FALSE)
+print(plot_barplot_family)
+dev.off()
+
 
