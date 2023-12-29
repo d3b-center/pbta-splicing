@@ -142,13 +142,18 @@ cell_lines_df <- rbind(cl_KNS42_df,cl_7316_1769_df,cl_7316_1763_df)
 ## make plot
 stacked_barplot <- ggplot(cell_lines_df, aes(fill=Isoform, y=PSI, x=type)) + 
   geom_bar(position="stack", stat="identity") +
-  scale_fill_manual(values=c("#FFC20A","#0C7BDC")) +
+  scale_fill_manual(values = c("#FFC20A", "#0C7BDC")) +
   facet_wrap(~cell_line) +
   xlab("RNA-Seq sequencing strategy") + 
-  theme_Publication()
+  ylab("Percent Spliced In (PSI)") +
+  theme_Publication() +
+  guides(fill = guide_legend(title = expression(bold(atop(bolditalic("CLK1")~"exon 4"))))) +
+  theme(legend.title = element_text(margin = margin(b = -10)),  # Adjust the bottom margin of the title
+        legend.spacing.y = unit(-0.3, "cm"))  # Adjust the vertical spacing between the title and the color boxes
+
 
 pdf(file_barplot, 
-    width = 7, height = 7)
+    width = 6, height = 4)
 stacked_barplot
 dev.off()
 
