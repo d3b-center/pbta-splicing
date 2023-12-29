@@ -84,7 +84,8 @@ combined_plot_map <- hist_df %>%
 
 # add plot mapping to histlogy df
 combined_hist_map <- hist_df %>%
-  left_join(map_file, by = c("broad_histology", "cancer_group")) 
+  left_join(map_file, by = c("broad_histology", "cancer_group")) %>%
+  write_tsv(file.path(results_dir, "histologies-plot-group.tsv")))
   
 ## filter using independent specimens file
 independent_specimens_df <- read_tsv(file.path(data_dir,"independent-specimens.rnaseqpanel.primary-plus.tsv")) %>%

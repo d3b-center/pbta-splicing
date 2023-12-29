@@ -29,7 +29,6 @@ snv-mutation-tmb-coding.tsv
 
 ## Directory structure
 ```.
-├── 00-pre-process-for-plots.R
 ├── 01-generate_splicing-index_and_diff-events_table.pl
 ├── 02-plot_splicing_burden_index.R
 ├── 03-identify_and_plot_histologies_by_SBI.R
