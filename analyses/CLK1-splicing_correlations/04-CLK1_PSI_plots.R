@@ -37,13 +37,13 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## output files for final plots
-CLK1_plot_path <- file.path(plots_dir, "CLK1_exon4_inclustion_fraction_hgg_stacked.pdf")
+CLK1_plot_path <- file.path(plots_dir, "CLK1_exon4_inclusion_fraction_hgg_stacked.pdf")
 
 ## get CLK1 psi values in tumors and ctrls
 indep_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 indep_df <- vroom(indep_file) %>% dplyr::filter(cohort=='PBTA')
 
-rmats_file <- file.path(data_dir,"rMATS_merged.comparison.tsv.gz")
+rmats_file <- file.path(data_dir,"splice-events-rmats.tsv.gz")
 hist_file <- file.path(data_dir,"histologies.tsv")
 
 ## load histologies info
@@ -58,8 +58,8 @@ clk1_rmats <- vroom(rmats_file) %>%
          exonEnd=="200860215",
          FDR < 0.05, 
          PValue < 0.05) %>% 
-  mutate("Inclusion"=IncLevel2,
-         "Skipping"=1-IncLevel2) %>%  
+  mutate("Inclusion"=IncLevel1,
+         "Skipping"=1-IncLevel1) %>%  
   dplyr::select(sample_id, Inclusion, Skipping) %>%
   dplyr::rename(Kids_First_Biospecimen_ID=sample_id) %>% 
   ## reformat and rename to plot
