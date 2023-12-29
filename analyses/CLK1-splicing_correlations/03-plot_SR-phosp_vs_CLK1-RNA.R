@@ -2,7 +2,7 @@
 # 03-plot_SR-phosp_vs_CLK1-RNA.R
 # written by Ammar Naqvi, Jo Lynne Rokita
 #
-# This script uses CPTAC data to generate and plot heatmap of RNA vs phosp of 
+# This script uses CPTAC data to generate and plot heatmap of RNA vs phosp of
 # CLK1 and SRSF phospho-levels
 #
 # usage: Rscript --vanilla 03-plot_SR-phosp_vs_CLK1-RNA.R
@@ -21,7 +21,7 @@ suppressPackageStartupMessages({
 
 ## set directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-analysis_dir <- file.path(root_dir, "analyses", "CLK1_splicing_correlations")
+analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing_correlations")
 data_dir   <- file.path(root_dir, "data")
 
 input_dir   <- file.path(analysis_dir, "input")
@@ -33,14 +33,13 @@ if(!dir.exists(plots_dir)){
 }
 
 ## file paths
-heatmap_output_file <- file.path(plots_dir,"SR_phos_CLK1_exp_heatmap.pdf") 
+heatmap_output_file <- file.path(plots_dir,"SR_phos_CLK1_exp_heatmap.pdf")
 
-## get CPTAC output table 
-cptac_output_file <- file.path(input_dir,"CPTAC_SR_CLK1.xls") 
-cptac_output_file2 <- file.path(input_dir,"CPTAC3-pbt.xls") 
+## get CPTAC output table
+cptac_output_file <- file.path(input_dir,"CPTAC3-pbt.xls")
 
 # Load dataset
-cptac_data <- readxl::read_excel(cptac_output_file2) %>%
+cptac_data <- readxl::read_excel(cptac_output_file) %>%
   # select only rows with CLK1 or SRFs, remove muts
   filter(grepl("CLK1|SRSF", idx),
          !`Data type` %in% c("mut", "cnv")) %>%
@@ -100,17 +99,17 @@ heat_plot <- Heatmap(mat,
                      name = "Z-score",
                      col = colorRamp2(c(-2, 0, 2), c("#E66100", "white", "#5D3A9B")),
                      cluster_rows = FALSE,
-                     row_split = row_annot$Assay, 
+                     row_split = row_annot$Assay,
                      column_gap = 0.5,
                      show_row_names = TRUE,
                      show_column_names = FALSE,
                      show_heatmap_legend=TRUE,
-                     cluster_columns = TRUE, 
+                     cluster_columns = TRUE,
                      right_annotation = row_anno,
                      #na_col = "lightgrey",
                      #rect_gp = gpar(col = "white"),
-                     row_title = NULL, 
-                     column_title = NULL, 
+                     row_title = NULL,
+                     column_title = NULL,
                      column_title_side = "top")
 
 heat_plot
