@@ -1,7 +1,7 @@
 ################################################################################
 # 04-plot_splicing_across_functional_sites.R
 # script that plots a table of splicing events overlapping uniprot sites
-# written by Ammar Naqvi
+# written by Ammar Naqvi, Jo Lynne Rokita
 #
 # usage: Rscript 04-plot_splicing_across_functional_sites.R 
 ################################################################################
@@ -49,8 +49,8 @@ kinases_functional_sites_skipped = file.path(results_dir,"kinases-functional_sit
 kinases_functional_sites_incl = file.path(results_dir,"kinases-functional_sites_included.txt")
 
 ## retrieve psi values from tables
-file_psi_pos_func <-  file.path(results_dir,"splicing_events.total.HGG.pos.intersectUnip.ggplot.txt")
-file_psi_neg_func <-  file.path(results_dir,"splicing_events.total.HGG.neg.intersectUnip.ggplot.txt")
+file_psi_pos_func <- file.path(results_dir,"splicing_events.total.HGG.pos.intersectUnip.ggplot.txt")
+file_psi_neg_func <- file.path(results_dir,"splicing_events.total.HGG.neg.intersectUnip.ggplot.txt")
 
 ## read table of recurrent functional splicing (skipping)
 dpsi_unip_pos <- vroom(file_psi_pos_func) %>% 
@@ -71,21 +71,27 @@ plot_dsp <-  ggplot(psi_comb,aes(Uniprot, dPSI*100) ) +
   ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 4, method="density") +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
   facet_wrap("Preference") +
-  stat_compare_means() + 
+  stat_compare_means(method = "wilcox.test", comparisons = list(c("DisulfBond", "LocSignal"),
+                                        c("DisulfBond", "Modifications"),
+                                        c("DisulfBond", "Other"),
+                                        c("LocSignal", "Modifications"),
+                                        c("LocSignal", "Other"),
+                                        c("Modifications", "Other"))) + 
   scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A"))  + 
   theme_Publication() + 
   labs(y="Percent Spliced In (PSI)", x= "Uniprot-defined Functional Site") + 
-  theme(legend.position="none")
+  theme(legend.position="none") +
+  ylim(c(0,170))
 
 # Save plot as PDF
 pdf(file_dpsi_plot, 
-    width = 10, height = 4)
+    width = 9, height = 4)
 plot_dsp
 dev.off()
 
 # kinase gene list
 known_kinase_file <- file.path(input_dir,'kinase_known.txt')
-known_kinase_df <- vroom(known_kinase_file, delim = "\t", col_names = 'gene') 
+known_kinase_df <- read_tsv(known_kinase_file, col_names = 'gene') 
 psi_unip_kinase <- dplyr::inner_join(psi_comb, known_kinase_df, by='gene') 
 
 ## make sina plot
@@ -94,8 +100,8 @@ kinase_dpsi_plot <- ggplot(psi_unip_kinase,aes(Preference,dPSI*100) ) +
   ylab(expression(bold("dPSI"))) +
   ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 4, method="density") +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
-  ggforce::geom_sina(aes(color = Preference), size = 2,method="density") +
-  geom_label_repel(box.padding = 0.5, min.segment.length = 0.5,max.overlaps =Inf, aes(label = gene), data=psi_unip_kinase %>% subset(gene %in% c("CLK1")), size=2) +
+  geom_label_repel(box.padding = 0.5, min.segment.length = 0.5,max.overlaps =Inf, aes(label = gene), data=psi_unip_kinase %>% 
+                     subset(gene %in% c("CLK1")), size=2) +
   scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) + 
   theme_Publication() +
   labs(y="Percent Spliced In (PSI)") + 
@@ -106,16 +112,13 @@ pdf(file_dpsi_kinase_plot,
 kinase_dpsi_plot
 dev.off()
 
-## over-repr analysis for kinases
+## over-representation analysis for kinases
 # get gene sets relevant to H. sapiens
 hs_msigdb_df <- msigdbr(species = "Homo sapiens")
-msigdbr_collections() %>%
-  print (n = 100)
-
 
 ## filter for kegg pathways that are included in the curated gene sets
 pathway_df <- hs_msigdb_df %>%
-  dplyr::filter(gs_cat %in% c("H", "C6") | gs_subcat %in% c("CP:KEGG", "CP:BIOCARTA", "TFT:GTRD"))
+  dplyr::filter(gs_cat == "H" | gs_subcat %in% c("CP:KEGG", "CP:BIOCARTA", "TFT:GTRD"))
 
 ## skipping vs incl 
 kinase_skip_pref <- psi_unip_kinase %>% 
@@ -161,10 +164,9 @@ enrich_incl_plot <- enrichplot::dotplot(ora_incl_results, showCategory = 15) +
 ## since kegg pathways have and show more enrichment, we will save those
 plot_pathways <- plot_grid(enrich_skip_plot,enrich_incl_plot,align="hv",
                                 labels = c('Exon Skipping', 'Exon Inclusion'))
-plot_pathways
-
 ## save ORA dotplot
-ggplot2::ggsave(ora_dotplot_path,
+ggplot2::ggsave(filename = ora_dotplot_path,
+                plot = plot_pathways, 
                 width=17,
                 height=7,
                 device="pdf")
@@ -172,3 +174,4 @@ ggplot2::ggsave(ora_dotplot_path,
 ## write kinase results for table
 write_lines(sort(unique(kinase_skip_pref$gene)), kinases_functional_sites_skipped)
 write_lines(sort(unique(kinase_incl_pref$gene)), kinases_functional_sites_incl)
+

@@ -35,3 +35,7 @@ rm results/splicing_events.total.*intersectUnipMod.wo.txt
 ## make plots
 echo "make plots ...";
 Rscript 04-plot_splicing_across_functional_sites.R
+
+## make plots
+echo "plot flip events";
+Rscript 05-plot-flip_mixed_events.R
