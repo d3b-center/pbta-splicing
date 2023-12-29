@@ -52,6 +52,13 @@ suppressPackageStartupMessages({
   library(tidyverse)
   library(DGCA)
   library(rtracklayer)
+  library(DESeq2)
+  library(edgeR)
+  library(lspline)
+  library(survival)
+  library(factoextra)
+  library(fpc)
+  library(broom)
   library(COINr)
 })
 
@@ -401,10 +408,10 @@ lspline_clustering <- function(expr_mat, hist_file,
   )
 
   # Assemble COIN object with data and metadata, normalise, aggregate, and get results
-  ASEM <- COINr::new_coin(iData = output_data, iMeta = output_meta)
-  ASEM <- COINr::Normalise(x = ASEM, dset = "Raw")
-  ASEM <- COINr::Aggregate(x = ASEM, dset = "Normalised")
-  rslts <- COINr::get_results(coin = ASEM, tab_type = "Summ", dset = "Aggregated")
+  ASEM <- new_coin(iData = output_data, iMeta = output_meta)
+  ASEM <- Normalise(x = ASEM, dset = "Raw")
+  ASEM <- Aggregate(x = ASEM, dset = "Normalised")
+  rslts <- get_results(coin = ASEM, tab_type = "Summ", dset = "Aggregated")
   rslts <- rslts %>%
     dplyr::rename("rank" = "Rank") # just to be consistent with the general naming convention
 

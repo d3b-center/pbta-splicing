@@ -6,7 +6,7 @@ use Statistics::Lite qw(:all);
 #
 # Compute splicing index for each sample and generate splicing burden index tables
 ############################################################################################################
-my ($histology,$rmats_tsv,$primary_tumor_dat,$primary_tumor_plus_dat, $splice_case) = ($ARGV[0], $ARGV[1], $ARGV[2],$ARGV[3],$ARGV[4]);
+my ($histology,$rmats_tsv,$primary_tumor_plus_dat, $splice_case) = ($ARGV[0], $ARGV[1], $ARGV[2],$ARGV[3]);
 my (@broad_hist, @bs_id, @splicing_events);
 my (%histology_ids, %inc_levels, %bs_id_hist, %hist_check, %hist_count);
 my @splicing_events;
@@ -26,23 +26,6 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
 
   my %primary_initial_sample_list;
 
-  ## store primary tumor samples
-  open(FIL,$primary_tumor_dat) || die("Cannot Open File");
-  while(<FIL>)
-  {
-    chomp;
-    my @header = split "\t";
-    my $bs_id = $header[1];
-    my $cohort = $header[2];
-    my $exp_strategy = $header[4];
-    my $tumor_descr = $header[5];
-
-    next unless ($cohort=~/PBTA/);
-
-    $primary_initial_sample_list{$bs_id} = $bs_id;
-
-  }
-  close(FIL);
 
   ## store primary tumor samples
   open(FIL,$primary_tumor_plus_dat) || die("Cannot Open File");
@@ -72,7 +55,8 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
     {
       chomp;
       my @cols       = split "\t";
-      my $hist       = $cols[53];
+      #my $hist       = $cols[53];
+      my $hist = $cols[-6];
       my $bs_id      = $cols[0];
       my $patient_id = $cols[3];
       my $CNS_region = $cols[32];
@@ -80,24 +64,7 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
 
       next unless ($primary_initial_sample_list{$bs_id});
 
-      ## filter histologies of interests
-      next unless ( ($hist=~/HGAT/)  ||
-                    ($hist=~/LGAT/)  ||
-                    #($hist=~/Oligodendroglioma/) ||
-                    ($hist=~/Medulloblastoma/)   ||
-                    ($hist=~/Ganglioglioma/)  ||
-                    ($hist=~/Ependymoma/)||
-                    ($hist=~/ATRT/)  ||
-                    ($hist=~/Craniopharyngioma/) );
 
-      ## convert histology names
-      $hist =~s/Oligodendroglioma/OGG/;
-      $hist =~s/Medulloblastoma/MB/;
-      $hist =~s/Ganglioglioma/GNG/;
-      $hist =~s/Ependymoma/EPN/;
-      $hist =~s/Craniopharyngioma/CPG/;
-      $hist =~s/HGAT/HGG/;
-      $hist =~s/LGAT/LGG/;
 
     ## make an array and store histology information and BS IDs
     push @broad_hist, $hist;
@@ -113,6 +80,7 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
 
     ## histology counter for downstream analysis
     $hist_count{$hist}++;
+    #print $hist,"\n";
 
   }
 
@@ -157,12 +125,53 @@ while(<FIL>)
   ## retrieve exon coordinates
   my $chr          = $cols[5];
   my $str          = $cols[6];
-  my $exonStart    = $cols[7]+1; ## its 0-based so add 1
-  my $exonEnd      = $cols[8];
-  my $upstreamES   = $cols[15];
-  my $upstreamEE   = $cols[16];
-  my $downstreamES = $cols[17];
-  my $downstreamEE = $cols[18];
+
+  my $Start    = "";
+  my $End      = "";
+  my $prevES   = "";
+  my $prevEE   = "";
+  my $nextES = "";
+  my $nextEE = "";
+
+  if($splice_case=~/SE/)
+  {
+    $Start    = $cols[7]+1; ## its 0-based so add 1
+    $End      = $cols[8];
+    $prevES   = $cols[15];
+    $prevEE   = $cols[16];
+    $nextES = $cols[17];
+    $nextEE = $cols[18];
+  }
+  elsif($splice_case=~/RI/)
+  {
+    $Start    = $cols[13]+1; ## its 0-based so add 1
+    $End      = $cols[14];
+    $prevES   = $cols[15];
+    $prevEE   = $cols[16];
+    $nextES = $cols[17];
+    $nextEE = $cols[18];
+  }
+  elsif($splice_case=~/A5SS/)
+  {
+    $Start    = $cols[19]+1; ## its 0-based so add 1
+    $End      = $cols[20];
+    $prevES   = $cols[21];
+    $prevEE   = $cols[22];
+    $nextES = $cols[23];
+    $nextEE = $cols[24];
+
+  }
+  else{
+    $Start    = $cols[19]+1; ## its 0-based so add 1
+    $End      = $cols[20];
+    $prevES   = $cols[21];
+    $prevEE   = $cols[22];
+    $nextES = $cols[23];
+    $nextEE = $cols[24];
+    #print $Start,"\t",$End,"\t",$prevES,"\t",$prevEE,"\t",$nextES,"\t",$nextEE,"\n";
+
+  }
+
 
   ## retrieve inclusion level and junction count info
   my $inc_level = $cols[33];
@@ -179,7 +188,9 @@ while(<FIL>)
   next unless ($SJC >=10);
 
   ## create unique ID for splicing change
-  my $splice_id = $gene.":".$exonStart."-".$exonEnd."_".$upstreamES."-".$upstreamEE."_".$downstreamES."-".$downstreamEE;
+  #print $Start,"\t",$End,"\t",$prevES,"\t",$prevEE,"\t",$nextES,"\t",$nextEE,"\n";
+
+  my $splice_id = $gene.":".$Start."-".$End."_".$prevES."-".$prevEE."_".$nextES."-".$nextEE;
   $inc_levels{$splice_id}{$bs_id} = $inc_level;
 
   #print $splice_id,"\t",$inc_level,"\n";
@@ -218,6 +229,7 @@ my %absplice_totals_per_sample;
 my %absplice_totals_per_sample_pos;
 my %absplice_totals_per_sample_neg;
 open(EVENTS,">results/splice_events.diff.".$splice_case.".txt");
+print EVENTS "Splice ID\tCase\tType\n";
 foreach my $sample(@bs_ids_uniq)
 {
   foreach my $splice_event(@splicing_events_uniq)
@@ -230,7 +242,7 @@ foreach my $sample(@bs_ids_uniq)
     if($psi_tumor > ($mean_psi + ($std_psi + $std_psi)) )
     {
       $absplice_totals_per_sample_pos{$sample}++;
-      print EVENTS $splice_event,"\t".$$splice_case."\tSkipping\n";
+      print EVENTS $splice_event,"\t".$splice_case."\tSkipping\n";
     }
     # < -2 z-scores
     if($psi_tumor < ($mean_psi - ($std_psi + $std_psi)) )
