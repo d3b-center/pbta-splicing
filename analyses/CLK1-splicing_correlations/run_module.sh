@@ -7,3 +7,6 @@ Rscript --vanilla 03-plot_SR-phosp_vs_CLK1-RNA.R
 
 ## plot CLK1 stacked barplots
 Rscript --vanilla 04-CLK1_PSI_plots.R
+
+## volcano plot of high vs low SBI tumors
+Rscript --vanilla 05-plot-diffExp_highlowSBI.R
