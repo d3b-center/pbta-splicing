@@ -29,13 +29,14 @@ bash 02-run_bedtools_intersect.sh
 echo "make tab for ggplot ...";
 bash 03-format_for_ggplot.sh
 
-## Remove intermediatery files / off for now
-rm results/splicing_events.total.*intersectUnipMod.wo.txt
-
 ## make plots
 echo "make plots ...";
 Rscript 04-plot_splicing_across_functional_sites.R
 
 ## make plots
 echo "plot flip events";
-Rscript 05-plot-flip_mixed_events.R
+#Rscript 05-plot-flip_mixed_events.R
+
+##rm intermediatery files
+## Remove intermediatery files / off for now
+rm results/splicing_events.total.*intersectUnipMod.wo.txt
