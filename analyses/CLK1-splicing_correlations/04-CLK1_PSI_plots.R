@@ -14,6 +14,7 @@ suppressPackageStartupMessages({
   library("ggpubr")
   library("ggplot2")
   library("vroom")
+  library("data.table")
 })
 
 # Get `magrittr` pipe
@@ -51,13 +52,14 @@ histologies_df <- vroom(hist_file) %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% indep_df$Kids_First_Biospecimen_ID)
 
 ## load rmats input for CLK1
-clk1_rmats <- vroom(rmats_file) %>%
+clk1_rmats <- fread(rmats_file) %>%
   # filter for CLK1 and exon 4
   dplyr::filter(geneSymbol=="CLK1",
          exonStart_0base=="200860124", 
          exonEnd=="200860215",
-         FDR < 0.05, 
-         PValue < 0.05) %>% 
+         #FDR < 0.05, 
+         #PValue < 0.05
+         ) %>% 
   mutate("Inclusion"=IncLevel1,
          "Skipping"=1-IncLevel1) %>%  
   dplyr::select(sample_id, Inclusion, Skipping) %>%
@@ -83,14 +85,19 @@ mutate(sample_id = factor(sample_id,
                           levels = samples_in_order)) %>% 
                           na.omit()
 
-stacked_barplot <- ggplot(plot_df, aes(x = sample_id, y = PSI, fill= Type )) +
-  geom_bar(position="stack", stat="identity") + 
+stacked_barplot <- ggplot(plot_df, aes(x = sample_id, y = PSI, fill= Type)) +
+  geom_bar(position="stack", stat="identity") +
   scale_fill_manual(values=c("#FFC20A","#0C7BDC"), name="Exon 4") + 
-  theme_Publication() + ylab(expression(bold(bolditalic("CLK1")~" Isoform Fraction"))) + xlab("Sample") + 
-  theme(
-      axis.text.x = element_text(angle = 75, hjust = 1)) 
+  scale_colour_manual(values=c("black")) +
+  coord_flip() + 
+  theme_Publication() + 
+  ylab(expression(bold(bolditalic("CLK1")~" Isoform Fraction"))) + 
+  ggtitle("CLK1 Exon 4 Splicing in HGGs") + 
+  theme(axis.text.y = element_blank(),axis.title.y=element_blank()) + 
+  geom_vline(xintercept = mean(plot_df$PSI), color="black",linetype='dotted')
+  
 
 # Save plot as pdf
-pdf(CLK1_plot_path, height = 6, width = 14, useDingbats = FALSE)
+pdf(CLK1_plot_path, height = 14, width = 6, useDingbats = FALSE)
 print(stacked_barplot)
 dev.off()

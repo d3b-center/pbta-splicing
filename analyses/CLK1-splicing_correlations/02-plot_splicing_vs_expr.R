@@ -12,6 +12,7 @@ suppressPackageStartupMessages({
   library("tidyverse")
   library("ggpubr")
   library("vroom")
+  library('data.table')
 })
 
 # Get `magrittr` pipe
@@ -20,7 +21,7 @@ suppressPackageStartupMessages({
 ## directory setup
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
-analysis_dir <- file.path(root_dir, "analyses", "CLK1_splicing_correlations")
+analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing_correlations")
 plots_dir <- file.path(analysis_dir, "plots")
 figures_dir <- file.path(root_dir, "figures")
 
@@ -35,7 +36,7 @@ source(file.path(analysis_dir, "util", "function-create-scatter-plot.R"))
 ## define input files
 clin_file <- file.path(data_dir,"histologies.tsv")
 file_gene_counts <- file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds")
-rmats_file <- file.path(data_dir, "rMATS_merged.comparison.tsv.gz")
+rmats_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
 
 ## read in histology file and count data
 ## filter histology file for all HGG, only stranded samples
@@ -50,13 +51,13 @@ count_df <- readRDS(file_gene_counts) %>%
   select(all_hgg_bsids$Kids_First_Biospecimen_ID)
 
 ## load rmats input for CLK1
-clk1_rmats <- vroom(rmats_file, comment = "#", delim="\t") %>%
+clk1_rmats <- fread(rmats_file) %>%
   # filter for CLK1 and exon 4
   filter(geneSymbol=="CLK1",
          exonStart_0base=="200860124", 
          exonEnd=="200860215") %>% 
   # select minimal info
-  select(sample_id, IncLevel2) 
+  select(sample_id, IncLevel1) 
 
 set.seed(2023)
 
