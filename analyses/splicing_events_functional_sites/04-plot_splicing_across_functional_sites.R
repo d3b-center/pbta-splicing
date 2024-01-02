@@ -18,7 +18,7 @@ suppressPackageStartupMessages({
   library("ggrepel")
   library("cowplot")
   library("ggpubr")
-  
+  library("annoFuseData")
 })
 
 # Get `magrittr` pipe
@@ -89,9 +89,11 @@ pdf(file_dpsi_plot,
 plot_dsp
 dev.off()
 
-# kinase gene list
-known_kinase_file <- file.path(input_dir,'kinase_known.txt')
-known_kinase_df <- read_tsv(known_kinase_file, col_names = 'gene') 
+# get and filter for kinase genes
+known_kinase_df <-read.delim(system.file("extdata", "genelistreference.txt", package = "annoFuseData")) %>%
+  dplyr::rename(gene=Gene_Symbol) %>% 
+  dplyr::filter(type=='Kinase')
+
 psi_unip_kinase <- dplyr::inner_join(psi_comb, known_kinase_df, by='gene') 
 
 ## make sina plot
