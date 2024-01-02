@@ -39,6 +39,10 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
   default-jdk \
   libxt6
 
+
+## install annoFuse
+RUN ./install_github.r 'd3b-center/annoFuse'
+
 # install R packages
 RUN ./install_bioc.r \
 	Biobase \
@@ -81,9 +85,12 @@ RUN ./install_bioc.r \
   survminer \
   UpSetR
 
+
+
 # install R packages from GitHub
 RUN ./install_github.r \
 	PoisonAlien/maftools
+
 
 # Patchwork for plot compositions
 RUN ./install_github.r  'thomasp85/patchwork' --ref 'c67c6603ba59dd46899f17197f9858bc5672e9f4'
