@@ -47,7 +47,7 @@ psi_incl_func <- read_tsv(file.path(file_psi_func_skip))
 
 
 ## find functional sites not mixed events or unidirectional
-mixed_events_func_df <- inner_join(psi_incl_func,psi_skip_func, by="SpliceID") %>%
+mixed_events_func_df <- inner_join(psi_incl_func,psi_skip_func, by="SpliceID",relationship = "many-to-many") %>%
   mutate(type="Mixed") %>% 
   dplyr::select("SpliceID", type) %>% 
   unique() %>% 
@@ -63,8 +63,7 @@ unidirectional_incl_events_func_df <-  psi_incl_func %>%
   unique() %>% 
   mutate(type="Inclusion") %>% 
   dplyr::select("SpliceID", type) %>% 
-  mutate(Impact='Functional')  %>% 
-  anti_join(unidirectional_incl_events_df, by='SpliceID')
+  mutate(Impact='Functional') 
 
 ## total non-functional
 mixed_events_df <- inner_join(psi_incl,psi_skip, by="Splice ID") %>%
@@ -80,7 +79,7 @@ unidirectional_skip_events_df <- anti_join(psi_skip,psi_incl, by="Splice ID") %>
   dplyr::select("Splice ID", type) %>% 
   dplyr::rename("SpliceID"="Splice ID") %>% 
   unique() %>% 
-  anti_join(unidirectional_skip_events_df, by='SpliceID') %>%
+  anti_join(unidirectional_skip_events_func_df, by='SpliceID') %>%
   mutate(Impact='Non-functional')
 
 unidirectional_incl_events_df <- anti_join(psi_incl,psi_skip, by="Splice ID") %>%
@@ -88,7 +87,7 @@ unidirectional_incl_events_df <- anti_join(psi_incl,psi_skip, by="Splice ID") %>
   dplyr::select("Splice ID", type) %>% 
   dplyr::rename("SpliceID"="Splice ID") %>% 
   unique() %>% 
-  anti_join(unidirectional_skip_events_df, by='SpliceID') %>%
+  anti_join(unidirectional_incl_events_func_df, by='SpliceID') %>%
   mutate(Impact='Non-functional')
 
 ## combine into master table
