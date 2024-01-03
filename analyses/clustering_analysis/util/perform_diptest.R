@@ -26,6 +26,7 @@
 suppressPackageStartupMessages({
   library(DESeq2)
   library(edgeR)
+  library(diptest)
   library(tidyverse)
 })
 

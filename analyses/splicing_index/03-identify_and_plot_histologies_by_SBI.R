@@ -21,6 +21,7 @@ suppressPackageStartupMessages({
 ## set up directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses","splicing_index")
+map_dir <- file.path(root_dir, "analyses", "cohort_summary", "results")
 input_dir   <- file.path(analysis_dir, "input")
 results_dir   <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
@@ -29,13 +30,14 @@ plots_dir   <- file.path(analysis_dir, "plots")
 # source function for theme for plots survival
 figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
+if(!interactive()) pdf(NULL)
 
 ## define output files
 barplot_path <- file.path(plots_dir, "hist_by_sbi_level_barplot.pdf")
 
 ## get and setup input files
 sbi_coding_file  <- file.path(results_dir,"splicing_index.SE.txt")
-palette_file <- file.path(results_dir,"histologies-plot-group.tsv") 
+palette_file <- file.path(map_dir,"histologies-plot-group.tsv") 
 
 # read in files, join palette with sbi file
 sbi_coding_df  <-  read_tsv(sbi_coding_file, comment = "#") %>% 
@@ -135,9 +137,7 @@ gg1 <- ggplot_gtable(ggplot_build(g1))
 gg2 <- ggplot_gtable(ggplot_build(g2))
 gg.mid <- ggplot_gtable(ggplot_build(g.mid))
 
-
 # save barplot 
-while (!is.null(dev.list()))  dev.off()
 pdf(barplot_path, height = 5, width = 11)
 grid.arrange(gg1,gg.mid,gg2,ncol=3,widths=c(3/8,2/8,3/8))
 dev.off()
