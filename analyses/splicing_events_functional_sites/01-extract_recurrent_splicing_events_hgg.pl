@@ -162,9 +162,7 @@ while(<FIL>)
   my $inc_len  = $cols[29];
   my $skip_len = $cols[30];
 
-  ## chr and strand
-  $chr{$splice_id} = $chr;
-  $str{$splice_id} = $str;
+
 
   ## only look at strong changes,  tumor junction reads > 10 reads
   next unless ($IJC >=10);
@@ -176,6 +174,10 @@ while(<FIL>)
 
   ##remove .0 in coord
   $splice_id=~s/\.0//g;
+
+  ## chr and strand
+  $chr{$splice_id} = $chr;
+  $str{$splice_id} = $str;
 
   ## store PSI for event and sample
   $inc_levels{$splice_id}{$bs_id} = $inc_level;
@@ -215,10 +217,10 @@ foreach my $splice_event(@splicing_events_uniq)
 }
 
 ## assess each tumor samples to identify if it is aberrant (2 standard deviations from the mean)
-open(EVENTS,">results/splice_events.diff.".$splice_case.".txt");
+open(EVENTS,">results/splice_events.diff.".$splice_case.".HGG.txt");
 print EVENTS "Splice ID\tCase\tSample\tHistology\tCNS\tType\n";
-open(BEDPOS, ">results/splicing_events.SE.total.pos.bed");
-open(BEDNEG, ">results/splicing_events.SE.total.neg.bed");
+open(BEDPOS, ">results/splicing_events.SE.total.HGG.pos.bed");
+open(BEDNEG, ">results/splicing_events.SE.total.HGG.neg.bed");
 
 foreach my $sample(@bs_ids_uniq)
 {
@@ -231,8 +233,6 @@ foreach my $sample(@bs_ids_uniq)
 
     ## report only histology of interest if appropriate
     #next unless $bs_id_hist{$sample}=~/HGAT/;
-    #print "second:",$bs_id_hist{$sample},"\n";
-    #next unless $cns_regions{$sample}=~/Midline/;
 
     my $psi_tumor = $inc_levels{$splice_event}{$sample};
     my $std_psi   = $std_dev_psi{$splice_event};
