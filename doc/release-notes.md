@@ -8,12 +8,12 @@
 Additional files:
 - `splice-events-rmats-pbta.tsv.gz`: rmats subsetted by open PBTA samples
 - `snv-mutect2-tumor-only-plus-hotspots.maf.tsv.gz`: maf for tumor only samples
-- `cptac-protein-imputed-phospho-expression-log2-ratio.tsv.gz`: cpatc protein-phsop expression tsv
-- `cptac-protein-imputed-prot-expression-abundance.tsv.gz` cpatc protein expression tsv
+- `cptac-protein-imputed-phospho-expression-log2-ratio.tsv.gz`: Phospho-Proteomics samples from CPTAC
+- `cptac-protein-imputed-prot-expression-abundance.tsv.gz` Whole Cell Proteomics samples from CPTAC
 - `gbm-protein-imputed-phospho-expression-abundance.tsv.gz` gbm protein-phsop expression tsv
 - `gbm-protein-imputed-prot-expression-abundance.tsv.gz` gbm protein expression tsv
-- `hope-protein-imputed-phospho-expression-abundance.tsv.gz` hope cohort protein-phsop expression tsv
-- `hope-protein-imputed-prot-expression-abundance.tsv.gz` hope cohort protein expression tsv
+- `hope-protein-imputed-phospho-expression-abundance.tsv.gz` Phospho-Proteomics samples from HOPE
+- `hope-protein-imputed-prot-expression-abundance.tsv.gz` Whole Cell Proteomics samples from HOPE
 ```
 v7
 .
