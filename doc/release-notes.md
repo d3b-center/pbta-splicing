@@ -6,7 +6,7 @@
 - status: available
 
 Additional files:
-- `splice-events-rmats-pbta.tsv.gz`: rmats subsetted by open PBTA samples
+- `splice-events-rmats-pbta.tsv.gz`: rmats subsetted by PBTA cohort
 - `snv-mutect2-tumor-only-plus-hotspots.maf.tsv.gz`: maf for tumor only samples
 - `cptac-protein-imputed-phospho-expression-log2-ratio.tsv.gz`: Phospho-Proteomics samples from CPTAC
 - `cptac-protein-imputed-prot-expression-abundance.tsv.gz` Whole Cell Proteomics samples from CPTAC
