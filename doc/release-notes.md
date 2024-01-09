@@ -8,20 +8,31 @@
 Additional files:
 - `splice-events-rmats-pbta.tsv.gz`: rmats subsetted by open PBTA samples
 - `snv-mutect2-tumor-only-plus-hotspots.maf.tsv.gz`: maf for tumor only samples
+- `cptac-protein-imputed-phospho-expression-log2-ratio.tsv.gz`: cpatc protein-phsop expression tsv
+- `cptac-protein-imputed-prot-expression-abundance.tsv.gz` cpatc protein expression tsv
+- `gbm-protein-imputed-phospho-expression-abundance.tsv.gz` gbm protein-phsop expression tsv
+- `gbm-protein-imputed-prot-expression-abundance.tsv.gz` gbm protein expression tsv
+- `hope-protein-imputed-phospho-expression-abundance.tsv.gz` hope cohort protein-phsop expression tsv
+- `hope-protein-imputed-prot-expression-abundance.tsv.gz` hope cohort protein expression tsv
 ```
 v7
 .
 ├── CLK1-CRISPR-DepMap-score.csv
-├── CLK1_CRISPR_depmap_score.csv
 ├── OmicsDefaultModelProfiles.csv
 ├── OmicsExpressionTranscriptsTPMLogp1Profile.csv
 ├── consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz
+├── cptac-protein-imputed-phospho-expression-log2-ratio.tsv.gz
+├── cptac-protein-imputed-prot-expression-abundance.tsv.gz
 ├── ctrl-vs-morpholino-gene-counts-rsem-expected_count.tsv
 ├── ctrl-vs-morpholino-merged-rmats.tsv
 ├── ctrl_vs_morpho.rsem.genes.results.tsv
 ├── fusion-putative-oncogenic.tsv
+├── gbm-protein-imputed-phospho-expression-abundance.tsv.gz
+├── gbm-protein-imputed-prot-expression-abundance.tsv.gz
 ├── gene-counts-rsem-expected_count-collapsed.rds
 ├── gene-expression-rsem-tpm-collapsed.rds
+├── hope-protein-imputed-phospho-expression-abundance.tsv.gz
+├── hope-protein-imputed-prot-expression-abundance.tsv.gz
 ├── independent-specimens.methyl.primary-plus.eachcohort.tsv
 ├── independent-specimens.methyl.primary-plus.tsv
 ├── independent-specimens.methyl.primary.eachcohort.tsv
@@ -55,7 +66,9 @@ v7
 ├── independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wxs.tsv
 ├── independent-specimens.wgswxspanel.relapse.prefer.wgs.tsv
 ├── independent-specimens.wgswxspanel.relapse.prefer.wxs.tsv
+├── md5sum.txt
 ├── morpholno.merged.rmats.tsv
+├── release-notes.md
 ├── snv-consensus-plus-hotspots.maf.tsv.gz
 ├── snv-mutation-tmb-all.tsv
 ├── snv-mutation-tmb-coding.tsv
