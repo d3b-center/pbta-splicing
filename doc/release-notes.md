@@ -1,24 +1,84 @@
 # release notes
 
+## current release (v7)
+- Data release data: 2023-09-08
+- OpenPedCan data release date: 2023-04-30 (v12)
+- status: available
+
+Additional files:
+- `splice-events-rmats-pbta.tsv.gz`: rmats subsetted by open PBTA samples
+- `snv-mutect2-tumor-only-plus-hotspots.maf.tsv.gz`: maf for tumor only samples
+```
+v7
+.
+├── CLK1-CRISPR-DepMap-score.csv
+├── CLK1_CRISPR_depmap_score.csv
+├── OmicsDefaultModelProfiles.csv
+├── OmicsExpressionTranscriptsTPMLogp1Profile.csv
+├── consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz
+├── ctrl-vs-morpholino-gene-counts-rsem-expected_count.tsv
+├── ctrl-vs-morpholino-merged-rmats.tsv
+├── ctrl_vs_morpho.rsem.genes.results.tsv
+├── fusion-putative-oncogenic.tsv
+├── gene-counts-rsem-expected_count-collapsed.rds
+├── gene-expression-rsem-tpm-collapsed.rds
+├── independent-specimens.methyl.primary-plus.eachcohort.tsv
+├── independent-specimens.methyl.primary-plus.tsv
+├── independent-specimens.methyl.primary.eachcohort.tsv
+├── independent-specimens.methyl.primary.tsv
+├── independent-specimens.methyl.relapse.eachcohort.tsv
+├── independent-specimens.methyl.relapse.tsv
+├── independent-specimens.rnaseq.primary-plus-pre-release.tsv
+├── independent-specimens.rnaseq.primary-pre-release.tsv
+├── independent-specimens.rnaseq.relapse-pre-release.tsv
+├── independent-specimens.rnaseqpanel.primary-plus.eachcohort.tsv
+├── independent-specimens.rnaseqpanel.primary-plus.tsv
+├── independent-specimens.rnaseqpanel.primary.eachcohort.tsv
+├── independent-specimens.rnaseqpanel.primary.tsv
+├── independent-specimens.rnaseqpanel.relapse.eachcohort.tsv
+├── independent-specimens.rnaseqpanel.relapse.tsv
+├── independent-specimens.wgs.primary-plus.eachcohort.tsv
+├── independent-specimens.wgs.primary-plus.tsv
+├── independent-specimens.wgs.primary.eachcohort.tsv
+├── independent-specimens.wgs.primary.tsv
+├── independent-specimens.wgs.relapse.eachcohort.tsv
+├── independent-specimens.wgs.relapse.tsv
+├── independent-specimens.wgswxspanel.primary-plus.eachcohort.prefer.wgs.tsv
+├── independent-specimens.wgswxspanel.primary-plus.eachcohort.prefer.wxs.tsv
+├── independent-specimens.wgswxspanel.primary-plus.prefer.wgs.tsv
+├── independent-specimens.wgswxspanel.primary-plus.prefer.wxs.tsv
+├── independent-specimens.wgswxspanel.primary.eachcohort.prefer.wgs.tsv
+├── independent-specimens.wgswxspanel.primary.eachcohort.prefer.wxs.tsv
+├── independent-specimens.wgswxspanel.primary.prefer.wgs.tsv
+├── independent-specimens.wgswxspanel.primary.prefer.wxs.tsv
+├── independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wgs.tsv
+├── independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wxs.tsv
+├── independent-specimens.wgswxspanel.relapse.prefer.wgs.tsv
+├── independent-specimens.wgswxspanel.relapse.prefer.wxs.tsv
+├── morpholno.merged.rmats.tsv
+├── snv-consensus-plus-hotspots.maf.tsv.gz
+├── snv-mutation-tmb-all.tsv
+├── snv-mutation-tmb-coding.tsv
+├── snv-mutect2-tumor-only-plus-hotspots.maf.tsv.gz
+└── splice-events-rmats-pbta.tsv.gz
+```
+
+
 ## current release (v6)
 - Data release data: 2023-09-08
 - OpenPedCan data release date: 2023-04-30 (v12)
 - status: available
 
 Additional files:
-- `ctrl-vs-morpholino-merged-rmats.tsv` : merged matrix of rMATs splice events, comparing morphilino treated vs untreated KNS42 cells
-- `ctrl-vs-morpholino-gene-counts-rsem-expected_count.tsv`: count data matrix of morphilino treated and untreated KNS42 cells
-- `CLK1-CRISPR-DepMap-score.csv` : DepMap portal database file for dependency obtain from [DepMap Portal](https://depmap.org/portal/download/all/), 05/2023
-- `OmicsDefaultModelProfiles.csv` : Profile mappings of cell lines and omics data obtain from [DepMap Portal](https://depmap.org/portal/download/all/), 05/2023
-- `OmicsExpressionTranscriptsTPMLogp1Profile.csv` : Transcript expression  of cell lines and omics data obtain from [DepMap Portal](https://depmap.org/portal/download/all/), 05/2023
+- `morpholno.merged.rmats.tsv` : merged matrix of rMATs splice events, comparing morphilino treated vs untreated KNS42 cells
+- `ctrl_vs_morpho.rsem.genes.results.tsv`: count data matrix of morphilino treated and untreated KNS42 cells
+- `CLK1_CRISPR_depmap_score.csv` : DepMap portal database file for dependency
+- `OmicsDefaultModelProfiles.csv` : Profile mappings of cell lines and omics data
 
 ```
 v6
-├── CLK1-CRISPR-DepMap-score.csv
 ├── cnv-consensus.seg.gz
 ├── consensus_wgs_plus_cnvkit_wxs.tsv.gz
-├── ctrl-vs-morpholino-merged-rmats.tsv
-├── ctrl_vs_morpho.rsem.genes.results.tsv
 ├── fusion-putative-oncogenic.tsv
 ├── gene-counts-rsem-expected_count-collapsed.rds
 ├── gene-expression-rsem-tpm-collapsed.rds
@@ -30,13 +90,16 @@ v6
 ├── independent-specimens.wgswxspanel.primary.prefer.wgs.tsv
 ├── independent-specimens.wgswxspanel.primary.prefer.wxs.tsv
 ├── md5sum.txt
-├── OmicsDefaultModelProfiles.csv
 ├── rMATS_merged.comparison.tsv.gz
 ├── release-notes.md
 ├── rna-isoform-expression-rsem-tpm.rds
 ├── snv-consensus-plus-hotspots.maf.tsv.gz
 ├── snv-mutation-tmb-coding.tsv
 └── splice-events-rmats.tsv.gz
+├── morpholno.merged.rmats.tsv
+├── ctrl_vs_morpho.rsem.genes.results.tsv
+├── CLK1_CRISPR_depmap_score.csv
+└── OmicsDefaultModelProfiles.csv
 ```
 
 ## previous release (v5)
