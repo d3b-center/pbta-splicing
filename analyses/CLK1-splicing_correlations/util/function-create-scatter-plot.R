@@ -17,7 +17,7 @@ create_scatterplot <- function(expr_psi_df) {
  
    ## create plot
   scatterplot <- ggscatter(expr_psi_df_log, 
-                           x="IncLevel2", 
+                           x="IncLevel1", 
                            y="logExp", 
                            add = "reg.line", 
                            conf.int = TRUE, 
