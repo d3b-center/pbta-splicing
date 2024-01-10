@@ -52,7 +52,7 @@ clin_HGG_midline_str_df  <-  vroom(clin_file) %>%
          )
 
 ## Load rmats file
-rmats_df <-  vroom(rmats_file) %>%
+rmats_df <-  fread(rmats_file) %>%
   # Select CLK1 gene
   filter(geneSymbol=="CLK1") %>%
   # Select exon 4
