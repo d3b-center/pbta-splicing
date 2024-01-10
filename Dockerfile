@@ -39,6 +39,10 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
   default-jdk \
   libxt6
 
+
+## install annoFuse
+RUN ./install_github.r 'd3b-center/annoFuseData' --ref '321bc4f6db6e9a21358f0d09297142f6029ac7aa'
+
 # install R packages
 RUN ./install_bioc.r \
 	Biobase \
