@@ -20,9 +20,7 @@ echo $primary_specimens ;
 echo $rmats_file ;
 
 ## Process rMATS files given histologies file. Keep only HGG midlines samples and storng splicing events
-
 perl 01-extract_recurrent_splicing_events_hgg.pl $input_file $rmats_file $primary_specimens SE
-
 echo "bedtools intersect...";
 bash 02-run_bedtools_intersect.sh
 
@@ -38,5 +36,5 @@ echo "plot flip events";
 #Rscript 05-plot-flip_mixed_events.R
 
 ##rm intermediatery files
-## Remove intermediatery files / off for now
-rm results/splicing_events.total.*intersectUnipMod.wo.txt
+rm results/splicing_events.total.*.wo.txt
+rm results/*bed 
