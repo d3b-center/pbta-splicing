@@ -112,8 +112,6 @@ heat_plot <- Heatmap(mat,
                      column_title = NULL,
                      column_title_side = "top")
 
-heat_plot
-
 pdf(heatmap_output_file, width = 8, height = 6)
 print(heat_plot)
 dev.off()

@@ -1,6 +1,6 @@
 ################################################################################
 # 04-CLK1_PSI_plots.R
-# written by Ammar Naqvi
+# written by Ammar Naqvi, Jo Lynne Rokita
 #
 # This script generates stacked barplot of splicing changes across 
 # samples for CLK1 exon 4 
@@ -42,14 +42,17 @@ CLK1_plot_path <- file.path(plots_dir, "CLK1_exon4_inclusion_fraction_hgg_stacke
 
 ## get CLK1 psi values in tumors and ctrls
 indep_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
-indep_df <- vroom(indep_file) %>% dplyr::filter(cohort=='PBTA')
+indep_df <- vroom(indep_file) %>% 
+  dplyr::filter(cohort=='PBTA')
 
 rmats_file <- file.path(data_dir,"splice-events-rmats.tsv.gz")
 hist_file <- file.path(data_dir,"histologies.tsv")
 
-## load histologies info
+## load histologies info for HGGs
 histologies_df <- vroom(hist_file) %>% 
-  dplyr::filter(Kids_First_Biospecimen_ID %in% indep_df$Kids_First_Biospecimen_ID)
+  dplyr::filter(short_histology == "HGAT",
+                Kids_First_Biospecimen_ID %in% 
+                  indep_df$Kids_First_Biospecimen_ID)
 
 ## load rmats input for CLK1
 clk1_rmats <- fread(rmats_file) %>%
@@ -83,21 +86,21 @@ samples_in_order <- clk1_rmats %>%
 plot_df <- clk1_rmats %>%
 mutate(sample_id = factor(sample_id,
                           levels = samples_in_order)) %>% 
-                          na.omit()
+  na.omit()
 
 stacked_barplot <- ggplot(plot_df, aes(x = sample_id, y = PSI, fill= Type)) +
   geom_bar(position="stack", stat="identity") +
-  scale_fill_manual(values=c("#FFC20A","#0C7BDC"), name="Exon 4") + 
-  scale_colour_manual(values=c("black")) +
-  coord_flip() + 
+  scale_fill_manual(values=c("#FFC20A","#0C7BDC"), name="Exon 4") +
   theme_Publication() + 
   ylab(expression(bold(bolditalic("CLK1")~" Isoform Fraction"))) + 
-  ggtitle("CLK1 Exon 4 Splicing in HGGs") + 
-  theme(axis.text.y = element_blank(),axis.title.y=element_blank()) + 
-  geom_vline(xintercept = mean(plot_df$PSI), color="black",linetype='dotted')
-  
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.title.x = element_blank()) +
+  scale_y_continuous(expand = c(0, 0))  + # Set the expand argument to ensure the bottom line starts from 0
+  geom_hline(yintercept = mean(plot_df$PSI), color="black",linetype='dotted')
+
 
 # Save plot as pdf
-pdf(CLK1_plot_path, height = 14, width = 6, useDingbats = FALSE)
+pdf(CLK1_plot_path, height = 3, width = 6, useDingbats = FALSE)
 print(stacked_barplot)
 dev.off()
