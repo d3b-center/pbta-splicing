@@ -48,7 +48,7 @@ clin_HGG_midline_str_df  <-  vroom(clin_file) %>%
          # Select only "Midline" HGATs
          #CNS_region %in% c("Midline", "Spine"),
          # Select the "stranded" RNA library samples
-         RNA_library=="stranded"
+         #RNA_library=="stranded"
          )
 
 ## Load rmats file
@@ -72,11 +72,12 @@ quartiles_psi <- quantile(sbi_vs_inclEx4_df$IncLevel1, probs=c(.25, .75), na.rm 
 IQR_psi <- IQR(sbi_vs_inclEx4_df$IncLevel1)
 
 # Get lower quantile (25%)
-lower_psi <- quartiles_psi[1] 
+lower_psi <- quartiles_psi[1]
+
 # Get upper quantile (75%)
 upper_psi <- quartiles_psi[2]
 
-# Create df with high/low PSI
+# Create df with high/low PSI columns
 sbi_vs_inclEx4_by_extremePSI_df <- sbi_vs_inclEx4_df %>%
   mutate(PSI = case_when(sbi_vs_inclEx4_df$IncLevel1 > upper_psi ~ "high",
                          sbi_vs_inclEx4_df$IncLevel1 < lower_psi ~ "low",
