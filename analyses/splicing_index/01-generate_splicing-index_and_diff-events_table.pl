@@ -21,68 +21,62 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
 {
   die("Splicing case does not exist, please use either 'SE', 'A5SS', 'A3SS', or 'RI'");
 }
-# annotate histology file #
-  # hash with BS and disease
-  # make arrays of each histology of BS IDs
+my %primary_initial_sample_list;
 
-  my %primary_initial_sample_list;
+## store primary tumor samples
+open(FIL,$primary_tumor_dat) || die("Cannot Open File");
+while(<FIL>)
+{
+  chomp;
+  my @header = split "\t";
+  my $bs_id = $header[1];
+  my $cohort = $header[2];
+  my $exp_strategy = $header[4];
+  my $tumor_descr = $header[5];
 
+  next unless ($cohort=~/PBTA/);
 
-  ## store primary tumor samples
-  open(FIL,$primary_tumor_dat) || die("Cannot Open File");
+  $primary_initial_sample_list{$bs_id} = $bs_id;
+
+}
+close(FIL);
+
+# annotate histologies with histology file
+open(FIL,$histology) || die("Cannot Open File");
   while(<FIL>)
   {
     chomp;
-    my @header = split "\t";
-    my $bs_id = $header[1];
-    my $cohort = $header[2];
-    my $exp_strategy = $header[4];
-    my $tumor_descr = $header[5];
-
-    next unless ($cohort=~/PBTA/);
-
-    $primary_initial_sample_list{$bs_id} = $bs_id;
-
-  }
-  close(FIL);
-
-# annotate histologies
-
-  open(FIL,$histology) || die("Cannot Open File");
-    while(<FIL>)
-    {
-      chomp;
-      my @cols       = split "\t";
-      #my $hist       = $cols[53];
-      my $hist = $cols[-6];
-      my $bs_id      = $cols[0];
-      my $patient_id = $cols[3];
-      my $CNS_region = $cols[32];
+    my @cols       = split "\t";
+    #my $hist       = $cols[53];
+    my $hist = $cols[-6];
+    my $bs_id      = $cols[0];
+    my $patient_id = $cols[3];
+    my $CNS_region = $cols[32];
 
 
-      next unless ($primary_initial_sample_list{$bs_id});
+    next unless ($primary_initial_sample_list{$bs_id});
 
 
 
-    ## make an array and store histology information and BS IDs
-    push @broad_hist, $hist;
-    push @bs_ids, $bs_id;
+  ## make an array and store histology information and BS IDs
+  push @broad_hist, $hist;
+  push @bs_ids, $bs_id;
 
-    $bs_id_hist{$bs_id} = $hist;
+  $bs_id_hist{$bs_id} = $hist;
 
-    ## store total number of histologies
-    $hist_count{$hist}++;
-    push @{$histology_ids{$hist}}, $bs_id;
+  ## store total number of histologies
+  $hist_count{$hist}++;
+  push @{$histology_ids{$hist}}, $bs_id;
 
-    $cns_regions{$bs_id} = $CNS_region;
+  $cns_regions{$bs_id} = $CNS_region;
 
-    ## histology counter for downstream analysis
-    $hist_count{$hist}++;
-    #print $hist,"\n";
+  ## histology counter for downstream analysis
+  $hist_count{$hist}++;
+  #print $hist,"\n";
 
-  }
+}
 
-  close(FIL);
+close(FIL);
 
 ## process rMATS output (may take awhile) from merged input file
 print "processing rMATs results... ".(localtime)."\n";
@@ -148,8 +142,6 @@ while(<FIL>)
     $prevEE   = $cols[22];
     $nextES = $cols[23];
     $nextEE = $cols[24];
-    #print $Start,"\t",$End,"\t",$prevES,"\t",$prevEE,"\t",$nextES,"\t",$nextEE,"\n";
-
   }
 
   ## retrieve inclusion level and junction count info
@@ -208,7 +200,7 @@ my %absplice_totals_per_sample_pos;
 my %absplice_totals_per_sample_neg;
 
 open(EVENTS,">results/splice_events.diff.".$splice_case.".txt");
-print EVENTS "Splice ID\tCase\tType\tTumor_PSI\tMean_PSI\tSample\n";
+print EVENTS "Splice ID\tCase\tType\tTumor_PSI\tMean_PSI\tSample\tHistology\n";
 foreach my $sample(@bs_ids_uniq)
 {
   foreach my $splice_event(@splicing_events_uniq)
@@ -217,19 +209,23 @@ foreach my $sample(@bs_ids_uniq)
     my $psi_tumor = $inc_levels{$splice_event}{$sample};
     my $std_psi   = $std_dev_psi{$splice_event};
     my $mean_psi   = $mean_psi{$splice_event};
+
     #> +2 z-scores
     if($psi_tumor > ($mean_psi + ($std_psi + $std_psi)) )
     {
       $absplice_totals_per_sample_pos{$sample}++;
       print EVENTS $splice_event,"\t".$splice_case."\tSkipping\t";
-      print EVENTS $psi_tumor,"\t",$mean_psi,"\t",$sample,"\n";
+      print EVENTS $psi_tumor,"\t",$mean_psi,"\t",$sample,"\t";
+      print EVENTS $bs_id_hist{$sample},"\n";
+
     }
     # < -2 z-scores
     if($psi_tumor < ($mean_psi - ($std_psi + $std_psi)) )
     {
       $absplice_totals_per_sample_neg{$sample}++;
       print EVENTS $splice_event,"\t".$splice_case."\tInclusion\t";
-      print EVENTS $psi_tumor,"\t",$mean_psi,"\t",$sample,"\n";
+      print EVENTS $psi_tumor,"\t",$mean_psi,"\t",$sample,"\t";
+      print EVENTS $bs_id_hist{$sample},"\n";
 
     }
   }
@@ -248,14 +244,12 @@ print TAB "Sample\tTotal\tAS_neg\tAS_pos\tAS_total\tSI\tHistology\n";
 foreach my $sample(@bs_ids_uniq)
 {
   next unless $splice_totals_per_sample{$sample};
+  my $total_absplice_totals_per_sample = $absplice_totals_per_sample_neg{$sample} + $absplice_totals_per_sample_pos{$sample};
+  my $splice_index = $total_absplice_totals_per_sample/$splice_totals_per_sample{$sample};
 
   print TAB $sample,"\t";
   print TAB $splice_totals_per_sample{$sample},"\t";
   print TAB $absplice_totals_per_sample_neg{$sample},"\t",$absplice_totals_per_sample_pos{$sample},"\t";
-
-  my $total_absplice_totals_per_sample = $absplice_totals_per_sample_neg{$sample}+$absplice_totals_per_sample_pos{$sample};
-  my $splice_index = $total_absplice_totals_per_sample/$splice_totals_per_sample{$sample};
-
   print TAB $total_absplice_totals_per_sample,"\t";
   print TAB $splice_index,"\t";
   print TAB $bs_id_hist{$sample},"\n";
