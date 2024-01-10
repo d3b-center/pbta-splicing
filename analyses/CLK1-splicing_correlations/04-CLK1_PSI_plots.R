@@ -96,8 +96,9 @@ stacked_barplot <- ggplot(plot_df, aes(x = sample_id, y = PSI, fill= Type)) +
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.title.x = element_blank()) +
-  scale_y_continuous(expand = c(0, 0))   # Set the expand argument to ensure the bottom line starts from 0
-  
+  scale_y_continuous(expand = c(0, 0))  + # Set the expand argument to ensure the bottom line starts from 0
+  geom_hline(yintercept = mean(plot_df$PSI), color="black",linetype='dotted')
+
 
 # Save plot as pdf
 pdf(CLK1_plot_path, height = 3, width = 6, useDingbats = FALSE)
