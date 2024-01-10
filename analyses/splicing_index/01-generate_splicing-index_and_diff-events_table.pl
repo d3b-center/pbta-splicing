@@ -6,11 +6,12 @@ use Statistics::Lite qw(:all);
 #
 # Compute splicing index for each sample and generate splicing burden index tables
 ############################################################################################################
-my ($histology,$rmats_tsv,$primary_tumor_plus_dat, $splice_case) = ($ARGV[0], $ARGV[1], $ARGV[2],$ARGV[3]);
+my ($histology,$rmats_tsv,$primary_tumor_dat, $splice_case) = ($ARGV[0], $ARGV[1], $ARGV[2],$ARGV[3]);
 my (@broad_hist, @bs_id, @splicing_events);
 my (%histology_ids, %inc_levels, %bs_id_hist, %hist_check, %hist_count);
 my @splicing_events;
 my %splicing_psi;
+my (%splice_totals_per_sample, %splice_totals);
 
 $splice_case=~s/\s+//;
 print $splice_case,"\n";
@@ -28,7 +29,7 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
 
 
   ## store primary tumor samples
-  open(FIL,$primary_tumor_plus_dat) || die("Cannot Open File");
+  open(FIL,$primary_tumor_dat) || die("Cannot Open File");
   while(<FIL>)
   {
     chomp;
@@ -45,10 +46,7 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
   }
   close(FIL);
 
-
-  # annotate histology file #
-    # hash with BS and disease
-    # make arrays of each histology of BS IDs
+# annotate histologies
 
   open(FIL,$histology) || die("Cannot Open File");
     while(<FIL>)
@@ -85,24 +83,6 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
   }
 
   close(FIL);
-
-
-#Exon-specific
-# For every alternatively spliced exon
-#-------------------------------------
-  #1. Compute mean of exon inclusion (PSI)
-  #2. Compute STD
-
-#-Look at each tumor --> is it 2 standard deviations from the mean?
-  #--Yes --> aberrant
-  #--No  --> non-aberrant
-
-# store each library (using file name)
-# for each line, make unique splice id
-  # gene + chr + SE + UEx + DEx   (make array)
-  # store total splicing events and those that pass threshold for each sample
-
-my (%splice_totals_per_sample, %splice_totals);
 
 ## process rMATS output (may take awhile) from merged input file
 print "processing rMATs results... ".(localtime)."\n";
@@ -172,9 +152,8 @@ while(<FIL>)
 
   }
 
-
   ## retrieve inclusion level and junction count info
-  my $inc_level = $cols[33];
+  my $inc_level  = $cols[33];
   my $IJC        = $cols[25];
   my $SJC        = $cols[26];
 
@@ -188,9 +167,10 @@ while(<FIL>)
   next unless ($SJC >=10);
 
   ## create unique ID for splicing change
-  #print $Start,"\t",$End,"\t",$prevES,"\t",$prevEE,"\t",$nextES,"\t",$nextEE,"\n";
 
   my $splice_id = $gene.":".$Start."-".$End."_".$prevES."-".$prevEE."_".$nextES."-".$nextEE;
+  $splice_id=~s/\.0//g;
+
   $inc_levels{$splice_id}{$bs_id} = $inc_level;
 
   #print $splice_id,"\t",$inc_level,"\n";
@@ -222,14 +202,13 @@ foreach my $splice_event(@splicing_events_uniq)
   $mean_psi{$splice_event}    = $mean;
 }
 
-#-Look at each tumor --> is it 2 standard deviations from the mean?
-#--Yes --> aberrant
-#--No  --> non-aberrant
+# Find abberrant splicing/differential events
 my %absplice_totals_per_sample;
 my %absplice_totals_per_sample_pos;
 my %absplice_totals_per_sample_neg;
+
 open(EVENTS,">results/splice_events.diff.".$splice_case.".txt");
-print EVENTS "Splice ID\tCase\tType\n";
+print EVENTS "Splice ID\tCase\tType\tTumor_PSI\tMean_PSI\tSample\n";
 foreach my $sample(@bs_ids_uniq)
 {
   foreach my $splice_event(@splicing_events_uniq)
@@ -242,13 +221,16 @@ foreach my $sample(@bs_ids_uniq)
     if($psi_tumor > ($mean_psi + ($std_psi + $std_psi)) )
     {
       $absplice_totals_per_sample_pos{$sample}++;
-      print EVENTS $splice_event,"\t".$splice_case."\tSkipping\n";
+      print EVENTS $splice_event,"\t".$splice_case."\tSkipping\t";
+      print EVENTS $psi_tumor,"\t",$mean_psi,"\t",$sample,"\n";
     }
     # < -2 z-scores
     if($psi_tumor < ($mean_psi - ($std_psi + $std_psi)) )
     {
       $absplice_totals_per_sample_neg{$sample}++;
-      print EVENTS $splice_event,"\t".$splice_case."\tInclusion\n";
+      print EVENTS $splice_event,"\t".$splice_case."\tInclusion\t";
+      print EVENTS $psi_tumor,"\t",$mean_psi,"\t",$sample,"\n";
+
     }
   }
 }
