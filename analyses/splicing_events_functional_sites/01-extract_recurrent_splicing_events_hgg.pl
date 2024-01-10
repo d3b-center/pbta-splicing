@@ -22,29 +22,29 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
   die("Splicing case does not exist, please use either 'SE', 'A5SS', 'A3SS', or 'RI'");
 }
 # annotate histology file #
-  # hash with BS and disease
-  # make arrays of each histology of BS IDs
+# hash with BS and disease
+# make arrays of each histology of BS IDs
 
-  my %primary_initial_sample_list;
+my %primary_initial_sample_list;
 
 
-  ## store primary tumor samples to filter on later
-  open(FIL,$primary_tumor_file) || die("Cannot Open File");
-  while(<FIL>)
-  {
-    chomp;
-    my @header = split "\t";
-    my $bs_id = $header[1];
-    my $cohort = $header[2];
-    my $exp_strategy = $header[4];
-    my $tumor_descr = $header[5];
+## store primary tumor samples to filter on later
+open(FIL,$primary_tumor_file) || die("Cannot Open File");
+while(<FIL>)
+{
+  chomp;
+  my @header = split "\t";
+  my $bs_id = $header[1];
+  my $cohort = $header[2];
+  my $exp_strategy = $header[4];
+  my $tumor_descr = $header[5];
 
-    next unless ($cohort=~/PBTA/);
+  next unless ($cohort=~/PBTA/);
 
-    $primary_initial_sample_list{$bs_id} = $bs_id;
+  $primary_initial_sample_list{$bs_id} = $bs_id;
 
-  }
-  close(FIL);
+}
+close(FIL);
 
 
 ## annotate and store histology information
@@ -53,13 +53,13 @@ open(FIL,$histology) || die("Cannot Open File");
   {
     chomp;
     my @cols       = split "\t";
-    my $hist = $cols[-2];
-    my $bs_id      = $cols[0];
-    my $CNS_region = $cols[25];
+    my $hist = $cols[37];
+    my $bs_id      = $cols[1];
+    my $CNS_region = $cols[19];
 
-
+    next unless ($_=~/RNA-Seq/);
     next unless ($primary_initial_sample_list{$bs_id});
-
+    next unless ($hist=~/HGAT/);
 
 
     ## make an array and store histology information and BS IDs
@@ -98,6 +98,11 @@ while(<FIL>)
   my @cols  = split "\t";
   my $bs_id = $cols[1];
   my $ctrl  = $cols[2];
+
+  ## filter for HGG/histology of interest
+  my $hist = $bs_id_hist{$bs_id};
+  next unless $primary_initial_sample_list{$bs_id};
+  next unless $hist=~/HGAT/;
 
   ## get gene name
   my $gene         = $cols[4];
@@ -162,15 +167,12 @@ while(<FIL>)
   my $inc_len  = $cols[29];
   my $skip_len = $cols[30];
 
-
-
-  ## only look at strong changes,  tumor junction reads > 10 reads
+  ## only look at strong changes, junction reads > 10 reads
   next unless ($IJC >=10);
   next unless ($SJC >=10);
 
   ## create unique ID for splicing change
   my $splice_id = $gene.":".$Start."-".$End."_".$prevES."-".$prevEE."_".$nextES."-".$nextEE;
-  my $hist = $bs_id_hist{$bs_id};
 
   ##remove .0 in coord
   $splice_id=~s/\.0//g;
@@ -182,9 +184,6 @@ while(<FIL>)
   ## store PSI for event and sample
   $inc_levels{$splice_id}{$bs_id} = $inc_level;
 
-  ## filter for HGG/histology of interest
-  next unless $hist=~/HGAT/;
-
   push @splicing_events, $splice_id;
   push @{$splicing_psi{$splice_id}}, $inc_level;
 
@@ -192,6 +191,7 @@ while(<FIL>)
   $splice_totals{$splice_id}++;
 
   $splice_event_hist{$splice_id}{$hist}=$hist;
+  #print $splice_id,"\n";
 }
 close(FIL);
 
