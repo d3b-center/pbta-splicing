@@ -98,9 +98,9 @@ filtered_counts_gene_rm <- dplyr::select(counts_combined, -gene)
 
 ## construct metadata
 design = data.frame(row.names = colnames(filtered_counts_gene_rm),
-                    condition = c(rep("High",26), rep("Low",29)))
+                    condition = c(rep("High",ncol(count_data_SF_high) - 1 ), rep("Low",ncol(count_data_SF_low) - 1 )))
 
-condition = c(rep("High",26), rep("Low",29) )
+condition = c(rep("High",ncol(count_data_SF_high) - 1), rep("Low",ncol(count_data_SF_low) - 1) )
 cds = DESeqDataSetFromMatrix(countData=round(filtered_counts_gene_rm),
                              colData=design,
                              design= ~ condition)
