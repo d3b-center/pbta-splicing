@@ -117,7 +117,7 @@ volc_hgg_plot <- EnhancedVolcano(res,
                                  lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",counts_combined$gene), ## remove ensembleid portion
                                  x = 'log2FoldChange',
                                  y = 'padj',
-                                 #ylim = c(0,6),
+                                 ylim = c(0,15),
                                  #xlim = c(-2,2),
                                  title = 'High vs Low SBI HGGs',
                                  subtitle = NULL,
