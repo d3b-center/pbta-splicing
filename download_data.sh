@@ -23,7 +23,7 @@ do
   if [ ! -e "data/$RELEASE/$file" ]
   then
     echo "Downloading $file"
-    curl $URL/$RELEASE/$file -o data/$RELEASE/$file
+    curl -k $URL/$RELEASE/$file -o data/$RELEASE/$file
   fi
 done
 
@@ -39,7 +39,7 @@ fi
 # Check the md5s for everything we downloaded except CHANGELOG.md
 cd $RELEASE
 echo "Checking MD5 hashes..."
-#md5sum -c md5sum.txt
+md5sum -c md5sum.txt
 cd ../../
 
 
