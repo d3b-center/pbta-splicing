@@ -1,8 +1,10 @@
 ################################################################################
 # 01-diffExpr-ctrl_vs_morph.R
-# Differential gene expression analysis and plots
+# Performs gene expression analysis and plots on cells untreated vs treated with
+# morpholinos targeting CLK1
+#
 # Author: Ammar Naqvi 
-# usage: Rscript 01-diffExpr-ctrl_vs_morph.R
+# usage: Rscript --vanilla 01-diffExpr-ctrl_vs_morph.R
 ################################################################################
 
 suppressPackageStartupMessages({
@@ -12,6 +14,7 @@ suppressPackageStartupMessages({
   library("dplyr")
   library("vroom")
   library("clusterProfiler")
+  library("annoFuseData")
 })
 
 # Get `magrittr` pipe
@@ -34,7 +37,12 @@ if(!dir.exists(results_dir)){
   dir.create(results_dir, recursive=TRUE)
 }
 
-## ouput files
+
+## theme for all plots
+figures_dir <- file.path(root_dir, "figures")
+source(file.path(figures_dir, "theme_for_plots.R"))
+
+## output files
 de_output = "ctrl_vs_treated.de.tsv"
 de_reg_output = "ctrl_vs_treated.de.regl.tsv"
 file_volc_plot = "ctrl_vs_clk1-morp_volcano.pdf"
@@ -44,11 +52,8 @@ file_gene_family_plot = file.path(plots_dir,"gene-fam-DE-plot.pdf")
 # count data
 tpm_count_file <- "ctrl-vs-morpholino-gene-counts-rsem-expected_count.tsv" 
 
-# gene lists
-genelistreference_file <- file.path(input_dir,'genelistreference.txt')
-genelist_goi_file <- file.path(input_dir,'oncoprint-goi-lists-OpenPedCan-gencode-v39.csv') 
+# gene list files
 known_rbp_file <- file.path(input_dir,'RBP_known.txt')
-known_kinase_file <- file.path(input_dir,'kinase_known.txt')
 known_epi_file <- file.path(input_dir,'epi_known.txt')
 
 ## hgnc file for liftover
@@ -113,53 +118,46 @@ write_delim(
 )
 
 ## subset with gene lists
-genelist_ref_df <- vroom(genelistreference_file) 
+genelist_ref_df <-read.delim(system.file("extdata", "genelistreference.txt", package = "annoFuseData")) 
+
 known_kinase <- genelist_ref_df %>% 
   mutate(Class = if_else(grepl("Kinase", type), 'Kinase', NA)) %>%
   na.omit() %>%
-  dplyr::select(Gene_Symbol,Class)
+  dplyr::select(Gene_Symbol,Class) 
 
 known_tf<- genelist_ref_df %>% 
   mutate(Class = if_else(grepl("TranscriptionFactor", type), "TF", NA)) %>%
   na.omit() %>%
-  dplyr::select(Gene_Symbol,Class)
+  dplyr::select(Gene_Symbol,Class) 
   
 known_ts <- genelist_ref_df %>% 
     mutate(Class = if_else(grepl("TumorSuppressorGene", type), "TS", NA)) %>%
     na.omit() %>%
-  dplyr::select(Gene_Symbol,Class)
+  dplyr::select(Gene_Symbol,Class) 
     
 known_onco <- genelist_ref_df %>% 
   mutate(Class = if_else(grepl("Oncogene", type), "Onco", NA)) %>%
   na.omit() %>%
-  dplyr::select(Gene_Symbol,Class)
+  dplyr::select(Gene_Symbol,Class) 
 
-genelist_braingoi_df <- vroom(genelist_goi_file) %>% 
-  dplyr::select(LGAT,`Embryonal tumor`,HGAT,Other ) %>% 
-  pivot_longer(cols=c("LGAT", `Embryonal tumor`,"HGAT" ,"Other"), 
-               names_to='tumor',
-               values_to="Gene_Symbol") %>% 
-  mutate(Class="BrainGOI") %>%
-  dplyr::select(Gene_Symbol,Class) %>% 
-  distinct()
-
+## other non-annoFuse gene lists, RBPs and epigenetic genes
 known_rbp <- read.table(known_rbp_file,header=FALSE) %>% 
   dplyr::rename('Gene_Symbol' = V1)
 known_epi <- read.table(known_epi_file,header=FALSE) %>% 
   dplyr::rename('Gene_Symbol' = V1)
 
-
 res_rbp <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
   dplyr::rename('Gene_Symbol'=gene) %>% 
   inner_join(known_rbp, by="Gene_Symbol") %>%
-  mutate(Class="RNA-binding")
+  mutate(Class="RBP")
+
 
 res_tf <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
   dplyr::rename('Gene_Symbol'=gene) %>% 
   inner_join(known_tf, by="Gene_Symbol") %>% 
-  mutate(Class="Transcription Factor")
+  mutate(Class="TranscriptionFactor")
 
 res_kinase <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
@@ -177,7 +175,7 @@ res_ts <- as.data.frame(res) %>%
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
   dplyr::rename('Gene_Symbol'=gene) %>% 
   inner_join(known_ts, by="Gene_Symbol") %>% 
-  mutate(Class="Tumor Suppr")
+  mutate(Class="TumorSuppressor")
 
 res_onco <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
@@ -185,17 +183,11 @@ res_onco <- as.data.frame(res) %>%
   inner_join(known_onco, by="Gene_Symbol") %>% 
   mutate(Class="Oncogene")
 
-res_brain <- as.data.frame(res) %>% 
-  dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>%
-  dplyr::rename('Gene_Symbol'=gene) %>% 
-  inner_join(genelist_braingoi_df, by="Gene_Symbol") %>% 
-  mutate(Class="Brain Tumor-specific Cancer")
-
 ## combine results and liftover geneSymbols to new names
 liftover_df <- vroom(hgnc_file) %>%
   dplyr::select(symbol, prev_symbol)
 
-res_all_regl_df <- rbind(res_rbp, res_tf, res_kinase, res_epi, res_brain, res_ts,res_onco) %>%
+res_all_regl_df <- rbind(res_rbp, res_tf, res_kinase, res_epi, res_ts,res_onco) %>%
   ## liftover geneSymbols
   left_join(liftover_df, by=c('Gene_Symbol'='prev_symbol')) %>% 
   mutate(Gene_Symbol = case_when(
@@ -216,14 +208,15 @@ sign_regl_gene_df <- res_all_regl_df %>%
 plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(Class)), fill= Direction)) +
                        geom_bar(stat="count", position='dodge', color="black") + 
                        xlab("Gene Family")     + 
-                       ylab("Num of Signficantly DE Genes") + 
+                       ylab("Number of Signficantly DE Genes") + 
                        scale_fill_manual(name = "Direction",
                                          values=c("#FFC20A","#0C7BDC")) + 
                        geom_text(stat='count',aes(label=..count..), 
                                  position = position_dodge(width = 1),
                                  hjust = -0.5, size = 4) +
-                      theme_Publication() + 
-                      coord_flip()
+                      theme_Publication() +
+                      coord_flip() 
+  
 
 # print and save plot
 pdf(file_gene_family_plot, height = 10.38, width = 6.73, useDingbats = FALSE) 
