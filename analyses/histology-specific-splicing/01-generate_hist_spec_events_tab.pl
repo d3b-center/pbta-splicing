@@ -41,7 +41,8 @@ while(<FIL>)
 {
   chomp;
   my @cols       = split "\t";
-  my $hist = $cols[40];
+  my $hist = $cols[-6];
+  my $hist = $cols[59];
   my $bs_id      = $cols[1];
   my $CNS_region = $cols[19];
 
@@ -178,9 +179,7 @@ foreach my $sample(@bs_ids_uniq)
       my $histology = $bs_id_hist{$sample};
       #print $splice_event,"\t",$histology,"***\n";
       $splice_event_per_pos_hist_count{$splice_event}{$histology}++;
-    #  if ($check_events_pos{$splice_event}){ push @ab_splicing_events_pos, $splice_event; }
       push @ab_splicing_events_pos, $splice_event;
-      $check_events_pos{$splice_event} = 1;
 
     }
     # < -2 z-scores
@@ -189,9 +188,7 @@ foreach my $sample(@bs_ids_uniq)
       $absplice_totals_per_sample_neg{$sample}++;
       my $histology = $bs_id_hist{$sample};
       $splice_event_per_neg_hist_count{$splice_event}{$histology}++;
-      #if ($check_events_neg{$splice_event}){ push @ab_splicing_events_neg, $splice_event; }
       push @ab_splicing_events_neg, $splice_event;
-      $check_events_neg{$splice_event} = 1;
 
     }
   }
@@ -217,7 +214,9 @@ foreach $hist (@broad_hist_uniq)
         if($splice_event_per_pos_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_pos_hist_count{$event}{$hist};
           #print $event,"\t",$hist,"\t",$total_hist_count,"\n";
-          if( ($event_count/$total_hist_count) > .10 )
+          #if( ($event_count/$total_hist_count) >= .10 )
+          if( ($event_count) >= 2 )
+
 
           {
             print TAB $event,"\t",$hist,"\tinclusion\t";
@@ -238,10 +237,11 @@ foreach $hist (@broad_hist_uniq)
         if($splice_event_per_neg_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_neg_hist_count{$event}{$hist};
           #print $event,"\t",$hist,"\t",$total_hist_count,"*\n";
-          if( ($event_count/$total_hist_count) >= .10 )
+          #if( ($event_count/$total_hist_count) >= .10 )
+          if( ($event_count) >= 2 )
 
           {
-            print TAB $event,"\t",$hist,"\tinclusion\t";
+            print TAB $event,"\t",$hist,"\tskipping\t";
             print TAB $event_count,"\n";
 
           }
