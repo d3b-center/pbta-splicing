@@ -91,7 +91,7 @@ combined_hist_map <- combined_hist_map %>%
          !is.na(pathology_diagnosis))
 
 ## filter using independent specimens file
-independent_specimens_df <- read_tsv(file.path(data_dir,"independent-specimens.rnaseqpanel.primary-plus.tsv")) %>%
+independent_specimens_df <- read_tsv(file.path(data_dir,"independent-specimens.rnaseqpanel.primary.tsv")) %>%
   filter(cohort == "PBTA",
          experimental_strategy == "RNA-Seq")
 
