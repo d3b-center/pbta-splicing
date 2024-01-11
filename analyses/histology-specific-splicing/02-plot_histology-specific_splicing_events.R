@@ -36,22 +36,24 @@ upsetR_ei_plot_file <- file.path(analysis_dir, "plots", "upsetR_histology-specif
 uniq_es_tsv_out <- file.path(results_dir, "unique_events-es.tsv")
 uniq_ei_tsv_out <- file.path(results_dir, "unique_events-ei.tsv")
 
-
 # Load the data using vroom
 splice_event_df <- vroom::vroom(file.path(results_dir, "splicing_events.hist-labeled_list.thr2freq.txt"), delim = "\t", trim_ws = TRUE, col_names = TRUE)
 
 ## make list out of all skipping events
 list_for_skipping_upsetR <- splice_event_df %>%
   filter(type == 'skipping') %>%
-  select(histology, splicing_event) %>%
+  filter(histology !="NA") %>%
+  dplyr::select(histology, splicing_event) %>%
   group_by(histology) %>%
   summarise(splicing_events = list(splicing_event)) %>% # Summarize as a list
   ungroup() %>%
-  deframe()
+  deframe() 
+  
 
 # Generate the UpSetR plot
 es_events <- upset(fromList(list_for_skipping_upsetR), order.by = "freq",keep.order = TRUE, mainbar.y.label = "", sets.x.label = "Histology",
-                   mb.ratio = c(0.6,0.4), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4), point.size = 3, line.size = 1, nsets = 17)
+                   mb.ratio = c(0.6,0.4), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4), point.size = 3, line.size = 1,  nsets = 17, empty.intersections = "on")
+
 
 # Save plot
 pdf(upsetR_es_plot_file, height = 9, width = 15)
@@ -86,7 +88,8 @@ write_tsv(unique_events_es_df, uniq_es_tsv_out)
 ## make list out of all inclusion events
 list_for_inclusion_upsetR <- splice_event_df %>%
   filter(type == 'inclusion') %>%
-  select(histology, splicing_event) %>%
+  filter(histology !="NA") %>%
+  dplyr::select(histology, splicing_event) %>%
   group_by(histology) %>%
   summarise(splicing_events = list(splicing_event)) %>% # Summarize as a list
   ungroup() %>%
@@ -94,7 +97,7 @@ list_for_inclusion_upsetR <- splice_event_df %>%
 
 # Generate the UpSetR plot
 ei_events <- upset(fromList(list_for_inclusion_upsetR), order.by = "freq",keep.order = TRUE, mainbar.y.label = "", sets.x.label = "Histology",
-                   mb.ratio = c(0.6,0.4), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4),point.size = 3, line.size = 1, nsets = 17)
+                   mb.ratio = c(0.6,0.4), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4),point.size = 3, line.size = 1,nsets = 17, empty.intersections = "on")
 
 # Save plot
 pdf(upsetR_ei_plot_file, height = 9, width = 15)
