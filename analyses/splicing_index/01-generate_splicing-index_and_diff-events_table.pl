@@ -229,7 +229,7 @@ foreach my $sample(@bs_ids_uniq)
     if($psi_tumor > ($mean_psi + ($std_psi + $std_psi)) )
     {
       $absplice_totals_per_sample_pos{$sample}++;
-      print EVENTS $splice_event,"\t".$splice_case."\tSkipping\t";
+      print EVENTS $splice_event,"\t".$splice_case."\tInclusion\t";
       print EVENTS $psi_tumor,"\t",$mean_psi,"\t",$sample,"\t";
       print EVENTS $bs_id_hist{$sample},"\n";
 
@@ -238,7 +238,7 @@ foreach my $sample(@bs_ids_uniq)
     if($psi_tumor < ($mean_psi - ($std_psi + $std_psi)) )
     {
       $absplice_totals_per_sample_neg{$sample}++;
-      print EVENTS $splice_event,"\t".$splice_case."\tInclusion\t";
+      print EVENTS $splice_event,"\t".$splice_case."\tSkipping\t";
       print EVENTS $psi_tumor,"\t",$mean_psi,"\t",$sample,"\t";
       print EVENTS $bs_id_hist{$sample},"\n";
 
