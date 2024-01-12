@@ -53,8 +53,11 @@ palette_file <- file.path(map_dir, "histologies-plot-group.tsv")
 
 palette_df <- read_tsv(palette_file) %>%
   dplyr::rename(Histology = plot_group) %>%
-  select(Histology, plot_group_hex) %>%
-  unique()
+  dplyr::select(Histology, plot_group_hex) %>%
+  unique() %>% 
+  add_row(Histology="H3 K28",plot_group_hex="#ff40d9") %>% 
+  add_row(Histology="H3 wildtype",plot_group_hex="#ffccf5") 
+  
 
 plot_colors <- palette_df$plot_group_hex
 names(plot_colors) <- palette_df$Histology
@@ -86,7 +89,7 @@ plot_sbi <- function(sbi_df, plot_file) {
   
   si_cdf_plot <- sbi_df %>%
     as_tibble() %>%
-    select(Sample, SI, Histology) %>%
+    dplyr::select(Sample, SI, Histology) %>%
     left_join(palette_df) %>%
     drop_na(Histology) %>%
     # Perform calculations needed for plot

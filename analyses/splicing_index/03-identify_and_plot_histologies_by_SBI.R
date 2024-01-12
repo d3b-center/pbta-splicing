@@ -43,10 +43,20 @@ palette_file <- file.path(map_dir,"histologies-plot-group.tsv")
 sbi_coding_df  <-  read_tsv(sbi_coding_file, comment = "#") %>% 
   dplyr::rename(Kids_First_Biospecimen_ID = Sample) 
 
-palette_df <- read_tsv(palette_file, guess_max = 100000) %>%
+
+
+palette_df <- read_tsv(palette_file) %>%
   dplyr::rename(Histology = plot_group) %>%
-  select(Histology, plot_group_hex) %>%
-  unique()
+  dplyr::select(Histology, plot_group_hex) %>%
+  unique() %>% 
+  add_row(Histology="H3 K28",plot_group_hex="#ff40d9") %>% 
+  add_row(Histology="H3 wildtype",plot_group_hex="#ffccf5") 
+
+
+plot_colors <- palette_df$plot_group_hex
+names(plot_colors) <- palette_df$Histology
+plot_colors <- list(plot_colors)
+
 
 sbi_coding_df <- sbi_coding_df %>%
   left_join(palette_df)
@@ -66,13 +76,13 @@ clin_df_w_highSBI <- clin_df_w_SBI %>%
   filter(SBI_level=="High SBI") %>%
   dplyr::count(SBI_level, Histology) %>%
   dplyr::rename(High_SBI = n) %>%
-  select(-SBI_level)
+  dplyr::select(-SBI_level)
 
 clin_df_w_lowSBI <- clin_df_w_SBI %>% 
   filter(SBI_level=="Low SBI") %>%
   dplyr::count(SBI_level, Histology) %>%
   dplyr::rename(Low_SBI = n) %>%
-  select(-SBI_level)
+  dplyr::select(-SBI_level)
 
 plot_df <- clin_df_w_highSBI %>%
   full_join(clin_df_w_lowSBI) %>%

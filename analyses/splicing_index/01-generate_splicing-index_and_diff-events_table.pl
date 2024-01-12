@@ -49,14 +49,30 @@ open(FIL,$histology) || die("Cannot Open File");
     my @cols       = split "\t";
     #my $hist       = $cols[53];
     my $hist = $cols[-6];
-    my $bs_id      = $cols[0];
-    my $patient_id = $cols[3];
-    my $CNS_region = $cols[32];
+    my $bs_id      = $cols[1];
+    my $patient_id = $cols[0];
 
 
     next unless ($primary_initial_sample_list{$bs_id});
+    next unless $_=~/HGAT/;
+    #next unless ($_=~/ ( (K28) | (wildtype) )/);
 
+    if($_=~/H3\sK28/)
+    {
+      chomp;
+      $hist = "H3 K28";
+    }
+    elsif($_=~/H3\swildtype/)
+    {
+      chomp;
+      $hist = "H3 wildtype";
+      print $hist,"\n";
 
+    }
+    else{
+      next;
+    }
+    print $hist,"\n";
 
   ## make an array and store histology information and BS IDs
   push @broad_hist, $hist;
@@ -68,11 +84,8 @@ open(FIL,$histology) || die("Cannot Open File");
   $hist_count{$hist}++;
   push @{$histology_ids{$hist}}, $bs_id;
 
-  $cns_regions{$bs_id} = $CNS_region;
-
   ## histology counter for downstream analysis
   $hist_count{$hist}++;
-  #print $hist,"\n";
 
 }
 
@@ -91,6 +104,8 @@ while(<FIL>)
   my @cols  = split "\t";
   my $bs_id = $cols[1];
   my $ctrl  = $cols[2];
+
+  next unless $bs_id_hist{$bs_id};
 
   ## get gene name
   my $gene         = $cols[4];
