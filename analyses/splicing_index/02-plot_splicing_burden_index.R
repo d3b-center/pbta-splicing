@@ -55,8 +55,8 @@ palette_df <- read_tsv(palette_file) %>%
   dplyr::rename(Histology = plot_group) %>%
   dplyr::select(Histology, plot_group_hex) %>%
   unique() %>% 
-  add_row(Histology="H3 K28",plot_group_hex="#ff40d9") %>% 
-  add_row(Histology="H3 wildtype",plot_group_hex="#ffccf5") 
+  add_row(Histology="Diffuse midline glioma",plot_group_hex="#ff40d9") %>% 
+  add_row(Histology="Diffuse intrinsic pontine glioma",plot_group_hex="#ffccf5") 
   
 
 plot_colors <- palette_df$plot_group_hex

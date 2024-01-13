@@ -48,24 +48,24 @@ open(FIL,$histology) || die("Cannot Open File");
     chomp;
     my @cols       = split "\t";
     #my $hist       = $cols[53];
-    my $hist = $cols[-6];
+    my $hist = $cols[40];
     my $bs_id      = $cols[1];
     my $patient_id = $cols[0];
 
 
+
     next unless ($primary_initial_sample_list{$bs_id});
-    next unless $_=~/HGAT/;
     #next unless ($_=~/ ( (K28) | (wildtype) )/);
 
-    if($_=~/H3\sK28/)
+    if($_=~/Diffuse\smidline\sglioma/)
     {
       chomp;
-      $hist = "H3 K28";
+      $hist = "Diffuse midline glioma";
     }
-    elsif($_=~/H3\swildtype/)
+    elsif($_=~/Diffuse\sintrinsic\spontine\sglioma/)
     {
       chomp;
-      $hist = "H3 wildtype";
+      $hist = "Diffuse intrinsic pontine glioma";
       print $hist,"\n";
 
     }
@@ -214,7 +214,7 @@ my %absplice_totals_per_sample;
 my %absplice_totals_per_sample_pos;
 my %absplice_totals_per_sample_neg;
 
-open(EVENTS,">results/splice_events.diff.".$splice_case.".txt");
+open(EVENTS,">results/splice_events.diff.".$splice_case.".all.txt");
 print EVENTS "Splice ID\tCase\tType\tTumor_PSI\tMean_PSI\tSample\tHistology\n";
 foreach my $sample(@bs_ids_uniq)
 {
@@ -254,7 +254,7 @@ if (!-d "results")
 }
 
 print "make table for plotting of splice_index ".$splice_case."...\n";
-open(TAB,">results/splicing_index.".$splice_case.".txt");
+open(TAB,">results/splicing_index.".$splice_case.".all.txt");
 print TAB "Sample\tTotal\tAS_neg\tAS_pos\tAS_total\tSI\tHistology\n";
 foreach my $sample(@bs_ids_uniq)
 {
