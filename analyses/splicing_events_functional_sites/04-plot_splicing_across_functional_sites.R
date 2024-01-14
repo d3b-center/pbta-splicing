@@ -96,21 +96,33 @@ known_kinase_df <-read.delim(system.file("extdata", "genelistreference.txt", pac
 
 psi_unip_kinase <- dplyr::inner_join(psi_comb, known_kinase_df, by='gene') 
 
+#returns boolean vector if a certain point is an outlier or not
+findoutlier <- function(x) {
+  return(x < quantile(x, .25) - 1.5*IQR(x) | x > quantile(x, .75) + 1.5*IQR(x))
+}
+
+
+#apply this to our data
+psi_unip_kinase <- psi_unip_kinase %>%
+  group_by(type, Preference) %>%
+  mutate(outlier = ifelse(findoutlier(dPSI), gene, NA))
+
+
 ## make sina plot
 set.seed(45)
 kinase_dpsi_plot <- ggplot(psi_unip_kinase,aes(Preference,dPSI*100) ) +  
   ylab(expression(bold("dPSI"))) +
   ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 4, method="density") +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
-  geom_label_repel(box.padding = 0.5, min.segment.length = 0.5,max.overlaps =Inf, aes(label = gene), data=psi_unip_kinase %>% 
-                     subset(gene %in% c("CLK1")), size=2) +
+  geom_label_repel(box.padding = 0.5, min.segment.length = 0.5,max.overlaps =Inf, aes(label = outlier), data=psi_unip_kinase %>% 
+                     subset(gene %in% c(psi_unip_kinase$outlier)), size=2) +
   scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) + 
   theme_Publication() +
   labs(y="Percent Spliced In (PSI)") + 
   theme(legend.position="none")
 
 pdf(file_dpsi_kinase_plot, 
-    width = 4, height = 4)
+    width = 6, height = 6)
 kinase_dpsi_plot
 dev.off()
 

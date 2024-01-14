@@ -53,13 +53,32 @@ open(FIL,$histology) || die("Cannot Open File");
   {
     chomp;
     my @cols       = split "\t";
-    my $hist = $cols[37];
+    my $hist = $cols[40];
     my $bs_id      = $cols[1];
-    my $CNS_region = $cols[19];
+    my $patient_id = $cols[0];
+
+    my $CNS_region = $cols[32];
+
+    next unless ($primary_initial_sample_list{$bs_id});
+    #next unless ($_=~/ ( (K28) | (wildtype) )/);
+
+    if($_=~/Diffuse\smidline\sglioma/)
+    {
+      chomp;
+      $hist = "Diffuse midline glioma";
+    }
+    elsif($_=~/Diffuse\sintrinsic\spontine\sglioma/)
+    {
+      chomp;
+      $hist = "Diffuse intrinsic pontine glioma";
+
+    }
+    else{
+      next;
+    }
 
     next unless ($_=~/RNA-Seq/);
-    next unless ($primary_initial_sample_list{$bs_id});
-    next unless ($hist=~/HGAT/);
+    print $hist,"\n";
 
 
     ## make an array and store histology information and BS IDs
@@ -102,7 +121,7 @@ while(<FIL>)
   ## filter for HGG/histology of interest
   my $hist = $bs_id_hist{$bs_id};
   next unless $primary_initial_sample_list{$bs_id};
-  next unless $hist=~/HGAT/;
+  next unless $hist_count{$hist};
 
   ## get gene name
   my $gene         = $cols[4];

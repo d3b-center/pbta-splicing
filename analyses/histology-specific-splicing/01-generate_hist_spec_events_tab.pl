@@ -7,7 +7,7 @@ use Statistics::Lite qw(:all);
 #
 # ./04-generate_hist_spec_events_tab.pl <hist file> <rmats file> <indep_samples-plus>
 ############################################################################################################
-my ($histology,$rmats_tsv,$primary_tumor_plus_dat) = ($ARGV[0], $ARGV[1],$ARGV[2]);
+my ($histology,$rmats_tsv,$primary_tumor_dat) = ($ARGV[0], $ARGV[1],$ARGV[2]);
 my (@broad_hist, @bs_id, @splicing_events);
 my (%histology_ids, %inc_levels, %bs_id_hist, %hist_check, %hist_count);
 my %splicing_psi;
@@ -15,7 +15,7 @@ my %splicing_psi;
   my %primary_initial_sample_list;
 
   ## store primary tumor samples
-  open(FIL,$primary_tumor_plus_dat) || die("Cannot Open File");
+  open(FIL,$primary_tumor_dat) || die("Cannot Open File");
   while(<FIL>)
   {
     chomp;
@@ -41,13 +41,32 @@ print "annotate and store histology information... ".localtime(time)."\n";
     {
       chomp;
       my @cols       = split "\t";
-      my $hist       = $cols[-6];
-      my $bs_id      = $cols[0];
-      my $patient_id = $cols[3];
+      #my $hist       = $cols[53];
+      my $hist = $cols[40];
+      my $bs_id      = $cols[1];
+      my $patient_id = $cols[0];
+
       my $CNS_region = $cols[32];
 
       next unless ($primary_initial_sample_list{$bs_id});
+      #next unless ($_=~/ ( (K28) | (wildtype) )/);
 
+      if($_=~/Diffuse\smidline\sglioma/)
+      {
+        chomp;
+        $hist = "Diffuse midline glioma";
+      }
+      elsif($_=~/Diffuse\sintrinsic\spontine\sglioma/)
+      {
+        chomp;
+        $hist = "Diffuse intrinsic pontine glioma";
+        print $hist,"\n";
+
+      }
+      else{
+        next;
+      }
+      print $hist,"\n";
 
 
     ## make an array and store histology information and BS IDs
@@ -237,7 +256,7 @@ foreach $hist (@broad_hist_uniq)
         if($splice_event_per_pos_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_pos_hist_count{$event}{$hist};
           #print $event,"\t",$hist,"\t",$total_hist_count,"\n";
-          if( ($event_count/$total_hist_count) > .02 )
+          if( ($event_count) > 2 )
 
           {
             print TAB $event,"\t",$hist,"\tskipping\n";
@@ -255,7 +274,7 @@ foreach $hist (@broad_hist_uniq)
         if($splice_event_per_neg_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_neg_hist_count{$event}{$hist};
           #print $event,"\t",$hist,"\t",$total_hist_count,"*\n";
-          if( ($event_count/$total_hist_count) >= .02 )
+          if( ($event_count) >= 2 )
 
           {
             print TAB $event,"\t",$hist,"\tinclusion\n";

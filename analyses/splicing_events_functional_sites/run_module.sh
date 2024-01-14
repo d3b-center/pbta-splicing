@@ -37,4 +37,4 @@ echo "plot flip events";
 
 ##rm intermediatery files
 rm results/splicing_events.total.*.wo.txt
-rm results/*bed 
+rm results/*bed
