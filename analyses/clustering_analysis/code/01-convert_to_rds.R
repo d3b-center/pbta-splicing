@@ -3,6 +3,8 @@
 ## author: Ammar S Naqvi
 ################################################################################
 
+library("tidyverse")
+
 ## directory setup
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses", "clustering_analysis")
