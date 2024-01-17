@@ -32,6 +32,20 @@ clin_file <- file.path(input_dir, "histologies-plot-group.tsv") %>% read_tsv() %
 splice_mat <- readRDS(file.path(input_dir, "pan_cancer_splicing_SE.gene.rds")) %>%
   column_to_rownames("Splice_ID") 
 
+# remove histologies with <= 5 samples
+remove_sh <- clin_file %>%
+  filter(Kids_First_Biospecimen_ID %in% colnames(splice_mat)) %>%
+  group_by(short_histology) %>%
+  tally() %>%
+  filter(n <= 5) %>% 
+  pull(short_histology)
+
+clin_file <- clin_file %>%
+  filter(!short_histology %in% remove_sh)
+
+# 1) remove samples from splice matrix and save
+splice_mat <- splice_mat %>%
+  dplyr::select(any_of(clin_file$Kids_First_Biospecimen_ID))
 
 ## set rownames
 saveRDS(splice_mat, file = file.path(input_dir, 'non_expr_pan_cancer_splice.rds'))
