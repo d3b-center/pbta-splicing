@@ -12,14 +12,21 @@ input_dir <- "./input"
 #directory to store plots
 plot_dir <- "./plots"
 
-######read histology file to data frame
-#####histologyfile <- "Hope-GBM-histologies-base.tsv"
-#####HISTdata <- readr::read_tsv(file.path(input_dir, histologyfile))
-######
+## Set directories
+# Input directories
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+print(data_dir)
+#analysis_dir <- file.path(root_dir, "analyses", "CLK1_splicing_correlations")
+#figures_dir <- file.path(root_dir, "figures")
+#input_dir   <- file.path(root_dir, "analyses", "splicing_index", "results")
+
 
 #read whole cell proteomics data to data frame
-totalprotfile <- "Hope_proteome_imputed_data_liftover.tsv"
-WCPdata <- readr::read_tsv(file.path(input_dir, totalprotfile))
+totalprotfile<-"hope-protein-imputed-prot-expression-abundance.tsv.gz"
+#totalprotfile <- "hope-protein-imputed-prot-expression-abundance.tsv"
+WCPdata <- readr::read_tsv(file.path(data_dir, totalprotfile))
+head(WCPdata)
 #
 
 #get all WCP samples ids
