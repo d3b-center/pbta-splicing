@@ -1,56 +1,58 @@
 
 
-#load libraries
+##load libraries
 library(tidyverse)
 library(openxlsx)
 
-#Magrittr pipe
+##Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-#directory containing input files
+##set directory variables
+#root directory
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+#general data directory
+data_dir <- file.path(root_dir, "data")
+#directory containing input files for splicing files
 input_dir <- "./input"
-#directory to store plots
+#directory to store plots from analysis
 plot_dir <- "./plots"
 
-######read histology file to data frame
-#####histologyfile <- "Hope-GBM-histologies-base.tsv"
-#####HISTdata <- readr::read_tsv(file.path(input_dir, histologyfile))
-######
-
-#read whole cell proteomics data to data frame
-totalprotfile <- "Hope_proteome_imputed_data_liftover.tsv"
-WCPdata <- readr::read_tsv(file.path(input_dir, totalprotfile))
+##read whole cell proteomics data to data frame
+#HOPE whole cell proteome
+HOPEtotalprotfile <- "hope-protein-imputed-prot-expression-abundance.tsv.gz"
+WCPdata_HOPE <- readr::read_tsv(file.path(data_dir, HOPEtotalprotfile))
+#head(WCPdata_HOPE)
 #
+#GBM whole cell proteome
+GBMtotalprotfile <- "gbm-protein-imputed-prot-expression-abundance.tsv.gz"
+WCPdata_GBM <- readr::read_tsv(file.path(data_dir, GBMtotalprotfile))
+#head(WCPdata_GBM)
+#
+#join HOPE and GBM tibbles on GeneSymbol and NP_id columns
+WCPdata<-full_join(WCPdata_HOPE, WCPdata_GBM, join_by("GeneSymbol","NP_id"))
+#head(WCPdata)
 
-#get all WCP samples ids
+##get all WCP samples ids
 WCP_KFid <- colnames(WCPdata)[4:ncol(WCPdata)]
 #
 
-######read phosphoproteomics data to data frame
-#####phosprotfile <- "Hope_phosphosite_imputed_data_ischemia_removed_liftover.tsv"
-#####PHOSdata <- readr::read_tsv(file.path(input_dir, phosprotfile))
-######
-#####
-######get all PHOS samples ids
-#####PHOS_KFid <- colnames(PHOSdata)[9:ncol(PHOSdata)]
-######
-
-#read splicing events data to data frame
+##read splicing events data to data frame
+#splicing events file prepared by naqvia with proteins of interest
 splicingfile <- "splicing_events-psi.tsv"
 SPLICEdata <- readr::read_tsv(file.path(input_dir, splicingfile))
 #
 
-#get sample IDs from splicing file. these are the IDs used in the HGG splicing analysis
+##get sample IDs from splicing file. these are the IDs used in the HGG splicing analysis
 SPLICE_KFid <- colnames(SPLICEdata)[9:ncol(SPLICEdata)]
 #
 
-#function to draw violin plots of abundance distributions with selected gene abundance highlighted
+##function to draw violin plots of abundance distributions with selected gene abundance highlighted
 MakeAbundanceViolinPlots <- function(select_gene, WCPdata, WCP_KFid){
   
-  #create violin plot to show relative abundances of CKL1 across samples in which it is identified
+  ##create violin plot to show relative abundances of selected gene across samples in which it is identified
   #tibble to store abundances and genes for violin plot
   AllSamples_AbdTotDataframe <- tibble("Gene"=character(),"Abd"=numeric(),"Condition"=character())
-  gene_symbols<- "ApprovedGeneSymbol"
+  gene_symbols<- "GeneSymbol"
   #parse all samples to add to violin plot data frame
   for ( i in 1:length(WCP_KFid) ){
     
@@ -58,7 +60,7 @@ MakeAbundanceViolinPlots <- function(select_gene, WCPdata, WCP_KFid){
     sampleID<-WCP_KFid[i]
     
     #skip this sample if the selected gene is not identified
-    if ( is.na(dplyr::filter(WCPdata, ApprovedGeneSymbol %in% select_gene) %>% select(sampleID)) ){
+    if ( is.na(dplyr::filter(WCPdata, GeneSymbol %in% select_gene) %>% select(sampleID)) ){
       next
     }
     
@@ -75,9 +77,11 @@ MakeAbundanceViolinPlots <- function(select_gene, WCPdata, WCP_KFid){
     
   }
   #
-  #violin plot 
+  ##draw violin plot 
+  #file name
   file_name<-paste("SampleAbundanceDist", select_gene, "violin.pdf", sep="_")
   pdf(file.path(".", plot_dir, file_name), height=6, width=12)
+  #ggplot
   AllSamples_AbdTotDataframe_violin<-ggplot(AllSamples_AbdTotDataframe, aes(x=Condition, y=Abd, fill=Condition)) +
     geom_violin(alpha=.3, width=0.5) +
     stat_summary(fun.y=mean, geom="point", shape=23, size=1, col="grey") +
@@ -94,14 +98,15 @@ MakeAbundanceViolinPlots <- function(select_gene, WCPdata, WCP_KFid){
 } #end MakeAbundanceViolinPlots function
 
 
-#draw violin plots of abundance distributions with selected gene abundance highlighted
+##draw violin plots of abundance distributions with selected gene abundance highlighted
+#get genes of interest from splice data
 genes_to_plot<- SPLICEdata %>% dplyr::pull(gene)
 #parse genes to plot
 for ( i in 1:length(genes_to_plot) ){
-  #gene to highlight in violin plots
+  #selected gene to highlight in violin plot
   select_gene <- genes_to_plot[i]
   #skip if gene is not in WCP data
-  if ( dim(dplyr::filter(WCPdata, ApprovedGeneSymbol %in% select_gene))[1]==0 ){
+  if ( dim(dplyr::filter(WCPdata, GeneSymbol %in% select_gene))[1]==0 ){
     next
   }
   #call function to draw violin plots of abundance distributions with selected gene abundance highlighted
