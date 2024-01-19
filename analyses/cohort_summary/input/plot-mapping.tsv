@@ -59,7 +59,7 @@ Other tumor	Ganglioneuroma	Embryonal tumor	Other CNS embryonal tumor	#220040	Oth
 Diffuse astrocytic and oligodendroglial tumor	Gliosarcoma	High-grade glioma	Other high-grade glioma	#ffccf5	Other HGG	#ffccf5	3	High-grade glioma
 Diffuse astrocytic and oligodendroglial tumor	High-grade glioma/astrocytoma	High-grade glioma	Other high-grade glioma	#ffccf5	Other HGG	#ffccf5	3	High-grade glioma
 Diffuse astrocytic and oligodendroglial tumor	Pleomorphic xanthoastrocytoma	High-grade glioma	Other high-grade glioma	#ffccf5	PXA	#ffccf5	3	High-grade glioma
-Diffuse astrocytic and oligodendroglial tumor	Congenital malignant brain tumor	High-grade glioma	Other high-grade glioma	#ffccf5	Other HGG	#ffccf5	3	High-grade glioma
+Diffuse astrocytic and oligodendroglial tumor	Congenital malignant brain tumor	Other tumor	Other tumor	#b5b5b5	Other tumor	#b5b5b5	13	Other tumor
 Benign tumor	Cavernoma	Other tumor	Other tumor	#b5b5b5	Other tumor	#b5b5b5	13	Other tumor
 Embryonal tumor	Ganglioneuroblastoma	Other embryonal tumor	Other tumor	#8B008B	Other tumor	#b5b5b5	13	Other tumor
 Embryonal tumor	Ganglioneuroma	Other embryonal tumor	Other tumor	#8B008B	Other tumor	#b5b5b5	13	Other tumor
