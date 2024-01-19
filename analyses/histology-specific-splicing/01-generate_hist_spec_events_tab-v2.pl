@@ -243,7 +243,7 @@ my @ab_splicing_events_neg_uniq = do { my %seen; grep { !$seen{$_}++ } @ab_splic
 my $output_file = "results/splicing_events.hist-labeled_list.thr2freq.txt";
 open(TAB,">".$output_file) || die("Cannot Open File");
 
-print TAB "splicing_event\thistology\ttype\n";
+print TAB "splicing_event\thistology\ttype\tfreq\n";
 
 ## save and report skipping events
 foreach $hist (@broad_hist_uniq)
@@ -258,7 +258,7 @@ foreach $hist (@broad_hist_uniq)
           if( ($event_count) > 2 )
 
           {
-            print TAB $event,"\t",$hist,"\tskipping\n";
+            print TAB $event,"\t",$hist,"\tinclusion\t",$event_count,"\n", ;
           }
         }
   }
@@ -276,7 +276,7 @@ foreach $hist (@broad_hist_uniq)
           if( ($event_count) > 2 )
 
           {
-            print TAB $event,"\t",$hist,"\tinclusion\n";
+            print TAB $event,"\t",$hist,"\tskipping\t",$event_count,"\n";
           }
         }
   }
