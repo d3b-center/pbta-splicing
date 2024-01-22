@@ -40,6 +40,7 @@ file_circos_plot <- file.path(analysis_dir, "plots", "cohort_circos.pdf")
 hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %>% 
   # filter
   filter(cohort == "PBTA",
+         !broad_histology %in% c("Eye tumor", "Hematologic malignancy", "Mixed tumor"),
          !is.na(pathology_diagnosis),
          !composition %in% c("Derived Cell Line", "Patient Derived Xenograft")) %>%
   # collapse reported gender to 3 groups
