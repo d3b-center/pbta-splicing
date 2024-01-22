@@ -41,22 +41,25 @@ while(<FIL>)
 }
 close(FIL);
 
-# annotate histologies with histology file
-open(FIL,$histology) || die("Cannot Open File");
-  while(<FIL>)
-  {
-    chomp;
-    my @cols       = split "\t";
-    #my $hist       = $cols[53];
-    my $hist = $cols[-6];
-    my $bs_id      = $cols[0];
-    my $patient_id = $cols[3];
-    my $CNS_region = $cols[32];
+open(FIL, $histology) || die("Cannot Open File");
 
+# Assuming the first line of the file contains column headers
+my $header = <FIL>;
+chomp $header;
+my @column_names = split "\t", $header;
 
-    next unless ($primary_initial_sample_list{$bs_id});
+# Create a hash to map column names to indices
+my %column_index;
+@column_index{@column_names} = (0..$#column_names);
 
+while (<FIL>) {
+  chomp;
+  my @cols       = split "\t";
+  my $hist      = $cols[$column_index{'plot_group'}];
+  my $bs_id      = $cols[$column_index{'Kids_First_Biospecimen_ID'}];
+  my $CNS_region = $cols[$column_index{'CNS_region'}];
 
+  next unless ($primary_initial_sample_list{$bs_id});
 
   ## make an array and store histology information and BS IDs
   push @broad_hist, $hist;
