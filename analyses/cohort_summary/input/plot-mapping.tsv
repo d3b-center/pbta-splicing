@@ -15,6 +15,7 @@ Germ cell tumor	Germinoma	Germ cell tumor	Germ cell tumor	#0074d9	GCT	#0074d9	7	
 Germ cell tumor	Mixed germ cell tumor	Germ cell tumor	Germ cell tumor	#0074d9	GCT	#0074d9	7	Germ cell tumor
 Germ cell tumor	Teratoma	Germ cell tumor	Germ cell tumor	#0074d9	GCT	#0074d9	7	Germ cell tumor
 Germ cell tumor	NA	Germ cell tumor	Germ cell tumor	#0074d9	GCT	#0074d9	7	Germ cell tumor
+Germ cell tumor	Germ Cell Tumor	Germ cell tumor	Germ cell tumor	#0074d9	GCT	#0074d9	7	Germ cell tumor
 Low-grade astrocytic tumor	Diffuse fibrillary astrocytoma	Low-grade glioma	Low-grade glioma	#8f8fbf	Other LGG	#8f8fbf	1	Low-grade glioma
 Low-grade astrocytic tumor	Low-grade glioma/astrocytoma	Low-grade glioma	Low-grade glioma	#8f8fbf	Other LGG	#8f8fbf	1	Low-grade glioma
 Low-grade astrocytic tumor	Oligodendroglioma	Low-grade glioma	Low-grade glioma	#8f8fbf	Oligodendroglioma	#8f8fbf	1	Low-grade glioma
@@ -68,6 +69,7 @@ Epstein-Barr virus-related tumor	Epstein-Barr virus-related tumor	Other tumor	Ot
 Histiocytic tumor	Juvenile xanthogranuloma	Other tumor	Other tumor	#b5b5b5	JXG	#b5b5b5	13	Other tumor
 Histiocytic tumor	Langerhans Cell histiocytosis	Other tumor	Other tumor	#b5b5b5	Other tumor	#b5b5b5	13	Other tumor
 Histiocytic tumor	Rosai-Dorfman disease	Other tumor	Other tumor	#b5b5b5	Other tumor	#b5b5b5	13	Other tumor
+Histiocytic tumor	Histiocytic tumor	Other tumor	Other tumor	#b5b5b5	Other tumor	#b5b5b5	13	Other tumor
 Lymphoma	CNS Burkitt's lymphoma	Other tumor	Other tumor	#b5b5b5	Other tumor	#b5b5b5	13	Other tumor
 Melanocytic tumor	Melanocytic tumor	Other tumor	Other tumor	#b5b5b5	Other tumor	#b5b5b5	13	Other tumor
 Metastatic tumors	Metastatic secondary tumors	Other tumor	Other tumor	#b5b5b5	Metastasis	#b5b5b5	13	Other tumor
@@ -75,3 +77,5 @@ Non-CNS tumor	Myxoid spindle cell tumor	Other tumor	Other tumor	#b5b5b5	Other tu
 Other tumor	Other tumor	Other tumor	Other tumor	#b5b5b5	Other tumor	#b5b5b5	13	Other tumor
 Tumor of pineal region	Pineoblastoma	Other tumor	Other tumor	#b5b5b5	Other tumor	#b5b5b5	13	Other tumor
 Tumor of cranial and paraspinal nerves	Schwannoma	Tumor of cranial and paraspinal nerves	Schwannoma	#ffaa00	Schwannoma	#ab7200	10	NF or peripheral nerve tumor
+Melanocytic tumor	CNS Melanoma	Other tumor	Other tumor	#b5b5b5	Other tumor	#b5b5b5	13	Other tumor
+Mesenchymal non-meningothelial tumor	Osteosarcoma	Mesenchymal tumor	Mesenchymal tumor	#7fbf00	Other MNMT	#7fbf00	12	Mesenchymal tumor
