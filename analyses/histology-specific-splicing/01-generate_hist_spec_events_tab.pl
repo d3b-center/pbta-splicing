@@ -50,12 +50,11 @@ my %column_index;
 while (<FIL>) {
   chomp;
   my @cols       = split "\t";
-  my $hist      = $cols[$column_index{'plot_group'}];  
+  my $hist      = $cols[$column_index{'plot_group'}];
   my $bs_id      = $cols[$column_index{'Kids_First_Biospecimen_ID'}];
-  my $CNS_region = $cols[$column_index{'CNS_region'}]; 
+  my $CNS_region = $cols[$column_index{'CNS_region'}];
 
   next unless ($primary_initial_sample_list{$bs_id});
-
 
 ## make an array and store histology information and BS IDs
 push @broad_hist, $hist;
