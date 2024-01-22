@@ -20,44 +20,44 @@ if(!dir.exists(plot_dir)){
   dir.create(plot_dir, recursive=TRUE)
 }
 
-
 ##read histology file to data frame
-###histologyfile_orig <- "Hope-GBM-histologies-base.tsv"
-###HISTdata <- readr::read_tsv(file.path(input_dir, histologyfile_orig))
+#histologyfile_base <- "Hope-GBM-histologies-base.tsv"
+#HISTdata_base <- readr::read_tsv(file.path(input_dir, histologyfile_base))
+#head(HISTdata_base)
 histologyfile <- "histologies.tsv"
 HISTdata <- readr::read_tsv(file.path(data_dir, histologyfile))
-###head(HISTdata)
+#head(HISTdata)
 #
 
-
-#read phosphoproteomics data to data frame
-###phosprotfile <- "Hope_phosphosite_imputed_data_ischemia_removed_liftover.tsv"
-###PHOSdata <- readr::read_tsv(file.path(input_dir, phosprotfile))
+##read phosphoproteomics data to data frame
 phosprotfile <- "hope-protein-imputed-phospho-expression-abundance.tsv.gz"
 PHOSdata <- readr::read_tsv(file.path(data_dir, phosprotfile))
-head(PHOSdata)
+#head(PHOSdata)
 #
 
 ##get all PHOS samples ids
 PHOS_KFid <- colnames(PHOSdata)[6:ncol(PHOSdata)]
-print(PHOS_KFid)
+#print(PHOS_KFid)
 #
 
 ##read splicing events data to data frame
 #splicing events file prepared by naqvia with proteins of interest
 splicingfile <- "splicing_events-psi.tsv"
 SPLICEdata <- readr::read_tsv(file.path(input_dir, splicingfile))
-print(SPLICEdata)
+#print(SPLICEdata)
 #
 
-
-
-#get sample IDs from splicing file. these are the IDs used in the HGG splicing analysis
+##get sample IDs from splicing file. these are the IDs used in the HGG splicing analysis
 SPLICE_KFid <- colnames(SPLICEdata)[9:ncol(SPLICEdata)]
-print(SPLICE_KFid)
+#print(SPLICE_KFid)
 #
 
-
+##read file of ids for primary tumor samples
+primary_tumor_id_file <- "independent-specimens.rnaseqpanel.primary.tsv"
+primary_tumor_id_data <- readr::read_tsv(file.path(data_dir, primary_tumor_id_file))
+primary_tumor_id <- primary_tumor_id_data$Kids_First_Biospecimen_ID
+#print(primary_tumor_id)
+#
 
 #RNA abundance table. select table to compare based on RNA abundance as measured by TPM or EC
 file_gene_counts = "gene-expression-rsem-tpm-collapsed.rds" 
@@ -67,23 +67,28 @@ RNAdata_df$gene<-row.names(RNAdata_df)
 rownames(RNAdata_df)<-1:nrow(RNAdata_df)
 RNAdata<-as_tibble(RNAdata_df)
 RNAdata %>%
-  relocate(gene) %>%
-  head()
+  relocate(gene)
 #
 
-#make lookup table of splice KF ids and corresponding sample id
+##add gene column name to primary_tumor_id vector
+primary_tumor_id <- c("gene",primary_tumor_id)
+#
+##filter RNAdata to include primary_tumor_id
+RNAdata %>%
+  select(any_of(primary_tumor_id))
+#
+
+##make lookup table of splice KF ids and corresponding sample id
 SpliceID_SampleID_lookup <- HISTdata %>%
   dplyr::filter(Kids_First_Biospecimen_ID%in%SPLICE_KFid) %>%
   dplyr::select(Kids_First_Biospecimen_ID,sample_id)
-head(SpliceID_SampleID_lookup)
 #
-#make lookup table of phos KF ids and corresponding sample id
+
+##make lookup table of phos KF ids and corresponding sample id
 PhosID_SampleID_lookup <- HISTdata %>%
   dplyr::filter(Kids_First_Biospecimen_ID%in%PHOS_KFid) %>%
   dplyr::select(Kids_First_Biospecimen_ID,sample_id)
-head(PhosID_SampleID_lookup)
 #
-
 
 #function to draw scatter plots of RNA psi or total abundance values vs phos abundance for specific splicing events
 MakeRnaPhosScatterPlots <- function(select_gene, select_site, HISTdata, RNAdata, SPLICEdata, SPLICE_KFid, PHOSdata, PHOS_KFid, SpliceID_SampleID_lookup, PhosID_SampleID_lookup, plotfile, RNAvalue){
@@ -178,9 +183,9 @@ select_site<-"S182"
 
 #
 #call function to draw scatter plots of psi values vs phos abundance for specific splicing events
-plotfile<-file_name<-paste("RnaPsiPhosAbundance_RnaTPMgt20", select_gene, "scatter_Jan18.pdf", sep="_")
+plotfile<-file_name<-paste("RnaPsiPhosAbundance_RnaTPMgt20", select_gene, "scatter_Update.pdf", sep="_")
 MakeRnaPhosScatterPlots(select_gene, select_site, HISTdata, RNAdata, SPLICEdata, SPLICE_KFid, PHOSdata, PHOS_KFid, SpliceID_SampleID_lookup, PhosID_SampleID_lookup, plotfile, "Psi")
 #
 #call function to draw scatter plots of RNA abundance values vs phos abundance for specific splicing events
-plotfile<-file_name<-paste("RnaTPMAbundancePhosAbundance_RnaTPMgt20", select_gene, "scatter_Jan18.pdf", sep="_")
+plotfile<-file_name<-paste("RnaTPMAbundancePhosAbundance_RnaTPMgt20", select_gene, "scatter_Update.pdf", sep="_")
 MakeRnaPhosScatterPlots(select_gene, select_site, HISTdata, RNAdata, SPLICEdata, SPLICE_KFid, PHOSdata, PHOS_KFid, SpliceID_SampleID_lookup, PhosID_SampleID_lookup, plotfile, "Abd")
