@@ -3,6 +3,8 @@
 ## current release (v7)
 - Data release data: 2024-01-08
 - OpenPedCan data release date: 2024-01-03 (v13)
+	- histologies.tsv was modified to update 7316-8104 to correct broad/short histology per [OPC issue 537](https://github.com/d3b-center/OpenPedCan-analysis/issues/537)
+	- DGD ependymoma cohort participants "C1223727" and "C2314122" were changed to PBTA cohort to utilize RNA-Seq here
 - status: available
 
 Additional files:
