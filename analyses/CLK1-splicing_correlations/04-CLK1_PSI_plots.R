@@ -87,6 +87,8 @@ plot_df <- clk1_rmats %>%
 mutate(sample_id = factor(sample_id,
                           levels = samples_in_order)) %>% 
   na.omit()
+plot_df_incl <- plot_df %>%
+  filter(Type == "Inclusion")
 
 stacked_barplot <- ggplot(plot_df, aes(x = sample_id, y = PSI, fill= Type)) +
   geom_bar(position="stack", stat="identity") +
@@ -97,7 +99,7 @@ stacked_barplot <- ggplot(plot_df, aes(x = sample_id, y = PSI, fill= Type)) +
         axis.ticks.x = element_blank(),
         axis.title.x = element_blank()) +
   scale_y_continuous(expand = c(0, 0))  + # Set the expand argument to ensure the bottom line starts from 0
-  geom_hline(yintercept = mean(plot_df$PSI), color="black",linetype='dotted')
+  geom_hline(yintercept = mean(plot_df_incl$PSI), color="black",linetype='dotted')
 
 
 # Save plot as pdf
