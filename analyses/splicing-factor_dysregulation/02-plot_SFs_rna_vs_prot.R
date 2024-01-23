@@ -1,19 +1,19 @@
 ################################################################################
-# 04-plot_SFs_rna_vs_prot.R
+# 02-plot_SFs_rna_vs_prot.R
 # written by Ammar Naqvi, Jo Lynne Rokita
 #
 # This script usesCPTAC data to generate and plot heatmap of RNA vs proteomics
 # of select splicing factors that was previously identified in 
 # 01-volcano_plot_mRNA.R script
 #
-# usage: Rscript 04-plot_SFs_rna_vs_prot.R
+# usage: Rscript 02-plot_SFs_rna_vs_prot.R
 ################################################################################
 
 ## load packages
 suppressPackageStartupMessages({
   library(readxl)
-  library(circlize)
   library(tidyverse)
+  library(circlize)
   library(ComplexHeatmap)
 })
 
@@ -37,7 +37,7 @@ if(!dir.exists(plots_dir)){
 heatmap_output_file <- file.path(plots_dir,"SF_RNA_vs_protein_levels_heatmap.pdf") 
 
 ## get CPTAC output table 
-cptac_output_file <- file.path(input_dir,"CPTAC3-pbt_SF_fam.xls") 
+cptac_output_file <- file.path(input_dir,"CPTAC3-pbt_SF_family.xls") 
 
 # Load dataset
 cptac_data <- readxl::read_excel(cptac_output_file) %>%
@@ -60,14 +60,14 @@ cptac_data <- readxl::read_excel(cptac_output_file) %>%
                                   Assay == "Whole Cell Proteomics" ~ paste(`Gene symbol`, " ", sep = " "),
                                   TRUE ~ `Gene symbol`)
   ) %>%
-  select(display_name, Assay, starts_with("7316"))
+  dplyr::select(display_name, Assay, starts_with("7316"))
 
 # preserve gene names for rownames
 rownames <- cptac_data$display_name
 
 # convert to matrix and then add rownames
 mat <- cptac_data %>%
-  select(3:(ncol(cptac_data))) %>%
+  dplyr::select(3:(ncol(cptac_data))) %>%
   as.matrix()
 storage.mode(mat) <- "numeric"
 class(mat)
@@ -78,7 +78,7 @@ rownames(mat) <- rownames
 
 # select row annotations
 row_annot <- cptac_data %>%
-  select(Assay) %>%
+  dplyr::select(Assay) %>%
   as.data.frame()
 
 # add rownames
