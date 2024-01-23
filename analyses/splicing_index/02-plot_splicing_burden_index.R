@@ -23,7 +23,7 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "splicing_index")
-
+map_dir <- file.path(root_dir, "analyses", "cohort_summary", "results")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir <- file.path(analysis_dir, "plots")
 input_dir <- file.path(analysis_dir, "input")
@@ -49,7 +49,7 @@ splice_index_A5SS_df <- readr::read_tsv(splice_index_A5SS_file)
 splice_index_A3SS_df <- readr::read_tsv(splice_index_A3SS_file)
 
 # read in color palette
-palette_file <- file.path(results_dir, "histologies-plot-group.tsv")
+palette_file <- file.path(map_dir, "histologies-plot-group.tsv")
 
 palette_df <- read_tsv(palette_file) %>%
   dplyr::rename(Histology = plot_group) %>%
