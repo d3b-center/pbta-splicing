@@ -38,16 +38,12 @@ if(!dir.exists(results_dir)){
 }
 
 ## outplut file for plot
-ora_dotplot_path <- file.path(plots_dir, "CLK1_targets_ora_dotplot.tiff")
+ora_dotplot_path <- file.path(plots_dir, "CLK1_targets_ora_dotplot.pdf")
 
 ## get gene sets relevant to H. sapiens
 hs_msigdb_df <- msigdbr(species = "Homo sapiens")
-
-## filter for hallmark pathways that are included in the curated gene sets
-hs_hm_df <- hs_msigdb_df %>%
-  dplyr::filter(
-    gs_cat == "H"
-  )
+pathway_df <- hs_msigdb_df %>%
+  dplyr::filter(gs_cat == "H" | gs_subcat %in% c("CP:KEGG", "CP:BIOCARTA"))
 
 ## extract splicing changes 
 rmats_merged_file  <- file.path(analysis_dir,"input","morpholno.merged.rmats.tsv")
@@ -70,7 +66,7 @@ ora_results <- enricher(
   pvalueCutoff = 0.05, 
   pAdjustMethod = "BH", 
   TERM2GENE = dplyr::select(
-    hs_hm_df,
+    pathway_df,
     gs_name,
     human_gene_symbol
   )
@@ -85,7 +81,7 @@ enrich_plot
 ggplot2::ggsave(ora_dotplot_path,
                 width=7,
                 height=5,
-                device="tiff",
+                device="pdf",
                 dpi=300)
                 
   
