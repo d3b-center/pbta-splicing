@@ -84,7 +84,6 @@ while (<FIL>) {
 
   ## histology counter for downstream analysis
   $hist_count{$hist}++;
-  print $hist,"\n";
 
 }
 close(FIL);
