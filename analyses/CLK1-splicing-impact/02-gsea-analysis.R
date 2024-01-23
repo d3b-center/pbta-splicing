@@ -36,22 +36,22 @@ if(!dir.exists(results_dir)){
   dir.create(results_dir, recursive=TRUE)
 }
 
+## output files
+gsea_dotplot_path <- file.path(plots_dir, "CLK1_status_gsea_dotplot.pdf")
+gsea_ridgeplot_path <- file.path(plots_dir, "CLK1_morph_gsea_ridgeplot.pdf")
+
 # input file paths
 dge_results_file <- file.path(results_dir, "ctrl_vs_treated.de.formatted.tsv")
 
 dge_df <- readr::read_tsv(dge_results_file) 
 
 ## specify MSigDB gene sets of interest
-hs_hallmark_sets <- msigdbr(
-  species = "Homo sapiens",
-  category = "H"
-)
+hs_msigdb_df <- msigdbr(species = "Homo sapiens")
+pathway_df <- hs_msigdb_df %>%
+  dplyr::filter(gs_cat == "H" | gs_subcat %in% c("CP:KEGG", "CP:BIOCARTA", "TFT:GTRD"))
 
-#######
-## PERFORM GSEA
 
 ## determine our pre-ranked genes list
-
 ## create a named vector ranked based on the log2 fold change values
 lfc_vector <- dge_df$log2FoldChange
 names(lfc_vector) <- dge_df$gene
@@ -73,12 +73,11 @@ gsea_results <- GSEA(
   seed = TRUE, # Set seed to make results reproducible
   pAdjustMethod = "BH", # Benjamini-Hochberg correction
   TERM2GENE = dplyr::select(
-    hs_hallmark_sets,
+    pathway_df,
     gs_name,
     gene_symbol
   )
 )
-
 
 ## convert GSEA results object to dataframe
 gsea_result_df <- data.frame(gsea_results@result)
@@ -96,27 +95,20 @@ readr::write_csv(
 ridgeplot(gsea_results) + labs(x = "Signficant Enrichment Distribution")
 
 ## save GSEA ridgeplot as tiff
-gsea_ridgeplot_path <- file.path(plots_dir, "CLK1_morph_gsea_ridgeplot.tiff")
 ggplot2::ggsave(gsea_ridgeplot_path,
                 width=10.7,
                 height=8,
-                device="tiff",
-                dpi=300)
+                device="pdf")
 dev.off()
 
 
 dotplot(gsea_results, showCategory=20, split=".sign") + facet_grid(.~.sign) 
 
-
-# Plot path
-gsea_dotplot_path <- file.path(plots_dir, "CLK1_status_gsea_dotplot.tiff")
-
-# Save GSEA dotplot as tiff
+# Save GSEA dotplot as pdf
 ggplot2::ggsave(gsea_dotplot_path,
                 width=14,
                 height=10,
-                device="tiff",
-                dpi=300
-)
+                device="pdf")
+
 
 
