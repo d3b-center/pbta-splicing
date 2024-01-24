@@ -32,8 +32,8 @@ echo "make plots ...";
 Rscript 04-plot_splicing_across_functional_sites.R
 
 ## make plots
-echo "plot flip events";
-#Rscript 05-plot-flip_mixed_events.R
+echo "plot splice patterns";
+Rscript --vanilla 05-plot-splice-patterns.R
 
 ##rm intermediatery files
 rm results/splicing_events.total.*.wo.txt

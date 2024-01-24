@@ -55,8 +55,10 @@ palette_df <- read_tsv(palette_file) %>%
   dplyr::rename(Histology = plot_group) %>%
   dplyr::select(Histology, plot_group_hex) %>%
   unique() %>% 
-  add_row(Histology="Diffuse midline glioma",plot_group_hex="#ff40d9") %>% 
-  add_row(Histology="Diffuse intrinsic pontine glioma",plot_group_hex="#ffccf5") 
+  add_row(Histology="H3.3 K28",plot_group_hex="#ff40d9") %>% 
+  add_row(Histology="H3.1 K28",plot_group_hex="#ffccf5") %>% 
+  add_row(Histology="H3 WT",plot_group_hex="green") 
+  
   
 
 plot_colors <- palette_df$plot_group_hex
@@ -64,7 +66,7 @@ names(plot_colors) <- palette_df$Histology
 plot_colors <- list(plot_colors)
 
 # Function to calculate medians and ranks
-prepare_data_for_plot <- function(df, grouping_variable = NULL, min_samples = 5) {
+prepare_data_for_plot <- function(df, grouping_variable = NULL, min_samples = 2) {
   df %>%
     # Group by specified column
     group_by({{grouping_variable}}) %>%

@@ -73,39 +73,27 @@ print "annotate and store histology information... ".localtime(time)."\n";
     push @broad_hist, $hist;
     push @bs_ids, $bs_id;
 
-    $bs_id_hist{$bs_id} = $hist;
+## make an array and store histology information and BS IDs
+push @broad_hist, $hist;
+push @bs_ids, $bs_id;
 
-    ## store total number of histologies
-    $hist_count{$hist}++;
-    push @{$histology_ids{$hist}}, $bs_id;
+$bs_id_hist{$bs_id} = $hist;
 
-    $cns_regions{$bs_id} = $CNS_region;
+## store total number of histologies
+$hist_count{$hist}++;
+push @{$histology_ids{$hist}}, $bs_id;
 
-    ## histology counter for downstream analysis
-    $hist_count{$hist}++;
+$cns_regions{$bs_id} = $CNS_region;
 
-  }
+## histology counter for downstream analysis
+$hist_count{$hist}++;
 
-  close(FIL);
+}
+
+close(FIL);
 
 
-
-#Exon-specific
-# For every alternatively spliced exon
-#-------------------------------------
-  #1. Compute mean of exon inclusion (PSI)
-  #2. Compute STD
-
-#-Look at each tumor --> is it 2 standard deviations from the mean?
-  #--Yes --> aberrant
-  #--No  --> non-aberrant
-
-# store each library (using file name)
-# for each line, make unique splice id
-  # gene + chr + SE + UEx + DEx   (make array)
-  # store total splicing events and those that pass threshold for each sample
 print "process rMATs information... ".localtime(time)."\n";
-
 my (%splice_totals_per_sample, %splice_totals);
 ## process rMATS output (may take awhile) from merged input file
 #print "processing rMATs results...\n";
@@ -191,9 +179,7 @@ foreach my $splice_event(@splicing_events_uniq)
   $mean_psi{$splice_event}    = $mean;
 }
 
-#-Look at each tumor --> is it 2 standard deviations from the mean?
-#--Yes --> aberrant
-#--No  --> non-aberrant
+## identify aberrant splicing events
 my %absplice_totals_per_sample;
 my %absplice_totals_per_sample_pos;
 my %absplice_totals_per_sample_neg;
@@ -210,6 +196,7 @@ foreach my $sample(@bs_ids_uniq)
     my $psi_tumor = $inc_levels{$splice_event}{$sample};
     my $std_psi   = $std_dev_psi{$splice_event};
     my $mean_psi   = $mean_psi{$splice_event};
+
     #> +2 z-scores
     if($psi_tumor > ($mean_psi + ($std_psi + $std_psi)) )
     {
@@ -217,9 +204,7 @@ foreach my $sample(@bs_ids_uniq)
       my $histology = $bs_id_hist{$sample};
       #print $splice_event,"\t",$histology,"***\n";
       $splice_event_per_pos_hist_count{$splice_event}{$histology}++;
-    #  if ($check_events_pos{$splice_event}){ push @ab_splicing_events_pos, $splice_event; }
       push @ab_splicing_events_pos, $splice_event;
-      $check_events_pos{$splice_event} = 1;
 
     }
     # < -2 z-scores
@@ -228,9 +213,7 @@ foreach my $sample(@bs_ids_uniq)
       $absplice_totals_per_sample_neg{$sample}++;
       my $histology = $bs_id_hist{$sample};
       $splice_event_per_neg_hist_count{$splice_event}{$histology}++;
-      #if ($check_events_neg{$splice_event}){ push @ab_splicing_events_neg, $splice_event; }
       push @ab_splicing_events_neg, $splice_event;
-      $check_events_neg{$splice_event} = 1;
 
     }
   }
@@ -244,7 +227,7 @@ my @ab_splicing_events_neg_uniq = do { my %seen; grep { !$seen{$_}++ } @ab_splic
 my $output_file = "results/splicing_events.hist-labeled_list.thr2freq.txt";
 open(TAB,">".$output_file) || die("Cannot Open File");
 
-print TAB "splicing_event\thistology\ttype\n";
+print TAB "splicing_event\thistology\ttype\tfreq\n";
 
 ## save and report skipping events
 foreach $hist (@broad_hist_uniq)
@@ -258,8 +241,12 @@ foreach $hist (@broad_hist_uniq)
           #print $event,"\t",$hist,"\t",$total_hist_count,"\n";
           if( ($event_count) > 2 )
 
+
           {
-            print TAB $event,"\t",$hist,"\tskipping\n";
+            print TAB $event,"\t",$hist,"\tinclusion\t";
+            print TAB $event_count,"\n";
+
+
           }
         }
   }
@@ -277,7 +264,9 @@ foreach $hist (@broad_hist_uniq)
           if( ($event_count) >= 2 )
 
           {
-            print TAB $event,"\t",$hist,"\tinclusion\n";
+            print TAB $event,"\t",$hist,"\tskipping\t";
+            print TAB $event_count,"\n";
+
           }
         }
   }
