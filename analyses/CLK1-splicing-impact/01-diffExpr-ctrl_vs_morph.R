@@ -211,7 +211,7 @@ plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(Clas
                        ylab("Number of Signficantly DE Genes") + 
                        scale_fill_manual(name = "Direction",
                                          values=c("#FFC20A","#0C7BDC")) + 
-                       geom_text(stat='count',aes(label=..count..), 
+                       geom_text(stat='count',aes(label=after_stat(count)), 
                                  position = position_dodge(width = 1),
                                  hjust = -0.5, size = 4) +
                       theme_Publication() +

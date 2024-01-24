@@ -11,7 +11,6 @@ suppressPackageStartupMessages({
   library("msigdbr")
   library("org.Hs.eg.db")
   library("ggplot2")
-  library("ggridges")
   library("DOSE")
   library("vroom")
 })
