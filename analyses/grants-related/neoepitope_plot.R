@@ -21,9 +21,9 @@ results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
 
 histology_file <- file.path(input_dir,"v19_plus_20210311_pnoc_rna.primary.tsv")
-prelim_file    <- file.path(input_dir,"splicing_neoepitope.pri.dpsi.se.tsv")
+prelim_file    <- file.path(results_dir,"splicing_neoepitope.pri.dpsi.se.tsv")
 summ_dmg_file  <-  file.path(input_dir,"summary_table.tsv")
-neoepi_file    <- file.path(input_dir,"splicing_neoepitope.primary.dpsi.se.unipLocExtra.summary.txt")
+neoepi_file    <- file.path(results_dir,"splicing_neoepitope.primary.dpsi.se.unipLocExtra.summary.txt")
 
 
 histology_df <- vroom(histology_file,col_names = FALSE) %>% 
