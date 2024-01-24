@@ -12,7 +12,6 @@ suppressPackageStartupMessages({
   library("msigdbr")
   library("org.Hs.eg.db")
   library("ggplot2")
-  library("ggridges")
   library("DOSE")
 })
 
@@ -38,18 +37,15 @@ if(!dir.exists(results_dir)){
 
 ## output files
 gsea_dotplot_path <- file.path(plots_dir, "CLK1_status_gsea_dotplot.pdf")
-gsea_ridgeplot_path <- file.path(plots_dir, "CLK1_morph_gsea_ridgeplot.pdf")
 
 # input file paths
 dge_results_file <- file.path(results_dir, "ctrl_vs_treated.de.formatted.tsv")
-
 dge_df <- readr::read_tsv(dge_results_file) 
 
 ## specify MSigDB gene sets of interest
 hs_msigdb_df <- msigdbr(species = "Homo sapiens")
 pathway_df <- hs_msigdb_df %>%
   dplyr::filter(gs_cat == "H" | gs_subcat %in% c("CP:KEGG", "CP:BIOCARTA", "TFT:GTRD"))
-
 
 ## determine our pre-ranked genes list
 ## create a named vector ranked based on the log2 fold change values
@@ -90,17 +86,6 @@ readr::write_csv(
     "clk1_morph_gsea_results.csv"
   )
 )
-
-## ridgeplot of enriched gene sets
-ridgeplot(gsea_results) + labs(x = "Signficant Enrichment Distribution")
-
-## save GSEA ridgeplot as tiff
-ggplot2::ggsave(gsea_ridgeplot_path,
-                width=10.7,
-                height=8,
-                device="pdf")
-dev.off()
-
 
 dotplot(gsea_results, showCategory=20, split=".sign") + facet_grid(.~.sign) 
 
