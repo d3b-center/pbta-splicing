@@ -11,17 +11,8 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 
-## generate volcano plot of SFs between ctrl vs hgat
-Rscript 01-volcano_plot_mRNA.R
-
-## prepare tables of SRSF11 PSI values
-bash 02-identify_preprocess_SRSF11_psi.sh
-
-## SRSF11 specific plots
-Rscript 03-SRSF11_plots.R
-
-## correlation plots for SRSF22 and RBM5
-#Rscript 04-plot_prot_vs_rna.R
+## generate volcano plot of SFs within HGG tumors
+Rscript --vanilla 01-plot-diffExp_highlowSBI.R
 
 ## plot heatmap of select splicing factor RNA vs proteo obtained from CPTAC
-Rscript 04-plot_SFs_rna_vs_prot.R
+Rscript --vanilla 02-plot_SFs_rna_vs_prot.R

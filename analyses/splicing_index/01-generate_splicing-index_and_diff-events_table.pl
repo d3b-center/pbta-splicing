@@ -52,6 +52,10 @@ open(FIL,$histology) || die("Cannot Open File");
     my $bs_id      = $cols[1];
     my $patient_id = $cols[0];
 
+# Assuming the first line of the file contains column headers
+my $header = <FIL>;
+chomp $header;
+my @column_names = split "\t", $header;
 
 
     next unless ($primary_initial_sample_list{$bs_id});
