@@ -1,0 +1,1 @@
+splice_id	chr	start_coord	end_coord	dPSI_mean	dPSI_stdev	PSI_mean_ctrl	PSI_stdev_ctrl	PSI_mean_tumor	PSI_stdev_tumor	TPM_mean_ctrl	TPM_stdev_ctrl	TPM_mean_tumor	TPM_stdev_tumor	freq
