@@ -68,6 +68,8 @@ plot_es <- ggstatsplot::ggbetweenstats(
   mean.ci = TRUE,
   outlier.tagging = TRUE,
   pairwise.comparisons = TRUE,
+  ggsignif.args = list(textsize = 6, tip_length = 0.01),
+  mean.size = 10,
   #p.adjust.method = "fdr",
   results.subtitle = FALSE,
   messages = FALSE
@@ -88,12 +90,14 @@ plot_ei <- ggstatsplot::ggbetweenstats(
   mean.ci = TRUE,
   outlier.tagging = TRUE,
   pairwise.comparisons = TRUE,
+  ggsignif.args = list(textsize = 6, tip_length = 0.01),
+  mean.size = 10,
   #p.adjust.method = "fdr",
   results.subtitle = FALSE,
   messages = FALSE
 ) + theme_Publication() + ggtitle("Treated vs Control") +
   labs(y=expression(Delta*PSI), x="Splicing Case") + 
-  theme(legend.position = "none")
+  theme(legend.position = "none",text = element_text(size=16))
 
 # Save plot as PDF
 pdf(file_dpsi_es_plot, 
