@@ -41,42 +41,38 @@ while(<FIL>)
 }
 close(FIL);
 
-# annotate histologies with histology file
 open(FIL,$histology) || die("Cannot Open File");
-  while(<FIL>)
-  {
-    chomp;
-    my @cols       = split "\t";
-    #my $hist       = $cols[53];
-    my $hist = $cols[40];
-    my $bs_id      = $cols[1];
-    my $patient_id = $cols[0];
-
-# Assuming the first line of the file contains column headers
-my $header = <FIL>;
-chomp $header;
-my @column_names = split "\t", $header;
-
-
-    next unless ($primary_initial_sample_list{$bs_id});
-    #next unless ($_=~/ ( (K28) | (wildtype) )/);
-
-    if($_=~/Diffuse\smidline\sglioma/)
+    while(<FIL>)
     {
       chomp;
-      $hist = "Diffuse midline glioma";
-    }
-    elsif($_=~/Diffuse\sintrinsic\spontine\sglioma/)
-    {
-      chomp;
-      $hist = "Diffuse intrinsic pontine glioma";
+      my @cols       = split "\t";
+      #my $hist       = $cols[53];
+      my $hist = $cols[40];
+      my $bs_id      = $cols[1];
+      my $patient_id = $cols[0];
+
+      my $CNS_region = $cols[32];
+
+      next unless ($primary_initial_sample_list{$bs_id});
+      #next unless ($_=~/ ( (K28) | (wildtype) )/);
+
+      if($_=~/Diffuse\smidline\sglioma/)
+      {
+        chomp;
+      #  $hist = "Diffuse midline glioma";
+      }
+      elsif($_=~/Diffuse\sintrinsic\spontine\sglioma/)
+      {
+        chomp;
+      #  $hist = "Diffuse intrinsic pontine glioma";
+      #  print $hist,"\n";
+
+      }
+      else{
+      #  next;
+      }
       print $hist,"\n";
 
-    }
-    else{
-      next;
-    }
-    print $hist,"\n";
 
   ## make an array and store histology information and BS IDs
   push @broad_hist, $hist;
@@ -218,7 +214,7 @@ my %absplice_totals_per_sample;
 my %absplice_totals_per_sample_pos;
 my %absplice_totals_per_sample_neg;
 
-open(EVENTS,">results/splice_events.diff.".$splice_case.".all.txt");
+open(EVENTS,">results/splice_events.diff.".$splice_case.".txt");
 print EVENTS "Splice ID\tCase\tType\tTumor_PSI\tMean_PSI\tSample\tHistology\n";
 foreach my $sample(@bs_ids_uniq)
 {
