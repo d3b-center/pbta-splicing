@@ -32,11 +32,11 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## output file names for plots
-file_splice_pattern_plot <- file.path(analysis_dir, "plots", "splicing_pattern_plot.pdf")
+file_splice_pattern_plot <- file.path(analysis_dir, "plots", "splicing_pattern_plot.H33.pdf")
 
-file_psi <- file.path(results_dir,"splice_events.diff.SE.HGG.txt")
-file_psi_func_incl <- file.path(results_dir,"splicing_events.total.HGG.pos.intersectUnip.ggplot.txt") 
-file_psi_func_skip <-file.path(results_dir,"splicing_events.total.HGG.neg.intersectUnip.ggplot.txt") 
+file_psi <- file.path(results_dir,"splice_events.diff.SE.H33.txt")
+file_psi_func_incl <- file.path(results_dir,"splicing_events.total.H33.pos.intersectUnip.ggplot.txt") 
+file_psi_func_skip <-file.path(results_dir,"splicing_events.total.H33.neg.intersectUnip.ggplot.txt") 
 
 psi_tab      <-  read_tsv(file.path(file_psi)) 
 psi_skip <- psi_tab %>% dplyr::filter(Type=="Skipping")

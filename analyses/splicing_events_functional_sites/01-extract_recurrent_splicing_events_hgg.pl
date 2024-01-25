@@ -60,24 +60,6 @@ open(FIL,$histology) || die("Cannot Open File");
     my $CNS_region = $cols[32];
 
     next unless ($primary_initial_sample_list{$bs_id});
-    #next unless ($_=~/ ( (K28) | (wildtype) )/);
-
-    if($_=~/Diffuse\smidline\sglioma/)
-    {
-      chomp;
-      $hist = "Diffuse midline glioma";
-    }
-    elsif($_=~/Diffuse\sintrinsic\spontine\sglioma/)
-    {
-      chomp;
-      $hist = "Diffuse intrinsic pontine glioma";
-
-    }
-    else{
-      next;
-    }
-
-    next unless ($_=~/RNA-Seq/);
     print $hist,"\n";
 
 
@@ -236,10 +218,10 @@ foreach my $splice_event(@splicing_events_uniq)
 }
 
 ## assess each tumor samples to identify if it is aberrant (2 standard deviations from the mean)
-open(EVENTS,">results/splice_events.diff.".$splice_case.".HGG.txt");
+open(EVENTS,">results/splice_events.diff.".$splice_case.".H3WT.txt");
 print EVENTS "Splice ID\tCase\tSample\tHistology\tCNS\tType\n";
-open(BEDPOS, ">results/splicing_events.SE.total.HGG.pos.bed");
-open(BEDNEG, ">results/splicing_events.SE.total.HGG.neg.bed");
+open(BEDPOS, ">results/splicing_events.SE.total.H3WT.pos.bed");
+open(BEDNEG, ">results/splicing_events.SE.total.H3WT.neg.bed");
 
 foreach my $sample(@bs_ids_uniq)
 {
@@ -261,6 +243,7 @@ foreach my $sample(@bs_ids_uniq)
 
     if($psi_tumor > ($mean_psi + ($std_psi + $std_psi)) )
     {
+      next unless ($bs_id_hist{$sample}=~/H3\sWT/);
 
       print EVENTS $splice_event,"\t".$splice_case,"\t",$sample,"\t",$bs_id_hist{$sample},"\t",$cns_regions{$sample},"\tInclusion\n";
       print BEDPOS $chr{$splice_event},"\t";
@@ -277,6 +260,7 @@ foreach my $sample(@bs_ids_uniq)
     # < -2 z-scores, inclusion events
     if($psi_tumor < ($mean_psi - ($std_psi + $std_psi)) )
     {
+      next unless ($bs_id_hist{$sample}=~/H3\sWT/);
 
       print EVENTS $splice_event,"\t".$splice_case,"\t",$sample,"\t",$bs_id_hist{$sample},"\t",$cns_regions{$sample},"\tSkipping\n";
       print BEDNEG $chr{$splice_event},"\t";

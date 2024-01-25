@@ -42,15 +42,15 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## output files for final plots
-file_dpsi_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites.HGG.pdf")
-file_dpsi_kinase_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_kinase.HGG.pdf")
-ora_dotplot_path <- file.path(plots_dir,"kinases-ora-plot.pdf")
-kinases_functional_sites_skipped = file.path(results_dir,"kinases-functional_sites_skipped.txt")
-kinases_functional_sites_incl = file.path(results_dir,"kinases-functional_sites_included.txt")
+file_dpsi_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites.H3WT.pdf")
+file_dpsi_kinase_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_kinase.H3WT.pdf")
+ora_dotplot_path <- file.path(plots_dir,"kinases-ora-plot.H3WT.pdf")
+kinases_functional_sites_skipped = file.path(results_dir,"kinases-functional_sites_skipped.H3WT.txt")
+kinases_functional_sites_incl = file.path(results_dir,"kinases-functional_sites_included.H3WT.txt")
 
 ## retrieve psi values from tables
-file_psi_pos_func <- file.path(results_dir,"splicing_events.total.HGG.pos.intersectUnip.ggplot.txt")
-file_psi_neg_func <- file.path(results_dir,"splicing_events.total.HGG.neg.intersectUnip.ggplot.txt")
+file_psi_pos_func <- file.path(results_dir,"splicing_events.total.H3WT.pos.intersectUnip.ggplot.txt")
+file_psi_neg_func <- file.path(results_dir,"splicing_events.total.H3WT.neg.intersectUnip.ggplot.txt")
 
 ## read table of recurrent functional splicing (skipping)
 dpsi_unip_pos <- vroom(file_psi_pos_func) %>% 
@@ -82,6 +82,7 @@ plot_dsp <-  ggplot(psi_comb,aes(Uniprot, dPSI*100) ) +
   labs(y="Percent Spliced In (PSI)", x= "Uniprot-defined Functional Site") + 
   theme(legend.position="none") +
   ylim(c(0,170))
+
 
 # Save plot as PDF
 pdf(file_dpsi_plot, 
