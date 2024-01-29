@@ -1,0 +1,3 @@
+Kids_First_Biospecimen_ID	Total	AS_neg	AS_pos	AS_total	SI_A3SS	Histology	SI_A5SS	SI_RI	SI_SE	molecular_subtype	extent_of_tumor_resection	OS_days	OS_status	EFS_days	EFS_event_type	EFS_status	mol_sub_group	SI_group
+BS_3X9WMZGJ	2631	12	12	24	0.00912200684150513	Ependymoma	0.0155875299760192	0.0122377622377622	0.0180113267106118	EPN, SP-MYCN	Partial resection	575	LIVING	575	Progressive - Metastatic	EVENT	EPN, SP-MYCN	Low SI
+BS_SAA624A4	768	67	74	141	0.18359375	Ependymoma	0.16819012797075	0.160427807486631	0.18541530412034	EPN, SP	Gross/Near total resection	2910	LIVING	1154	Progressive	EVENT	EPN, SP	High SI

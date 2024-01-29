@@ -1,0 +1,3 @@
+Kids_First_Biospecimen_ID	Total	AS_neg	AS_pos	AS_total	SI_A3SS	Histology	SI_A5SS	SI_RI	SI_SE	molecular_subtype	extent_of_tumor_resection	OS_days	OS_status	EFS_days	EFS_event_type	EFS_status	mol_sub_group	SI_group
+BS_SDCNP7MW	2439	24	25	49	0.020090200902009	Ependymoma	0.0220453153704838	0.00848608282416836	0.0323295397320979	EPN, PF B	Gross/Near total resection	1875	LIVING	1875	Not Applicable	NO EVENT	EPN, PF B	Low SI
+BS_ZJC7VQNA	1285	90	155	245	0.190661478599222	Ependymoma	0.14819944598338	0.185108583247156	0.15598478197249	EPN, PF B	Gross/Near total resection	917	LIVING	917	Not Applicable	NO EVENT	EPN, PF B	High SI
