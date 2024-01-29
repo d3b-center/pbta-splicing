@@ -1,0 +1,3 @@
+Kids_First_Biospecimen_ID	Total	AS_neg	AS_pos	AS_total	SI_A3SS	Histology	SI_A5SS	SI_RI	SI_SE	molecular_subtype	extent_of_tumor_resection	OS_days	OS_status	EFS_days	EFS_event_type	EFS_status	mol_sub_group	SI_group
+BS_1J2WQ08M	4029	15	21	36	0.00893521965748325	Ependymoma	0.00539291217257319	0.00599201065246338	0.00684842160187842	EPN, ST YAP1	Biopsy only	1	DECEASED	1	Deceased - due to disease	EVENT	EPN, ST YAP1	Low SI
+BS_WQ0K79EA	1267	104	57	161	0.12707182320442	Ependymoma	0.114250614250614	0.0439238653001464	0.100740408346421	EPN, ST YAP1	Gross/Near total resection	715	LIVING	715	Not Applicable	NO EVENT	EPN, ST YAP1	High SI
