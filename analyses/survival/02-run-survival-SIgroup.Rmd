@@ -64,18 +64,13 @@ Define histology groups to run survival analyses on
 
 subtype_df <- read_tsv(file.path(analysis_dir, "results", "subtypes-for-survival.tsv"))
 
-# groups <- c("Atypical Teratoid Rhabdoid Tumor", "Craniopharyngioma", "Ependymoma", "Mixed neuronal-glial tumor", "DIPG or DMG", "Other high-grade glioma", "Low-grade glioma", "Medulloblastoma")
 groups <- unique(subtype_df$hist)
 
 # folder names
-# folder <- c("ATRT", "CPG", "EPN", "GNG", "DMG", "HGG", "LGG", "MB")
-# names(folder) <- groups
 folder <- unique(subtype_df$foldername)
 names(folder) <- groups
   
 # create names vector for output files
-# plot_names <- c("atrt", "cpg", "epn", "gng", "dmg", "hgg", "lgg", "mb")
-# names(plot_names) <- groups
 plot_names <- unique(subtype_df$names)
 names(plot_names) <- groups
 
