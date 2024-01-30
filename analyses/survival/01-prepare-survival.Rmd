@@ -44,7 +44,6 @@ sbi_A5SS_file <- file.path(root_dir, "analyses", "splicing_index", "results", "s
 sbi_RI_file <- file.path(root_dir, "analyses", "splicing_index", "results", "splicing_index.RI.txt")
 sbi_SE_file <- file.path(root_dir, "analyses", "splicing_index", "results", "splicing_index.SE.txt")
 
-
 histologies_file <- file.path(data_dir, "histologies.tsv")
 
 ```
@@ -79,17 +78,14 @@ Use `diagnoses` to code in `EFS_status` (event-free status) column indicating ev
 
 ```{r}
 hist <- read_tsv(histologies_file)
-survival <- hist %>%
-  distinct(Kids_First_Participant_ID, .keep_all = T)
 
 # Add histology columns to splice index, and code EFS_status using following logic
 splice_index <- splice_index %>%
   left_join(hist[,c("Kids_First_Biospecimen_ID", "Kids_First_Participant_ID", 
                     "molecular_subtype",
-                    "extent_of_tumor_resection")]) %>%
-  left_join(survival[,c("Kids_First_Participant_ID",
-                        "OS_days", "OS_status",
-                        "EFS_days", "EFS_event_type")]) %>%
+                    "extent_of_tumor_resection", 
+                    "EFS_days", "EFS_event_type", 
+                    "OS_days", "OS_status")]) %>%
   distinct(Kids_First_Participant_ID, .keep_all = T) %>%
   dplyr::mutate(EFS_days = as.numeric(EFS_days),
          OS_days = as.numeric(OS_days)) %>%
@@ -109,6 +105,55 @@ dup_pts <- splice_index[duplicated(splice_index$Kids_First_Participant_ID),]$Kid
 
 splice_index <- splice_index %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% specimens$Kids_First_Biospecimen_ID | !Kids_First_Participant_ID %in% dup_pts)
+```
+
+Define column `mol_sub_group` that will consolidate LGG and GNG subtypes
+
+```{r}
+
+splice_index <- splice_index %>%
+  filter(!grepl("To be classified", molecular_subtype)) %>%
+  mutate(mol_sub_group = case_when(
+    Histology %in% c("Low-grade glioma", "Mixed neuronal-glial tumor")  & grepl("SEGA", molecular_subtype) ~ "SEGA",
+    Histology %in% c("Low-grade glioma", "Mixed neuronal-glial tumor") & grepl("wildtype", molecular_subtype) ~ "Wildtype",
+    Histology %in% c("Low-grade glioma", "Mixed neuronal-glial tumor") & grepl("V600E", molecular_subtype) ~ "BRAF V600E",
+    Histology %in% c("Low-grade glioma", "Mixed neuronal-glial tumor") & grepl("KIAA1549-BRAF", molecular_subtype) ~ "BRAF fusion",
+    Histology %in% c("Low-grade glioma", "Mixed neuronal-glial tumor") ~ "Other alteration",
+    !is.na(molecular_subtype) ~ molecular_subtype
+  ))
+
+```
+
+Create subtype df consisting of histology group molecular subtypes for which survival will be assessed
+
+```{r}
+
+groups <- c("Atypical Teratoid Rhabdoid Tumor", "Craniopharyngioma", "Ependymoma", "Mixed neuronal-glial tumor", "DIPG or DMG", "Other high-grade glioma", "Low-grade glioma", "Medulloblastoma")
+
+# folder names
+folder <- c("ATRT", "CPG", "EPN", "GNG", "DMG", "HGG", "LGG", "MB")
+names(folder) <- groups
+  
+# create names vector for output files
+plot_names <- c("atrt", "cpg", "epn", "gng", "dmg", "hgg", "lgg", "mb")
+names(plot_names) <- groups
+
+# define subtype df with histology, subtype, and file names
+subtype_df <- splice_index %>%
+  mutate(subtype = gsub("^HGG, |^ATRT, |CRANIO, |DHG, H3 |EPN, |IHG, |MB, |, TP53|DMG, H3 | alteration", "", mol_sub_group)) %>%
+  group_by(Histology, subtype) %>%
+  filter(!is.na(subtype),
+         Histology %in% groups,
+         !is.na(OS_days) | !is.na(EFS_days)) %>%
+  count() %>%
+  filter(n >=16) %>%
+  dplyr::rename(hist = Histology) %>%
+  left_join(tibble(hist = groups, names = plot_names), by = "hist") %>%
+  mutate(names = coalesce(names, NA_character_)) %>%
+  left_join(tibble(hist = groups, foldername = folder), by = "hist") %>%
+  dplyr::mutate(subtype_name = str_replace_all(subtype, " ", "-"))  %>%
+  write_tsv(file.path(analysis_dir, "results", "subtypes-for-survival.tsv"))
+
 ```
 
 Save to output
