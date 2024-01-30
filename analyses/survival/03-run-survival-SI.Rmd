@@ -56,30 +56,23 @@ Read in metadata and consolidate HGG, LGG, and GNG subtypes
 ```{r}
 metadata <- read_tsv(metadata_file)
 
-metadata <- metadata %>%
-  filter(!grepl("To be classified", molecular_subtype)) %>%
-  mutate(mol_sub_group = case_when(
-    Histology %in% c("Low-grade glioma", "Mixed neuronal-glial tumor")  & grepl("SEGA", molecular_subtype) ~ "SEGA",
-    Histology %in% c("Low-grade glioma", "Mixed neuronal-glial tumor") & grepl("wildtype", molecular_subtype) ~ "Wildtype",
-    Histology %in% c("Low-grade glioma", "Mixed neuronal-glial tumor") & grepl("V600E", molecular_subtype) ~ "BRAF V600E",
-    Histology %in% c("Low-grade glioma", "Mixed neuronal-glial tumor") & grepl("KIAA1549-BRAF", molecular_subtype) ~ "BRAF fusion",
-    Histology %in% c("Low-grade glioma", "Mixed neuronal-glial tumor") ~ "Other alteration",
-    !is.na(molecular_subtype) ~ molecular_subtype
-  ))
 ```
 
 Define histology groups to run survival analyses on 
 
 ```{r}
-groups <- c("Atypical Teratoid Rhabdoid Tumor", "Craniopharyngioma", "Ependymoma", "Mixed neuronal-glial tumor", "DIPG or DMG", "Other high-grade glioma", "Low-grade glioma", "Medulloblastoma")
+subtype_df <- read_tsv(file.path(analysis_dir, "results", "subtypes-for-survival.tsv"))
+
+groups <- unique(subtype_df$hist)
 
 # folder names
-folder <- c("ATRT", "CPG", "EPN", "GNG", "DMG", "HGG", "LGG", "MB")
+folder <- unique(subtype_df$foldername)
 names(folder) <- groups
   
 # create names vector for output files
-plot_names <- c("atrt", "cpg", "epn", "gng", "dmg", "hgg", "lgg", "mb")
+plot_names <- unique(subtype_df$names)
 names(plot_names) <- groups
+
 ```
 
 Loop through histology groups and perform the following: 
@@ -136,7 +129,7 @@ for (group in groups){
     group_hist <- group_hist %>%
      dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
      dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("HGG, H3 wildtype", "HGG, H3 wildtype, TP53",
-                                                                "DMG, H3 K28", "DMG, H3 K28, TP53",
+                                                                "DMG, H3 K28", "DMG, H3 K28, TP53"
                                                                 ))) %>%
    arrange(molecular_subtype)
     }
@@ -204,7 +197,7 @@ for (group in groups){
                                 fit_save_model(group_hist,
                                   terms = ifelse(
                                       group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"), "mol_sub_group+extent_of_tumor_resection+SI_SE",
-                                      ifelse(group %in% c("Atypical Teratoid Rhabdoid Tumor", "Craniopharyngioma", "Ependymoma",
+                                      ifelse(group %in% c("Atypical Teratoid Rhabdoid Tumor", "Ependymoma",
                                                           "DIPG or DMG", "Other high-grade glioma", "Medulloblastoma"),
                                              "mol_sub_group+SI_SE",
                                               "SI_SE"
@@ -220,7 +213,7 @@ for (group in groups){
                             fit_save_model(group_hist,
                                   terms = ifelse(
                                       group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"), "mol_sub_group+extent_of_tumor_resection+SI_SE",
-                                      ifelse(group %in% c("Atypical Teratoid Rhabdoid Tumor", "Craniopharyngioma", "Ependymoma",
+                                      ifelse(group %in% c("Atypical Teratoid Rhabdoid Tumor", "Ependymoma",
                                                           "DIPG or DMG", "Other high-grade glioma", "Medulloblastoma"),
                                              "mol_sub_group+SI_SE",
                                               "SI_SE"
@@ -238,20 +231,6 @@ for (group in groups){
 Run same survival analyses on HGG, LGG, and MB subtypes with sufficient sample size
 
 ```{r}
-# define subtype df with histology, subtype, and file names
-subtype_df <- metadata %>%
-  group_by(Histology, molecular_subtype, mol_sub_group, OS_status) %>%
-  filter(!is.na(mol_sub_group),
-         Histology %in% groups) %>%
-  count() %>%
-  filter(n >=3) %>%
-  dplyr::rename(hist = Histology,
-                subtype = mol_sub_group) %>%
-  left_join(tibble(hist = groups, names = plot_names), by = "hist") %>%
-  mutate(names = coalesce(names, NA_character_)) %>%
-  left_join(tibble(hist = groups, foldername = folder), by = "hist") %>%
-  mutate(subtype = gsub("^HGG, |^ATRT, |CRANIO, |DHG, H3 |EPN, |IHG, |MB, |, TP53|DMG, H3 | alteration", "", subtype))
-
 
 # Loop through subtypes and run survival analyses
 for (i in 1:nrow(subtype_df)) {
@@ -262,21 +241,21 @@ for (i in 1:nrow(subtype_df)) {
 
   coxph_os_model_file <- ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"),
                              file.path(results_dir,
-                                      glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_OS_additive_terms_subtype_resection_SI.RDS")),
+                                      glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype_name[i]}_OS_additive_terms_subtype_resection_SI.RDS")),
                              file.path(results_dir,
-                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_OS_additive_terms_subtype_SI.RDS"))
+                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype_name[i]}_OS_additive_terms_subtype_SI.RDS"))
   )
 
   coxph_efs_model_file <- ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"),
                              file.path(results_dir,
-                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_EFS_additive_terms_subtype_resection_SI.RDS")),
+                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype_name[i]}_EFS_additive_terms_subtype_resection_SI.RDS")),
                              file.path(results_dir,
-                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_EFS_additive_terms_subtype_SI.RDS"))
+                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype_name[i]}_EFS_additive_terms_subtype_SI.RDS"))
   )
   
     #Subset metadata for histology subtype
     subtype_hist <- metadata %>%
-      filter(Histology == subtype_df$hist[i] & grepl(subtype_df$subtype[i], mol_sub_group) & !is.na(OS_days) & !is.na(EFS_days)) %>%
+      filter(Histology == subtype_df$hist[i] & grepl(subtype_df$subtype[i], mol_sub_group)) %>%
       dplyr::mutate(SI_SE = SI_SE * 10)
     
     if (subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma")){
