@@ -10,6 +10,7 @@ suppressPackageStartupMessages({
   library("tidyverse")
   library("ggrepel")
   library("vroom")
+  library("PMCMRplus")
 })
 
 # Get `magrittr` pipe
