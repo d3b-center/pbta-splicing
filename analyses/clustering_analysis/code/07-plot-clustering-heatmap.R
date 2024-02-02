@@ -33,39 +33,36 @@ prefix <- opt$prefix
 
 # get CCP matrix
 CC_consensus_mat <- ccp_output[[n_cluster]]$consensusMatrix %>%
-  as.data.frame()
+  as.data.frame() %>% 
+  filter(if_any(everything(), ~ !is.na(.)))
+
 colnames(CC_consensus_mat) <- ccp_output[[n_cluster]]$consensusClass %>% names()
 rownames(CC_consensus_mat) <- ccp_output[[n_cluster]]$consensusClass %>% names()
 
+
 # get CCP tree
-CC_tree <- ccp_output[[n_cluster]]$consensusTree
+CC_tree <- ccp_output[[n_cluster]]$consensusTree 
 
 # get cluster assignments for samples
 CC_class <- ccp_output[[n_cluster]]$consensusClass
-CC_class <- data.frame(cluster_class = CC_class)
-# CC_class <- CC_class %>%
-#   arrange(cluster_class)
-# CC_consensus_mat <- CC_consensus_mat %>%
-#   dplyr::select(rownames(CC_class))
+CC_class <- data.frame(cluster_class = CC_class) 
+
 
 stopifnot(identical(colnames(CC_consensus_mat), rownames(CC_class)))
 
-# color palette for short histology
-palettes_dir <- "../../palettes/"
-palette_file <- file.path(palettes_dir, "short_histology_color_palette.tsv") %>% read_tsv()
 
 # add short histology and color code to clusters
 CC_annot <- CC_class %>%
   rownames_to_column("Kids_First_Biospecimen_ID") %>%
   inner_join(input_clin, by = "Kids_First_Biospecimen_ID") %>%
-  inner_join(palette_file, by = "short_histology") %>%
-  dplyr::select(Kids_First_Biospecimen_ID, cluster_class, plot_group_display, hex_code) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, cluster_class, plot_group, plot_group_hex) %>%
   dplyr::mutate(cluster_class = as.character(cluster_class)) %>%
-  column_to_rownames("Kids_First_Biospecimen_ID")
+  column_to_rownames("Kids_First_Biospecimen_ID") 
+  
 
 # rename annotation columns
 CC_annot <- CC_annot %>%
-  dplyr::rename("Histology" = "plot_group_display",
+  dplyr::rename("Histology" = "plot_group",
                 "Cluster" = "cluster_class")
 
 # create annotation for cluster class
@@ -80,18 +77,22 @@ mycolors[['Cluster']] <- l
 
 # create annotation for short histology
 short_histology_palettes <- CC_annot %>%
-  dplyr::select(Histology, hex_code) %>%
+  dplyr::select(Histology,plot_group_hex) %>%
   unique()
-mycolors[['Histology']] <- short_histology_palettes$hex_code
+
+mycolors[['Histology']] <- short_histology_palettes$plot_group_hex
 names(mycolors[['Histology']]) <- short_histology_palettes$Histology
 
 # remove colors from annotation table
-CC_annot$hex_code <- NULL
+CC_annot$plot_group_hex <- NULL
 
-# create heatmap
+CC_annot <- CC_annot %>% 
+  filter(if_any(everything(), ~ !is.na(.)))
+
+# create heatmap  
 pheatmap(CC_consensus_mat,
          color = colorRampPalette(brewer.pal(n = 9, name = "Blues"))(9),
-         fontsize = 10,
+         fontsize = 8,
          main = "Consensus Matrix",
          show_colnames = F, 
          show_rownames = F, 

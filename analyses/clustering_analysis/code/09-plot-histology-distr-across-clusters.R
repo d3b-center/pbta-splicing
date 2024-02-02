@@ -41,7 +41,7 @@ optimal_cluster_tsv = file.path(analysis_dir, "output", "optimal_clustering", "c
 cluster_df <- read_tsv(optimal_cluster_tsv) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = sample)
 
-histologies_df <- read_tsv(file.path(root_dir,"analyses", "splicing_index", "results", "histologies-plot-group.tsv"), guess_max = 100000) %>%
+histologies_df <- read_tsv(file.path(root_dir,"analyses", "cohort_summary", "results", "histologies-plot-group.tsv"), guess_max = 100000) %>%
   select(Kids_First_Biospecimen_ID, broad_histology, cancer_group, plot_group, plot_group_hex) %>%
   filter(Kids_First_Biospecimen_ID %in% cluster_df$Kids_First_Biospecimen_ID) %>%
   unique() %>%
