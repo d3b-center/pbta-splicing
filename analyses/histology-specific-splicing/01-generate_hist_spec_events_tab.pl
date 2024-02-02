@@ -5,9 +5,9 @@ use Statistics::Lite qw(:all);
 ############################################################################################################
 # 04-generate_hist_spec_events_tab.pl
 #
-# ./04-generate_hist_spec_events_tab.pl <hist file> <rmats file> <indep_samples> <indep_samples-plus>
+# ./04-generate_hist_spec_events_tab.pl <hist file> <rmats file> <indep_samples-plus>
 ############################################################################################################
-my ($histology,$rmats_tsv,$primary_tumor_dat,$primary_tumor_plus_dat) = ($ARGV[0], $ARGV[1],$ARGV[2],$ARGV[3]);
+my ($histology,$rmats_tsv,$primary_tumor_dat) = ($ARGV[0], $ARGV[1],$ARGV[2]);
 my (@broad_hist, @bs_id, @splicing_events);
 my (%histology_ids, %inc_levels, %bs_id_hist, %hist_check, %hist_count);
 my %splicing_psi;
@@ -31,96 +31,52 @@ my %splicing_psi;
   }
   close(FIL);
 
-  ## store primary tumor samples
-  open(FIL,$primary_tumor_plus_dat) || die("Cannot Open File");
-  while(<FIL>)
-  {
-    chomp;
-    my @header = split "\t";
-    my $bs_id = $header[1];
-    my $cohort = $header[2];
-    my $exp_strategy = $header[4];
-    my $tumor_descr = $header[5];
-
-    next unless ($cohort=~/PBTA/);
-    $primary_initial_sample_list{$bs_id} = $bs_id;
-
-  }
-  close(FIL);
-
 print "annotate and store histology information... ".localtime(time)."\n";
   # annotate histology file #
     # hash with BS and disease
     # make arrays of each histology of BS IDs
 
-  open(FIL,$histology) || die("Cannot Open File");
-    while(<FIL>)
-    {
-      chomp;
-      my @cols       = split "\t";
-      my $hist       = $cols[53];
-      my $bs_id      = $cols[0];
-      my $patient_id = $cols[3];
-      my $CNS_region = $cols[32];
+open(FIL, $histology) || die("Cannot Open File");
 
-      next unless ($primary_initial_sample_list{$bs_id});
+# Assuming the first line of the file contains column headers
+my $header = <FIL>;
+chomp $header;
+my @column_names = split "\t", $header;
 
-      ## filter histologies of interests
-      next unless ( ($hist=~/HGAT/)  ||
-                    ($hist=~/LGAT/)  ||
-                    #($hist=~/Oligodendroglioma/) ||
-                    ($hist=~/Medulloblastoma/)   ||
-                    ($hist=~/Ganglioglioma/)  ||
-                    ($hist=~/Ependymoma/)||
-                    ($hist=~/ATRT/)  ||
-                    ($hist=~/Craniopharyngioma/) );
+# Create a hash to map column names to indices
+my %column_index;
+@column_index{@column_names} = (0..$#column_names);
 
-      ## convert histology names
-      $hist =~s/Oligodendroglioma/OGG/;
-      $hist =~s/Medulloblastoma/MB/;
-      $hist =~s/Ganglioglioma/GNG/;
-      $hist =~s/Ependymoma/EPN/;
-      $hist =~s/Craniopharyngioma/CPG/;
-      $hist =~s/HGAT/HGG/;
-      $hist =~s/LGAT/LGG/;
+while (<FIL>) {
+  chomp;
+  my @cols       = split "\t";
+  my $hist      = $cols[$column_index{'plot_group'}];
+  my $bs_id      = $cols[$column_index{'Kids_First_Biospecimen_ID'}];
+  my $CNS_region = $cols[$column_index{'CNS_region'}];
 
-    ## make an array and store histology information and BS IDs
-    push @broad_hist, $hist;
-    push @bs_ids, $bs_id;
+  next unless ($primary_initial_sample_list{$bs_id});
 
-    $bs_id_hist{$bs_id} = $hist;
+## make an array and store histology information and BS IDs
+push @broad_hist, $hist;
+push @bs_ids, $bs_id;
 
-    ## store total number of histologies
-    $hist_count{$hist}++;
-    push @{$histology_ids{$hist}}, $bs_id;
+$bs_id_hist{$bs_id} = $hist;
 
-    $cns_regions{$bs_id} = $CNS_region;
+## store total number of histologies
+$hist_count{$hist}++;
+push @{$histology_ids{$hist}}, $bs_id;
 
-    ## histology counter for downstream analysis
-    $hist_count{$hist}++;
+$cns_regions{$bs_id} = $CNS_region;
 
-  }
+## histology counter for downstream analysis
+$hist_count{$hist}++;
 
-  close(FIL);
+}
+
+close(FIL);
 
 
-
-#Exon-specific
-# For every alternatively spliced exon
-#-------------------------------------
-  #1. Compute mean of exon inclusion (PSI)
-  #2. Compute STD
-
-#-Look at each tumor --> is it 2 standard deviations from the mean?
-  #--Yes --> aberrant
-  #--No  --> non-aberrant
-
-# store each library (using file name)
-# for each line, make unique splice id
-  # gene + chr + SE + UEx + DEx   (make array)
-  # store total splicing events and those that pass threshold for each sample
 print "process rMATs information... ".localtime(time)."\n";
-
 my (%splice_totals_per_sample, %splice_totals);
 ## process rMATS output (may take awhile) from merged input file
 #print "processing rMATs results...\n";
@@ -206,9 +162,7 @@ foreach my $splice_event(@splicing_events_uniq)
   $mean_psi{$splice_event}    = $mean;
 }
 
-#-Look at each tumor --> is it 2 standard deviations from the mean?
-#--Yes --> aberrant
-#--No  --> non-aberrant
+## identify aberrant splicing events
 my %absplice_totals_per_sample;
 my %absplice_totals_per_sample_pos;
 my %absplice_totals_per_sample_neg;
@@ -225,6 +179,7 @@ foreach my $sample(@bs_ids_uniq)
     my $psi_tumor = $inc_levels{$splice_event}{$sample};
     my $std_psi   = $std_dev_psi{$splice_event};
     my $mean_psi   = $mean_psi{$splice_event};
+
     #> +2 z-scores
     if($psi_tumor > ($mean_psi + ($std_psi + $std_psi)) )
     {
@@ -232,9 +187,7 @@ foreach my $sample(@bs_ids_uniq)
       my $histology = $bs_id_hist{$sample};
       #print $splice_event,"\t",$histology,"***\n";
       $splice_event_per_pos_hist_count{$splice_event}{$histology}++;
-    #  if ($check_events_pos{$splice_event}){ push @ab_splicing_events_pos, $splice_event; }
       push @ab_splicing_events_pos, $splice_event;
-      $check_events_pos{$splice_event} = 1;
 
     }
     # < -2 z-scores
@@ -243,9 +196,7 @@ foreach my $sample(@bs_ids_uniq)
       $absplice_totals_per_sample_neg{$sample}++;
       my $histology = $bs_id_hist{$sample};
       $splice_event_per_neg_hist_count{$splice_event}{$histology}++;
-      #if ($check_events_neg{$splice_event}){ push @ab_splicing_events_neg, $splice_event; }
       push @ab_splicing_events_neg, $splice_event;
-      $check_events_neg{$splice_event} = 1;
 
     }
   }
@@ -259,7 +210,7 @@ my @ab_splicing_events_neg_uniq = do { my %seen; grep { !$seen{$_}++ } @ab_splic
 my $output_file = "results/splicing_events.hist-labeled_list.thr2freq.txt";
 open(TAB,">".$output_file) || die("Cannot Open File");
 
-print TAB "splicing_event\thistology\ttype\n";
+print TAB "splicing_event\thistology\ttype\tfreq\n";
 
 ## save and report skipping events
 foreach $hist (@broad_hist_uniq)
@@ -271,9 +222,15 @@ foreach $hist (@broad_hist_uniq)
         if($splice_event_per_pos_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_pos_hist_count{$event}{$hist};
           #print $event,"\t",$hist,"\t",$total_hist_count,"\n";
-          if( ($event_count/$total_hist_count) >= .02 )
+          #if( ($event_count/$total_hist_count) >= .10 )
+          if( ($event_count) >= 2 )
+
+
           {
-            print TAB $event,"\t",$hist,"\tskipping\n";
+            print TAB $event,"\t",$hist,"\tinclusion\t";
+            print TAB $event_count,"\n";
+
+
           }
         }
   }
@@ -288,9 +245,13 @@ foreach $hist (@broad_hist_uniq)
         if($splice_event_per_neg_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_neg_hist_count{$event}{$hist};
           #print $event,"\t",$hist,"\t",$total_hist_count,"*\n";
-          if( ($event_count/$total_hist_count) >= .02 )
+          #if( ($event_count/$total_hist_count) >= .10 )
+          if( ($event_count) >= 2 )
+
           {
-            print TAB $event,"\t",$hist,"\tinclusion\n";
+            print TAB $event,"\t",$hist,"\tskipping\t";
+            print TAB $event_count,"\n";
+
           }
         }
   }
