@@ -38,9 +38,9 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 sbi_cluster_plot <- file.path(analysis_dir, "plots", 
                               "cluster_by_sbi.tiff")
 
-cc_members_file = "ccp_output/non_expr_pan_cancer_splice_subset_pam_spearman_0_ccp.rds"
+cc_members_file = "ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_ccp.rds"
 cc_members_df  <- readRDS(paste0(output_dir,"/",cc_members_file) )
-cc_members   <- cc_members_df[[8]]$consensusClass 
+cc_members   <- cc_members_df[[13]]$consensusClass 
 cc_members <- tibble::rownames_to_column(as.data.frame(cc_members), "Sample")
   
 sbi_file <- "splicing_index.total.txt"
