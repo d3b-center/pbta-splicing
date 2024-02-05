@@ -18,9 +18,11 @@ suppressPackageStartupMessages({
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
+
+
 ## set directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data/")
+data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing-impact")
 
 input_dir   <- file.path(analysis_dir, "input")
@@ -34,6 +36,10 @@ if(!dir.exists(plots_dir)){
 if(!dir.exists(results_dir)){
   dir.create(results_dir, recursive=TRUE)
 }
+
+## theme for all plots
+figures_dir <- file.path(root_dir, "figures")
+source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## output files
 gsea_dotplot_path <- file.path(plots_dir, "CLK1_status_gsea_dotplot.pdf")
@@ -87,10 +93,16 @@ readr::write_csv(
   )
 )
 
-dotplot(gsea_results, showCategory=20, split=".sign") + facet_grid(.~.sign) 
+gsea_plot <- dotplot(gsea_results, showCategory=15, split=".sign") + facet_grid(.~.sign) + 
+  theme_Publication() +
+  scale_color_gradient(name = "Adjusted p-value", 
+                       low = "orange", high = "#0C7BDC") +  # Modify color range
+  labs(color = "B-H adj p-value")  # Modify legend title 
+
 
 # Save GSEA dotplot as pdf
 ggplot2::ggsave(gsea_dotplot_path,
+                plot = gsea_plot,
                 width=14,
                 height=10,
                 device="pdf")

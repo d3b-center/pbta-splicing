@@ -36,6 +36,10 @@ if(!dir.exists(results_dir)){
   dir.create(results_dir, recursive=TRUE)
 }
 
+## theme for all plots
+figures_dir <- file.path(root_dir, "figures")
+source(file.path(figures_dir, "theme_for_plots.R"))
+
 ## outplut file for plot
 ora_dotplot_path <- file.path(plots_dir, "CLK1_targets_ora_dotplot.pdf")
 
@@ -73,11 +77,16 @@ ora_results <- enricher(
 
 ## plot enrichment using dotplot
 ora_result_df <- data.frame(ora_results@result)
-enrich_plot <- enrichplot::dotplot(ora_results)
-enrich_plot
+enrich_plot <- enrichplot::dotplot(ora_results) +   
+  theme_Publication() +
+  scale_color_gradient(name = "Adjusted p-value", 
+                       low = "orange", high = "#0C7BDC") +  # Modify color range
+  labs(color = "B-H adj p-value")  # Modify legend title 
+
 
 ## save ORA dotplot as tiff
 ggplot2::ggsave(ora_dotplot_path,
+                plot=enrich_plot,
                 width=7,
                 height=5,
                 device="pdf",

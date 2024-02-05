@@ -42,7 +42,6 @@ piechart_plot_of_splicing_case <- file.path(plots_dir,"piechart_splice-types.tif
 file_dpsi_es_plot <- file.path(plots_dir,"dPSI_distr_es.pdf")
 file_dpsi_ei_plot <- file.path(plots_dir,"dPSI_distr_ei.pdf")
 
-
 ## get and setup input
 ## rmats file
 rmats_merged_file  <- file.path(analysis_dir,"input","morpholno.merged.rmats.tsv")
@@ -74,7 +73,7 @@ plot_es <- ggstatsplot::ggbetweenstats(
   #p.adjust.method = "fdr",
   results.subtitle = FALSE,
   messages = FALSE
-) + theme_Publication() + ggtitle("Treated vs Control") +
+) + theme_Publication() + ggtitle("CLK1 Exon 4 Morpholino vs Non-targeting Morpholino") +
   labs(y=expression(Delta*PSI), x="Splicing Case") + 
   theme(legend.position = "none")
 
@@ -96,7 +95,7 @@ plot_ei <- ggstatsplot::ggbetweenstats(
   #p.adjust.method = "fdr",
   results.subtitle = FALSE,
   messages = FALSE
-) + theme_Publication() + ggtitle("Treated vs Control") +
+) + theme_Publication() + ggtitle("CLK1 Exon 4 Morpholino vs Non-targeting Morpholino") +
   labs(y=expression(Delta*PSI), x="Splicing Case") + 
   theme(legend.position = "none",text = element_text(size=16))
 
