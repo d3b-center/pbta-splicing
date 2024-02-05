@@ -215,12 +215,12 @@ plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(Clas
                                          values=c("#FFC20A","#0C7BDC")) + 
                        geom_text(stat='count',aes(label=after_stat(count)), 
                                  position = position_dodge(width = 1),
-                                 hjust = -0.5, size = 4) +
+                                 hjust = -0.5, size = 3.5) +
                       theme_Publication() +
                       coord_flip() 
   
 
 # print and save plot
-pdf(file_gene_family_plot, height = 10.38, width = 6.73, useDingbats = FALSE) 
+pdf(file_gene_family_plot, height = 8, width = 10, useDingbats = FALSE) 
 print(plot_barplot_family)
 dev.off()
