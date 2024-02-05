@@ -21,6 +21,7 @@ independent-specimens.rnaseqpanel.primary-plus.tsv
 * `run_module.sh` shell script to pre-process histology file and run analysis
 * `01-generate_hist_spec_events_tab.pl` processes rMATs output and identifies unique splicing events if it is in 2% of the histology-specific cohort
 * `02-plot_histology-specific_splicing_events.R` takes result table frmo above and generates UpSetR plots for each splicing case
+* `03-generate-hist-spec-tabs.pl` parses and formats result files from `01` into two tables (tsv) for exon skipping and exon inclusion.
 
 ## Directory structure
 ```
