@@ -141,7 +141,7 @@ by_hist <- by_hist %>%
   filter(plot_group %in% counts$plot_group)
   
 # plot
-pdf(boxplot_sbi_vs_tmb_by_cg_file, width = 8, height = 10)
+pdf(boxplot_sbi_vs_tmb_by_cg_file, width = 12, height = 10)
 ggplot(by_hist, aes(SBI_level, log10(tmb))) +  
   ggforce::geom_sina(aes(color = SBI_level, alpha = 0.4), pch = 16, size = 4, method="density") +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
