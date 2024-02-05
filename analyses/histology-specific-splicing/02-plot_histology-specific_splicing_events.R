@@ -52,11 +52,12 @@ list_for_skipping_upsetR <- splice_event_df %>%
 
 # Generate the UpSetR plot
 es_events <- upset(fromList(list_for_skipping_upsetR), order.by = "freq",keep.order = TRUE, mainbar.y.label = "", sets.x.label = "Histology",
-                   mb.ratio = c(0.6,0.4), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4), point.size = 3, line.size = 1,  nsets = 17, empty.intersections = "on")
+                   mb.ratio = c(0.4,0.6), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4), point.size = 3, line.size = 1,  nsets = 17, empty.intersections = "on",
+                   number.angles=45)
 
 
 # Save plot
-pdf(upsetR_es_plot_file, height = 9, width = 15)
+pdf(upsetR_es_plot_file, height = 10, width = 15)
 print(es_events)
 dev.off()
 
@@ -97,10 +98,11 @@ list_for_inclusion_upsetR <- splice_event_df %>%
 
 # Generate the UpSetR plot
 ei_events <- upset(fromList(list_for_inclusion_upsetR), order.by = "freq",keep.order = TRUE, mainbar.y.label = "", sets.x.label = "Histology",
-                   mb.ratio = c(0.6,0.4), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4),point.size = 3, line.size = 1,nsets = 17, empty.intersections = "on")
+                   mb.ratio = c(0.4,0.6), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4), point.size = 3, line.size = 1,  nsets = 17, empty.intersections = "on",
+                   number.angles=45)
 
 # Save plot
-pdf(upsetR_ei_plot_file, height = 9, width = 15)
+pdf(upsetR_ei_plot_file, height = 10, width = 10)
 print(ei_events)
 dev.off()
 
