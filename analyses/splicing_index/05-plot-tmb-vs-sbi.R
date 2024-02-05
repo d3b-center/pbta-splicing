@@ -42,16 +42,16 @@ palette_file <- file.path(map_dir,"histologies-plot-group.tsv")
 hist_pal <- read_tsv(palette_file) %>%
   filter(!is.na(pathology_diagnosis),
          !is.na(plot_group)) %>%
-  select(Kids_First_Biospecimen_ID, cancer_group, plot_group)
+  dplyr::select(Kids_First_Biospecimen_ID, cancer_group, plot_group)
 
 indep_rna_df <- read_tsv(indep_rna_file) %>% 
   filter(cohort == "PBTA") %>%
   dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>%
-  select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_RNA)
+  dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_RNA)
 indep_wgs_df <- read_tsv(indep_wgs_file) %>% 
   filter(cohort == "PBTA") %>%
   dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID) %>%
-  select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_DNA)
+  dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_DNA)
 
 ## get tmb file (source: OpenPedCan v13)
 tmb_coding_df  <-  read_tsv(tmb_coding_file)  %>% 
@@ -59,12 +59,12 @@ tmb_coding_df  <-  read_tsv(tmb_coding_file)  %>%
                                      tmb >=10 & tmb < 100 ~ "Hypermutant",
                                      tmb >=100 ~ "Ultra-hypermutant")) %>%
   dplyr::rename(Kids_First_Biospecimen_ID_DNA = Tumor_Sample_Barcode) %>%
-  select(-experimental_strategy) %>%
+  dplyr::select(-experimental_strategy) %>%
   right_join(indep_wgs_df)
 
 sbi_coding_df  <-  read_tsv(sbi_coding_file) %>% 
   dplyr::rename(Kids_First_Biospecimen_ID_RNA = Sample) %>%
-  select(-Histology) %>%
+  dplyr::select(-Histology) %>%
   right_join(indep_rna_df)
 
 ## intersect tmb values with SBI tumors
@@ -125,7 +125,9 @@ by_hist <- quantile_data %>%
   mutate(SBI_level = case_when(SI > upper_quantile ~ "High",
                                SI < lower_quantile ~ "Low",
                                TRUE ~ "Mid")) %>%
-  filter(SBI_level != "Mid")
+  filter(SBI_level != "Mid") %>%
+  filter(plot_group != "Other tumor",
+         plot_group != "Non−neoplastic tumor")
 
 # relevel for plotting
 by_hist$SBI_level <- factor(by_hist$SBI_level, levels = c("Low", "High"))
