@@ -9,5 +9,8 @@ indep_samples="../../data/independent-specimens.rnaseqpanel.primary.tsv"
 perl 01-generate_hist_spec_events_tab.pl $hist_file $rmats_file $indep_samples
 Rscript --vanilla 02-plot_histology-specific_splicing_events.R
 
+## create suppl tables
+perl 03-generate-hist-spec-tabs.pl
+
 rm Rplots.pdf
 

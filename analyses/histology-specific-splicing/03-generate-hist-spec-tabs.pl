@@ -1,8 +1,10 @@
 #!/usr/bin/perl
 
+## input files
 my $es_file = "results/unique_events-es.tsv";
 my $ei_file = "results/unique_events-ei.tsv";
 
+## output files
 open(OUT_ES,">results/hist-spec-es-table.tsv");
 open(OUT_EI,">results/hist-spec-ei-table.tsv");
 
