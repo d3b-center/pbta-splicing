@@ -102,7 +102,7 @@ ei_events <- upset(fromList(list_for_inclusion_upsetR), order.by = "freq",keep.o
                    number.angles=45)
 
 # Save plot
-pdf(upsetR_ei_plot_file, height = 10, width = 10)
+pdf(upsetR_ei_plot_file, height = 10, width = 15)
 print(ei_events)
 dev.off()
 
