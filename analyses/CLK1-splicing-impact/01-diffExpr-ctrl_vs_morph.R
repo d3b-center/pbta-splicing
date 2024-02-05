@@ -221,6 +221,6 @@ plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(Clas
   
 
 # print and save plot
-pdf(file_gene_family_plot, height = 8, width = 10, useDingbats = FALSE) 
+pdf(file_gene_family_plot, height = 10, width = 10, useDingbats = FALSE) 
 print(plot_barplot_family)
 dev.off()
