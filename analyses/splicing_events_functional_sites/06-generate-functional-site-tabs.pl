@@ -22,7 +22,7 @@ while(<FIL>)
   my ($gene, $coords) = split/\:/, $splice_id;
   my ($exon, $upstream, $downstream) = split/\_/,$coords;
 
-  print OUT $gene,"\t",$exon, "\t", $upstream,"\t",$downstream,"\t",$dpsi,"\tSkipping\n";
+  print OUT $gene,"\t",$exon, "\t", $upstream,"\t",$downstream,"\t",$dpsi,"\t",$site,"\tSkipping\n";
 }
 
 
@@ -39,7 +39,7 @@ while(<FIL>)
   my ($gene, $coords) = split/\:/, $splice_id;
   my ($exon, $upstream, $downstream) = split/\_/,$coords;
 
-  print OUT $gene,"\t",$exon, "\t", $upstream,"\t",$downstream,"\t",$dpsi,"\tInclusion\n";
+  print OUT $gene,"\t",$exon, "\t", $upstream,"\t",$downstream,"\t",$dpsi,"\t",$site,"\tInclusion\n";
 }
 
 __DATA__
