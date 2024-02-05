@@ -21,32 +21,18 @@ plots_dir <- file.path(analysis_dir, "plots")
 # Input directory
 input_dir <- file.path(analysis_dir, "results")
 
+subtype_df <- read_tsv(file.path(analysis_dir, "results", "subtypes-for-survival.tsv"))
 # Define histology groups and subtypes
-groups <- c("ATRT", "CPG", "EPN", "GNG",
-            "HGG", 
-            "LGG", 
-            "MB",  
-            "CRANIO, ADAM", "EPN, PF A",
-            "DMG, H3 K28", "HGG, H3 WT",
-            "GNG, Other alteration", 
-            "LGG, BRAF fusion", "LGG, Other alteration",
-            "LGG, WT",
-            "MB, Group3", "MB, Group 4", "MB, SHH")
+groups <- c(unique(subtype_df$foldername),
+            glue::glue("{subtype_df$foldername}, {subtype_df$subtype}"))
 
-dir_names <- c("ATRT", "CPG", "EPN", "GNG",
-               "HGG", 
-               "LGG", 
-               "MB", "CPG", "EPN",
-               rep("HGG", 2), "GNG",
-               rep("LGG", 3), rep("MB", 3))
+dir_names <- c(unique(subtype_df$foldername),
+               subtype_df$foldername)
 names(dir_names) <- groups
 
 # Define identifiers for model files
-file_names <- c("atrt", "cpg", "epn", 
-                "gng", "hgg",
-                "lgg", "mb",
-                "cranio_ADAM", "epn_PF A", "hgg_K28", "hgg_wildtype", "gng_gnt_Other",
-                "lgg_BRAF", "lgg_Other", "lgg_WT", "mb_Group3", "mb_Group4", "mb_SHH")
+file_names <- c(unique(subtype_df$names),
+                glue::glue("{subtype_df$names}_{subtype_df$subtype_name}"))
 names(file_names) <- groups
 
 # Loop through histology groups and subtypes to generate Kaplan-Meier plots from models
@@ -89,9 +75,7 @@ for (group in groups){
   
 }
 
-# Loop through broad histologies only (not subtypes) to generate forest plots from coxph models with SI_group as predictor
-
-file_names["EPN, PF A"] <- "epn_PF-A"
+# Loop through histologies and subtypes to generate forest plots from coxph models with SI_group as predictor
 
 # Forest plots for OS
 
@@ -114,7 +98,6 @@ for (group in groups){
   
   os_forest_pdf <- file.path(plots_dir, 
                           glue::glue("forest_{file_names[group]}_OS_subtype_SIburden.pdf"))
-  
   
   os_forest_plot <- suppressWarnings(
                         plotForest(os_survival_result)
@@ -139,20 +122,15 @@ for (group in groups){
   efs_forest_pdf <- file.path(plots_dir, 
                           glue::glue("forest_{file_names[group]}_EFS_subtype_SIburden.pdf"))
   
-  
   efs_forest_plot <- suppressWarnings(
                           plotForest(efs_survival_result)
   )
   
   ggsave(efs_forest_pdf, efs_forest_plot, width = 8, height = 3)
   
-  
 }
 
-
-
 # Loop through histologies and subtypes to generate forest plots from coxph models with SI as predictor 
-
 
 for (group in groups){
   
@@ -175,7 +153,6 @@ for (group in groups){
   
   os_forest_pdf <- file.path(plots_dir, 
                              glue::glue("forest_{file_names[group]}_OS_subtype_SI.pdf"))
-  
   
   os_forest_plot <- suppressWarnings(
                         plotForest(os_survival_result)
@@ -200,13 +177,11 @@ for (group in groups){
   efs_forest_pdf <- file.path(plots_dir, 
                               glue::glue("forest_{file_names[group]}_EFS_subtype_SI.pdf"))
   
-  
   efs_forest_plot <- suppressWarnings(
                         plotForest(efs_survival_result)
   )
   
   ggsave(efs_forest_pdf, efs_forest_plot, width = 8, height = 3)
-  
   
 }
 
