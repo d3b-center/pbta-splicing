@@ -182,7 +182,7 @@ genelist_cat <- genelist_ref_df %>%
                                   type == "TumorSuppressorGene, Oncogene" ~ "Oncogene or Tumor Suppressor",
                                   type == "TranscriptionFactor" ~ "Transcription Factor",
                                   TRUE ~ type)) %>%
-  select(Gene_Symbol, plot_type, plot_subtype) %>%
+  dplyr::select(Gene_Symbol, plot_type, plot_subtype) %>%
   # add other RBP, Epi not already in the list
   bind_rows(known_rbp_not_inlist, known_epi_not_inlist)
 
@@ -214,7 +214,7 @@ unique(sign_regl_gene_df$plot_subtype)
 ## plot num of hits per gene fam
 plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(plot_subtype)), fill= Direction)) +
                        geom_bar(stat="count", position='dodge', color="black") + 
-                       facet_wrap(~plot_type, scales = "free_y") +
+                       facet_wrap(~plot_type, scales = "free_y", ncol = 1) +
                        xlab("Gene Family")     + 
                        ylab("Number of Genes Signficantly Differentially Expressed") + 
                        scale_fill_manual(name = "Direction",
@@ -228,6 +228,6 @@ plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(plot
   
 
 # print and save plot
-pdf(file_gene_family_plot, height = 6, width = 12, useDingbats = FALSE) 
+pdf(file_gene_family_plot, height = 8, width = 8, useDingbats = FALSE) 
 print(plot_barplot_family)
 dev.off()
