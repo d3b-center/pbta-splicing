@@ -11,7 +11,7 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 ## histology input file (column orders important)
-input_file="../../data/histologies.tsv"
+input_file="../cohort_summary/results/histologies-plot-group.tsv"
 primary_specimens="../../data/independent-specimens.rnaseqpanel.primary.tsv"
 rmats_file="../../data/splice-events-rmats.tsv.gz"
 
