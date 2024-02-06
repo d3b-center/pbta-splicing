@@ -42,20 +42,17 @@ cptac_output_file <- file.path(input_dir,"CPTAC3-pbt_SF_family.xls")
 # Load dataset
 cptac_data <- readxl::read_excel(cptac_output_file) %>%
   # select only rows with CLK1 or SRFs, remove muts
-  filter(grepl("\\srna|\\spro|\\sphos", idx), 
+  filter(grepl("\\srna|\\spro", idx), 
                !`Data type` %in% c("mut", "cnv")) %>%
   # remove extra info from cols
   rename_with(~ gsub("X7316.", "7316-", .), everything()) %>%
   dplyr::rename(Assay = `Data type`) %>%
   # clean up naming for plotting
   mutate(Assay = case_when(Assay == "proteo" ~ "Whole Cell Proteomics",
-                           Assay == "phospho" ~ "Phospho-Proteomics",
                            Assay == "rna" ~ "RNA-Seq"),
-         #Assay = fct_relevel(Assay, c("RNA-Seq", "Whole Cell Proteomics", "Phospho-Proteomics")),
+         Assay = fct_relevel(Assay, c("RNA-Seq", "Whole Cell Proteomics")),
          # create new display name for phospho proteins to include phos site
-         phos_site = case_when(Assay == "Phospho-Proteomics" ~ str_split(idx, "phospho", simplify = TRUE)[, 2],
-                               TRUE ~ NA_character_),
-         display_name = case_when(Assay == "Phospho-Proteomics" ~ paste(`Gene symbol`, phos_site, sep = " "),
+         display_name = case_when(
                                   # add a space after the gene to trick into thinking the rownames are not duplicated
                                   Assay == "Whole Cell Proteomics" ~ paste(`Gene symbol`, " ", sep = " "),
                                   TRUE ~ `Gene symbol`)
@@ -86,7 +83,7 @@ row_annot <- cptac_data %>%
 
 
 # create anno colors
-anno_col <- list(Assay = c("RNA-Seq" = "#DC3220", "Phospho-Proteomics" = "#005AB5", "Whole Cell Proteomics" = "#40B0A6"))
+anno_col <- list(Assay = c("RNA-Seq" = "#DC3220", "Whole Cell Proteomics" = "#40B0A6"))
 
 # Heatmap annotation
 row_anno = rowAnnotation(df = row_annot,
@@ -109,7 +106,7 @@ heat_plot <- Heatmap(mat,
                      #rect_gp = gpar(col = "white"),
                      row_title = NULL, 
                      column_title = NULL, 
-                     row_names_gp = grid::gpar(fontsize = 6),
+                     row_names_gp = grid::gpar(fontsize = 12),
                      column_title_side = "top")
 
 pdf(heatmap_output_file, width = 8, height = 8)
