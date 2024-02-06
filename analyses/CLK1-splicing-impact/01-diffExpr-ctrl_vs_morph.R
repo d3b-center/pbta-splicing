@@ -3,7 +3,7 @@
 # Performs gene expression analysis and plots on cells untreated vs treated with
 # morpholinos targeting CLK1
 #
-# Author: Ammar Naqvi 
+# Author: Ammar Naqvi, Jo Lynne Rokita
 # usage: Rscript --vanilla 01-diffExpr-ctrl_vs_morph.R
 ################################################################################
 
@@ -43,9 +43,8 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## output files
-de_output = "ctrl_vs_treated.de.tsv"
-de_reg_output = "ctrl_vs_treated.de.regl.tsv"
-file_volc_plot = "ctrl_vs_clk1-morp_volcano.pdf"
+de_output = file.path(results_dir, "ctrl_vs_treated.de.tsv")
+file_volc_plot = file.path(plots_dir, "ctrl_vs_clk1-morp_volcano.pdf")
 file_gene_family_plot = file.path(plots_dir,"gene-fam-DE-plot.pdf")
 
 ## input files
@@ -83,7 +82,7 @@ res <- results(cds)
 ## label anything below <0.05 as signficant
 res$Significant <- ifelse(res$pvalue< 0.05, "P-val < 0.05", "Not Sig")
 
-EnhancedVolcano(res,
+volc <- EnhancedVolcano(res,
                 lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene), ## remove ensembleid portion , ## remove ensembleid portion
                 x = 'log2FoldChange',
                 y = 'pvalue',
@@ -97,14 +96,14 @@ EnhancedVolcano(res,
                 FCcutoff = 1,
                 pointSize = 2,
                 labSize = 4)
-ggsave(
-  paste0(plots_dir,"/", file_volc_plot),
-  plot = last_plot(),
+
+ggsave(file_volc_plot,
+  plot = volc,
   device = NULL,
   path = NULL,
   scale = 1,
-  width =6.73,
-  height = 10.38,
+  width = 8,
+  height = 10,
   units = "in",
   dpi = 300,
   limitsize = TRUE,
@@ -113,104 +112,111 @@ ggsave(
 
 de_results <- cbind(res, count_data) 
 
-write_delim(
-  as_tibble(de_results),
-  paste0(results_dir,"/", de_output),
-  delim = "\t"
-)
+write_tsv(as_tibble(de_results), de_output)
 
 ## subset with gene lists
-genelist_ref_df <-read.delim(system.file("extdata", "genelistreference.txt", package = "annoFuseData")) 
-
-known_kinase <- genelist_ref_df %>% 
-  mutate(Class = if_else(grepl("Kinase", type), 'Kinase', NA)) %>%
-  na.omit() %>%
-  dplyr::select(Gene_Symbol,Class) 
-
-known_tf<- genelist_ref_df %>% 
-  mutate(Class = if_else(grepl("TranscriptionFactor", type), "TF", NA)) %>%
-  na.omit() %>%
-  dplyr::select(Gene_Symbol,Class) 
-  
-known_ts <- genelist_ref_df %>% 
-    mutate(Class = if_else(grepl("TumorSuppressorGene", type), "TS", NA)) %>%
-    na.omit() %>%
-  dplyr::select(Gene_Symbol,Class) 
-    
-known_onco <- genelist_ref_df %>% 
-  mutate(Class = if_else(grepl("Oncogene", type), "Onco", NA)) %>%
-  na.omit() %>%
-  dplyr::select(Gene_Symbol,Class) 
+genelist_ref_df <-read.delim(system.file("extdata", "genelistreference.txt", package = "annoFuseData"))  %>%
+  # remove cosmic census
+  filter(type != "CosmicCensus") %>%
+  mutate(type = gsub("CosmicCensus, |, CosmicCensus", "", type))
 
 ## other non-annoFuse gene lists, RBPs and epigenetic genes
-known_rbp <- read.table(known_rbp_file,header=FALSE) %>% 
-  dplyr::rename('Gene_Symbol' = V1)
-known_epi <- read.table(known_epi_file,header=FALSE) %>% 
-  dplyr::rename('Gene_Symbol' = V1)
+known_rbp_inlist <- read.table(known_rbp_file,header=FALSE) %>% 
+  dplyr::rename('Gene_Symbol' = V1) %>%
+  filter(Gene_Symbol %in% genelist_ref_df$Gene_Symbol)
 
-res_rbp <- as.data.frame(res) %>% 
+known_rbp_not_inlist <- read.table(known_rbp_file,header=FALSE) %>% 
+  dplyr::rename('Gene_Symbol' = V1) %>%
+  filter(!Gene_Symbol %in% genelist_ref_df$Gene_Symbol) %>%
+  mutate(plot_type = "Other",
+         plot_subtype = "RNA Binding Protein")
+
+known_epi_inlist <- read.table(known_epi_file,header=FALSE) %>% 
+  dplyr::rename('Gene_Symbol' = V1) %>%
+  filter(Gene_Symbol %in% genelist_ref_df$Gene_Symbol)
+
+known_epi_not_inlist <- read.table(known_epi_file,header=FALSE) %>% 
+  dplyr::rename('Gene_Symbol' = V1) %>%
+  filter(!Gene_Symbol %in% genelist_ref_df$Gene_Symbol) %>%
+  mutate(plot_type = "Other",
+         plot_subtype = "Epigenetic")
+
+
+genelist_cat <- genelist_ref_df %>%
+  mutate(type = ifelse(Gene_Symbol %in% known_rbp_inlist$Gene_Symbol, paste(type, "RNA Binding Protein", sep = ", "), type),
+         type = ifelse(Gene_Symbol %in% known_epi_inlist$Gene_Symbol, paste(type, "Epigenetic", sep = ", "), type)) %>%
+  # add epi/rbp for those which are already in list and recategorize
+  mutate(plot_type = case_when(grepl("TumorSuppressorGene, Oncogene", type) ~ "Oncogene or Tumor Suppressor",
+                               type %in% c("TumorSuppressorGene, TranscriptionFactor", "TumorSuppressorGene, Kinase", "TumorSuppressorGene", 
+                                           "Kinase, TumorSuppressorGene", "TumorSuppressorGene, RNA Binding Protein",
+                                           "TumorSuppressorGene, TranscriptionFactor, RNA Binding Protein, Epigenetic",
+                                           "TumorSuppressorGene, RNA Binding Protein, Epigenetic", 
+                                           "TumorSuppressorGene, TranscriptionFactor, Epigenetic", "TumorSuppressorGene, Epigenetic",
+                                           "TumorSuppressorGene, Kinase, Epigenetic", "Kinase, TumorSuppressorGene, Epigenetic") ~ "Tumor Suppressor",
+                               type %in% c("Kinase, Oncogene", "Oncogene", "Oncogene, Kinase", "Oncogene, TranscriptionFactor",
+                                           "Oncogene, RNA Binding Protein", "Oncogene, TranscriptionFactor, RNA Binding Protein",
+                                           "Oncogene, TranscriptionFactor, Epigenetic", "Oncogene, Kinase, Epigenetic",
+                                           "Oncogene, Epigenetic", "Kinase, Oncogene, Epigenetic", "Oncogene, RNA Binding Protein, Epigenetic",
+                                           "TranscriptionFactor, Oncogene") ~ "Oncogene",
+                               TRUE ~ "Other"),
+         plot_subtype = case_when(type %in% c("Kinase", "Kinase, TranscriptionFactor", "Kinase, Oncogene", "TumorSuppressorGene, Kinase", 
+                                              "Kinase, TumorSuppressorGene, Oncogene", "Oncogene, Kinase", "Kinase, RNA Binding Protein",
+                                              "TumorSuppressorGene, Oncogene, Kinase, Epigenetic", "TumorSuppressorGene, Kinase, Epigenetic",
+                                              "Oncogene, Kinase, Epigenetic", "Kinase, TumorSuppressorGene, Oncogene, Epigenetic",
+                                              "Kinase, TumorSuppressorGene, Epigenetic", "Kinase, Oncogene, Epigenetic", "Kinase, Epigenetic",
+                                              "Kinase, TumorSuppressorGene", "TumorSuppressorGene, Oncogene, Kinase") ~ "Kinase",
+                                  type %in% c("Oncogene, TranscriptionFactor", "TumorSuppressorGene, Oncogene, TranscriptionFactor",
+                                              "TumorSuppressorGene, TranscriptionFactor", "TranscriptionFactor, Oncogene") ~ "Transcription Factor",
+                                  type %in% c("Oncogene, RNA Binding Protein", "TranscriptionFactor, RNA Binding Protein", 
+                                              "TumorSuppressorGene, Oncogene, RNA Binding Protein", "TranscriptionFactor, RNA Binding Protein, Epigenetic",
+                                              "TumorSuppressorGene, RNA Binding Protein, Epigenetic", "TumorSuppressorGene, TranscriptionFactor, RNA Binding Protein",
+                                              "TumorSuppressorGene, TranscriptionFactor, RNA Binding Protein, Epigenetic",
+                                              "Oncogene, RNA Binding Protein, Epigenetic", "Oncogene, TranscriptionFactor, RNA Binding Protein",
+                                              "TumorSuppressorGene, RNA Binding Protein") ~ "RNA Binding Protein",
+                                  type %in% c("TumorSuppressorGene, TranscriptionFactor, Epigenetic", "TumorSuppressorGene, Oncogene, TranscriptionFactor, Epigenetic",
+                                              "TumorSuppressorGene, Oncogene, Epigenetic", "TumorSuppressorGene, Epigenetic",
+                                              "TranscriptionFactor, Epigenetic", "Oncogene, TranscriptionFactor, Epigenetic",
+                                              "Oncogene, Epigenetic") ~ "Epigenetic",
+                                  type == "TumorSuppressorGene" ~ "Other Tumor Suppressor",
+                                  type == "Oncogene" ~ "Other Oncogene",
+                                  type == "TumorSuppressorGene, Oncogene" ~ "Oncogene or Tumor Suppressor",
+                                  type == "TranscriptionFactor" ~ "Transcription Factor",
+                                  TRUE ~ type)) %>%
+  select(Gene_Symbol, plot_type, plot_subtype) %>%
+  # add other RBP, Epi not already in the list
+  bind_rows(known_rbp_not_inlist, known_epi_not_inlist)
+
+# check that all of the subgroups look right
+table(genelist_cat$plot_subtype, genelist_cat$plot_type)
+
+# combine with the DE results
+genes_to_plot <- as.data.frame(res) %>% 
   dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
   dplyr::rename('Gene_Symbol'=gene) %>% 
-  inner_join(known_rbp, by="Gene_Symbol") %>%
-  mutate(Class="RBP")
+  inner_join(genelist_cat, by="Gene_Symbol")                          
 
-
-res_tf <- as.data.frame(res) %>% 
-  dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
-  dplyr::rename('Gene_Symbol'=gene) %>% 
-  inner_join(known_tf, by="Gene_Symbol") %>% 
-  mutate(Class="TranscriptionFactor")
-
-res_kinase <- as.data.frame(res) %>% 
-  dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
-  dplyr::rename('Gene_Symbol'=gene) %>% 
-  inner_join(known_kinase, by="Gene_Symbol") %>% 
-  mutate(Class="Kinase")
-
-res_epi <- as.data.frame(res) %>% 
-  dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
-  dplyr::rename('Gene_Symbol'=gene) %>% 
-  inner_join(known_epi, by="Gene_Symbol") %>% 
-  mutate(Class="Epigenetic")
-
-res_ts <- as.data.frame(res) %>% 
-  dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
-  dplyr::rename('Gene_Symbol'=gene) %>% 
-  inner_join(known_ts, by="Gene_Symbol") %>% 
-  mutate(Class="TumorSuppressor")
-
-res_onco <- as.data.frame(res) %>% 
-  dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
-  dplyr::rename('Gene_Symbol'=gene) %>% 
-  inner_join(known_onco, by="Gene_Symbol") %>% 
-  mutate(Class="Oncogene")
-
-## combine results and liftover geneSymbols to new names
-liftover_df <- vroom(hgnc_file) %>%
-  dplyr::select(symbol, prev_symbol)
-
-res_all_regl_df <- rbind(res_rbp, res_tf, res_kinase, res_epi, res_ts,res_onco) %>%
-  ## liftover geneSymbols
-  left_join(liftover_df, by=c('Gene_Symbol'='prev_symbol')) %>% 
-  mutate(Gene_Symbol = case_when(
-    is.na(symbol) ~ Gene_Symbol,
-    TRUE ~ symbol
-  )) 
-
-## write significant genes to table for subsequent correlation analyses
-sign_regl_gene_df <- res_all_regl_df %>%
+## use only significant results for the plot
+sign_regl_gene_df <- genes_to_plot %>%
   as.data.frame() %>%
   dplyr::filter(padj < 0.05,
          abs(log2FoldChange) >= 1) %>%
   mutate(Direction= case_when(log2FoldChange<1 ~ 'Down',
-                              log2FoldChange>1 ~ 'Up'))
+                              log2FoldChange>1 ~ 'Up')) 
 
-
+# relevel the plot_type and subtype
+sign_regl_gene_df$plot_type <- factor(sign_regl_gene_df$plot_type, levels = c("Oncogene", "Tumor Suppressor",
+                                                                              "Oncogene or Tumor Suppressor", "Other"))
+sign_regl_gene_df$plot_subtype <- factor(sign_regl_gene_df$plot_subtype, levels = c("Kinase", "Oncogene or Tumor Suppressor",
+                                                                              "Transcription Factor", "RNA Binding Protein",
+                                                                              "Epigenetic", "Other Oncogene", "Other Tumor Suppressor"))
+unique(sign_regl_gene_df$plot_subtype)
+  
 ## plot num of hits per gene fam
-plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(Class)), fill= Direction)) +
+plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(plot_subtype)), fill= Direction)) +
                        geom_bar(stat="count", position='dodge', color="black") + 
+                       facet_wrap(~plot_type, scales = "free_y") +
                        xlab("Gene Family")     + 
-                       ylab("Number of Signficantly DE Genes") + 
+                       ylab("Number of Genes Signficantly Differentially Expressed") + 
                        scale_fill_manual(name = "Direction",
                                          values=c("#FFC20A","#0C7BDC")) + 
                        geom_text(stat='count',aes(label=after_stat(count)), 
@@ -218,9 +224,10 @@ plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(Clas
                                  hjust = -0.5, size = 3.5) +
                       theme_Publication() +
                       coord_flip() 
+
   
 
 # print and save plot
-pdf(file_gene_family_plot, height = 10, width = 10, useDingbats = FALSE) 
+pdf(file_gene_family_plot, height = 6, width = 12, useDingbats = FALSE) 
 print(plot_barplot_family)
 dev.off()

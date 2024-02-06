@@ -10,7 +10,7 @@ suppressPackageStartupMessages({
   library("tidyverse")
   library("ggrepel")
   library("vroom")
-  library("PMCMRplus")
+  library("ggpubr")
 })
 
 # Get `magrittr` pipe
@@ -38,7 +38,6 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## define output files
-piechart_plot_of_splicing_case <- file.path(plots_dir,"piechart_splice-types.tiff")
 file_dpsi_plot <- file.path(plots_dir,"dPSI_distr.pdf")
 
 ## get and setup input
