@@ -39,8 +39,7 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## define output files
 piechart_plot_of_splicing_case <- file.path(plots_dir,"piechart_splice-types.tiff")
-file_dpsi_es_plot <- file.path(plots_dir,"dPSI_distr_es.pdf")
-file_dpsi_ei_plot <- file.path(plots_dir,"dPSI_distr_ei.pdf")
+file_dpsi_plot <- file.path(plots_dir,"dPSI_distr.pdf")
 
 ## get and setup input
 ## rmats file
@@ -51,62 +50,40 @@ splicing_df  <-  vroom(rmats_merged_file, comment = "#", delim="\t") %>%
                  filter(FDR < 0.05 & PValue < 0.05) 
 
 ## extract strong differential splicing cases (dPSI >= |.10|)
-splicing_df_ES <- splicing_df %>% filter(IncLevelDifference  >= .10) 
-splicing_df_EI <- splicing_df %>% filter(IncLevelDifference <= -.10) 
-                                                        
+splicing_df_ES <- splicing_df %>% filter(IncLevelDifference  >= .10) %>% mutate(Preference="Skipping")
+splicing_df_EI <- splicing_df %>% filter(IncLevelDifference <= -.10) %>% mutate(Preference="Inclusion",
+                                                                                IncLevelDifference =IncLevelDifference*-1 )
+
+psi_comb <- rbind(splicing_df_EI,splicing_df_ES)
+
 ## ggstatplot across functional sites
 set.seed(123)
-plot_es <- ggstatsplot::ggbetweenstats(
-  data = splicing_df_ES, 
-  x = splicing_case, 
-  y = IncLevelDifference,
-  k = 3,
-  nboot = 15,
-  outlier.label = geneSymbol, # label to attach to outlier values
-  outlier.label.args = list(color = "red", size=2), # outlier point label color
-  notch = TRUE,
-  mean.ci = TRUE,
-  outlier.tagging = TRUE,
-  pairwise.comparisons = TRUE,
-  ggsignif.args = list(textsize = 4, tip_length = 0.01),
-  mean.size = 10,
-  #p.adjust.method = "fdr",
-  results.subtitle = FALSE,
-  messages = FALSE
-) + theme_Publication() + ggtitle("CLK1 Exon 4 Morpholino vs Non-targeting Morpholino") +
-  labs(y=expression(Delta*PSI), x="Splicing Case") + 
-  theme(legend.position = "none")
+plot_dsp <-  ggplot(psi_comb,aes(splicing_case, IncLevelDifference*100) ) +  
+  ylab(expression(Delta*"PSI"))+
+  ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 4, method="density") +
+  geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
+  facet_wrap("Preference") +
+  stat_compare_means(method = "wilcox.test", comparisons = list(c("A3SS", "A5SS"),
+                                                                c("A3SS", "MXE"),
+                                                                c("A3SS", "RI"),
+                                                                c("A3SS", "SE"),
+                                                                c("A5SS", "MXE"),
+                                                                c("A5SS", "RI"),
+                                                                c("A5SS", "SE"),
+                                                                c("MXE", "RI"),
+                                                                c("MXE", "SE"),
+                                                                c("SE", "A5SS"),
+                                                                c("SE", "A3SS"),
+                                                                c("SE", "RI"))) + 
+  scale_color_manual(name = "Preference", values = c(Inclusion = "#FFC20A", Skipping = "#0C7BDC"))  + 
+  theme_Publication() + 
+  labs(x= "Splicing Case") + 
+  theme(legend.position="none") +
+  ylim(c(0,170))
 
-set.seed(123)
-plot_ei <- ggstatsplot::ggbetweenstats(
-  data = splicing_df_EI, 
-  x = splicing_case, 
-  y = IncLevelDifference,
-  k = 3,
-  nboot = 15,
-  outlier.label = geneSymbol, # label to attach to outlier values
-  outlier.label.args = list(color = "red", size=2), # outlier point label color
-  notch = TRUE,
-  mean.ci = TRUE,
-  outlier.tagging = TRUE,
-  pairwise.comparisons = TRUE,
-  ggsignif.args = list(textsize = 4, tip_length = 0.01),
-  mean.size = 10,
-  #p.adjust.method = "fdr",
-  results.subtitle = FALSE,
-  messages = FALSE
-) + theme_Publication() + ggtitle("CLK1 Exon 4 Morpholino vs Non-targeting Morpholino") +
-  labs(y=expression(Delta*PSI), x="Splicing Case") + 
-  theme(legend.position = "none",text = element_text(size=16))
 
 # Save plot as PDF
-pdf(file_dpsi_es_plot, 
+pdf(file_dpsi_plot, 
     width = 15, height = 7)
-plot_es
-dev.off()
-
-# Save plot as PDF
-pdf(file_dpsi_ei_plot, 
-    width = 15, height = 7)
-plot_ei
+plot_dsp
 dev.off()
