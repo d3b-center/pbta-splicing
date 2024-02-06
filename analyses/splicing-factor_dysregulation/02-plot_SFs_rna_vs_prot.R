@@ -109,6 +109,6 @@ heat_plot <- Heatmap(mat,
                      row_names_gp = grid::gpar(fontsize = 12),
                      column_title_side = "top")
 
-pdf(heatmap_output_file, width = 8, height = 8)
+pdf(heatmap_output_file, width = 14, height = 6)
 print(heat_plot)
 dev.off()
