@@ -75,6 +75,7 @@ RUN ./install_bioc.r \
   msigdbr \
 	optparse \
   org.Hs.eg.db \
+  PMCMRplus \
 	patchwork \
 	pheatmap \
   reshape2 \
