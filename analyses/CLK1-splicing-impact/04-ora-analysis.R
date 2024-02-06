@@ -87,7 +87,7 @@ enrich_plot <- enrichplot::dotplot(ora_results) +
 ## save ORA dotplot as tiff
 ggplot2::ggsave(ora_dotplot_path,
                 plot=enrich_plot,
-                width=7,
+                width=9,
                 height=5,
                 device="pdf",
                 dpi=300)
