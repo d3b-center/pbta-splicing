@@ -106,6 +106,7 @@ pdf(boxplot_sbi_vs_tmb_by_mutation_status_file, width = 7, height = 4)
 sbi_tmb_plot
 dev.off()
 
+
 ## remove hyper/ultra-mutant samples to assess histology
 
 # Calculate upper and lower quantiles
@@ -141,17 +142,17 @@ by_hist <- by_hist %>%
   filter(plot_group %in% counts$plot_group)
   
 # plot
-pdf(boxplot_sbi_vs_tmb_by_cg_file, width = 24, height = 7)
+pdf(boxplot_sbi_vs_tmb_by_cg_file, width = 12.5, height = 5.5)
 ggplot(by_hist, aes(SBI_level, log10(tmb))) +  
   ggforce::geom_sina(aes(color = SBI_level, alpha = 0.4), pch = 16, size = 4, method="density") +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
   stat_compare_means(label.y = 2,size = 3) + 
-  facet_wrap("plot_group", labeller = labeller(plot_group = label_wrap_gen(width = 20)), nrow  = 2) +
+  facet_wrap("plot_group", labeller = labeller(plot_group = label_wrap_gen(width = 18)), nrow  = 2) +
   scale_color_manual(name = "SBI_level", values = c(High = "#0C7BDC", Low = "#FFC20A")) + 
   theme_Publication() + 
   labs(y="log10 (TMB)", x="Splicing Burden Level") + 
   ylim(c(-2,2.5)) +
-  theme(legend.position = "none", strip.text = element_text(size = 9))  # Adjust the size here
+  theme(legend.position = "none", strip.text = element_text(size = 10))  # Adjust the size here
 dev.off()
 
 
