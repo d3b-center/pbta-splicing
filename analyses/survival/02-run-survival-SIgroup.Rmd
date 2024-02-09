@@ -4,8 +4,8 @@ output:
   html_notebook:
     toc: TRUE
     toc_float: TRUE
-author: Ryan Corbett
-date: 2023
+author: Ryan Corbett, Jo Lynne Rokita
+date: 2023, 2024
 params:
   plot_ci: TRUE
 ---
@@ -56,30 +56,24 @@ Read in metadata and consolidate HGG, LGG, and GNG subtypes into broader groups
 ```{r}
 metadata <- read_tsv(metadata_file)
 
-metadata <- metadata %>%
-  filter(!grepl("To be classified", molecular_subtype)) %>%
-  mutate(mol_sub_group = case_when(
-    Histology == "LGG" & grepl("SEGA", molecular_subtype) ~ "SEGA",
-    Histology == "LGG" & grepl("wildtype", molecular_subtype) ~ "LGG, WT",
-    Histology == "LGG" & grepl("-BRAF", molecular_subtype) ~ "LGG, BRAF fusion",
-    Histology == "LGG" ~ "LGG, Other alteration",
-    Histology == "GNG" & grepl("wildtype", molecular_subtype) ~ "GNG, WT",
-    Histology == "GNG" & grepl("-BRAF", molecular_subtype) ~ "GNG, BRAF fusion",
-    Histology == "GNG" ~ "GNG, Other alteration",
-    !is.na(molecular_subtype) ~ molecular_subtype
-  ))
 ```
 
 Define histology groups to run survival analyses on 
 
 ```{r}
-groups <- c("ATRT", "CPG", "EPN", "GNG", 
-            "HGG", "LGG", "MB")
 
+subtype_df <- read_tsv(file.path(analysis_dir, "results", "subtypes-for-survival.tsv"))
+
+groups <- unique(subtype_df$hist)
+
+# folder names
+folder <- unique(subtype_df$foldername)
+names(folder) <- groups
+  
 # create names vector for output files
-plot_names <- c("atrt", "cpg", "epn", 
-                "gng", "hgg", "lgg", "mb")
+plot_names <- unique(subtype_df$names)
 names(plot_names) <- groups
+
 ```
 
 Loop through histology groups and perform the following: 
@@ -91,7 +85,7 @@ Loop through histology groups and perform the following:
 ```{r}
 for (group in groups){
   
-  results_dir <- file.path(analysis_dir, "results", group)
+  results_dir <- file.path(analysis_dir, "results", folder[[group]])
   
   if (!dir.exists(results_dir)) {
     dir.create(results_dir)
@@ -102,7 +96,7 @@ for (group in groups){
   km_os_model_file <- file.path(results_dir, 
                                     glue::glue("logrank_{plot_names[group]}_OS_SIburden.RDS"))
   
-  coxph_os_model_file <- ifelse(group %in% c("GNG", "LGG"),
+  coxph_os_model_file <- ifelse(group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"),
                              file.path(results_dir,
                                        glue::glue("cox_{plot_names[group]}_OS_additive_terms_subtype_resection_SIburden.RDS")),
                              file.path(results_dir,
@@ -112,7 +106,7 @@ for (group in groups){
   km_efs_model_file <- file.path(results_dir, 
                                     glue::glue("logrank_{plot_names[group]}_EFS_SIburden.RDS"))
   
-  coxph_efs_model_file <- ifelse(group %in% c("GNG", "LGG"),
+  coxph_efs_model_file <- ifelse(group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"),
                              file.path(results_dir,
                                        glue::glue("cox_{plot_names[group]}_EFS_additive_terms_subtype_resection_SIburden.RDS")),
                              file.path(results_dir,
@@ -126,28 +120,37 @@ for (group in groups){
   group_hist <- metadata %>%
     filter(grepl(group, Histology))
   
+  if (group == "DIPG or DMG"){
+    group_hist <- group_hist %>%
+     dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
+     dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("HGG, H3 wildtype", "HGG, H3 wildtype, TP53",
+                                                                "DMG, H3 K28", "DMG, H3 K28, TP53"
+                                                                )))
+  }  
+  
   # consolidate HGG subtypes into broader groups
-  if (group == "HGG"){
+  if (group == "Other high-grade glioma"){
     group_hist <- group_hist %>%
      dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
      dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("HGG, H3 wildtype", "HGG, H3 wildtype, TP53",
                                                                 "DHG, H3 G35", "DHG, H3 G35, TP53",
                                                                 "DMG, H3 K28", "DMG, H3 K28, TP53",
-                                                                "HGG, IDH, TP53",
+                                                                "HGG, IDH, TP53", "HGG, PXA", "HGG, PXA, TP53", 
                                                                 "IHG, ALK-altered", "IHG, NTRK-altered",
                                                                 "IHG, NTRK-altered, TP53", "IHG, ROS1-altered"
                                                                 )))
   }
   
-  if (group == "LGG"){
+  
+  if (group == "Low-grade glioma"){
     group_hist <- group_hist %>%
      dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
-     dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("LGG, WT", "LGG, BRAF fusion",
-                                                                "LGG, Other alteration", "SEGA"
+     dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("Wildtype", "BRAF V600E", "BRAF fusion",
+                                                                "Other alteration", "SEGA"
                                                                 )))
   }
   
-  if (group == "EPN"){
+  if (group == "Ependymoma"){
     group_hist <- group_hist %>%
      dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
      dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("EPN, PF A", "EPN, PF B",
@@ -156,17 +159,17 @@ for (group in groups){
                                                                 ))) 
   }
   
-    if (group == "GNG"){
+    if (group == "Mixed neuronal-glial tumor"){
     group_hist <- group_hist %>%
      dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
-     dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("GNG, WT", "GNG, BRAF fusion",
-                                                                "GNG, Other alteration"
+     dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("Wildtype", "BRAF V600E", "BRAF fusion",
+                                                                "Other alteration"
                                                                 )))
   }
   
   #Define high and low SI burden samples using quartiles
   
-  if (group %in% c("LGG", "GNG")){
+  if (group %in% c("Low-grade glioma", "Mixed neuronal-glial tumor")){
     
     group_hist <- group_hist %>%
       filter(!is.na(mol_sub_group) & !is.na(OS_days) & !is.na(EFS_days) & !is.na(extent_of_tumor_resection) & !extent_of_tumor_resection %in% c("Unavailable", "Not Applicable")) %>%
@@ -217,11 +220,9 @@ for (group in groups){
   # Run cox proprtional hazards models for OS, including appropriate covariates per histology
   add_model_os <- suppressWarnings(fit_save_model(group_hist,
                                   terms = ifelse(
-                                      group %in% c("GNG", "LGG"), "mol_sub_group+extent_of_tumor_resection+SI_group",
-                                      ifelse(group %in% c("ATRT", "EPN", "HGG", "MB"),
-                                                            "mol_sub_group+SI_group",
-                                             "SI_group"
-                                  )),
+                                      group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"), "mol_sub_group+extent_of_tumor_resection+SI_group",
+                                      ifelse(group %in% c("Atypical Teratoid Rhabdoid Tumor", "Ependymoma", "DIPG or DMG", "Other high-grade glioma", "Medulloblastoma"), "mol_sub_group+SI_group", "SI_group")
+                                      ),
              coxph_os_model_file,
              "multivariate",
              years_col = "OS_years",
@@ -231,11 +232,11 @@ for (group in groups){
   # Run cox proprtional hazards models for EFS, including appropriate covariates per histology
   add_model_efs <- suppressWarnings(fit_save_model(group_hist,
                                   terms = ifelse(
-                                      group %in% c("GNG", "LGG"), "mol_sub_group+extent_of_tumor_resection+SI_group",
-                                      ifelse(group %in% c("ATRT", "EPN", "HGG", "MB"),
-                                                            "mol_sub_group+SI_group",
-                                             "SI_group"
-                                  )),
+                                      group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"), "mol_sub_group+extent_of_tumor_resection+SI_group",
+                                      ifelse(group %in% c("Atypical Teratoid Rhabdoid Tumor", "Ependymoma", "DIPG or DMG", "Other high-grade glioma", "Medulloblastoma"),
+                                             "mol_sub_group+SI_group",
+                                             "SI_group")
+                                      ),
              coxph_efs_model_file,
              "multivariate",
              years_col = "EFS_years",
@@ -255,52 +256,42 @@ for (group in groups){
 Run same survival analyses on molecular subtypes with sufficient sample size
 
 ```{r}
-# define subtype df with histology, subtype, and file names
-subtype_df <- data.frame(hist = c("CPG", "EPN",
-                                  rep("HGG", 2), "GNG",
-                                  rep("LGG", 3), rep("MB", 3)),
-                         names = c("cranio", "epn",
-                                  rep("hgg", 2), "gng_gnt",
-                                  rep("lgg", 3), rep("mb", 3)),
-                         subtype = c("ADAM", "PF A", "wildtype", "K28",
-                                     "Other", "BRAF", "Other", "WT", 
-                                     "Group3", "Group4", "SHH"))
 
 # Loop through subtypes and run survival analyses
 for (i in 1:nrow(subtype_df)) {
   
-  results_dir <- file.path(analysis_dir, "results", subtype_df$hist[i])
+  results_dir <- file.path(analysis_dir, "results", subtype_df$foldername[i])
   
   # define output files
   km_os_model_file <- file.path(results_dir, 
-                                    glue::glue("logrank_{subtype_df$names[i]}_{subtype_df$subtype[i]}_OS_SIburden.RDS"))
+                                    glue::glue("logrank_{subtype_df$names[i]}_{subtype_df$subtype_name[i]}_OS_SIburden.RDS"))
   
-  coxph_os_model_file <- ifelse(subtype_df$hist[i] %in% c("LGG", "GNG"),
+  coxph_os_model_file <- ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"),
                              file.path(results_dir,
-                                      glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_OS_additive_terms_subtype_resection_SIburden.RDS")),
+                                      glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype_name[i]}_OS_additive_terms_subtype_resection_SIburden.RDS")),
                              file.path(results_dir,
-                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_OS_additive_terms_subtype_SIburden.RDS"))
+                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype_name[i]}_OS_additive_terms_subtype_SIburden.RDS"))
   )
   
   km_efs_model_file <- file.path(results_dir, 
-                                    glue::glue("logrank_{subtype_df$names[i]}_{subtype_df$subtype[i]}_EFS_SIburden.RDS"))
+                                    glue::glue("logrank_{subtype_df$names[i]}_{subtype_df$subtype_name[i]}_EFS_SIburden.RDS"))
   
-  coxph_efs_model_file <- ifelse(subtype_df$hist[i] %in% c("LGG", "GNG"),
+  coxph_efs_model_file <- ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"),
                              file.path(results_dir,
-                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_EFS_additive_terms_subtype_resection_SIburden.RDS")),
+                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype_name[i]}_EFS_additive_terms_subtype_resection_SIburden.RDS")),
                              file.path(results_dir,
-                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype[i]}_EFS_additive_terms_subtype_SIburden.RDS"))
+                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype_name[i]}_EFS_additive_terms_subtype_SIburden.RDS"))
   )
   
   SI_burden_output_file <- file.path(results_dir,
-                                     glue::glue("{subtype_df$names[i]}_{subtype_df$subtype[i]}_with_SI_group.tsv"))
+                                     glue::glue("{subtype_df$names[i]}_{subtype_df$subtype_name[i]}_with_SI_group.tsv"))
   
     #Subset metadata for histology subtype
     subtype_hist <- metadata %>%
-      filter(Histology == subtype_df$hist[i] & grepl(subtype_df$subtype[i], mol_sub_group) & !is.na(OS_days) & !is.na(EFS_days))
+      filter(Histology == subtype_df$hist[i] & grepl(subtype_df$subtype[i], mol_sub_group))
     
     
-    if(subtype_df$hist[i] %in% c("LGG", "GNG")){
+    if(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma")){
       
       subtype_hist <- subtype_hist %>%
         dplyr::filter(!is.na(extent_of_tumor_resection) & !extent_of_tumor_resection %in% c("Not Applicable", "Unavailable")) %>%
@@ -350,21 +341,22 @@ for (i in 1:nrow(subtype_df)) {
     
     # Run coxph models and save to output
   add_model_os <- suppressWarnings(fit_save_model(subtype_hist,
-                                terms = ifelse(subtype_df$hist[i] %in% c("GNG", "LGG"),
+                                terms = ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"),
                                                "extent_of_tumor_resection+SI_group",
-                                               ifelse(subtype_df$hist[i] == "HGG", 
+                                               ifelse(subtype_df$hist[i] == "Other high-grade glioma", 
                                                       "mol_sub_group+SI_group",
                                                       "SI_group"
                                                       )),
                                  coxph_os_model_file,
                                  "multivariate",
                                  years_col = "OS_years",
-                                 status_col = "OS_status"))
+                                 status_col = "OS_status")
+                                )
   
   add_model_efs <- suppressWarnings(fit_save_model(subtype_hist,
-                                 terms = ifelse(subtype_df$hist[i] %in% c("GNG", "LGG"),
+                                 terms = ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"),
                                                "extent_of_tumor_resection+SI_group",
-                                               ifelse(subtype_df$hist[i] == "HGG", 
+                                               ifelse(subtype_df$hist[i] == "Other high-grade glioma", 
                                                       "mol_sub_group+SI_group",
                                                       "SI_group"
                                                       )),
