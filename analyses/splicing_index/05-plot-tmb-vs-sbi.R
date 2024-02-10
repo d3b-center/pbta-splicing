@@ -42,16 +42,16 @@ palette_file <- file.path(map_dir,"histologies-plot-group.tsv")
 hist_pal <- read_tsv(palette_file) %>%
   filter(!is.na(pathology_diagnosis),
          !is.na(plot_group)) %>%
-  select(Kids_First_Biospecimen_ID, cancer_group, plot_group)
+  dplyr::select(Kids_First_Biospecimen_ID, cancer_group, plot_group)
 
 indep_rna_df <- read_tsv(indep_rna_file) %>% 
   filter(cohort == "PBTA") %>%
   dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>%
-  select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_RNA)
+  dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_RNA)
 indep_wgs_df <- read_tsv(indep_wgs_file) %>% 
   filter(cohort == "PBTA") %>%
   dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID) %>%
-  select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_DNA)
+  dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_DNA)
 
 ## get tmb file (source: OpenPedCan v13)
 tmb_coding_df  <-  read_tsv(tmb_coding_file)  %>% 
@@ -59,12 +59,12 @@ tmb_coding_df  <-  read_tsv(tmb_coding_file)  %>%
                                      tmb >=10 & tmb < 100 ~ "Hypermutant",
                                      tmb >=100 ~ "Ultra-hypermutant")) %>%
   dplyr::rename(Kids_First_Biospecimen_ID_DNA = Tumor_Sample_Barcode) %>%
-  select(-experimental_strategy) %>%
+  dplyr::select(-experimental_strategy) %>%
   right_join(indep_wgs_df)
 
 sbi_coding_df  <-  read_tsv(sbi_coding_file) %>% 
   dplyr::rename(Kids_First_Biospecimen_ID_RNA = Sample) %>%
-  select(-Histology) %>%
+  dplyr::select(-Histology) %>%
   right_join(indep_rna_df)
 
 ## intersect tmb values with SBI tumors
@@ -106,6 +106,7 @@ pdf(boxplot_sbi_vs_tmb_by_mutation_status_file, width = 7, height = 4)
 sbi_tmb_plot
 dev.off()
 
+
 ## remove hyper/ultra-mutant samples to assess histology
 
 # Calculate upper and lower quantiles
@@ -125,7 +126,9 @@ by_hist <- quantile_data %>%
   mutate(SBI_level = case_when(SI > upper_quantile ~ "High",
                                SI < lower_quantile ~ "Low",
                                TRUE ~ "Mid")) %>%
-  filter(SBI_level != "Mid")
+  filter(SBI_level != "Mid") %>%
+  filter(plot_group != "Other tumor",
+         plot_group != "Non−neoplastic tumor")
 
 # relevel for plotting
 by_hist$SBI_level <- factor(by_hist$SBI_level, levels = c("Low", "High"))
@@ -139,17 +142,17 @@ by_hist <- by_hist %>%
   filter(plot_group %in% counts$plot_group)
   
 # plot
-pdf(boxplot_sbi_vs_tmb_by_cg_file, width = 8, height = 10)
+pdf(boxplot_sbi_vs_tmb_by_cg_file, width = 12.5, height = 5.5)
 ggplot(by_hist, aes(SBI_level, log10(tmb))) +  
   ggforce::geom_sina(aes(color = SBI_level, alpha = 0.4), pch = 16, size = 4, method="density") +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
   stat_compare_means(label.y = 2,size = 3) + 
-  facet_wrap("plot_group", labeller = labeller(plot_group = label_wrap_gen(width = 20))) +
+  facet_wrap("plot_group", labeller = labeller(plot_group = label_wrap_gen(width = 18)), nrow  = 2) +
   scale_color_manual(name = "SBI_level", values = c(High = "#0C7BDC", Low = "#FFC20A")) + 
   theme_Publication() + 
   labs(y="log10 (TMB)", x="Splicing Burden Level") + 
   ylim(c(-2,2.5)) +
-  theme(legend.position = "none", strip.text = element_text(size = 9))  # Adjust the size here
+  theme(legend.position = "none", strip.text = element_text(size = 10))  # Adjust the size here
 dev.off()
 
 
