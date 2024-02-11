@@ -10,4 +10,3 @@ perl 01-generate_hist_spec_events_tab.pl $hist_file $rmats_file $indep_samples
 Rscript --vanilla 02-plot_histology-specific_splicing_events.R
 
 rm Rplots.pdf
-
