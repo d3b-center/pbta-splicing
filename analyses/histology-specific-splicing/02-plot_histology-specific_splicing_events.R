@@ -24,11 +24,15 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "histology-specific-splicing")
 results_dir <- file.path(analysis_dir, "results")
+cohort_sum_dir <- file.path(root_dir, "analyses", "cohort_summary")
 
 plots_dir <- file.path(analysis_dir, "plots")
 if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
 }
+
+# input file for colors
+palette_file <- file.path(cohort_sum_dir, "results", "histologies-plot-group.tsv")
 
 ## output files for final plots
 upsetR_es_plot_file <- file.path(analysis_dir, "plots", "upsetR_histology-specific.es.pdf")
@@ -37,26 +41,62 @@ uniq_es_tsv_out <- file.path(results_dir, "unique_events-es.tsv")
 uniq_ei_tsv_out <- file.path(results_dir, "unique_events-ei.tsv")
 
 # Load the data using vroom
+palette_df <- read_tsv(palette_file)
 splice_event_df <- vroom::vroom(file.path(results_dir, "splicing_events.hist-labeled_list.thr2freq.txt"), delim = "\t", trim_ws = TRUE, col_names = TRUE)
 
 ## make list out of all skipping events
 list_for_skipping_upsetR <- splice_event_df %>%
   filter(type == 'skipping') %>%
-  filter(histology !="NA") %>%
   dplyr::select(histology, splicing_event) %>%
   group_by(histology) %>%
   summarise(splicing_events = list(splicing_event)) %>% # Summarize as a list
   ungroup() %>%
   deframe() 
   
+# Adjust the space allocated for numbers on the bars
+#upset_text_scale <- 1.2  # Increase this value to allocate more space for the numbers
+#upset_point_size <- 3 
+
+# get plot colors
+# color palette for histology
+uniq_plot_cols <- palette_df %>%
+  select(plot_group, plot_group_hex) %>%
+  unique()
+
+cols <- uniq_plot_cols$plot_group_hex
+names(cols) <- uniq_plot_cols$plot_group
+# order the names to match the upsetR plot names so the colors match correctly
+# Calculate frequencies
+histology_frequencies <- splice_event_df %>%
+  filter(type == 'skipping') %>%
+  count(histology) %>%
+  arrange(desc(n))
+
+# Reorder cols based on this frequency order
+ordered_histologies <- histology_frequencies$histology
+cols <- cols[ordered_histologies]
+
+es_events <- upset(fromList(list_for_skipping_upsetR), 
+      keep.order = TRUE, 
+      mainbar.y.label = "", 
+      main.bar.color = "black",
+      sets.bar.color = cols,
+      order.by = "freq", 
+      sets.x.label = "Set size",
+      mb.ratio = c(0.5, 0.5), 
+      shade.color = "aliceblue",
+      #text scale
+      # c(intersection size title, intersection size tick labels, set size title, set size tick labels, set names, numbers above bars)
+      text.scale = c(2,2,2,1.8,2,0), 
+      point.size = 3, 
+      line.size = 1.2,  
+      nsets = 17, 
+      empty.intersections = "on")
+
 
 # Generate the UpSetR plot
-es_events <- upset(fromList(list_for_skipping_upsetR), order.by = "freq",keep.order = TRUE, mainbar.y.label = "", sets.x.label = "Histology",
-                   mb.ratio = c(0.6,0.4), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4), point.size = 3, line.size = 1,  nsets = 17, empty.intersections = "on")
-
-
 # Save plot
-pdf(upsetR_es_plot_file, height = 9, width = 15)
+pdf(upsetR_es_plot_file, height = 8, width = 10)
 print(es_events)
 dev.off()
 
@@ -95,12 +135,35 @@ list_for_inclusion_upsetR <- splice_event_df %>%
   ungroup() %>%
   deframe()
 
-# Generate the UpSetR plot
-ei_events <- upset(fromList(list_for_inclusion_upsetR), order.by = "freq",keep.order = TRUE, mainbar.y.label = "", sets.x.label = "Histology",
-                   mb.ratio = c(0.6,0.4), text.scale = c(5, 1.9, 1.5, 1.9, 2, 1.4),point.size = 3, line.size = 1,nsets = 17, empty.intersections = "on")
+# Calculate frequencies
+histology_frequencies_incl <- splice_event_df %>%
+  filter(type == 'inclusion') %>%
+  count(histology) %>%
+  arrange(desc(n))
 
+# Reorder cols based on this frequency order
+ordered_histologies <- histology_frequencies_incl$histology
+cols <- cols[ordered_histologies]
+
+# Generate the UpSetR plot
+ei_events <- upset(fromList(list_for_inclusion_upsetR),
+                   keep.order = TRUE, 
+                   mainbar.y.label = "", 
+                   main.bar.color = "black",
+                   sets.bar.color = cols,
+                   order.by = "freq", 
+                   sets.x.label = "Set size",
+                   mb.ratio = c(0.5, 0.5), 
+                   shade.color = "aliceblue",
+                   #text scale
+                   # c(intersection size title, intersection size tick labels, set size title, set size tick labels, set names, numbers above bars)
+                   text.scale = c(2,2,2,1.7,2,0), 
+                   point.size = 3, 
+                   line.size = 1.2,  
+                   nsets = 17, 
+                   empty.intersections = "on")
 # Save plot
-pdf(upsetR_ei_plot_file, height = 9, width = 15)
+pdf(upsetR_ei_plot_file, height = 8, width = 10)
 print(ei_events)
 dev.off()
 
@@ -121,7 +184,8 @@ unique_events_ei_df <- data.frame()
 for (Histology in names(unique_items_list)) {
   
   # Create a data frame with list values
-  df <- data.frame(SpliceID=unlist(unique_items_list[[Histology]])) %>% mutate(Histology=paste(Histology,sep="")) 
+  df <- data.frame(SpliceID=unlist(unique_items_list[[Histology]])) %>% 
+    mutate(Histology=paste(Histology,sep="")) 
   
   # Define the file name based on the list name
   file_name <- file.path(file.path(results_dir), paste("unique_events-es.",Histology, ".tsv", sep = ""))
