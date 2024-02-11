@@ -36,7 +36,7 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## output files for final plots
 sbi_cluster_plot <- file.path(analysis_dir, "plots", 
-                              "cluster_by_sbi.tiff")
+                              "cluster_by_sbi.pdf")
 
 cc_members_file = "ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_ccp.rds"
 cc_members_df  <- readRDS(paste0(output_dir,"/",cc_members_file) )
@@ -54,36 +54,20 @@ splice_index_low  <- filter(sbi_df, sbi_df$SI <SI_total_low  )
 
 ## add column with "High or "Low" for SBI info
 sbi_outliers <- sbi_df%>%filter(sbi_df$SI <SI_total_low | sbi_df$SI >SI_total_high) %>% 
-  mutate(level=case_when(SI < SI_total_low ~ "Low",SI >SI_total_high  ~ "High" )) %>% inner_join(cc_members, by="Sample")
+  mutate(level=case_when(SI < SI_total_low ~ "Low",SI >SI_total_high  ~ "High" )) %>% 
+  inner_join(cc_members, by="Sample")
 
 summ_sbi_cl <- sbi_outliers %>% group_by(cc_members, level) %>%
   summarise(n = n()) %>%
   mutate(Freq = n/sum(n))
 
-sbi_vs_cl_barplot <- ggplot(summ_sbi_cl, aes(x = level, y = n, fill = level)) + geom_bar(stat = "identity") +
-                            facet_wrap( ~ cc_members, ncol = 4) + 
-                            labs(x="SBI Level", y="Num samples") +  
-                            coord_flip()  +
-                            theme_Publication() + 
-                            theme(legend.position = "none") +
-                            scale_fill_manual(values= c("Low" = "#FFC20A", "High"="#0C7BDC" ))
-                                        
+sbi_vs_cl_barplot <- ggplot(summ_sbi_cl, aes(x = as.factor(cc_members), y = n, fill = level)) + 
+  geom_bar(stat = "identity") +
+  labs(x="Cluster", y="Number of Samples") +
+  theme_Publication() + 
+  scale_fill_manual(values= c("Low" = "#FFC20A", "High"="#0C7BDC"), name = "SBI Level") +
 
+pdf(sbi_cluster_plot, height = 3, width = 8)
 print(sbi_vs_cl_barplot)
-
-  
-ggsave(
-  sbi_cluster_plot,
-  plot = last_plot(),
-  device = NULL,
-  path = NULL,
-  scale = 1,
-  width =10,
-  height = 4,
-  units = "in",
-  dpi = 300,
-  limitsize = TRUE,
-  bg = NULL
-)
-
+dev.off()
 
