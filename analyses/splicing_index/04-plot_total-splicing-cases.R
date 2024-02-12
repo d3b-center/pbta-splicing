@@ -52,13 +52,13 @@ splice_case_counts_df <- splice_case_total %>% dplyr::count(Case, Type) %>% arra
 
 lolliplot_plot <- ggplot(splice_case_counts_df, aes(x=Case, y=n)) +
   geom_segment( aes(x=Case, xend=Case, y=0, yend=n))+
-  geom_point( color="black", size=4) +
-  #scale_fill_manual(name = "Splicing Case",values = case_colors[['Case']]) +
-  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +
+  geom_point(color="black", size=4) +
+  coord_flip() +
+  scale_y_continuous(labels = function(x) format(x, scientific = TRUE)) +
   theme_Publication() + 
   xlab("Type of splice event") +
-  ylab("Number of splice variants") + 
-  facet_wrap(Type ~ .) +
+  ylab("Number") + 
+  facet_wrap(~Type) +
   theme(
     axis.title=element_text(size=14,face="bold"),
     axis.text.x = element_text(angle = 75, hjust = 1),
@@ -66,7 +66,7 @@ lolliplot_plot <- ggplot(splice_case_counts_df, aes(x=Case, y=n)) +
   
 
 # save plot pdf version
-pdf(plot_path, height = 5, width = 5.5)
+pdf(plot_path, height = 3, width = 4.5)
 print(lolliplot_plot)
 dev.off()
 
