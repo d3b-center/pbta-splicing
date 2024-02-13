@@ -46,7 +46,7 @@ indep_rna_df <- vroom(indep_rna_file)  %>%
          cohort == 'PBTA') 
 
 indep_wgs_df <- vroom(indep_wgs_file)  %>% 
-  filter(cancer_group=='High-grade glioma',
+  filter(cancer_group %in% c('High-grade glioma', "Diffuse midline glioma", "Diffuse intrinsic pontine glioma"
          cohort == 'PBTA') 
 
 ## filter for samples that have both RNA and WGS
