@@ -2,7 +2,7 @@
 # 03-identify_and_plot_histologies_by_SBI.R
 # written by Ammar S Naqvi, Jo Lynne Rokita
 #
-# script identifies high vs low SBI tumors and creates piechart of their hist 
+# script identifies high vs low SBI tumors and creates barplot of their hist 
 #
 # usage: Rscript 03-identify_and_plot_histologies_by_SBI.R
 ################################################################################
@@ -21,6 +21,7 @@ suppressPackageStartupMessages({
 ## set up directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses","splicing_index")
+map_dir <- file.path(root_dir, "analyses", "cohort_summary", "results")
 input_dir   <- file.path(analysis_dir, "input")
 results_dir   <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
@@ -29,13 +30,14 @@ plots_dir   <- file.path(analysis_dir, "plots")
 # source function for theme for plots survival
 figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
+if(!interactive()) pdf(NULL)
 
 ## define output files
 barplot_path <- file.path(plots_dir, "hist_by_sbi_level_barplot.pdf")
 
 ## get and setup input files
 sbi_coding_file  <- file.path(results_dir,"splicing_index.SE.txt")
-palette_file <- file.path(results_dir,"histologies-plot-group.tsv") 
+palette_file <- file.path(map_dir,"histologies-plot-group.tsv") 
 
 # read in files, join palette with sbi file
 sbi_coding_df  <-  read_tsv(sbi_coding_file, comment = "#") %>% 
@@ -48,6 +50,11 @@ palette_df <- read_tsv(palette_file, guess_max = 100000) %>%
 
 sbi_coding_df <- sbi_coding_df %>%
   left_join(palette_df)
+
+# get n per group to calculate percentages
+hist_n <- sbi_coding_df %>%
+  group_by(Histology) %>%
+  tally()
 
 ## compute quantiles to define high vs low SBI tumors
 quartiles_sbi <- quantile(sbi_coding_df$SI, probs=c(.25, .75), na.rm = FALSE)
@@ -75,9 +82,13 @@ clin_df_w_lowSBI <- clin_df_w_SBI %>%
 plot_df <- clin_df_w_highSBI %>%
   full_join(clin_df_w_lowSBI) %>%
   left_join(palette_df) %>%
-  mutate(Histology = fct_reorder(Histology, High_SBI)) %>%
-  dplyr::rename(`Samples with High SBI (N)` = High_SBI,
-                `Samples with Low SBI (N)` = Low_SBI)
+  left_join(hist_n) %>%
+  # calc percent
+  mutate(perc_low = Low_SBI/n*100,
+         perc_high = High_SBI/n*100,
+         Histology = fct_reorder(Histology, High_SBI)) %>%
+  dplyr::rename(`High SBI (%)` = perc_high,
+                `Low SBI (%)` = perc_low) 
 
 # make colors
 plot_colors <- palette_df$plot_group_hex
@@ -97,7 +108,7 @@ g.mid <- ggplot(plot_df,aes(x=1,y=Histology)) +
         axis.ticks.x=element_line(color=NA),
         plot.margin = unit(c(2,1,10,2), "mm")) 
 
-g1 <- ggplot(data = plot_df, aes(x = Histology, y = `Samples with Low SBI (N)`)) +
+g1 <- ggplot(data = plot_df, aes(x = Histology, y = `Low SBI (%)`)) +
   geom_bar(stat = "identity", aes(fill = Histology), show.legend = FALSE) + 
   scale_fill_manual(values = plot_colors) +
   theme_Publication() +
@@ -109,12 +120,12 @@ g1 <- ggplot(data = plot_df, aes(x = Histology, y = `Samples with Low SBI (N)`))
     axis.line.y.left = element_blank(),
     panel.grid.major.y = element_blank(),  # Remove major grid lines
     panel.grid.minor.y = element_blank())  + # Remove minor grid lines
-  scale_y_reverse(limits = c(200,0)) + 
+  scale_y_reverse(limits = c(105,0)) + 
   coord_flip() +
-  #labs(x = "Number of samples with Low SBI") +
+ # labs(x = "N with Low SBI") +
   geom_hline(yintercept = 0, color = "black", linetype = "solid", linewidth = 0.75)
 
-g2 <- ggplot(data = plot_df, aes(x = Histology, y = `Samples with High SBI (N)`)) +
+g2 <- ggplot(data = plot_df, aes(x = Histology, y = `High SBI (%)`)) +
   geom_bar(stat = "identity", aes(fill = Histology), show.legend = FALSE) +
   scale_fill_manual(values = plot_colors) +
   theme_Publication() +
@@ -126,8 +137,8 @@ g2 <- ggplot(data = plot_df, aes(x = Histology, y = `Samples with High SBI (N)`)
     axis.line.y.left = element_blank(),
     panel.grid.major.y = element_blank(),  # Remove major grid lines
     panel.grid.minor.y = element_blank())  + # Remove minor grid lines) +
-  # labs(x = "Number of samples with High SBI") +
-  scale_y_continuous(limits = c(0,200)) +
+  # labs(x = "N with High SBI") +
+  scale_y_continuous(limits = c(0,105)) +
   coord_flip() +
   geom_hline(yintercept = 0, color = "black", linetype = "solid", linewidth = 0.75)
 
@@ -135,9 +146,8 @@ gg1 <- ggplot_gtable(ggplot_build(g1))
 gg2 <- ggplot_gtable(ggplot_build(g2))
 gg.mid <- ggplot_gtable(ggplot_build(g.mid))
 
-
 # save barplot 
-while (!is.null(dev.list()))  dev.off()
-pdf(barplot_path, height = 5, width = 11)
-grid.arrange(gg1,gg.mid,gg2,ncol=3,widths=c(3/8,2/8,3/8))
+pdf(barplot_path, height = 5, width = 6.2)
+grid.arrange(gg1,gg.mid,gg2,ncol=3,widths=c(2/7,3/7,2/7))
 dev.off()
+

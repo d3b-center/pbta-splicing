@@ -1,0 +1,17 @@
+hist	subtype	n	names	foldername	subtype_name
+Atypical Teratoid Rhabdoid Tumor	SHH	17	atrt	ATRT	SHH
+Craniopharyngioma	ADAM	28	cpg	CPG	ADAM
+DIPG or DMG	K28	100	dmg	DMG	K28
+Ependymoma	PF A	31	epn	EPN	PF-A
+Ependymoma	ST ZFTA	21	epn	EPN	ST-ZFTA
+Low-grade glioma	BRAF fusion	134	lgg	LGG	BRAF-fusion
+Low-grade glioma	BRAF V600E	30	lgg	LGG	BRAF-V600E
+Low-grade glioma	Other	54	lgg	LGG	Other
+Low-grade glioma	Wildtype	29	lgg	LGG	Wildtype
+Medulloblastoma	Group3	42	mb	MB	Group3
+Medulloblastoma	Group4	71	mb	MB	Group4
+Medulloblastoma	SHH	40	mb	MB	SHH
+Medulloblastoma	WNT	16	mb	MB	WNT
+Mixed neuronal-glial tumor	BRAF V600E	20	gng	GNG	BRAF-V600E
+Mixed neuronal-glial tumor	Other	40	gng	GNG	Other
+Other high-grade glioma	H3 wildtype	57	hgg	HGG	H3-wildtype

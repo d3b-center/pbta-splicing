@@ -22,62 +22,70 @@ unless ($splice_case=~/SE$|A3SS$|A5SS$|RI$/)
   die("Splicing case does not exist, please use either 'SE', 'A5SS', 'A3SS', or 'RI'");
 }
 # annotate histology file #
-  # hash with BS and disease
-  # make arrays of each histology of BS IDs
+# hash with BS and disease
+# make arrays of each histology of BS IDs
 
-  my %primary_initial_sample_list;
+my %primary_initial_sample_list;
 
 
-  ## store primary tumor samples to filter on later
-  open(FIL,$primary_tumor_file) || die("Cannot Open File");
-  while(<FIL>)
-  {
-    chomp;
-    my @header = split "\t";
-    my $bs_id = $header[1];
-    my $cohort = $header[2];
-    my $exp_strategy = $header[4];
-    my $tumor_descr = $header[5];
+## store primary tumor samples to filter on later
+open(FIL,$primary_tumor_file) || die("Cannot Open File");
+while(<FIL>)
+{
+  chomp;
+  my @header = split "\t";
+  my $bs_id = $header[1];
+  my $cohort = $header[2];
+  my $exp_strategy = $header[4];
+  my $tumor_descr = $header[5];
 
-    next unless ($cohort=~/PBTA/);
+  next unless ($cohort=~/PBTA/);
 
-    $primary_initial_sample_list{$bs_id} = $bs_id;
+  $primary_initial_sample_list{$bs_id} = $bs_id;
 
-  }
-  close(FIL);
+}
+close(FIL);
 
 
 ## annotate and store histology information
-open(FIL,$histology) || die("Cannot Open File");
-  while(<FIL>)
-  {
-    chomp;
-    my @cols       = split "\t";
-    my $hist = $cols[-2];
-    my $bs_id      = $cols[0];
-    my $CNS_region = $cols[25];
+open(FIL, $histology) || die("Cannot Open File");
+
+# Assuming the first line of the file contains column headers
+my $header = <FIL>;
+chomp $header;
+my @column_names = split "\t", $header;
+
+# Create a hash to map column names to indices
+my %column_index;
+@column_index{@column_names} = (0..$#column_names);
+
+while (<FIL>) {
+  chomp;
+  my @cols       = split "\t";
+  my $hist      = $cols[$column_index{'plot_group'}];
+  my $bs_id      = $cols[$column_index{'Kids_First_Biospecimen_ID'}];
+  my $CNS_region = $cols[$column_index{'CNS_region'}];
 
 
-    next unless ($primary_initial_sample_list{$bs_id});
+  next unless ($primary_initial_sample_list{$bs_id});
+  next unless ( ($hist=~/(high-grade)/) || ($hist=~/DMG/) );
 
+  ## make an array and store histology information and BS IDs
+  push @broad_hist, $hist;
+  push @bs_ids, $bs_id;
 
+  $bs_id_hist{$bs_id} = $hist;
 
-    ## make an array and store histology information and BS IDs
-    push @broad_hist, $hist;
-    push @bs_ids, $bs_id;
+  ## store total number of histologies
+  $hist_count{$hist}++;
+  push @{$histology_ids{$hist}}, $bs_id;
 
-    $bs_id_hist{$bs_id} = $hist;
+  $cns_regions{$bs_id} = $CNS_region;
 
-    ## store total number of histologies
-    $hist_count{$hist}++;
-    push @{$histology_ids{$hist}}, $bs_id;
+  ## histology counter for downstream analysis
+  $hist_count{$hist}++;
 
-    $cns_regions{$bs_id} = $CNS_region;
-
-    ## histology counter for downstream analysis
-    $hist_count{$hist}++;
-
-  }
+}
 close(FIL);
 
 
@@ -98,6 +106,11 @@ while(<FIL>)
   my @cols  = split "\t";
   my $bs_id = $cols[1];
   my $ctrl  = $cols[2];
+
+  ## filter for HGG/histology of interest
+  my $hist = $bs_id_hist{$bs_id};
+  next unless $primary_initial_sample_list{$bs_id};
+  next unless ( ($hist=~/(high-grade)/) || ($hist=~/DMG/) );
 
   ## get gene name
   my $gene         = $cols[4];
@@ -162,26 +175,22 @@ while(<FIL>)
   my $inc_len  = $cols[29];
   my $skip_len = $cols[30];
 
-  ## chr and strand
-  $chr{$splice_id} = $chr;
-  $str{$splice_id} = $str;
-
-  ## only look at strong changes,  tumor junction reads > 10 reads
+  ## only look at strong changes, junction reads > 10 reads
   next unless ($IJC >=10);
   next unless ($SJC >=10);
 
   ## create unique ID for splicing change
   my $splice_id = $gene.":".$Start."-".$End."_".$prevES."-".$prevEE."_".$nextES."-".$nextEE;
-  my $hist = $bs_id_hist{$bs_id};
 
   ##remove .0 in coord
   $splice_id=~s/\.0//g;
 
+  ## chr and strand
+  $chr{$splice_id} = $chr;
+  $str{$splice_id} = $str;
+
   ## store PSI for event and sample
   $inc_levels{$splice_id}{$bs_id} = $inc_level;
-
-  ## filter for HGG/histology of interest
-  next unless $hist=~/HGAT/;
 
   push @splicing_events, $splice_id;
   push @{$splicing_psi{$splice_id}}, $inc_level;
@@ -190,6 +199,7 @@ while(<FIL>)
   $splice_totals{$splice_id}++;
 
   $splice_event_hist{$splice_id}{$hist}=$hist;
+  #print $splice_id,"\n";
 }
 close(FIL);
 
@@ -215,10 +225,10 @@ foreach my $splice_event(@splicing_events_uniq)
 }
 
 ## assess each tumor samples to identify if it is aberrant (2 standard deviations from the mean)
-open(EVENTS,">results/splice_events.diff.".$splice_case.".txt");
-print EVENTS "Splice ID\tCase\tSample\tHistology\tCNS\tType\n";
-open(BEDPOS, ">results/splicing_events.SE.total.pos.bed");
-open(BEDNEG, ">results/splicing_events.SE.total.neg.bed");
+open(EVENTS,">results/splice_events.diff.".$splice_case.".HGG.txt");
+print EVENTS "Splice ID\tCase\tSample\tHistology\tCNS\tType\tdPSI\n";
+open(BEDPOS, ">results/splicing_events.SE.total.HGG.pos.bed");
+open(BEDNEG, ">results/splicing_events.SE.total.HGG.neg.bed");
 
 foreach my $sample(@bs_ids_uniq)
 {
@@ -231,8 +241,6 @@ foreach my $sample(@bs_ids_uniq)
 
     ## report only histology of interest if appropriate
     #next unless $bs_id_hist{$sample}=~/HGAT/;
-    #print "second:",$bs_id_hist{$sample},"\n";
-    #next unless $cns_regions{$sample}=~/Midline/;
 
     my $psi_tumor = $inc_levels{$splice_event}{$sample};
     my $std_psi   = $std_dev_psi{$splice_event};
@@ -243,7 +251,8 @@ foreach my $sample(@bs_ids_uniq)
     if($psi_tumor > ($mean_psi + ($std_psi + $std_psi)) )
     {
 
-      print EVENTS $splice_event,"\t".$splice_case,"\t",$sample,"\t",$bs_id_hist{$sample},"\t",$cns_regions{$sample},"\tInclusion\n";
+      my $dpsi = $psi_tumor-$mean_psi;
+      print EVENTS $splice_event,"\t".$splice_case,"\t",$sample,"\t",$bs_id_hist{$sample},"\t",$cns_regions{$sample},"\tInclusion\t",$dpsi,"\n";
       print BEDPOS $chr{$splice_event},"\t";
 
       ## get exon coords for bed to intersect w Uniprot later
@@ -258,8 +267,9 @@ foreach my $sample(@bs_ids_uniq)
     # < -2 z-scores, inclusion events
     if($psi_tumor < ($mean_psi - ($std_psi + $std_psi)) )
     {
+      my $dpsi = $mean_psi-$psi_tumor;
 
-      print EVENTS $splice_event,"\t".$splice_case,"\t",$sample,"\t",$bs_id_hist{$sample},"\t",$cns_regions{$sample},"\tSkipping\n";
+      print EVENTS $splice_event,"\t".$splice_case,"\t",$sample,"\t",$bs_id_hist{$sample},"\t",$cns_regions{$sample},"\tSkipping\t",$dpsi,"\n";
       print BEDNEG $chr{$splice_event},"\t";
 
       ## get exon coords for bed to intersect w Uniprot later
