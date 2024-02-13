@@ -11,27 +11,30 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 ## histology input file (column orders important)
-input_file="../../data/histologies.tsv"
+input_file="../cohort_summary/results/histologies-plot-group.tsv"
 primary_specimens="../../data/independent-specimens.rnaseqpanel.primary.tsv"
-primary_plus_specimens="../../data/independent-specimens.rnaseqpanel.primary-plus.tsv"
+rmats_file="../../data/splice-events-rmats.tsv.gz"
 
-echo "input file:" $input_file
-echo "process rMATS with .20 dPSI and 10 junction read counts...";
+echo "input files:" $input_file ;
+echo $primary_specimens ;
+echo $rmats_file ;
 
 ## Process rMATS files given histologies file. Keep only HGG midlines samples and storng splicing events
-
-perl 01-extract_recurrent_splicing_events_hgg.pl $input_file $primary_specimens $primary_plus_specimens
-
+perl 01-extract_recurrent_splicing_events_hgg.pl $input_file $rmats_file $primary_specimens SE
 echo "bedtools intersect...";
 bash 02-run_bedtools_intersect.sh
 
 echo "make tab for ggplot ...";
 bash 03-format_for_ggplot.sh
 
-## Remove intermediatery files / off for now
-rm results/splicing_events.total.*intersectUnipMod.wo.txt
-
 ## make plots
 echo "make plots ...";
 Rscript 04-plot_splicing_across_functional_sites.R
-Rscript 05-plot-flip_mixed_events.R
+
+## make plots
+echo "plot splice patterns";
+Rscript --vanilla 05-plot-splice-patterns.R
+
+##rm intermediatery files
+rm results/splicing_events.total.*.wo.txt
+rm results/*bed 
