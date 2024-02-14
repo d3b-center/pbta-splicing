@@ -42,12 +42,10 @@ indep_wgs_file <- file.path(data_dir, "independent-specimens.wgswxspanel.primary
 diff_psi_file <- file.path(root_dir, "analyses/splicing_events_functional_sites/results/splice_events.diff.SE.HGG.txt")
 
 indep_rna_df <- vroom(indep_rna_file)  %>% 
-  dplyr::filter(cancer_group=='High-grade glioma',
-         cohort == 'PBTA') 
+  dplyr::filter(cohort == 'PBTA') 
 
 indep_wgs_df <- vroom(indep_wgs_file)  %>% 
-  filter(cancer_group %in% c('High-grade glioma', "Diffuse midline glioma", "Diffuse intrinsic pontine glioma"
-         cohort == 'PBTA') 
+  filter(cohort == 'PBTA') 
 
 ## filter for samples that have both RNA and WGS
 indep_sample_rna_wgs <- inner_join(indep_wgs_df,indep_rna_df, by='Kids_First_Participant_ID') %>% 
@@ -74,11 +72,11 @@ splice_df <-  vroom(diff_psi_file) %>%
   dplyr::mutate(Hugo_Symbol=str_match(`Splice ID`, "(\\w+)\\:")[, 2]) 
 
 splice_maf_df <- splice_df %>%
-  dplyr::mutate(Hugo_Symbol=paste0(Hugo_Symbol,"_spl")) %>%
   dplyr::rename('Tumor_Sample_Barcode'=Kids_First_Biospecimen_ID) %>%
   dplyr::select(Tumor_Sample_Barcode,Hugo_Symbol) %>%
   mutate(Variant_Classification='Splicing', Variant_Type='Other') %>% 
-  unique()
+  unique() #%>% 
+  #dplyr::slice(1:10000) ## testing puroses
 
 ## filter maf table for samples with RNA splicing + HGGs + midline + req'd cols
 maf_df <- vroom(maf_file) %>% 
@@ -110,9 +108,15 @@ maf_fil_df <- maf_df %>%
 
 ## filter for only those genes that show diff splicing 
 maf_fil_w_dsg <- maf_fil_df %>% 
-  inner_join(splice_df, by='Hugo_Symbol') %>% 
+  #left_join(splice_maf_df, by = c("Hugo_Symbol","gene_to_check")) %>% 
+  left_join(splice_maf_df, by = "Hugo_Symbol") %>%
   dplyr::mutate(Hugo_Symbol=paste0(Hugo_Symbol,"_mut")) 
 
+
+splice_maf_df <- splice_maf_df %>%
+  dplyr::mutate(Hugo_Symbol=paste0(Hugo_Symbol,"_spl"))
+    
+    
 ## rename histologies_df Kids_First_Participant_ID to Tumor_Sample_Barcode
 histologies_df <- histologies_df %>%  
   dplyr::rename('Tumor_Sample_Barcode'=Kids_First_Participant_ID)
