@@ -25,6 +25,7 @@ CNS_match_json <- file.path(analysis_dir, "input", "CNS_primary_site_match.json"
 deseq2_sf_file <- file.path(analysis_dir, "splicing-factor_dysregulation", "results", "diffSFs_sig_genes.txt")
 func_sites_es_file <- file.path(analysis_dir, "splicing_events_functional_sites", "results", "splicing_events.total.HGG.neg.intersectUnip.ggplot.txt") 
 func_sites_ei_file <- file.path(analysis_dir, "splicing_events_functional_sites", "results", "splicing_events.total.HGG.pos.intersectUnip.ggplot.txt") 
+kinase_func_sites_file <- file.path(analysis_dir, "splicing_events_functional_sites", "results", "kinases-functional_sites.txt")
 deseq2_morph_file <- file.path(analysis_dir,"CLK1-splicing-impact-morpholino","results","ctrl_vs_treated.de.formatted.tsv")
 rmats_tsv_file <- file.path(data_dir,"ctrl-vs-morpholino-merged-rmats.tsv")
 
@@ -141,10 +142,14 @@ ei_events_df <- vroom(func_sites_ei_file)
 ## sheet 2, exon skipping events
 es_events_df <- vroom(func_sites_es_file)
 
+##sheet 3 kinases
+kinase_events_df <- vroom(kinase_func_sites_file)
+
 
 # Combine and output
 list_s4_table <- list(exon_inclusion = ei_events_df,
-                      exon_skipping = es_events_df)
+                      exon_skipping = es_events_df
+                      kinases= kinase_events_df)
 
 write.xlsx(list_s4_table,
            table_s4_file,
