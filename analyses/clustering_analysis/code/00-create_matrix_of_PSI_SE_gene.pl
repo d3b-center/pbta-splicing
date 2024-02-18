@@ -170,7 +170,7 @@ my @genes_uniq = do { my %seen; grep { !$seen{$_}++ } @genes };
 # go through each splicing event
   # order by disease library
   # print splice id, inc level
-my $out_file = "input/pan_cancer_splicing_SE.gene.txt";
+my $out_file = "input/pan_cancer_splicing_SE.gene.tsv";
 open(OUT,">",$out_file) || die("Cannot Open File");
 
 ## save and print header info for output file
