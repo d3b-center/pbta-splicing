@@ -6,7 +6,7 @@ Rscript --vanilla code/02-create-inputs.R
 
 # 1) run script for optimal clustering
 Rscript code/03-optimal-clustering.R \
---input_mat "input/non_expr_pan_cancer_splice_subset.rds" \
+--input_mat "input/pan_cancer_splicing_SE.gene.rds" \
 --cluster_algorithm "hc, km, pam" \
 --cluster_distance "pearson, spearman, euclidean, manhattan, binary, maximum, canberra, minkowski" \
 --filter_expr FALSE \
@@ -19,7 +19,7 @@ Rscript code/03-optimal-clustering.R \
 # get ccp clustering output for a specific combination of distance + algorithm + % variable genes
 # for the splicing dataset, pam + canberra k = 13, 0% based on optimal clustering
 Rscript code/04-get-clustering-output.R \
---input_mat "input/non_expr_pan_cancer_splice_subset.rds" \
+--input_mat "input/pan_cancer_splicing_SE.gene.rds" \
 --data_type "non_expr" \
 --var_genes "0" \
 --cluster_algorithm "pam" \
