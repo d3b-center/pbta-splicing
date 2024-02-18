@@ -143,14 +143,19 @@ gene_sign_list <- res %>%
   readr::write_tsv(gene_sign_list_file)
 
 ## plot and focus on the two major splicing factor families (well known control exon-splicing)
-plot_df <- gene_sign_list %>% filter(grepl("SRSF|HNRNP", gene))
+plot_df <- gene_sign_list %>% filter(grepl("SRSF|HNRNP", gene)) %>% 
+  mutate(Direction= case_when(log2FoldChange<0 ~ '-',
+                              log2FoldChange>0 ~ '+')) 
 
-plot_barplot_family <- ggplot(plot_df, aes(x = reorder(gene,-padj), y = -log2(padj))) + 
+plot_barplot_family <-  ggplot(plot_df, aes(x = reorder(gene,-padj), y = -log2(padj))) + 
   geom_bar(stat="identity", colour="black", fill="red") + 
   theme_Publication() + 
   xlab("Splicing Factor") + ylab("-log2 (padj)") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
-  coord_flip()
+  coord_flip() + 
+  geom_text(aes(label =paste(Direction),ymax=0), 
+            hjust = -0.5, size = 4) +
+  ylim(c(0,45))
 
 # Save plots as PDF
 pdf(file_volc_hgg_plot, 
