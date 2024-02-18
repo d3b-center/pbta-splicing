@@ -91,7 +91,7 @@ qpcr_plot <- ggplot(qpcr_ddct, aes(y=`FC`, x=Primers, fill=Treatment)) +
   ylim(c(0,2.5))
 
 # Save plot as PDF
-pdf(file_plot, width = 6, height = 4)
+pdf(file_plot, width = 6.5, height = 4)
 print(qpcr_plot)
 dev.off()
 
