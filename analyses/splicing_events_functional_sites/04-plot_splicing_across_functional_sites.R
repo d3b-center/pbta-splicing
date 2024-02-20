@@ -172,8 +172,14 @@ ggplot2::ggsave(filename = ora_dotplot_path,
                 height=7,
                 device="pdf")
 
-kinase_skip_pref <- kinase_skip_pref %>%  count(gene,Preference, Uniprot)
-kinase_incl_pref <- kinase_incl_pref %>%  count(gene,Preference,Uniprot)
+kinase_skip_pref <- kinase_skip_pref %>%  
+  dplyr::mutate('Exon Coordinates' = str_match(SpliceID, "(\\w+)\\:(\\d+\\-\\d+)\\_")[, 3]) %>%
+  unique() 
+
+kinase_incl_pref <- kinase_incl_pref %>% 
+  dplyr::mutate('Exon Coordinates' = str_match(SpliceID, "(\\w+)\\:(\\d+\\-\\d+)\\_")[, 3]) %>%
+  unique()
+
 kinase_pref <- rbind(kinase_skip_pref, kinase_incl_pref)
 
 ## write kinase results for table
