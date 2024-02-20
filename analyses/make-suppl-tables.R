@@ -152,8 +152,8 @@ write.xlsx(list_s2_table,
 
 ## Table 3 DeSeq 2 results comparing high vs low SBI HGG tumors
 ## sheet 1, exon inclusion splicing
-deseq_df <- vroom(deseq2_sf_file)
-
+deseq_df <- vroom(deseq2_sf_file) %>%
+  select(-Significant)
 
 # Combine and output
 list_s3_table <- list(deseq2=deseq_df)
