@@ -176,7 +176,7 @@ kinase_events_df <- vroom(kinase_func_sites_file)
 
 # Combine and output
 list_s4_table <- list(exon_inclusion = ei_events_df,
-                      exon_skipping = es_events_df
+                      exon_skipping = es_events_df,
                       kinases= kinase_events_df)
 
 write.xlsx(list_s4_table,
