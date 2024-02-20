@@ -7,7 +7,6 @@
 ################################################################################
 
 suppressPackageStartupMessages({
-  library("ggpubr")
   library("vroom")
   library("ggplot2")
   library("dplyr")
@@ -19,6 +18,7 @@ suppressPackageStartupMessages({
   library("cowplot")
   library("ggpubr")
   library("annoFuseData")
+  library("stringr")
 })
 
 # Get `magrittr` pipe
@@ -65,36 +65,38 @@ dpsi_unip_neg <- vroom(file_psi_neg_func) %>%
 psi_comb <- rbind(dpsi_unip_neg,dpsi_unip_pos) %>% 
   mutate(Uniprot = case_when(Uniprot == 'DisulfBond' ~ "Disulfide Bond",
                              Uniprot == 'LocSignal' ~ "Localization Signal",
-                             .default = Uniprot)
+                             .default = Uniprot),
+         Uniprot_wrapped = stringr::str_wrap(Uniprot, width = 10)
          )
-
 
 
 ## ggstatplot across functional sites
 set.seed(123)
-counts_psi_comb <- psi_comb %>% count(Preference, Uniprot )
-plot_dsp <-  ggplot(psi_comb,aes(Uniprot, dPSI*100) ) +  
+counts_psi_comb <- psi_comb %>% 
+  count(Preference, Uniprot_wrapped)
+plot_dsp <-  ggplot(psi_comb, aes(Uniprot_wrapped, dPSI*100) ) +  
   ylab(expression(bold("dPSI"))) +
   ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 5, method="density") +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
   facet_wrap("Preference") +
-  stat_compare_means(method = "wilcox.test", comparisons = list(c("Disulfide Bond", "Localization Signal"),
-                                        c("Disulfide Bond", "Modifications"),
-                                        c("Disulfide Bond", "Other"),
-                                        c("Localization Signal", "Modifications"),
-                                        c("Localization Signal", "Other"),
+  stat_compare_means(method = "wilcox.test", comparisons = list(c("Disulfide\nBond", "Localization\nSignal"),
+                                        c("Disulfide\nBond", "Modifications"),
+                                        c("Disulfide\nBond", "Other"),
+                                        c("Localization\nSignal", "Modifications"),
+                                        c("Localization\nSignal", "Other"),
                                         c("Modifications", "Other"))) + 
   scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A"))  + 
   theme_Publication() + 
   
   labs(y="Percent Spliced In (PSI)", x= "Uniprot-defined Functional Site") + 
-  geom_text(data = counts_psi_comb, aes(label = paste("n =",n), x = Uniprot, y = 0), vjust = 3, size = 4, hjust=.5) +
-  theme(legend.position="none") +
-  ylim(c(-1,170))
+  geom_text(data = counts_psi_comb, aes(label = paste("n =",n), x = Uniprot_wrapped, y = 0), vjust = 3, size = 4, hjust=.5) +
+  theme(legend.position="none", 
+        axis.text.x = element_text(angle = 45, hjust = 1)) +  # Angles x-axis text
+  ylim(c(-20,170))
 
 # Save plot as PDF
 pdf(file_dpsi_plot, 
-    width = 12, height = 4)
+    width = 8, height = 5)
 print (plot_dsp)
 dev.off()
 
