@@ -62,31 +62,40 @@ dpsi_unip_neg <- vroom(file_psi_neg_func) %>%
   mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) %>% 
   mutate(Preference='Skipping')
 
-psi_comb <- rbind(dpsi_unip_neg,dpsi_unip_pos)
+psi_comb <- rbind(dpsi_unip_neg,dpsi_unip_pos) %>% 
+  mutate(Uniprot = case_when(Uniprot == 'DisulfBond' ~ "Disulfide Bond",
+                             Uniprot == 'LocSignal' ~ "Localization Signal",
+                             .default = Uniprot)
+         )
+
+
 
 ## ggstatplot across functional sites
 set.seed(123)
+counts_psi_comb <- psi_comb %>% count(Preference, Uniprot )
 plot_dsp <-  ggplot(psi_comb,aes(Uniprot, dPSI*100) ) +  
   ylab(expression(bold("dPSI"))) +
-  ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 4, method="density") +
+  ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 5, method="density") +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
   facet_wrap("Preference") +
-  stat_compare_means(method = "wilcox.test", comparisons = list(c("DisulfBond", "LocSignal"),
-                                        c("DisulfBond", "Modifications"),
-                                        c("DisulfBond", "Other"),
-                                        c("LocSignal", "Modifications"),
-                                        c("LocSignal", "Other"),
+  stat_compare_means(method = "wilcox.test", comparisons = list(c("Disulfide Bond", "Localization Signal"),
+                                        c("Disulfide Bond", "Modifications"),
+                                        c("Disulfide Bond", "Other"),
+                                        c("Localization Signal", "Modifications"),
+                                        c("Localization Signal", "Other"),
                                         c("Modifications", "Other"))) + 
   scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A"))  + 
   theme_Publication() + 
+  
   labs(y="Percent Spliced In (PSI)", x= "Uniprot-defined Functional Site") + 
+  geom_text(data = counts_psi_comb, aes(label = paste("n =",n), x = Uniprot, y = 0), vjust = 3, size = 4, hjust=.5) +
   theme(legend.position="none") +
-  ylim(c(0,170))
+  ylim(c(-1,170))
 
 # Save plot as PDF
 pdf(file_dpsi_plot, 
-    width = 9, height = 4)
-plot_dsp
+    width = 12, height = 4)
+print (plot_dsp)
 dev.off()
 
 # get and filter for kinase genes
@@ -95,6 +104,7 @@ known_kinase_df <-read.delim(system.file("extdata", "genelistreference.txt", pac
   dplyr::filter(type=='Kinase')
 
 psi_unip_kinase <- dplyr::inner_join(psi_comb, known_kinase_df, by='gene') 
+counts_psi_unip_kinase <- psi_unip_kinase %>% count(Preference )
 
 ## make sina plot
 set.seed(45)
@@ -107,6 +117,7 @@ kinase_dpsi_plot <- ggplot(psi_unip_kinase,aes(Preference,dPSI*100) ) +
   scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) + 
   theme_Publication() +
   labs(y="Percent Spliced In (PSI)") + 
+  geom_text(data = counts_psi_unip_kinase, aes(label = paste("n =",n), x = Preference, y = 0), vjust = 3, size = 4, hjust=.5) +
   theme(legend.position="none")
 
 pdf(file_dpsi_kinase_plot, 
