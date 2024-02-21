@@ -88,7 +88,7 @@ qpcr_plot <- ggplot(qpcr_ddct, aes(y=`FC`, x=Primers, fill=Treatment)) +
   theme_Publication() + 
   scale_fill_manual(values = c("lightgrey", "lightblue", "#0C7BDC", "blue3")) +
   guides(fill = guide_legend(title = "Morpholino\nTreatment"))+
-  ylim(c(0,2.5))
+  ylim(c(0,3))
 
 # Save plot as PDF
 pdf(file_plot, width = 6.5, height = 4)
