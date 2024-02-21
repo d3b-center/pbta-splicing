@@ -15,6 +15,7 @@ suppressPackageStartupMessages({
   library("vroom")
   library("clusterProfiler")
   library("annoFuseData")
+  library(ggplot2)
 })
 
 # Get `magrittr` pipe
@@ -83,29 +84,35 @@ res <- results(cds)
 res$Significant <- ifelse(res$padj< 0.05, "P-val < 0.05", "Not Sig")
 
 volc <- EnhancedVolcano(res,
-                lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene), ## remove ensembleid portion , ## remove ensembleid portion
+                lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene), ## remove ensembleid portion
                 x = 'log2FoldChange',
                 y = 'padj',
-                xlab  = expression(bold('Log-2 Fold Change')),
-                ylab  = expression(bold('-Log-10 P')),
                 drawConnectors = TRUE,
                 #ylim = c(0,21),
-                xlim = c(-6,6),
+               # xlim = c(-6,6),
                 title = 'CLK1 Exon 4 Morpholino vs Non-targeting Morpholino',
                 caption = "",
                 subtitle = "",
                 pCutoff = 0.05,
                 FCcutoff = 1,
                 pointSize = 2,
-                labSize = 4)
+                labSize = 4) 
+  # Attempt to override axis titles post-hoc
+  volc <- volc + labs(x = expression(bold(Log[2] * " Fold Change")), 
+                      y = expression(bold("-Log"[10] * " p-value")))
 
-pdf(file_volc_plot, height = 8, width = 8)
+pdf(file_volc_plot, height = 7, width = 8)
 print(volc)
 dev.off()
 
-de_results <- cbind(res, count_data) 
+de_results <- as_tibble(cbind(res, count_data)) %>%
+  extract(col = gene, 
+          into = c("ENS_ID", "Gene_Symbol"), 
+          regex = "^(ENSG[0-9]+\\.[0-9]+)_(.+)$",
+          remove = FALSE) %>%
+  select(-gene)
 
-write_tsv(as_tibble(de_results), de_output)
+write_tsv(de_results, de_output)
 
 ## subset with gene lists
 genelist_ref_df <-read.delim(system.file("extdata", "genelistreference.txt", package = "annoFuseData"))  %>%
