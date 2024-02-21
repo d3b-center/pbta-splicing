@@ -80,15 +80,17 @@ cds <- DESeq(cds)
 res <- results(cds)
 
 ## label anything below <0.05 as signficant
-res$Significant <- ifelse(res$pvalue< 0.05, "P-val < 0.05", "Not Sig")
+res$Significant <- ifelse(res$padj< 0.05, "P-val < 0.05", "Not Sig")
 
 volc <- EnhancedVolcano(res,
                 lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene), ## remove ensembleid portion , ## remove ensembleid portion
                 x = 'log2FoldChange',
-                y = 'pvalue',
+                y = 'padj',
+                xlab  = expression(bold('Log-2 Fold Change')),
+                ylab  = expression(bold('-Log-10 P')),
                 drawConnectors = TRUE,
                 #ylim = c(0,21),
-                #xlim = c(-3,3),
+                xlim = c(-6,6),
                 title = 'CLK1 Exon 4 Morpholino vs Non-targeting Morpholino',
                 caption = "",
                 subtitle = "",
@@ -97,18 +99,9 @@ volc <- EnhancedVolcano(res,
                 pointSize = 2,
                 labSize = 4)
 
-ggsave(file_volc_plot,
-  plot = volc,
-  device = NULL,
-  path = NULL,
-  scale = 1,
-  width = 8,
-  height = 10,
-  units = "in",
-  dpi = 300,
-  limitsize = TRUE,
-  bg = NULL
-)
+pdf(file_volc_plot, height = 8, width = 8)
+print(volc)
+dev.off()
 
 de_results <- cbind(res, count_data) 
 
