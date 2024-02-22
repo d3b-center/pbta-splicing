@@ -1,0 +1,128 @@
+---
+title: 'GSVA score comparisons in CLK1 treated cell lines'
+output: 
+  html_document:
+  toc: TRUE
+toc_float: TRUE
+author: Jo Lynne Rokita
+date: "2024"
+---
+
+This script compares GSVA scores for hallmark and KEGG pathways between PBTA samples with and without DNA repair gene germline PLP variants
+
+Load packages and set directories
+
+```{r load libraries, message = FALSE, warning = FALSE}
+library(data.table)
+library(tidyverse)
+library(ggplot2)
+library(ggsci)
+library(ggpubr)
+library(tibble)
+
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing-impact-morpholino")
+results_dir <- file.path(analysis_dir, "results")
+#source(file.path(analysis_dir, "util", "gsva_functions.R"))
+source(file.path(root_dir, "figures", "theme_for_plots.R"))
+```
+
+Set file paths
+
+```{r set file paths}
+gsva_file <- file.path(results_dir, "clk1_ctrl_morpho_hallmark_gsva_scores.tsv")
+kegg_file <- file.path(results_dir, "clk1_ctrl_morpho_kegg_gsva_scores.tsv")
+dna_file <- file.path(results_dir, "clk1_ctrl_morpho_dna_repair_gsva_scores.tsv")
+```
+
+Create histology file for grouping samples
+
+```{r}
+sample_ids <- c("CTRL1", "CTRL2", "CTRL3", "Treated1", "Treated2", "Treated3")
+treatments <- c("Control", "Control", "Control", "CLK1", "CLK1", "CLK1")
+df <- tibble(sample_id = sample_ids, treatment = treatments)
+
+# read in scores
+hallmark_scores <- read_tsv(gsva_file)
+hallmark_pathways <- unique(hallmark_scores$geneset)
+
+kegg_scores <- read_tsv(kegg_file)
+kegg_pathways <- unique(kegg_scores$geneset)
+
+dna_scores <- read_tsv(dna_file)
+dna_pathways <- unique(dna_scores$geneset)
+```
+
+Run GSVA score comparisons between samples with and without CLK1 morpholino
+
+```{r}
+# Define repair gene source input directories 
+treat_ids <- df %>%
+  filter(treatment == "CLK1") %>%
+  pull(sample_id) %>%
+  unique()
+
+ctrl_ids <- df %>%
+  filter(treatment == "Control") %>%
+  pull(sample_id) %>%
+  unique()
+```
+
+# define data frame to store GSVA scores, differences between groups, and corresponding test statistic p-values 
+# Assuming you have defined kegg_pathways, hallmark_pathways, dna_pathways lists
+# And kegg_scores, hallmark_scores, dna_scores data frames with columns 'geneset', 'sample_id', and 'gsva_score'
+# treat_ids and ctrl_ids are vectors containing IDs for treated and control samples
+```{r}
+# Lists of score data frames and pathway lists
+score_sources <- list(kegg_scores, hallmark_scores, dna_scores)
+pathway_sources <- list(kegg_pathways, hallmark_pathways, dna_pathways)
+score_names <- c("kegg", "hallmark", "dna_repair") # Names for output files
+
+for (i in 1:length(score_sources)) {
+  score_df <- score_sources[[i]]
+  pathway_list <- pathway_sources[[i]]
+  score_name <- score_names[i]
+  
+  gsva_res <- data.frame(pathway = pathway_list,
+                         treat_score = rep(0, length(pathway_list)),
+                         ctrl_score = rep(0, length(pathway_list)),
+                         score_diff = rep(0, length(pathway_list)),
+                         wilcox_stat = rep(0, length(pathway_list)),
+                         pvalue = rep(0, length(pathway_list)))
+
+ for (k in 1:length(pathway_list)) {
+    treat_scores <- score_df[score_df$geneset == pathway_list[k] & score_df$sample_id %in% treat_ids, ]$gsva_score
+    ctrl_scores <- score_df[score_df$geneset == pathway_list[k] & score_df$sample_id %in% ctrl_ids, ]$gsva_score
+    
+    # Ensure treat_scores and ctrl_scores are numeric vectors
+    treat_scores <- as.numeric(treat_scores)
+    ctrl_scores <- as.numeric(ctrl_scores)
+    
+    # Proceed with mean calculation and Wilcoxon test as before
+    gsva_res$treat_score[k] <- mean(treat_scores, na.rm = TRUE)
+    gsva_res$ctrl_score[k] <- mean(ctrl_scores, na.rm = TRUE)
+    gsva_res$score_diff[k] <- gsva_res$treat_score[k] - gsva_res$ctrl_score[k]
+    
+    if (length(treat_scores) > 0 && length(ctrl_scores) > 0) {
+      test_result <- tryCatch({
+        wilcox.test(treat_scores, ctrl_scores, alternative = 'two.sided')
+      }, warning = function(w) {
+        return(list(statistic = NA, p.value = NA))
+      }, error = function(e) {
+        return(list(statistic = NA, p.value = NA))
+      })
+      
+      gsva_res$wilcox_stat[k] <- test_result$statistic
+      gsva_res$pvalue[k] <- test_result$p.value
+    } else {
+      gsva_res$wilcox_stat[k] <- NA
+      gsva_res$pvalue[k] <- NA
+    }
+}
+
+  
+  # Write to output
+  output_filename <- paste0("gsva_score_diff_", score_name, ".tsv")
+  write_tsv(gsva_res, file.path(results_dir, output_filename))
+}
+```
