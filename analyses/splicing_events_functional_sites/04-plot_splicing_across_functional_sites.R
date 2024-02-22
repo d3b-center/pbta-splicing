@@ -7,7 +7,6 @@
 ################################################################################
 
 suppressPackageStartupMessages({
-  library("ggpubr")
   library("vroom")
   library("ggplot2")
   library("dplyr")
@@ -19,6 +18,7 @@ suppressPackageStartupMessages({
   library("cowplot")
   library("ggpubr")
   library("annoFuseData")
+  library("stringr")
 })
 
 # Get `magrittr` pipe
@@ -61,31 +61,42 @@ dpsi_unip_neg <- vroom(file_psi_neg_func) %>%
   mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) %>% 
   mutate(Preference='Skipping')
 
-psi_comb <- rbind(dpsi_unip_neg,dpsi_unip_pos)
+psi_comb <- rbind(dpsi_unip_neg,dpsi_unip_pos) %>% 
+  mutate(Uniprot = case_when(Uniprot == 'DisulfBond' ~ "Disulfide Bond",
+                             Uniprot == 'LocSignal' ~ "Localization Signal",
+                             .default = Uniprot),
+         Uniprot_wrapped = stringr::str_wrap(Uniprot, width = 10)
+         )
+
 
 ## ggstatplot across functional sites
 set.seed(123)
-plot_dsp <-  ggplot(psi_comb,aes(Uniprot, dPSI*100) ) +  
+counts_psi_comb <- psi_comb %>% 
+  count(Preference, Uniprot_wrapped)
+plot_dsp <-  ggplot(psi_comb, aes(Uniprot_wrapped, dPSI*100) ) +  
   ylab(expression(bold("dPSI"))) +
-  ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 4, method="density") +
+  ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 5, method="density") +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
   facet_wrap("Preference") +
-  stat_compare_means(method = "wilcox.test", comparisons = list(c("DisulfBond", "LocSignal"),
-                                        c("DisulfBond", "Modifications"),
-                                        c("DisulfBond", "Other"),
-                                        c("LocSignal", "Modifications"),
-                                        c("LocSignal", "Other"),
+  stat_compare_means(method = "wilcox.test", comparisons = list(c("Disulfide\nBond", "Localization\nSignal"),
+                                        c("Disulfide\nBond", "Modifications"),
+                                        c("Disulfide\nBond", "Other"),
+                                        c("Localization\nSignal", "Modifications"),
+                                        c("Localization\nSignal", "Other"),
                                         c("Modifications", "Other"))) + 
   scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A"))  + 
   theme_Publication() + 
+  
   labs(y="Percent Spliced In (PSI)", x= "Uniprot-defined Functional Site") + 
-  theme(legend.position="none") +
-  ylim(c(0,170))
+  geom_text(data = counts_psi_comb, aes(label = paste("n =",n), x = Uniprot_wrapped, y = 0), vjust = 3, size = 4, hjust=.5) +
+  theme(legend.position="none", 
+        axis.text.x = element_text(angle = 45, hjust = 1)) +  # Angles x-axis text
+  ylim(c(-20,170))
 
 # Save plot as PDF
 pdf(file_dpsi_plot, 
-    width = 9, height = 4)
-plot_dsp
+    width = 8, height = 5)
+print (plot_dsp)
 dev.off()
 
 # get and filter for kinase genes
@@ -94,6 +105,7 @@ known_kinase_df <-read.delim(system.file("extdata", "genelistreference.txt", pac
   dplyr::filter(type=='Kinase')
 
 psi_unip_kinase <- dplyr::inner_join(psi_comb, known_kinase_df, by='gene') 
+counts_psi_unip_kinase <- psi_unip_kinase %>% count(Preference )
 
 ## make sina plot
 set.seed(45)
@@ -106,6 +118,7 @@ kinase_dpsi_plot <- ggplot(psi_unip_kinase,aes(Preference,dPSI*100) ) +
   scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) + 
   theme_Publication() +
   labs(y="Percent Spliced In (PSI)") + 
+  geom_text(data = counts_psi_unip_kinase, aes(label = paste("n =",n), x = Preference, y = 0), vjust = 3, size = 4, hjust=.5) +
   theme(legend.position="none")
 
 pdf(file_dpsi_kinase_plot, 
