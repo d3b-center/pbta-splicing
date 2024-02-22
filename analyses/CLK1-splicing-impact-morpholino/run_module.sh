@@ -16,3 +16,7 @@ Rscript 03-plot_diff-splice-events.R
 
 ## perform ORA of mis-spliced genes after morpholino treatment
 Rscript 04-ora-analysis.R
+
+## Peform GSVA on all cell lines
+Rscript --vanilla 05-conduct-gsva-analysis.R
+
