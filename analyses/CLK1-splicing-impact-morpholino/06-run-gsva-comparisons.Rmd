@@ -13,13 +13,14 @@ This script compares GSVA scores for hallmark and KEGG pathways between PBTA sam
 Load packages and set directories
 
 ```{r load libraries, message = FALSE, warning = FALSE}
-library(data.table)
 library(tidyverse)
-library(ggplot2)
-library(ggsci)
-library(ggpubr)
 library(tibble)
+library(ComplexHeatmap)
+library(circlize)
+```
 
+Set filepaths
+```{r}
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing-impact-morpholino")
 results_dir <- file.path(analysis_dir, "results")
@@ -126,3 +127,59 @@ for (i in 1:length(score_sources)) {
   write_tsv(gsva_res, file.path(results_dir, output_filename))
 }
 ```
+
+Plot single samples
+```{r}
+# create anno colors
+top_annot <- df %>%
+  dplyr::select(treatment) %>%
+  as.data.frame()
+anno_col <- list(treatment = c("Control" = "#2166ac", "CLK1" = "#b2182b"))
+
+# Heatmap annotation
+top_anno = HeatmapAnnotation(df = top_annot,
+                         col = anno_col, show_legend = TRUE)
+ 
+# plot
+for (i in 1:length(score_sources)) {
+  score_df <- score_sources[[i]]
+  score_name <- score_names[i]
+  
+  gsva_scores_mat <- score_df %>%
+  spread(sample_id, gsva_score) %>%
+  tibble::column_to_rownames("geneset") %>%
+  as.matrix()
+  
+  if (i == 1){
+    height <- 24
+    width <- 24
+  }
+  else if (i == 2){
+    height <- 12
+    width <- 20
+  }
+  else if (i == 3){
+    height <- 2
+    width <- 6
+  }
+  
+gsva_heatmap <- Heatmap(
+  gsva_scores_mat,
+  col = colorRamp2(c(-1, 0, 1), c("navy", "white", "orange")),
+  name = "GSVA Scores",
+  na_col = "whitesmoke",
+  show_column_names = FALSE,
+  cluster_columns = FALSE,
+  row_names_gp = grid::gpar(fontsize = 12),
+  top_annotation = top_anno,
+  heatmap_legend_param = list(direction = "vertical")
+)
+
+output_filename <- paste0("gsva_heatmap_", score_name, ".pdf")
+pdf(file.path(results_dir, output_filename),  height = height, width = width)
+print(gsva_heatmap)
+dev.off()
+}
+
+```
+
