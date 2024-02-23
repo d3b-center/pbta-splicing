@@ -2,7 +2,7 @@
 # 06-plot-histology-distr-across-clusters.R
 # Plot the distribution of histologies across clusters
 #
-# Author: Ammar Naqvi 
+# Author: Ammar Naqvi, Jo Lynne Rokita
 ################################################################################
 
 ## libraries 
@@ -35,14 +35,15 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## filepaths 
-optimal_cluster_tsv = file.path(analysis_dir, "output", "optimal_clustering", "ccp_optimal_clusters.tsv")
-
+optimal_cluster_tsv <- file.path(output_dir, "optimal_clustering", "ccp_optimal_clusters.tsv")
+cluster_membership_tsv <-  file.path(output_dir, "cluster_members_by_cancer_group_subtype.tsv")
+  
 # read in palette and cluster file
 cluster_df <- read_tsv(optimal_cluster_tsv) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = sample)
 
 histologies_df <- read_tsv(file.path(root_dir,"analyses", "cohort_summary", "results", "histologies-plot-group.tsv"), guess_max = 100000) %>%
-  select(Kids_First_Biospecimen_ID, broad_histology, cancer_group, plot_group, plot_group_hex) %>%
+  select(Kids_First_Biospecimen_ID, broad_histology, cancer_group, plot_group, plot_group_hex, molecular_subtype) %>%
   filter(Kids_First_Biospecimen_ID %in% cluster_df$Kids_First_Biospecimen_ID) %>%
   unique() %>%
   right_join(cluster_df)
@@ -63,5 +64,7 @@ ggplot(histologies_df, aes(fill=plot_group, x= factor(cluster_assigned))) +
   theme_Publication()
 dev.off()
 
-
-
+# write out bs id with cancer group, subtype, and cluster
+histologies_df %>%
+  select(Kids_First_Biospecimen_ID, cancer_group, molecular_subtype, cluster_assigned) %>%
+  write_tsv(cluster_membership_tsv)
