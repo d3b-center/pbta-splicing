@@ -14,6 +14,7 @@ suppressPackageStartupMessages({
   library("dplyr")
   library("EnhancedVolcano")
   library("DESeq2")
+  library(ggplot2)
 })
 
 
@@ -120,8 +121,7 @@ volc_hgg_plot <- EnhancedVolcano(res,
                                  lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",counts_combined$gene), ## remove ensembleid portion
                                  x = 'log2FoldChange',
                                  y = 'padj',
-                                 #ylim = c(0,6),
-                                 #xlim = c(-2,2),
+                                 xlim = c(-5.5, 5,5),
                                  title = 'High vs Low SBI HGGs',
                                  subtitle = NULL,
                                  caption = NULL,
@@ -133,6 +133,10 @@ volc_hgg_plot <- EnhancedVolcano(res,
                                  drawConnectors = TRUE,
                                  widthConnectors = 1,
                                  colConnectors = 'black')
+
+# Attempt to override axis titles post-hoc
+volc_hgg_plot <- volc_hgg_plot + labs(x = expression(bold(Log[2] * " Fold Change")), 
+                    y = expression(bold("-Log"[10] * " p-value")))
 
 
 ## write significant genes to table for subsequent correlation analyses
