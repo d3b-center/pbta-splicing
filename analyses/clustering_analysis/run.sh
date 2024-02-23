@@ -27,7 +27,7 @@ Rscript code/04-get-clustering-output.R \
 --prefix "non_expr_pan_cancer_splice_subset"
 
 # get differential genes per cluster and perform pre-ranked gsea using those genes
-# this was done for k = 3 with pam  + pearson + 0% genes
+# this was done for k = 12 with pam  + pearson + 0% genes
 Rscript code/05-diff-genes-per-clusters.R \
 --input_mat "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_matrix.rds" \
 --cluster_output "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_ccp.rds" \
@@ -42,7 +42,7 @@ Rscript code/06-diff-pathways-per-clusters.R \
 --input_mat "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_matrix.rds" \
 --input_clin "../cohort_summary/results/histologies-plot-group.tsv" \
 --cluster_output "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_ccp.rds" \
---n_cluster "13" \
+--n_cluster "12" \
 --gene_set "input/kegg_geneset_mrna.rds" \
 --prefix "non_expr_pan_cancer_splice_subset_pam_canberra_0" \
 --output_dir "output/diff_pathways"
@@ -51,7 +51,7 @@ Rscript code/06-diff-pathways-per-clusters.R \
 Rscript code/07-plot-clustering-heatmap.R \
 --ccp_output "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_ccp.rds" \
 --input_clin "../cohort_summary/results/histologies-plot-group.tsv" \
---n_cluster "13" \
+--n_cluster "12" \
 --prefix "non_expr_pan_cancer_splice_subset"
 
 ##plot cluster members categorized by SBI high vs low
