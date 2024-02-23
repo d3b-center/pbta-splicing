@@ -184,7 +184,7 @@ write.xlsx(list_s4_table,
            overwrite=TRUE,
            keepNA=TRUE)
 
-## Table 5 morpholino vs ctrl DESeq2 and rMATs
+## Table 5 morpholino vs ctrl DESeq2 and rMATs results
 deseq2_morpholino_df <- vroom(deseq2_morph_file) %>%
   dplyr::select(gene,log2FoldChange,pvalue)
 
