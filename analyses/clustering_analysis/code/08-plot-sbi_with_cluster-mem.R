@@ -28,7 +28,12 @@ if(!dir.exists(plots_dir)){
 }
 
 # define number of clusters
-n_clusters <- 13
+lspline <- read_tsv(file.path(output_dir, "optimal_clustering", "lspline_output.tsv"))
+n_clusters <- as.integer(lspline[1,"k"])
+
+# get the algorithm and distance metrics
+alg <- as.character(lspline[1,"algorithm"])
+distance <- as.character(lspline[1,"distance"])
 
 ##theme for all plots
 # source function for theme for plots survival
@@ -39,8 +44,8 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 sbi_cluster_plot <- file.path(analysis_dir, "plots", 
                               "cluster_by_sbi.pdf")
 
-cc_members_file = "ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_ccp.rds"
-cc_members_df  <- readRDS(paste0(output_dir,"/",cc_members_file) )
+cc_members_file = paste("non_expr_pan_cancer_splice_subset", alg, distance, "0_ccp.rds", sep = "_")
+cc_members_df  <- readRDS(file.path(output_dir, "ccp_output", cc_members_file))
 cc_members   <- cc_members_df[[n_clusters]]$consensusClass 
 cc_members <- tibble::rownames_to_column(as.data.frame(cc_members), "Sample")
   
