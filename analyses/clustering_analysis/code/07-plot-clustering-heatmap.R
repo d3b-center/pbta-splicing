@@ -71,9 +71,9 @@ CC_annot <- CC_annot %>%
 
 # create annotation for cluster class
 # colors for marking different clusters
-thisPal <- c("#bd18ea","#FB9A99","#FDBF6F","#B2DF8A","#B15928",
-             "#E31A1C","#33A02C","#FF7F00","#A6CEE3","#6A3D9A",
-             "#CAB2D6","#1F78B4","#FFFF99","#2ef4ca","#f4cced",
+thisPal <- c("#B2DF8A","#E31A1C","#33A02C","#A6CEE3","#FB9A99","#FDBF6F",
+             "#CAB2D6","#FFFF99","#1F78B4","#B15928","#6A3D9A","#FF7F00",
+             "#2ef4ca","#f4cced","#bd18ea",
              "#f4cc03", #lightorange
              "#05188a", #navy,
              "#e5a25a", #light brown
