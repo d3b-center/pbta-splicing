@@ -66,5 +66,5 @@ dev.off()
 
 # write out bs id with cancer group, subtype, and cluster
 histologies_df %>%
-  select(Kids_First_Biospecimen_ID, cancer_group, molecular_subtype, cluster_assigned) %>%
+  select(Kids_First_Biospecimen_ID, cancer_group, plot_group, molecular_subtype, cluster_assigned) %>%
   write_tsv(cluster_membership_tsv)
