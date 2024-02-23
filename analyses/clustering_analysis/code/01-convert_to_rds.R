@@ -13,7 +13,7 @@ plots_dir <- file.path(analysis_dir, "plots")
 input_dir <- file.path(analysis_dir, "input")
 
 matrix_file <- file.path(input_dir,"pan_cancer_splicing_SE.gene.tsv")
-rds_out <- file.path(input_dir,"pan_cancer_splicing_SE.gene_test.rds")
+rds_out <- file.path(input_dir,"pan_cancer_splicing_SE.gene.rds")
 
 ## get matrix and save to RDS file
 splice_df <- read_tsv(matrix_file) %>%

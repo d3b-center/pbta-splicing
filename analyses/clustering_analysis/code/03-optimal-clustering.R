@@ -103,8 +103,6 @@ dir.create(output_dir, showWarnings = F, recursive = T)
 source(file.path(analysis_dir, 'util', 'lspline_clustering.R'))
 
 # compute optimal clustering across all combinations of algorithms, distances and input k-values
-# because this step takes a long time read existing output if available to avoid re-running
-if(!file.exists(file.path(output_dir, "lspline_output.tsv"))){
   lspline_clustering(expr_mat = input_mat,
                      hist_file = hist_file,
                      algorithms = cluster_algorithm,
@@ -117,6 +115,3 @@ if(!file.exists(file.path(output_dir, "lspline_output.tsv"))){
                      transformation_type = transformation_type,
                      max_k = max_k,
                      output_dir = output_dir)
-} else {
-  print("Final output exists")
-}
