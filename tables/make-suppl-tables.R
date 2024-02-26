@@ -22,6 +22,7 @@ if(!dir.exists(supp_tables_dir)){
 histology_file <- file.path(data_dir, "histologies.tsv")
 histology_ei_splice_events <- file.path(analysis_dir, "histology-specific-splicing", "results", "unique_events-ei.tsv")
 histology_es_splice_events <- file.path(analysis_dir, "histology-specific-splicing", "results", "unique_events-es.tsv")
+cluster_membership <- file.path(analysis_dir, "clustering_analysis", "output", "cluster_members_by_cancer_group_subtype.tsv")
 CNS_match_json <- file.path(table_dir, "input", "CNS_primary_site_match.json")
 deseq2_sf_file <- file.path(analysis_dir, "splicing-factor_dysregulation", "results", "diffSFs_sig_genes.txt")
 func_sites_es_file <- file.path(analysis_dir, "splicing_events_functional_sites", "results", "splicing_events.total.HGG.neg.intersectUnip.ggplot.txt") 
@@ -132,9 +133,13 @@ ei_events_df <- vroom(histology_ei_splice_events)
 ## sheet 2, exon inclusion splicing
 es_events_df <- vroom(histology_es_splice_events)
 
+## sheet 3, cluster membership
+cluster_membership_df <- read_tsv(cluster_membership)
+
 # Combine and output
 list_s2_table <- list(exon_inclusion = ei_events_df,
-                      exon_skipping = es_events_df)
+                      exon_skipping = es_events_df,
+                      clust_memb = cluster_membership_df)
 
 write.xlsx(list_s2_table,
            table_s2_file,
