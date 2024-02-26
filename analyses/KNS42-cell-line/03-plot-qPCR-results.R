@@ -33,8 +33,15 @@ qpcr_fc_df <- read_csv(qpcr_res_file)
 # pull out HPRT and average, this is the housekeeping gene
 hprt_avg_ct <- qpcr_fc_df %>%
   filter(Primers == "HPRT") %>%
-  select(CT) %>%
-  colMeans(.)
+  group_by(Primers, Treatment) %>%
+  summarise_all(mean)
+
+# get CTs for HPRT
+control_ct_hprt <- as.numeric(hprt_avg_ct[hprt_avg_ct$Treatment == "Control", "CT"])
+one_ct_hprt <- as.numeric(hprt_avg_ct[hprt_avg_ct$Treatment == "1uM", "CT"])
+five_ct_hprt <- as.numeric(hprt_avg_ct[hprt_avg_ct$Treatment == "5uM", "CT"])
+ten_ct_hprt <- as.numeric(hprt_avg_ct[hprt_avg_ct$Treatment == "10uM", "CT"])
+
   
 # format and compute dct values from raw values
 qpcr_dct <- qpcr_fc_df %>%
@@ -44,7 +51,10 @@ qpcr_dct <- qpcr_fc_df %>%
   group_by(Primers, Treatment) %>%
   summarise_all(mean) %>%
   ## calculate dct values
-  mutate(dCT = CT - hprt_avg_ct) %>%
+  mutate(dCT = case_when(Treatment == "Control" ~ CT - control_ct_hprt,
+                         Treatment == "1uM" ~ CT - one_ct_hprt,
+                         Treatment == "5uM" ~ CT - five_ct_hprt,
+                         Treatment == "10uM" ~ CT - ten_ct_hprt)) %>%
   arrange(Primers)
 
 # calculate ddCT and Fold Change
@@ -77,10 +87,11 @@ qpcr_plot <- ggplot(qpcr_ddct, aes(y=`FC`, x=Primers, fill=Treatment)) +
   xlab(expression(bold(bolditalic("CLK1")~"exon-exon junction"))) +
   theme_Publication() + 
   scale_fill_manual(values = c("lightgrey", "lightblue", "#0C7BDC", "blue3")) +
-  guides(fill = guide_legend(title = "Morpholino\nTreatment"))
+  guides(fill = guide_legend(title = "Morpholino\nTreatment"))+
+  ylim(c(0,3))
 
 # Save plot as PDF
-pdf(file_plot, width = 6, height = 4)
+pdf(file_plot, width = 6.5, height = 4)
 print(qpcr_plot)
 dev.off()
 

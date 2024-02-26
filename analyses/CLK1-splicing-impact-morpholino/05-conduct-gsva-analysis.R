@@ -1,0 +1,152 @@
+################################################################################
+# 05-conduct-gsva-analysis.R
+# Performs gsva analysis on cells treated with control morpholino 
+# or morpholinos targeting CLK1
+#
+# Author: Jo Lynne Rokita
+# usage: Rscript --vanilla 05-conduct-gsva-analysis.R
+################################################################################
+
+## Load and/or install libraries ##
+library(tidyverse)
+library(readr)
+library(tibble)
+library(msigdbr) ## Contains the hallmark data sets
+library(GSVA)    ## Performs GSEA analysis
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+
+#### Set Up paths and file names --------------------------------------------------------------------
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing-impact-morpholino")
+input_dir <- file.path(analysis_dir, "input")
+results_dir <- file.path(analysis_dir, "results")
+plots_dir   <- file.path(analysis_dir, "plots")
+
+## input/output files
+expression_data_file <- file.path(data_dir, "ctrl_vs_morpho.rsem.genes.results.tsv")
+hm_scores_output_file <- file.path(results_dir, "clk1_ctrl_morpho_hallmark_gsva_scores.tsv")
+kegg_scores_output_file <- file.path(results_dir, "clk1_ctrl_morpho_kegg_gsva_scores.tsv")
+repair_scores_output_file <- file.path(results_dir, "clk1_ctrl_morpho_dna_repair_gsva_scores.tsv")
+expression_collapsed_file <- file.path(results_dir, "ctrl_vs_morpho.rsem.genes.collapsed.rds")
+  
+# dna repair gene lists
+dna_all_file <- file.path(input_dir, "dna_repair_all.txt")
+hr_file <- file.path(input_dir, "homologous_recombination.txt")
+mmr_file <- file.path(input_dir, "mismatch_repair.txt")
+ber_file <- file.path(input_dir, "base_excision_repair.txt")
+ner_file <- file.path(input_dir, "nucleotide_excision_repair.txt")
+nej_file <- file.path(input_dir, "nonhomologous_end_joining.txt")
+
+#### Load input file and collapse genes-----------------------------------------
+expression_data <- read_tsv(expression_data_file) %>%
+  # split to get symbol
+  extract(col = gene, 
+          into = c("ENS_ID", "Gene_Symbol"), 
+          regex = "^(ENSG[0-9]+\\.[0-9]+)_(.+)$",
+          remove = FALSE) %>%
+  select(-gene, -ENS_ID) %>%
+  # remove PAR_Y_
+  mutate(Gene_Symbol = str_replace_all(Gene_Symbol, "PAR_Y_", "")) %>%
+  unique() 
+
+# remove all genes with no expression
+expr <- expression_data[which(rowSums(expression_data[,2:ncol(expression_data)]) > 0),] 
+
+# take mean per row and use the max value for duplicated gene symbols
+expr.collapsed <- expr %>% 
+  mutate(means = rowMeans(select(.,-Gene_Symbol))) %>% # take rowMeans
+  arrange(desc(means)) %>% # arrange decreasing by means
+  distinct(Gene_Symbol, .keep_all = TRUE) %>% # keep the ones with greatest mean value. If ties occur, keep the first occurencce
+  select(-means) %>%
+  unique() %>%
+  column_to_rownames("Gene_Symbol") %>%
+  write_rds(expression_collapsed_file)
+
+# load gene lists
+human_hallmark  <- msigdbr::msigdbr(species = "Homo sapiens", category = "H") ## human hallmark genes from `migsdbr` package. The loaded data is a tibble.
+human_kegg  <- msigdbr::msigdbr(species = "Homo sapiens", category = "C2", subcategory = "CP:KEGG") ## human hallmark genes from `migsdbr` package. The loaded data is a tibble.
+
+#### Prepare genesets Create a list of sets, each of which is a list of genes -----------------------------------------------
+# hallmark
+human_hallmark_twocols <- human_hallmark %>% dplyr::select(gs_name, human_gene_symbol)
+human_hallmark_list    <- base::split(human_hallmark_twocols$human_gene_symbol, list(human_hallmark_twocols$gs_name))
+
+# kegg
+human_kegg_twocols <- human_kegg %>% dplyr::select(gs_name, human_gene_symbol)
+human_kegg_list    <- base::split(human_kegg_twocols$human_gene_symbol, list(human_kegg_twocols$gs_name))
+
+# DNA repair from Knijnenburg paper https://pubmed.ncbi.nlm.nih.gov/29617664/
+# Read gene lists from files and directly assign them as character vectors
+dna_all_genes <- read_lines(dna_all_file)
+hr_genes <- read_lines(hr_file)
+mmr_genes <- read_lines(mmr_file)
+ber_genes <- read_lines(ber_file)
+ner_genes <- read_lines(ner_file)
+nej_genes <- read_lines(nej_file)
+
+# Create a dna_repair_list with the desired structure
+dna_repair_list <- list(
+  "DNA Repair all genes" = dna_all_genes,
+  "Homologous Recombination" = hr_genes,
+  "Mismatch Repair" = mmr_genes,
+  "Base Excision Repair" = ber_genes,
+  "Nucleotide Excision Repair" = ner_genes,
+  "Non-homologous End Joining" = nej_genes
+)
+
+#### Perform gene set enrichment analysis --------------------------------------------------------------------
+
+# Prepare expression data: log2 transform re-cast as matrix
+### Rownames are genes and column names are samples
+expression_data_each_log2_matrix <- as.matrix(log2(expr.collapsed + 1) )
+  
+# Remove genes with 0 variance
+keep <- apply(expression_data_each_log2_matrix, 1, function(x) var(x, na.rm = TRUE)) > 0 
+expression_data_each_log2_matrix_keep <- data.matrix(expression_data_each_log2_matrix[keep,])
+
+genesets <- list(human_hallmark_list = human_hallmark_list, 
+                 human_kegg_list = human_kegg_list, 
+                 dna_repair_list = dna_repair_list)
+names(genesets) <- c("human_hallmark_list", "human_kegg_list", "dna_repair_list")
+  
+for (geneset_name in names(genesets)){  
+  geneset <- genesets[[geneset_name]]
+  if (geneset_name == "human_hallmark_list"){ 
+    out_file <- hm_scores_output_file
+  }
+  else if (geneset_name == "human_kegg_list"){
+    out_file <- kegg_scores_output_file
+  }
+  else if (geneset_name == "dna_repair_list"){
+    out_file <- repair_scores_output_file
+  }
+  #We then calculate the Gaussian-distributed scores
+  gsea_scores_each <- GSVA::gsva(expression_data_each_log2_matrix,
+                                 geneset,
+                                 method = "gsva",
+                                 min.sz=1, max.sz=1500,## Arguments from K. Rathi
+                                 parallel.sz = 8, # For the bigger dataset, this ensures this won't crash due to memory problems
+                                 mx.diff = TRUE)        ## Setting this argument to TRUE computes Gaussian-distributed scores (bimodal score distribution if FALSE)
+  
+  ### Clean scoring into tidy format
+  gsea_scores_each_df <- as.data.frame(gsea_scores_each) %>%
+    rownames_to_column(var = "geneset")
+  
+  #first/last_sample needed for use in gather (we are not on tidyr1.0)
+  first_sample <- head(colnames(gsea_scores_each), n=1)
+  last_sample  <- tail(colnames(gsea_scores_each), n=1)
+
+  gsea_scores_df_tidy <- gsea_scores_each_df %>%
+    tidyr::gather(sample_id, gsva_score, !!first_sample : !!last_sample) %>%
+    dplyr::select(sample_id, geneset, gsva_score)
+  
+#### Export GSEA scores to TSV --------------------------------------------------------------------
+write_tsv(gsea_scores_df_tidy, out_file)
+}
+
+#### Session info
+sessionInfo()
+
