@@ -78,12 +78,13 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
     
     # save filtered output
     out_file <- paste0(prefix, "_cluster_", i, "_pathway.tsv")
-    readr::write_tsv(x = toptable_output %>% filter(P.Value < 0.05), file = file.path(output_dir, out_file))
+    readr::write_tsv(x = toptable_output %>% 
+                       filter(P.Value < 0.05), file = file.path(output_dir, out_file))
     
     #  pull 10 most significant pathways only
     DEpwys <- toptable_output %>%
-      arrange(adj.P.Val) %>%
       filter(adj.P.Val < 0.05) %>%
+      arrange(adj.P.Val) %>%
       head(10) %>%
       pull(Geneset) 
     all_pathways <- c(all_pathways, DEpwys)
@@ -96,19 +97,16 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
   DEpwys_annot['sample_id'] <- NULL
   DEpwys_annot$cluster_class <- as.character(DEpwys_annot$cluster_class)
   
-  # color palette for short histology
-  palettes_dir <- "../../palettes/"
-  palette_file <- file.path(palettes_dir, "short_histology_color_palette.tsv") %>% read_tsv()
   DEpwys_annot <- DEpwys_annot %>%
     rownames_to_column("Kids_First_Biospecimen_ID") %>%
     inner_join(input_clin, by = "Kids_First_Biospecimen_ID") %>%
-    inner_join(palette_file, by = "short_histology") %>%
-    dplyr::select(Kids_First_Biospecimen_ID, cluster_class, plot_group_display, hex_code) %>%
+    #inner_join(palette_file, by = "short_histology") %>%
+    dplyr::select(Kids_First_Biospecimen_ID, cluster_class, plot_group, plot_group_hex) %>%
     column_to_rownames("Kids_First_Biospecimen_ID")
   
   # rename annotation columns
   DEpwys_annot <- DEpwys_annot %>%
-    dplyr::rename("Histology" = "plot_group_display",
+    dplyr::rename("Histology" = "plot_group",
                   "Cluster" = "cluster_class")
   
   # create annotation for cluster class
@@ -121,15 +119,15 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
   mycolors <- list()
   mycolors[['Cluster']] <- l 
   
-  # create annotation for short histology
+  # create annotation for plot group
   short_histology_palettes <- DEpwys_annot %>%
-    dplyr::select(Histology, hex_code) %>%
+    dplyr::select(Histology, plot_group_hex) %>%
     unique()
-  mycolors[['Histology']] <- short_histology_palettes$hex_code
+  mycolors[['Histology']] <- short_histology_palettes$plot_group_hex
   names(mycolors[['Histology']]) <- short_histology_palettes$Histology
   
   # remove colors from annotation table
-  DEpwys_annot$hex_code <- NULL
+  DEpwys_annot$plot_group_hex <- NULL
   
   pheatmap::pheatmap(DEpwys_es, scale = "row", 
                      fontsize = 8,
@@ -139,6 +137,6 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
                      annotation = DEpwys_annot, 
                      annotation_colors = mycolors, 
                      cluster_cols = cluster_tree, 
-                     filename = file.path(output_dir, paste0(prefix, '_top10_pathways.tiff')), 
+                     filename = file.path(output_dir, paste0(prefix, '_top10_pathways.pdf')), 
                      width = 12, height = 8)
 }
