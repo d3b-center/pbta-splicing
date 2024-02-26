@@ -15,21 +15,29 @@ bash run_module.sh
 ### Input
 ```
 data/ctrl-vs-morpholino-gene-counts-rsem-expected_count.tsv
+input/RBP_known.txt
+input/base_excision_repair.txt
+input/dna_repair_all.txt
+input/epi_known.txt
+input/homologous_recombination.txt
+input/mismatch_repair.txt
+input/morpholno.merged.rmats.tsv
+input/nonhomologous_end_joining.txt
+input/nucleotide_excision_repair.txt
 input/oncoprint-goi-lists-OpenPedCan-gencode-v39.csv
-input_dir/RBP_known.txt
-input_dir/epi_known.txt
 ```
 
 ### Output
 ```
+results/clk1_ctrl_morpho_dna_repair_gsva_scores.tsv
+results/clk1_ctrl_morpho_hallmark_gsva_scores.tsv
+results/clk1_ctrl_morpho_kegg_gsva_scores.tsv
 results/ctrl_vs_treated.de.tsv
-results/ctrl_vs_treated.de.regl.tsv
-plots/CLK1_morph_gsea_ridgeplot.tiff
-plots/CLK1_status_gsea_dotplot.tiff
-plots/CLK1_targets_ora_dotplot.tiff
+results/ctrl_vs_morpho.rsem.genes.collapsed.rds
+plots/CLK1_status_gsea_dotplot.pdf
+plots/CLK1_targets_ora_dotplot.pdf
 plots/ctrl_vs_clk1-morp_volcano.pdf
-plots/dPSI_distr_ei.pdf
-plots/dPSI_distr_es.pdf
+plots/dPSI_distr.pdf
 plots/gene-fam-DE-plot.pdf
 ```
 
@@ -38,6 +46,7 @@ plots/gene-fam-DE-plot.pdf
 * `02-gsea-analysis.R` performs gsea on differentially expressed genes from previous script
 * `03-plot_diff-splice-events.R` plots PSI distributions of differential splice events
 * `04-ora-analysis.R` performs an over-representation analysis on above splice events
+* `05-conduct-gsva-analysis.R` performs GSVA on HALLMARK, KEGG, and DNA repair pathways from https://pubmed.ncbi.nlm.nih.gov/29617664/
 
 ## Directory structure
 ```
@@ -46,11 +55,18 @@ plots/gene-fam-DE-plot.pdf
 ├── 02-gsea-analysis.R
 ├── 03-plot_diff-splice-events.R
 ├── 04-ora-analysis.R
+├── 05-conduct-gsva-analysis.R
 ├── README.md
 ├── input
 │   ├── RBP_known.txt
+│   ├── base_excision_repair.txt
+│   ├── dna_repair_all.txt
 │   ├── epi_known.txt
+│   ├── homologous_recombination.txt
+│   ├── mismatch_repair.txt
 │   ├── morpholno.merged.rmats.tsv
+│   ├── nonhomologous_end_joining.txt
+│   ├── nucleotide_excision_repair.txt
 │   └── oncoprint-goi-lists-OpenPedCan-gencode-v39.csv
 ├── plots
 │   ├── CLK1_status_gsea_dotplot.pdf
@@ -59,7 +75,9 @@ plots/gene-fam-DE-plot.pdf
 │   ├── dPSI_distr.pdf
 │   └── gene-fam-DE-plot.pdf
 ├── results
-│   ├── clk1_morph_gsea_results.csv
+│   ├── clk1_ctrl_morpho_dna_repair_gsva_scores.tsv
+│   ├── clk1_ctrl_morpho_hallmark_gsva_scores.tsv
+│   ├── clk1_ctrl_morpho_kegg_gsva_scores.tsv
 │   ├── ctrl_vs_treated.de.formatted.tsv
 │   └── ctrl_vs_treated.de.tsv
 └── run_module.sh
