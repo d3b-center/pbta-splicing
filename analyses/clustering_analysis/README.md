@@ -27,7 +27,7 @@ Rscript --vanilla code/01-convert_to_rds.R
 Rscript --vanilla code/02-create-inputs.R
 ```
 
-This script will generate the following input files in the `input` directory:
+These scripts will generate the following input files in the `input` directory:
 
 ```
 input
@@ -255,5 +255,5 @@ input
 
 There are 3 types of outputs to this script per input data matrix:
 
-1. `cluster_membership.pdf`: Bar plots of cluster membership categoized by histologies/plot groups
+1. `cluster_membership.pdf`: Bar plots of cluster membership categorized by histologies/plot groups
 2. ` cluster_members_by_cancer_group_subtype.tsv`: Table of results
