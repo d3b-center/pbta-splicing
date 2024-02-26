@@ -1,4 +1,4 @@
-### Author: Komal S. Rathi
+### Author: Komal S. Rathi, Ammar S. Naqvi, Jo Lynne Rokita
 
 ### Purpose
 
@@ -258,4 +258,3 @@ There are 3 types of outputs to this script per input data matrix:
 
 1. `cluster_membership.pdf`: Bar plots of cluster membership categoized by histologies/plot groups
 2. ` cluster_members_by_cancer_group_subtype.tsv`: Table of results
-```
