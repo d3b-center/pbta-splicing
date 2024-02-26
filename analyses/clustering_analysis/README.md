@@ -19,21 +19,20 @@ bash run.sh
 
 ### Input
 
-Inputs used for all scripts are created using the bash script:
+Inputs used for all scripts are created using the pre-processing scripts:
 
 ```
-bash create_inputs.sh
+perl code/00-create_matrix_of_PSI_SE_gene.pl ../../data/histologies.tsv ../../data/splice-events-rmats.tsv.gz ../../data/independent-specimens.rnaseqpanel.primary.tsv input/pan_cancer_splicing_SE.gene.tsv
+Rscript --vanilla code/01-convert_to_rds.R
+Rscript --vanilla code/02-create-inputs.R
 ```
 
 This script will generate the following input files in the `input` directory:
 
 ```
 input
-├── ../../data/histologies.tsv # histology/clinical information
-├── ../../data/independent-specimens.rnaseqpanel.primary.tsv # independent specimen information
-├── ../../data/splice-events-rmats.tsv.gz # rmats splicing results
+├── pan_cancer_splicing_SE.gene.rds #  pbta splicing data matrix. Rows are unique features and Columns are Kids_First_Biospecimen_Identifier
 ├── kegg_geneset_mrna.rds # kegg gene set for enrichment analyses
-├── non_expr_pan_cancer_splice_subset.rds # pbta splicing data matrix. Rows are unique features and Columns are Kids_First_Biospecimen_Identifier
 └── raw_counts_pbta_subset.rds # pbta mRNA data matrix subsetted to samples in the splicing matrix. Rows are unique features and Columns are Kids_First_Biospecimen_Identifier
 ```
 
