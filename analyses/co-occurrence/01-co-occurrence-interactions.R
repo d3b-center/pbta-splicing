@@ -141,13 +141,7 @@ collapse_snv_dat <- select(maf_df,c(Hugo_Symbol,Tumor_Sample_Barcode,Variant_Cla
 gene_matrix<-reshape2::acast(collapse_snv_dat,
                              Hugo_Symbol~Tumor_Sample_Barcode,value.var = "Variant_Classification")
 
-## read input
-#gene_matrix <- gene_matrix[goi_list$genes,]
-##read in input
-goi_list <- read_tsv(file.path(input_dir, "goi-mutations"), col_names = "genes")
-germline <- read_tsv(file.path(input_dir, "germline_variants_meta_format.tsv"))
-
-# read in telomerase scores
+# read in PSI
 splice_CLK1_df <-splice_df %>%
   rename(PSI = dPSI) %>%
   select(Kids_First_Participant_ID, PSI)
