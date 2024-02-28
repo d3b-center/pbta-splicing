@@ -149,7 +149,9 @@ splice_CLK1_df <-splice_df %>%
 
 # mutate the hgat dataframe for plotting
 histologies_df <- histologies_df %>%
-  inner_join(splice_CLK1_df, by = "Kids_First_Participant_ID")
+  inner_join(splice_CLK1_df, by = "Kids_First_Participant_ID") %>%
+  unique() %>%
+  column_to_rownames("Kids_First_Biospecimen_ID")
 
 
 ha = HeatmapAnnotation(name = "annotation", df = histologies_df[,c("reported_gender","PSI")],
