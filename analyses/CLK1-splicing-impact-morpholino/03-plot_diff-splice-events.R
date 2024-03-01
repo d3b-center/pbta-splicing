@@ -11,6 +11,8 @@ suppressPackageStartupMessages({
   library("ggrepel")
   library("vroom")
   library("ggpubr")
+  library("annoFuseData")
+  
 })
 
 # Get `magrittr` pipe
@@ -20,6 +22,7 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing-impact-morpholino")
+input_dir <- file.path(analysis_dir, "input")
 
 results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
@@ -29,8 +32,7 @@ if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
 }
 
-# set file path
-plot_file = file.path(plots_dir,"dPSI_volcano_morpholino.pdf")
+
 
 ##theme for all plots
 # source function for theme for plots survival
