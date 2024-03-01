@@ -12,11 +12,11 @@ Rscript --vanilla make-suppl-tables.R
 ```
 
 ## Output
-`TableS1-histologies.xlsx`: histology information
-`TableS2-histology-specific-splice-events.xlsx`: Histology specific splicing events
-`TableS3-DeSeq2-sbi-SFs.xlsx`: DeSeq2 results of high vs low SBI tumors, focusing on splicing factors
-`TableS4-functional-sites.xlsx`: Splicing events that correspond to functional site (uniprot)
-`TableS5-CLK1-ex4-splicing-impact-morpholino.xlsx`: DeSeq2 and rMATs results from comparing treated (morpholinos) vs untreated cells
+`TableS1-histologies.xlsx`: histology information <br>
+`TableS2-histology-specific-splice-events.xlsx`: Histology specific splicing events <br>
+`TableS3-DeSeq2-sbi-SFs.xlsx`: DeSeq2 results of high vs low SBI tumors, focusing on splicing factors <br>
+`TableS4-functional-sites.xlsx`: Splicing events that correspond to functional site (uniprot) <br>
+`TableS5-CLK1-ex4-splicing-impact-morpholino.xlsx`: DeSeq2 and rMATs results from comparing treated (morpholinos) vs untreated cells <br>
 
 ## Folder content
 * `make-suppl-tables.R` script to generate suppl tables in xls format for manuscript
