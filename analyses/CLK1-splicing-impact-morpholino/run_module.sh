@@ -14,9 +14,13 @@ Rscript 02-gsea-analysis.R
 ## plot differential splicing events between untreated vs treated
 Rscript 03-plot_diff-splice-events.R
 
+## find functional sites 
+bash 04-run_bedtools_intersect-morpho.sh
+Rscript --vanilla 05-plot_diff-splice-events.R
+
 ## perform ORA of mis-spliced genes after morpholino treatment
-Rscript 04-ora-analysis.R
+Rscript 06-ora-analysis.R
 
 ## Peform GSVA on all cell lines
-Rscript --vanilla 05-conduct-gsva-analysis.R
+Rscript --vanilla 07-conduct-gsva-analysis.R
 
