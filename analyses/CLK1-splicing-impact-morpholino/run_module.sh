@@ -16,7 +16,7 @@ Rscript 03-plot_diff-splice-events.R
 
 ## find functional sites 
 bash 04-run_bedtools_intersect-morpho.sh
-Rscript --vanilla 05-plot_diff-splice-events.R
+Rscript --vanilla 05-plot_diff-func-splice-events.R
 
 ## perform ORA of mis-spliced genes after morpholino treatment
 Rscript 06-ora-analysis.R
