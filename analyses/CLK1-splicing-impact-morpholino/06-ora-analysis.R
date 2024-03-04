@@ -51,6 +51,8 @@ pathway_df <- hs_msigdb_df %>%
 
 ## extract splicing changes 
 rmats_merged_file  <- file.path(analysis_dir,"input","morpholno.merged.rmats.tsv")
+events_func_file <- file.path(results_dir,"splicing_events.morpho.intersectUnip.ggplot.txt")
+
 splicing_df  <-  vroom(rmats_merged_file, comment = "#", delim="\t") %>% 
   filter(FDR < 0.05 & PValue < 0.05) 
 
@@ -128,6 +130,39 @@ enrich_plot_skip<- enrichplot::dotplot(ora_results) +
                 
 ggplot2::ggsave(ora_dotplot_skp_path,
                 plot=enrich_plot_skip,
+                width=9,
+                height=5,
+                device="pdf",
+                dpi=300)
+
+## focus on functional impactful events
+events_func_df  <-  vroom(events_func_file, comment = "#", delim="\t") %>% 
+  mutate(geneSymbol=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) %>%
+  dplyr::select(geneSymbol) %>% 
+  unique()
+
+## run enrichR to compute and identify significant over-repr pathways
+ora_results <- enricher(
+  gene = events_func_df$geneSymbol, # A vector of your genes of interest
+  pvalueCutoff = 0.05, 
+  #universe = bg_set$geneSymbol,
+  pAdjustMethod = "BH", 
+  TERM2GENE = dplyr::select(
+    pathway_df,
+    gs_name,
+    human_gene_symbol
+  )
+)
+
+ora_result_df <- data.frame(ora_results@result)
+enrich_plot_func<- enrichplot::dotplot(ora_results) +   
+  theme_Publication() +
+  scale_color_gradient(name = "Adjusted p-value", 
+                       low = "orange", high = "#0C7BDC") +  # Modify color range
+  labs(color = "B-H adj p-value")  # Modify legend title 
+
+ggplot2::ggsave(ora_dotplot_func_path,
+                plot=enrich_plot_func,
                 width=9,
                 height=5,
                 device="pdf",
