@@ -1,12 +1,11 @@
-# Figures
+# Manuscript Figures
 
-## CLK1 Exon 4 splicing
+## CLK1 Exon 4 splicing visualization
+We utilized [ggsashimi tool](https://github.com/guigolab/ggsashimi) to visualize CLK1 exon 4 (see tool repo for detailed instructions). We chose two representative samples BS_HRJ9145M (high Ex4 inclusion) and BS_XM1AHBDJ (low Ex4 inclusion).
+
 ### Input
-gencode.v39.primary_assembly.annotation.CLK1-select.gtf
-
-### Samples:
-BS_HRJ9145M (high Ex4 inclusion)
-BS_XM1AHBDJ (low Ex4 inclusion)
+```gencode.v39.primary_assembly.annotation.CLK1-select.gtf``` <br>
+```input_bams.tsv```
 
 ### Generate sashimi plot
 
