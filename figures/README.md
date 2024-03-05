@@ -9,5 +9,5 @@ We utilized [ggsashimi tool](https://github.com/guigolab/ggsashimi) to visualize
 
 ### Generate sashimi plot
 
-```bash
+```python
 ./ggsashimi.py -b examples/input_bams.tsv -g ../gencode.v39.primary_assembly.annotation.CLK1-select.gtf -c chr2:200853009-200864691 -M 10 -C 3 -O 3 --alpha 1 --base-size=10 -R 300 --height=1.5 --width=8 --ann-height 1 -P examples/palette.txt -o sashimi-CLK1-v2-plot --fix-y-scal --shrink
