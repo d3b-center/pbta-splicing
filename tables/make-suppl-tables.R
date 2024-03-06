@@ -182,8 +182,7 @@ write.xlsx(list_s4_table,
 
 ## Table 5 morpholino vs ctrl DESeq2 and rMATs results
 deseq2_morpholino_df <- vroom(deseq2_morph_file) %>%
-  filter(padj != "Not Sig") %>%
-  dplyr::select(-Significant)
+  filter(padj > 0.05) 
   
 rmats_df <-  vroom(rmats_tsv_file)
 
