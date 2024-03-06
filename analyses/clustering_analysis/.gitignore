@@ -1,3 +1,11 @@
-input/*
+# ignore large input files
+./input/raw_counts_pbta_subset.rds
+
+# ignore large output files
+./output/ccp_output/*.pdf
+./output/ccp_output/*ccp.rds
 **/output/optimal_clustering/*.rds
 **/output/optimal_clustering/*.pdf
+input/raw_counts_pbta_subset.rds
+output/ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_consensus.pdf
+input/pan_cancer_splicing_SE.gene.tsv
