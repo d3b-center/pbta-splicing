@@ -60,16 +60,16 @@ indep_sample_rna_wgs <- inner_join(indep_wgs_df,indep_rna_df, by='Kids_First_Par
   dplyr::rename('DNA_id'=Kids_First_Biospecimen_ID.x, 'RNA_id'=Kids_First_Biospecimen_ID.y)
 
 histologies_df <- vroom(clin_file)  %>% 
-  filter(short_histology == 'HGAT',
+  dplyr::filter(short_histology == 'HGAT',
          cohort == 'PBTA',
         # CNS_region == 'Midline'
         ) %>% 
   inner_join(indep_sample_rna_wgs, by='Kids_First_Participant_ID') %>% 
-  filter(short_histology == 'HGAT',
+  dplyr::filter(short_histology == 'HGAT',
          cohort == 'PBTA',
          #CNS_region == 'Midline'
   ) %>%
-  filter(experimental_strategy == 'RNA-Seq' |
+  dplyr::filter(experimental_strategy == 'RNA-Seq' |
          experimental_strategy == 'WGS' |
           experimental_strategy == 'WXS')
 
@@ -89,11 +89,12 @@ maf_df <- maf_df  %>%
   dplyr::mutate(vaf = t_alt_count / (t_ref_count + t_alt_count))
 
 ## select required columns only
-maf_df <- maf_df %>%
+maf_df_fil <- maf_df %>%
   inner_join(histologies_df, by= c("Tumor_Sample_Barcode" ="DNA_id"),relationship = "many-to-many") %>% 
   dplyr::mutate('Tumor_Sample_Barcode'=Kids_First_Participant_ID) %>% 
   dplyr::filter(vaf > 0.05) %>% 
   dplyr::filter(Hugo_Symbol %in% goi_df$gene) %>% 
+  dplyr::filter(Kids_First_Participant_ID  %in% splice_df$Kids_First_Participant_ID) %>%
   dplyr::select(
     "Hugo_Symbol", 
     "Chromosome", 
@@ -130,21 +131,23 @@ maf_df <- maf_df %>%
 #   as.data.frame()
 
 
-collapse_snv_dat <- select(maf_df,c(Hugo_Symbol,Tumor_Sample_Barcode,Variant_Classification)) %>%
-  unique() %>%
-  filter(Variant_Classification %in% names(colors)) %>%
-  group_by(Hugo_Symbol,Tumor_Sample_Barcode) %>%
-  summarise(count = as.double(length(Variant_Classification[!is.na(Variant_Classification)])),
+collapse_snv_dat <- dplyr::select(maf_df_fil,c(Hugo_Symbol,Tumor_Sample_Barcode,Variant_Classification)) %>%
+  #dplyr::unique() %>%
+  dplyr::filter(Variant_Classification %in% names(colors)) %>%
+  dplyr::group_by(Hugo_Symbol,Tumor_Sample_Barcode) %>%
+  dplyr::summarise(count = as.double(length(Variant_Classification[!is.na(Variant_Classification)])),
             Variant_Classification=paste(Variant_Classification,collapse = ",")) 
 
 # complex heatmap
 gene_matrix<-reshape2::acast(collapse_snv_dat,
-                             Hugo_Symbol~Tumor_Sample_Barcode,value.var = "Variant_Classification")
+                             Hugo_Symbol~Tumor_Sample_Barcode,value.var = "Variant_Classification") %>%
+  as.data.frame() %>%
+  dplyr::mutate_if(is.character, ~replace_na(.,""))
 
 # read in PSI
 splice_CLK1_df <-splice_df %>%
-  rename(PSI = dPSI) %>%
-  select(Kids_First_Participant_ID, PSI)
+  dplyr::rename(PSI = dPSI) %>%
+  dplyr::select(Kids_First_Participant_ID, PSI)
 
 
 # mutate the hgat dataframe for plotting
