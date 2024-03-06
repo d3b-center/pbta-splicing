@@ -11,6 +11,8 @@ suppressPackageStartupMessages({
   library("ggrepel")
   library("vroom")
   library("ggpubr")
+  library("annoFuseData")
+  
 })
 
 # Get `magrittr` pipe
@@ -20,6 +22,7 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing-impact-morpholino")
+input_dir <- file.path(analysis_dir, "input")
 
 results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
@@ -29,8 +32,7 @@ if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
 }
 
-# set file path
-plot_file = file.path(plots_dir,"dPSI_volcano_morpholino.pdf")
+
 
 ##theme for all plots
 # source function for theme for plots survival
@@ -42,7 +44,7 @@ file_dpsi_plot <- file.path(plots_dir,"dPSI_distr.pdf")
 
 ## get and setup input
 ## rmats file
-rmats_merged_file  <- file.path(analysis_dir,"input","morpholno.merged.rmats.tsv")
+rmats_merged_file  <- file.path(data_dir,"morpholno.merged.rmats.tsv")
 
 ## extract strong splicing changes 
 splicing_df  <-  vroom(rmats_merged_file, comment = "#", delim="\t") %>% 
@@ -51,9 +53,14 @@ splicing_df  <-  vroom(rmats_merged_file, comment = "#", delim="\t") %>%
 ## extract strong differential splicing cases (dPSI >= |.10|)
 splicing_df_ES <- splicing_df %>% filter(IncLevelDifference  >= .10) %>% mutate(Preference="Skipping")
 splicing_df_EI <- splicing_df %>% filter(IncLevelDifference <= -.10) %>% mutate(Preference="Inclusion",
-                                                                                IncLevelDifference =IncLevelDifference*-1 )
+                                                                                IncLevelDifference = abs(IncLevelDifference) )
 
 psi_comb <- rbind(splicing_df_EI,splicing_df_ES)
+
+## ggstatplot across functional sites
+set.seed(123)
+counts_psi_comb <- psi_comb %>% 
+  count(splicing_case,Preference)
 
 ## ggstatplot across functional sites
 set.seed(123)
@@ -76,6 +83,8 @@ plot_dsp <-  ggplot(psi_comb,aes(splicing_case, IncLevelDifference*100) ) +
                                                                 c("SE", "RI"))) + 
   scale_color_manual(name = "Preference", values = c(Inclusion = "#FFC20A", Skipping = "#0C7BDC"))  + 
   theme_Publication() + 
+  geom_text(data = counts_psi_comb, aes(label = paste("n =",n), x = splicing_case, y = 0), vjust = 2, size = 4, hjust=.5) +
+  
   labs(x= "Splicing Case") + 
   theme(legend.position="none") +
   ylim(c(0,170))
@@ -86,3 +95,4 @@ pdf(file_dpsi_plot,
     width = 15, height = 7)
 plot_dsp
 dev.off()
+
