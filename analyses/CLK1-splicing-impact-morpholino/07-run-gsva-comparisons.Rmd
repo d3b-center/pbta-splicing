@@ -55,7 +55,9 @@ kegg_pathways <- unique(kegg_scores$geneset)
 dna_scores <- read_tsv(dna_file)
 dna_pathways <- unique(dna_scores$geneset)
 
-de_results<- read_tsv(de_results_file)
+# read in significant DE genes
+de_results<- read_tsv(de_results_file) %>%
+  filter(padj <0.05)
 ```
 
 Run GSVA score comparisons between samples with and without CLK1 morpholino
