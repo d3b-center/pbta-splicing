@@ -199,7 +199,7 @@ plot_barplot_family <- ggplot(psi_comb_goi, aes(x = fct_rev(fct_infreq(plot_subt
             hjust = -0.5, size = 3.5) +
   theme_Publication() +
   coord_flip() +
-  ylim(0,110)
+  ylim(0,115)
 
 # Save plot as PDF
 pdf(file_dpsi_goi_plot, height = 8, width = 8, useDingbats = FALSE) 
