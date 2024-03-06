@@ -25,6 +25,7 @@ input/morpholno.merged.rmats.tsv
 input/nonhomologous_end_joining.txt
 input/nucleotide_excision_repair.txt
 input/oncoprint-goi-lists-OpenPedCan-gencode-v39.csv
+../../splicing_events_functional_sites/input/unip*bed
 ```
 
 ### Output
@@ -39,14 +40,18 @@ plots/CLK1_targets_ora_dotplot.pdf
 plots/ctrl_vs_clk1-morp_volcano.pdf
 plots/dPSI_distr.pdf
 plots/gene-fam-DE-plot.pdf
+plot/dPSI-distr-func.pdf
+plots.dPSI-distr-func-goi.pdf
 ```
 
 ## Folder content
 * `01-diffExpr-ctrl_vs_morph.R` performs differential expression analysis on ctrl vs treated cells using DESeq2. It also subsets based on genes of interests (transcription factors, kinases, etc)
 * `02-gsea-analysis.R` performs gsea on differentially expressed genes from previous script
 * `03-plot_diff-splice-events.R` plots PSI distributions of differential splice events
-* `04-ora-analysis.R` performs an over-representation analysis on above splice events
-* `05-conduct-gsva-analysis.R` performs GSVA on HALLMARK, KEGG, and DNA repair pathways from https://pubmed.ncbi.nlm.nih.gov/29617664/
+* `04-run_bedtools_intersect-morpho.sh` formats rMATs output into bed format, and runs bedtools to intersect with uniprot db files
+* `05-plot_diff-func-splice-events.R` plots PSI distributions of differential splice events categorized by functionnal site and then subsets cancer genes
+* `06-ora-analysis.R` performs an over-representation analysis on above splice events
+* `07-conduct-gsva-analysis.R` performs GSVA on HALLMARK, KEGG, and DNA repair pathways from https://pubmed.ncbi.nlm.nih.gov/29617664/
 
 ## Directory structure
 ```
@@ -54,8 +59,10 @@ plots/gene-fam-DE-plot.pdf
 ├── 01-diffExpr-ctrl_vs_morph.R
 ├── 02-gsea-analysis.R
 ├── 03-plot_diff-splice-events.R
-├── 04-ora-analysis.R
-├── 05-conduct-gsva-analysis.R
+├── 04-run_bedtools_intersect-morpho.sh
+├── 05-plot_diff-func-splice-events.R
+├── 06-ora-analysis.R
+├── 07-conduct-gsva-analysis.R
 ├── README.md
 ├── input
 │   ├── RBP_known.txt
@@ -72,13 +79,16 @@ plots/gene-fam-DE-plot.pdf
 │   ├── CLK1_status_gsea_dotplot.pdf
 │   ├── CLK1_targets_ora_dotplot.pdf
 │   ├── ctrl_vs_clk1-morp_volcano.pdf
+│   ├── dPSI-distr-func-goi.pdf
+│   ├── dPSI-distr-func.pdf
 │   ├── dPSI_distr.pdf
 │   └── gene-fam-DE-plot.pdf
 ├── results
 │   ├── clk1_ctrl_morpho_dna_repair_gsva_scores.tsv
 │   ├── clk1_ctrl_morpho_hallmark_gsva_scores.tsv
 │   ├── clk1_ctrl_morpho_kegg_gsva_scores.tsv
-│   ├── ctrl_vs_treated.de.formatted.tsv
-│   └── ctrl_vs_treated.de.tsv
+│   ├── ctrl_vs_morpho.rsem.genes.collapsed.rds
+│   ├── ctrl_vs_treated.de.tsv
+│   └── splicing_events.morpho.intersectUnip.ggplot.txt
 └── run_module.sh
 ```
