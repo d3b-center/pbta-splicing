@@ -1,118 +1,105 @@
 ################################################################################
-# 01-diffExpr-ctrl_vs_morph.R
-# Performs gene expression analysis and plots on cells untreated vs treated with
-# morpholinos targeting CLK1
+# 05-plot_diff-splice-events.R
+# written byAmmar Naqvi and Jo Lynne Rokita
 #
-# Author: Ammar Naqvi, Jo Lynne Rokita
-# usage: Rscript --vanilla 01-diffExpr-ctrl_vs_morph.R
+# usage: Rscript 03-plot_diff-splice-events.R
 ################################################################################
 
 suppressPackageStartupMessages({
-  library("EnhancedVolcano")
-  library("DESeq2")
+  library("ggplot2")
   library("tidyverse")
-  library("dplyr")
+  library("ggrepel")
   library("vroom")
-  library("clusterProfiler")
-  library("annoFuseData")
-  library(ggplot2)
+  library("ggpubr")
 })
 
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
 
-## set directories
+## set directories and file paths
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data/")
+data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing-impact-morpholino")
+input_dir <- file.path(analysis_dir, "input")
 
-input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
-plots_dir <- file.path(analysis_dir, "plots")
+plots_dir   <- file.path(analysis_dir, "plots")
 
+plots_dir <- file.path(analysis_dir, "plots")
 if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
 }
 
-if(!dir.exists(results_dir)){
-  dir.create(results_dir, recursive=TRUE)
-}
 
-
-## theme for all plots
+##theme for all plots
+# source function for theme for plots survival
 figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
-## output files
-de_output = file.path(results_dir, "ctrl_vs_treated.de.tsv")
-file_volc_plot = file.path(plots_dir, "ctrl_vs_clk1-morp_volcano.pdf")
-file_gene_family_plot = file.path(plots_dir,"gene-fam-DE-plot.pdf")
+## define output files
+file_dpsi_plot <- file.path(plots_dir,"dPSI-distr-func.pdf")
+file_dpsi_goi_plot <- file.path(plots_dir,"dPSI-distr-func-goi.pdf")
 
-## input files
-# count data
-tpm_count_file <- "ctrl-vs-morpholino-gene-counts-rsem-expected_count.tsv" 
+## get and setup input
 
+## retrieve psi values from tables
+file_psi_func <- file.path(results_dir,"splicing_events.morpho.intersectUnip.ggplot.txt")
+
+## read table of recurrent functional splicing (skipping)
+dpsi_unip_incl <- vroom(file_psi_func) %>% 
+  mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) %>%
+  filter(dPSI<0) %>% 
+  mutate(Preference='Inclusion',
+         dPSI=abs(dPSI))
+
+dpsi_unip_skp <- vroom(file_psi_func) %>% 
+  mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) %>%
+  filter(dPSI>0) %>% 
+  mutate(Preference='Skipping')
+
+
+psi_comb <- rbind(dpsi_unip_incl,dpsi_unip_skp) %>% 
+  mutate(Uniprot = case_when(Uniprot == 'DisulfBond' ~ "Disulfide Bond",
+                             Uniprot == 'LocSignal' ~ "Localization Signal",
+                             .default = Uniprot),
+         Uniprot_wrapped = stringr::str_wrap(Uniprot, width = 10)
+  )
+
+
+## ggstatplot across functional sites
+set.seed(123)
+counts_psi_comb <- psi_comb %>% 
+  count(Preference, Uniprot_wrapped)
+plot_dsp <-  ggplot(psi_comb, aes(Uniprot_wrapped, dPSI*100) ) +  
+  ylab(expression(bold("dPSI"))) +
+  ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 5, method="density") +
+  geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
+  facet_wrap("Preference") +
+  stat_compare_means(method = "wilcox.test", comparisons = list(c("Disulfide\nBond", "Localization\nSignal"),
+                                                                c("Disulfide\nBond", "Modifications"),
+                                                                c("Disulfide\nBond", "Other"),
+                                                                c("Localization\nSignal", "Modifications"),
+                                                                c("Localization\nSignal", "Other"),
+                                                                c("Modifications", "Other"))) + 
+  scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A"))  + 
+  theme_Publication() + 
+  
+  labs(y="Percent Spliced In (PSI)", x= "Uniprot-defined Functional Site") + 
+  geom_text(data = counts_psi_comb, aes(label = paste("n =",n), x = Uniprot_wrapped, y = 0), vjust = 3, size = 4, hjust=.5) +
+  theme(legend.position="none", 
+        axis.text.x = element_text(angle = 45, hjust = 1)) +  # Angles x-axis text
+  ylim(c(-20,170))
+
+# Save plot as PDF
+pdf(file_dpsi_plot, 
+    width = 8, height = 5)
+print (plot_dsp)
+dev.off()
+
+##subset by GOI
 # gene list files
 known_rbp_file <- file.path(input_dir,'RBP_known.txt')
 known_epi_file <- file.path(input_dir,'epi_known.txt')
-
-## hgnc file for liftover
-hgnc_file <- file.path(input_dir,"hgnc_complete_set.txt")
-
-count_data <- vroom(paste0(data_dir, tpm_count_file)) %>% 
-               filter( (CTRL1 + CTRL2 + CTRL3 > 10) & (Treated1 + Treated2 + Treated3 > 10) )
-
-## construct metadata
-design = data.frame(row.names = colnames(count_data)[-1],
-                    condition = c(rep("Ctrl",3), rep("Treated",3) ),
-                    libType   = c(rep("paired-end",6)))
-
-
-## remove first column
-count_data_removed <- dplyr::select(count_data, -gene)
-
-cds = DESeqDataSetFromMatrix(countData=round(count_data_removed),
-                             colData=design,
-                             design= ~ condition)
-
-
-## run DeSeq function to compute pvalues
-cds <- DESeq(cds)
-res <- results(cds)
-
-## label anything below <0.05 as signficant
-res$Significant <- ifelse(res$padj< 0.05, "P-val < 0.05", "Not Sig")
-
-volc <- EnhancedVolcano(res,
-                lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene), ## remove ensembleid portion
-                x = 'log2FoldChange',
-                y = 'padj',
-                drawConnectors = TRUE,
-                #ylim = c(0,21),
-               # xlim = c(-6,6),
-                title = 'CLK1 Exon 4 Morpholino vs Non-targeting Morpholino',
-                caption = "",
-                subtitle = "",
-                pCutoff = 0.05,
-                FCcutoff = 1,
-                pointSize = 2,
-                labSize = 4) 
-  # Attempt to override axis titles post-hoc
-  volc <- volc + labs(x = expression(bold(Log[2] * " Fold Change")), 
-                      y = expression(bold("-Log"[10] * " p-value")))
-
-pdf(file_volc_plot, height = 7, width = 8)
-print(volc)
-dev.off()
-
-de_results <- as_tibble(cbind(res, count_data)) %>%
-  extract(col = gene, 
-          into = c("ENS_ID", "Gene_Symbol"), 
-          regex = "^(ENSG[0-9]+\\.[0-9]+)_(.+)$",
-          remove = FALSE) %>%
-  select(-gene)
-
-write_tsv(de_results, de_output)
 
 ## subset with gene lists
 genelist_ref_df <-read.delim(system.file("extdata", "genelistreference.txt", package = "annoFuseData"))  %>%
@@ -184,51 +171,39 @@ genelist_cat <- genelist_ref_df %>%
                                   TRUE ~ type)) %>%
   dplyr::select(Gene_Symbol, plot_type, plot_subtype) %>%
   # add other RBP, Epi not already in the list
-  bind_rows(known_rbp_not_inlist, known_epi_not_inlist)
+  bind_rows(known_rbp_not_inlist, known_epi_not_inlist) %>% 
+  dplyr::rename('gene'=Gene_Symbol)
 
 # check that all of the subgroups look right
 table(genelist_cat$plot_subtype, genelist_cat$plot_type)
 
-# combine with the DE results
-genes_to_plot <- as.data.frame(res) %>% 
-  dplyr::mutate(gene=gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data$gene)) %>% 
-  dplyr::rename('Gene_Symbol'=gene) %>% 
-  inner_join(genelist_cat, by="Gene_Symbol")                          
-
-## use only significant results for the plot
-sign_regl_gene_df <- genes_to_plot %>%
-  as.data.frame() %>%
-  dplyr::filter(padj < 0.05,
-         abs(log2FoldChange) >= 1) %>%
-  mutate(Direction= case_when(log2FoldChange<1 ~ 'Down',
-                              log2FoldChange>1 ~ 'Up')) 
+psi_comb_goi <- psi_comb %>% inner_join(genelist_cat, by="gene")   
 
 # relevel the plot_type and subtype
-sign_regl_gene_df$plot_type <- factor(sign_regl_gene_df$plot_type, levels = c("Oncogene", "Tumor Suppressor",
-                                                                              "Oncogene or Tumor Suppressor", "Other"))
-sign_regl_gene_df$plot_subtype <- factor(sign_regl_gene_df$plot_subtype, levels = c("Kinase", "Oncogene or Tumor Suppressor",
-                                                                              "Transcription Factor", "RNA Binding Protein",
-                                                                              "Epigenetic", "Other Oncogene", "Other Tumor Suppressor"))
-unique(sign_regl_gene_df$plot_subtype)
-  
+psi_comb_goi$plot_type <- factor(psi_comb_goi$plot_type, levels = c("Oncogene", "Tumor Suppressor",
+                                                                    "Oncogene or Tumor Suppressor", "Other"))
+psi_comb_goi$plot_subtype <- factor(psi_comb_goi$plot_subtype, levels = c("Kinase", "Oncogene or Tumor Suppressor",
+                                                                          "Transcription Factor", "RNA Binding Protein",
+                                                                          "Epigenetic", "Other Oncogene", "Other Tumor Suppressor"))
+unique(psi_comb_goi$plot_subtype)
 ## plot num of hits per gene fam
-plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(plot_subtype)), fill= Direction)) +
-                       geom_bar(stat="count", position='dodge', color="black") + 
-                       facet_wrap(~plot_type, scales = "free_y", ncol = 1) +
-                       xlab("Gene Family")     + 
-                       ylab("Number of Genes Signficantly Differentially Expressed") + 
-                       scale_fill_manual(name = "Direction",
-                                         values=c("#FFC20A","#0C7BDC")) + 
-                       geom_text(stat='count',aes(label=after_stat(count)), 
-                                 position = position_dodge(width = 1),
-                                 hjust = -0.5, size = 3.5) +
-                      theme_Publication() +
-                      coord_flip() +
-                      ylim(0,40)
+plot_barplot_family <- ggplot(psi_comb_goi, aes(x = fct_rev(fct_infreq(plot_subtype)), fill= Preference)) +
+  geom_bar(stat="count", position='dodge', color="black") + 
+  facet_wrap(~plot_type, scales = "free_y", ncol = 1) +
+  xlab("Gene Family")     + 
+  ylab("Number of Genes Signficantly Mis-spliced") + 
+  scale_fill_manual(name = "Preference",
+                    values=c("#FFC20A","#0C7BDC")) + 
+  geom_text(stat='count',aes(label=after_stat(count)), 
+            position = position_dodge(width = 1),
+            hjust = -0.5, size = 3.5) +
+  theme_Publication() +
+  coord_flip() +
+  ylim(0,115)
 
-  
-
-# print and save plot
-pdf(file_gene_family_plot, height = 8, width = 8, useDingbats = FALSE) 
-print(plot_barplot_family)
+# Save plot as PDF
+pdf(file_dpsi_goi_plot, height = 8, width = 8, useDingbats = FALSE) 
+plot_barplot_family
 dev.off()
+
+
