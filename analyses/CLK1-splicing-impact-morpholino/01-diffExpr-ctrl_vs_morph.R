@@ -223,7 +223,8 @@ plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(plot
                                  position = position_dodge(width = 1),
                                  hjust = -0.5, size = 3.5) +
                       theme_Publication() +
-                      coord_flip() 
+                      coord_flip() +
+                      ylim(0,40)
 
   
 

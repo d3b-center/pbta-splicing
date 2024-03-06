@@ -4,23 +4,24 @@ set -e
 set -o pipefail
 
 ## perform diff expression on ctrl vs clk1-morph
-Rscript 01-diffExpr-ctrl_vs_morph.R
+Rscript --vanilla 01-diffExpr-ctrl_vs_morph.R
 echo -e "gene\tlog2FoldChange\tpadj" > results/ctrl_vs_treated.de.formatted.tsv
-cat results/ctrl_vs_treated.de.tsv | awk -F "\t" '{print $8,"\t"$2"\t"$6}' | awk -F "_" '{print $2}' >> results/ctrl_vs_treated.de.formatted.tsv
-
-## perform GSEA on diff expression results
-Rscript 02-gsea-analysis.R
+cat results/ctrl_vs_treated.de.tsv | awk -F "\t" '{print $9"\t"$2"\t"$6}' | grep -v log   >> results/ctrl_vs_treated.de.formatted.tsv
 
 ## plot differential splicing events between untreated vs treated
-Rscript 03-plot_diff-splice-events.R
+echo "DE analysis"
+Rscript --vanilla 02-plot_diff-splice-events.R
 
 ## find functional sites 
-bash 04-run_bedtools_intersect-morpho.sh
-Rscript --vanilla 05-plot_diff-func-splice-events.R
+echo "analyze functional sites"
+bash 03-run_bedtools_intersect-morpho.sh
+Rscript --vanilla 04-plot_diff-func-splice-events.R
 
 ## perform ORA of mis-spliced genes after morpholino treatment
-Rscript 06-ora-analysis.R
+echo "ORA analysis"
+Rscript --vanilla 05-ora-analysis.R
 
 ## Peform GSVA on all cell lines
-Rscript --vanilla 07-conduct-gsva-analysis.R
+echo "GSVA analysis"
+Rscript --vanilla 06-conduct-gsva-analysis.R
 
