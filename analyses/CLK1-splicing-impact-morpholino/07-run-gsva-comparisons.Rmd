@@ -20,10 +20,11 @@ library(circlize)
 ```
 
 Set filepaths
-```{r}
+```{r set file paths}
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing-impact-morpholino")
 results_dir <- file.path(analysis_dir, "results")
+plots_dir <- file.path(analysis_dir, "plots")
 #source(file.path(analysis_dir, "util", "gsva_functions.R"))
 source(file.path(root_dir, "figures", "theme_for_plots.R"))
 ```
@@ -34,16 +35,17 @@ Set file paths
 gsva_file <- file.path(results_dir, "clk1_ctrl_morpho_hallmark_gsva_scores.tsv")
 kegg_file <- file.path(results_dir, "clk1_ctrl_morpho_kegg_gsva_scores.tsv")
 dna_file <- file.path(results_dir, "clk1_ctrl_morpho_dna_repair_gsva_scores.tsv")
+de_results_file <- file.path(results_dir, "ctrl_vs_treated.de.tsv")
 ```
 
 Create histology file for grouping samples
 
-```{r}
+```{r load files}
 sample_ids <- c("CTRL1", "CTRL2", "CTRL3", "Treated1", "Treated2", "Treated3")
 treatments <- c("Control", "Control", "Control", "CLK1", "CLK1", "CLK1")
 df <- tibble(sample_id = sample_ids, treatment = treatments)
 
-# read in scores
+# read in scores and de results
 hallmark_scores <- read_tsv(gsva_file)
 hallmark_pathways <- unique(hallmark_scores$geneset)
 
@@ -52,11 +54,13 @@ kegg_pathways <- unique(kegg_scores$geneset)
 
 dna_scores <- read_tsv(dna_file)
 dna_pathways <- unique(dna_scores$geneset)
+
+de_results<- read_tsv(de_results_file)
 ```
 
 Run GSVA score comparisons between samples with and without CLK1 morpholino
 
-```{r}
+```{r compare scores}
 # Define repair gene source input directories 
 treat_ids <- df %>%
   filter(treatment == "CLK1") %>%
@@ -73,7 +77,7 @@ ctrl_ids <- df %>%
 # Assuming you have defined kegg_pathways, hallmark_pathways, dna_pathways lists
 # And kegg_scores, hallmark_scores, dna_scores data frames with columns 'geneset', 'sample_id', and 'gsva_score'
 # treat_ids and ctrl_ids are vectors containing IDs for treated and control samples
-```{r}
+```{r create gene lists}
 # Lists of score data frames and pathway lists
 score_sources <- list(kegg_scores, hallmark_scores, dna_scores)
 pathway_sources <- list(kegg_pathways, hallmark_pathways, dna_pathways)
@@ -129,7 +133,7 @@ for (i in 1:length(score_sources)) {
 ```
 
 Plot single samples
-```{r}
+```{r gsva heatmaps}
 # create anno colors
 top_annot <- df %>%
   dplyr::select(treatment) %>%
@@ -176,10 +180,22 @@ gsva_heatmap <- Heatmap(
 )
 
 output_filename <- paste0("gsva_heatmap_", score_name, ".pdf")
-pdf(file.path(results_dir, output_filename),  height = height, width = width)
+pdf(file.path(plots_dir, output_filename),  height = height, width = width)
 print(gsva_heatmap)
 dev.off()
 }
 
 ```
+
+How do these look if we make some barplots?
+```{r gsva barplots}
+
+
+```
+
+Print session info
+```{r print session info}
+sessionInfo()
+```
+
 
