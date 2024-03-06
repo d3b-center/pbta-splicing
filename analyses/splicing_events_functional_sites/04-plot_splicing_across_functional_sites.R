@@ -45,8 +45,7 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 file_dpsi_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites.HGG.pdf")
 file_dpsi_kinase_plot <- file.path(analysis_dir, "plots", "dPSI_across_functional_sites_kinase.HGG.pdf")
 ora_dotplot_path <- file.path(plots_dir,"kinases-ora-plot.pdf")
-kinases_functional_sites_skipped = file.path(results_dir,"kinases-functional_sites_skipped.txt")
-kinases_functional_sites_incl = file.path(results_dir,"kinases-functional_sites_included.txt")
+kinases_functional_sites = file.path(results_dir,"kinases-functional_sites.tsv")
 
 ## retrieve psi values from tables
 file_psi_pos_func <- file.path(results_dir,"splicing_events.total.HGG.pos.intersectUnip.ggplot.txt")
@@ -186,7 +185,16 @@ ggplot2::ggsave(filename = ora_dotplot_path,
                 height=7,
                 device="pdf")
 
+kinase_skip_pref <- kinase_skip_pref %>%  
+  dplyr::mutate('Exon Coordinates' = str_match(SpliceID, "(\\w+)\\:(\\d+\\-\\d+)\\_")[, 3]) %>%
+  unique() 
+
+kinase_incl_pref <- kinase_incl_pref %>% 
+  dplyr::mutate('Exon Coordinates' = str_match(SpliceID, "(\\w+)\\:(\\d+\\-\\d+)\\_")[, 3]) %>%
+  unique()
+
+kinase_pref <- rbind(kinase_skip_pref, kinase_incl_pref)
+
 ## write kinase results for table
-write_lines(sort(unique(kinase_skip_pref$gene)), kinases_functional_sites_skipped)
-write_lines(sort(unique(kinase_incl_pref$gene)), kinases_functional_sites_incl)
+write_tsv(kinase_pref, kinases_functional_sites)
 
