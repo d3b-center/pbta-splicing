@@ -197,7 +197,7 @@ oncoPrint(gene_matrix, get_type = function(x) strsplit(x, ",")[[1]],
             Amp = function(x, y, w, h) grid.rect(x, y, w*0.85, h*0.85, gp = gpar(fill = unname(col["Amp"]), col = NA)),
             `5'Flank` = function(x, y, w, h) grid.rect(x, y, w*0.85, h*0.85, gp = gpar(fill = unname(col["5'Flank"]), col = NA))),
           col = col,
-          top_annotation = ha,
+         # top_annotation = ha,
           #bottom_annotation = ha1,
           column_order =  colnames(gene_matrix)
 )
