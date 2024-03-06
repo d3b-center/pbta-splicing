@@ -42,12 +42,12 @@ file_barplot_SFs_plot <- file.path(analysis_dir, "plots", "barplot_hgg_SFs.pdf")
 gene_sign_list_file <- file.path(results_dir,"diffSFs_sig_genes.txt")
 
 ## get and setup input files
-sbi_coding_file  <- file.path(analysis_dir, "splicing_index/results/splicing_index.SE.txt")
+sbi_coding_file  <- file.path(root_dir, "analyses/splicing_index/results/splicing_index.SE.txt")
 clin_file <- file.path(data_dir, "histologies.tsv")
 file_gene_counts <- file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds")
 
 # get splicing factor list to subset later
-sf_file <- file.path(analysis_dir, "splicing-factor_dysregulation/input/splicing_factors.txt")
+sf_file <- file.path(analysis_dir, "input/splicing_factors.txt")
 sf_list <- readr::read_lines(sf_file)
 
 ## get clinical histlogy file filtered by HGG samples
@@ -86,11 +86,11 @@ count_data <- count_data %>%
 
 # Filter count_data based on sf_list, then select specified columns
 count_data_sf <- count_data %>%
-  filter(gene %in% sf_list) %>%
-  select(gene, any_of(clin_tab$Kids_First_Biospecimen_ID)) %>%
-  rowwise() %>%  # Ensure you use parentheses here
-  filter(sum(c_across(where(is.numeric))) >= 1) %>%
-  ungroup()
+  dplyr::filter(gene %in% sf_list) %>%
+  dplyr::select(gene, any_of(clin_tab$Kids_First_Biospecimen_ID)) %>%
+  dplyr::rowwise() %>%  # Ensure you use parentheses here
+  dplyr::filter(sum(c_across(where(is.numeric))) >= 1) %>%
+  dplyr::ungroup()
 
 ## remove first column
 filtered_counts_gene_rm <- dplyr::select(count_data_sf, -gene)
