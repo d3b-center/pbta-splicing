@@ -28,7 +28,7 @@ deseq2_sf_file <- file.path(analysis_dir, "splicing-factor_dysregulation", "resu
 func_sites_es_file <- file.path(analysis_dir, "splicing_events_functional_sites", "results", "splicing_events.total.HGG.neg.intersectUnip.ggplot.txt") 
 func_sites_ei_file <- file.path(analysis_dir, "splicing_events_functional_sites", "results", "splicing_events.total.HGG.pos.intersectUnip.ggplot.txt") 
 kinase_func_sites_file <- file.path(analysis_dir, "splicing_events_functional_sites", "results", "kinases-functional_sites.tsv")
-deseq2_morph_file <- file.path(analysis_dir,"CLK1-splicing-impact-morpholino","results","ctrl_vs_treated.de.formatted.tsv")
+deseq2_morph_file <- file.path(root_dir,"analyses/CLK1-splicing-impact-morpholino","results","ctrl_vs_treated.de.tsv")
 rmats_tsv_file <- file.path(data_dir,"ctrl-vs-morpholino-merged-rmats.tsv")
 
 # define suppl output files and sheet names, when appropriate
@@ -182,9 +182,17 @@ write.xlsx(list_s4_table,
 
 ## Table 5 morpholino vs ctrl DESeq2 and rMATs results
 deseq2_morpholino_df <- vroom(deseq2_morph_file) %>%
-  filter(padj < 0.05) 
+  filter(padj < 0.05) %>%
+  dplyr::select(Gene_Symbol,	
+                baseMean,	
+                log2FoldChange,	
+                lfcSE,	
+                stat,	
+                pvalue,	
+                padj)
   
 rmats_df <-  vroom(rmats_tsv_file)
+
 
 list_s5_table <- list(deseq2_morp = deseq2_morpholino_df,
                       rmats = rmats_df)
