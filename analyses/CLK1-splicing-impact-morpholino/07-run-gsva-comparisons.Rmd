@@ -213,7 +213,7 @@ score_df_summarized$geneset <- factor(score_df_summarized$geneset, levels = orde
   
 heatmap_obj <- Heatmap(
   gsva_scores_mat,
-  col = colorRamp2(c(-1, 0, 1), c("blue", "white", "darkorange")),
+  col = colorRamp2(c(-.8, 0, .8), c("blue", "white", "darkorange")),
   name = "GSVA Scores",
   na_col = "whitesmoke",
   width = unit(cell_width, "cm"),
@@ -233,12 +233,6 @@ print(gsva_heatmap)
 print(gsva_barplot)
 dev.off()
 }
-
-```
-
-How do these look if we make some barplots?
-```{r gsva barplots}
-
 
 ```
 
