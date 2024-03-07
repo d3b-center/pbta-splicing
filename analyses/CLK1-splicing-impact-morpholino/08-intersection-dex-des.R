@@ -15,7 +15,7 @@ suppressPackageStartupMessages({
   library("DOSE")
   library("vroom")
   library("tidyverse")
-  library('ggVennDiagram')
+  #library('ggVennDiagram')
 })
 
 # Get `magrittr` pipe
@@ -29,6 +29,10 @@ analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing-impact-morpholino
 input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir <- file.path(analysis_dir, "plots")
+
+## theme for all plots
+figures_dir <- file.path(root_dir, "figures")
+source(file.path(figures_dir, "theme_for_plots.R"))
 
 ##input files
 de_file <- file.path(results_dir,"ctrl_vs_treated.de.tsv")
@@ -70,16 +74,16 @@ total_events <- full_join(psi_comb,dex_comb, by='geneSymbol') %>%
 
 ## vennn
 ## plot venn diagram based on genes for each cluster (up/down/all)
-venn_diag<- ggVennDiagram(x=list(dex_comb$geneSymbol, psi_comb$geneSymbol), edge_lty = "dashed", edge_size = 1,set_size = 4,
-                              category.names = c("DE" , "DS")) +  scale_fill_distiller(palette = "RdBu") + labs(title = "Dysregulaetd genes by splicing and expression")
+#venn_diag<- ggVennDiagram(x=list(dex_comb$geneSymbol, psi_comb$geneSymbol), edge_lty = "dashed", edge_size = 1,set_size = 4,
+#                              category.names = c("DE" , "DS")) +  scale_fill_distiller(palette = "RdBu") + labs(title = "Dysregulaetd genes by splicing and expression")
 
 
-ggplot2::ggsave(venn_output_file,
-                plot=venn_diag,
-                width=4.5,
-                height=4,
-                device="pdf",
-                dpi=300)
+#ggplot2::ggsave(venn_output_file,
+#                plot=venn_diag,
+#                width=4.5,
+#                height=4,
+#                device="pdf",
+#                dpi=300)
 
 
 ## get gene sets relevant to H. sapiens
