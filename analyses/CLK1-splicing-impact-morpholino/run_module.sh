@@ -25,3 +25,7 @@ Rscript --vanilla 05-ora-analysis.R
 echo "GSVA analysis"
 Rscript --vanilla 06-conduct-gsva-analysis.R
 
+## Compares GSVA scores for CLK1 morpholino treated vs non-targeting morpholino and plot
+echo "GSVA comparisons and plots"
+Rscript -e "rmarkdown::render('07-run-gsva-comparisons.Rmd',
+                              clean = TRUE)"
