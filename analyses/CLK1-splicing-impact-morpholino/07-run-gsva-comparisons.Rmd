@@ -20,30 +20,36 @@ library(circlize)
 ```
 
 Set filepaths
-```{r set file paths}
+```{r set directory paths}
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing-impact-morpholino")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir <- file.path(analysis_dir, "plots")
-#source(file.path(analysis_dir, "util", "gsva_functions.R"))
 source(file.path(root_dir, "figures", "theme_for_plots.R"))
 ```
 
 Set file paths
 
 ```{r set file paths}
-gsva_file <- file.path(results_dir, "clk1_ctrl_morpho_hallmark_gsva_scores.tsv")
-kegg_file <- file.path(results_dir, "clk1_ctrl_morpho_kegg_gsva_scores.tsv")
-dna_file <- file.path(results_dir, "clk1_ctrl_morpho_dna_repair_gsva_scores.tsv")
-de_results_file <- file.path(results_dir, "ctrl_vs_treated.de.tsv")
+gsva_file <- file.path(results_dir, "expr_collapsed_clk1_ctrl_morpho_hallmark_gsva_scores.tsv")
+de_gsva_file <- file.path(results_dir, "expr_collapsed_de_clk1_ctrl_morpho_hallmark_gsva_scores.tsv")
+kegg_file <- file.path(results_dir, "expr_collapsed_clk1_ctrl_morpho_kegg_gsva_scores.tsv")
+de_kegg_file <- file.path(results_dir, "expr_collapsed_de_clk1_ctrl_morpho_kegg_gsva_scores.tsv")
+dna_file <- file.path(results_dir, "expr_collapsed_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv")
+de_dna_file <- file.path(results_dir, "expr_collapsed_de_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv")
 ```
 
 Create histology file for grouping samples
 
 ```{r load files}
 sample_ids <- c("CTRL1", "CTRL2", "CTRL3", "Treated1", "Treated2", "Treated3")
-treatments <- c("Control", "Control", "Control", "CLK1", "CLK1", "CLK1")
-df <- tibble(sample_id = sample_ids, treatment = treatments)
+treatments <- c("Non-targeting Morpholino", 
+                "Non-targeting Morpholino", 
+                "Non-targeting Morpholino", 
+                "CLK1 Exon 4 Morpholino", 
+                "CLK1 Exon 4 Morpholino",
+                "CLK1 Exon 4 Morpholino")
+df <- tibble(sample_id = sample_ids, Treatment = treatments)
 
 # read in scores and de results
 hallmark_scores <- read_tsv(gsva_file)
@@ -55,9 +61,14 @@ kegg_pathways <- unique(kegg_scores$geneset)
 dna_scores <- read_tsv(dna_file)
 dna_pathways <- unique(dna_scores$geneset)
 
-# read in significant DE genes
-de_results<- read_tsv(de_results_file) %>%
-  filter(padj <0.05)
+hallmark_scores_de <- read_tsv(de_gsva_file)
+hallmark_pathways_de <- unique(hallmark_scores_de$geneset)
+
+kegg_scores_de <- read_tsv(de_kegg_file)
+kegg_pathways_de <- unique(kegg_scores_de$geneset)
+
+dna_scores_de <- read_tsv(de_dna_file)
+dna_pathways_de <- unique(dna_scores_de$geneset)
 ```
 
 Run GSVA score comparisons between samples with and without CLK1 morpholino
@@ -65,12 +76,12 @@ Run GSVA score comparisons between samples with and without CLK1 morpholino
 ```{r compare scores}
 # Define repair gene source input directories 
 treat_ids <- df %>%
-  filter(treatment == "CLK1") %>%
+  filter(Treatment == "CLK1 Exon 4 Morpholino") %>%
   pull(sample_id) %>%
   unique()
 
 ctrl_ids <- df %>%
-  filter(treatment == "Control") %>%
+  filter(Treatment == "Non-targeting Morpholino") %>%
   pull(sample_id) %>%
   unique()
 ```
@@ -81,9 +92,9 @@ ctrl_ids <- df %>%
 # treat_ids and ctrl_ids are vectors containing IDs for treated and control samples
 ```{r create gene lists}
 # Lists of score data frames and pathway lists
-score_sources <- list(kegg_scores, hallmark_scores, dna_scores)
-pathway_sources <- list(kegg_pathways, hallmark_pathways, dna_pathways)
-score_names <- c("kegg", "hallmark", "dna_repair") # Names for output files
+score_sources <- list(kegg_scores, hallmark_scores, dna_scores, kegg_scores_de, hallmark_scores_de, dna_scores_de)
+pathway_sources <- list(kegg_pathways, hallmark_pathways, dna_pathways, kegg_pathways_de, hallmark_pathways_de, dna_pathways_de)
+score_names <- c("kegg", "hallmark", "dna_repair", "kegg_de", "hallmark_de", "dna_repair_de") # Names for output files
 
 for (i in 1:length(score_sources)) {
   score_df <- score_sources[[i]]
@@ -96,7 +107,7 @@ for (i in 1:length(score_sources)) {
                          score_diff = rep(0, length(pathway_list)),
                          wilcox_stat = rep(0, length(pathway_list)),
                          pvalue = rep(0, length(pathway_list)))
-
+  
  for (k in 1:length(pathway_list)) {
     treat_scores <- score_df[score_df$geneset == pathway_list[k] & score_df$sample_id %in% treat_ids, ]$gsva_score
     ctrl_scores <- score_df[score_df$geneset == pathway_list[k] & score_df$sample_id %in% ctrl_ids, ]$gsva_score
@@ -109,7 +120,7 @@ for (i in 1:length(score_sources)) {
     gsva_res$treat_score[k] <- mean(treat_scores, na.rm = TRUE)
     gsva_res$ctrl_score[k] <- mean(ctrl_scores, na.rm = TRUE)
     gsva_res$score_diff[k] <- gsva_res$treat_score[k] - gsva_res$ctrl_score[k]
-    
+
     if (length(treat_scores) > 0 && length(ctrl_scores) > 0) {
       test_result <- tryCatch({
         wilcox.test(treat_scores, ctrl_scores, alternative = 'two.sided')
@@ -138,9 +149,9 @@ Plot single samples
 ```{r gsva heatmaps}
 # create anno colors
 top_annot <- df %>%
-  dplyr::select(treatment) %>%
+  dplyr::select(Treatment) %>%
   as.data.frame()
-anno_col <- list(treatment = c("Control" = "#2166ac", "CLK1" = "#b2182b"))
+anno_col <- list(Treatment = c("Non-targeting Morpholino" = "#FFC20A", "CLK1 Exon 4 Morpholino" = "#0C7BDC"))
 
 # Heatmap annotation
 top_anno = HeatmapAnnotation(df = top_annot,
@@ -148,42 +159,78 @@ top_anno = HeatmapAnnotation(df = top_annot,
  
 # plot
 for (i in 1:length(score_sources)) {
-  score_df <- score_sources[[i]]
-  score_name <- score_names[i]
+  score_df <- score_sources[[i]] %>%
+    mutate(geneset = gsub("HALLMARK_|KEGG_", "", geneset),
+           geneset = gsub("_", " ", geneset))
+
+  score_df_summarized <- score_df %>%
+    mutate(Treatment = ifelse(grepl("CTRL", sample_id), "Non-targeting Morpholino", "CLK1 Exon 4 Morpholino")) %>%
+    group_by(geneset, Treatment) %>%
+    summarise(Mean_GSVA_Score = mean(gsva_score, na.rm = TRUE)) %>%
+    ungroup() 
   
+# Re-order
+ordering_metric <- score_df_summarized %>%
+  filter(Treatment == "CLK1 Exon 4 Morpholino") %>%
+  arrange(desc(Mean_GSVA_Score)) %>%
+  pull(geneset)
+
+# Apply this ordering to the 'geneset' factor
+score_df_summarized$geneset <- factor(score_df_summarized$geneset, levels = ordering_metric)
+
+  gsva_barplot <- ggplot(score_df_summarized, aes(x = geneset, y = Mean_GSVA_Score, fill = Treatment)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  theme_Publication() +
+  labs(x = "Geneset", y = "Mean GSVA score") +
+  scale_fill_manual(values = c("Non-targeting Morpholino" = "#FFC20A", "CLK1 Exon 4 Morpholino" = "#0C7BDC")) +
+  coord_flip() +
+    theme(legend.position = "top") # Positions the legend at the top
+
+    
+  score_name <- score_names[i]
   gsva_scores_mat <- score_df %>%
   spread(sample_id, gsva_score) %>%
   tibble::column_to_rownames("geneset") %>%
   as.matrix()
   
-  if (i == 1){
-    height <- 24
-    width <- 24
+  if (i %in% c(1,4)){
+    height <- 30
+    width <- 12
+    cell_width <- 3
   }
-  else if (i == 2){
-    height <- 12
-    width <- 20
+  else if (i %in% c(2,5)){
+    height <- 15
+    width <- 8
+    cell_width <- 3
+
   }
-  else if (i == 3){
-    height <- 2
-    width <- 6
+  else if (i %in% c(3,6)){
+    height <- 3.5
+    width <- 5.5
+    cell_width <- 3
+
   }
   
-gsva_heatmap <- Heatmap(
+heatmap_obj <- Heatmap(
   gsva_scores_mat,
-  col = colorRamp2(c(-1, 0, 1), c("navy", "white", "orange")),
+  col = colorRamp2(c(-1, 0, 1), c("blue", "white", "darkorange")),
   name = "GSVA Scores",
   na_col = "whitesmoke",
+  width = unit(cell_width, "cm"),
   show_column_names = FALSE,
   cluster_columns = FALSE,
   row_names_gp = grid::gpar(fontsize = 12),
   top_annotation = top_anno,
-  heatmap_legend_param = list(direction = "vertical")
+  heatmap_legend_param = list(direction = "horizontal"),
 )
+
+gsva_heatmap <- draw(heatmap_obj, annotation_legend_side = "top", heatmap_legend_side = "top")
+
 
 output_filename <- paste0("gsva_heatmap_", score_name, ".pdf")
 pdf(file.path(plots_dir, output_filename),  height = height, width = width)
 print(gsva_heatmap)
+print(gsva_barplot)
 dev.off()
 }
 
