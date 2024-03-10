@@ -15,7 +15,7 @@ suppressPackageStartupMessages({
   library("DOSE")
   library("vroom")
   library("tidyverse")
-  #library('ggVennDiagram')
+  library('ggVennDiagram')
 })
 
 # Get `magrittr` pipe
@@ -47,43 +47,47 @@ splicing_df  <-  vroom(rmats_merged_file, comment = "#", delim="\t") %>%
   filter(FDR < 0.05 & PValue < 0.05)
 
 ## extract strong differential splicing cases (dPSI >= |.10|)
-splicing_df_ES <- splicing_df %>% filter(IncLevelDifference  >= .10) %>% mutate(Preference="Skipping")
-splicing_df_EI <- splicing_df %>% filter(IncLevelDifference <= -.10) %>% mutate(Preference="Inclusion",
-                                                                                IncLevelDifference = abs(IncLevelDifference) )
+psi_comb <- splicing_df %>% 
+  mutate(Preference = case_when(IncLevelDifference  >= .10 ~ "Skipping",
+                                IncLevelDifference <= -.10 ~ "Inclusion",
+                                TRUE ~ NA_character_),
+         abs_IncLevelDifference = abs(IncLevelDifference)) %>%
+  filter(!is.na(Preference))
 
-psi_comb <- rbind(splicing_df_EI,splicing_df_ES)
+de_df  <-  read_tsv(de_file) %>%
+  mutate(Preference = case_when(log2FoldChange > 2 & padj < 0.05 ~ "Up",
+                                log2FoldChange < 2 & padj < 0.05 ~ "Down",
+                                TRUE ~ NA_character_)) %>%
+  filter(!is.na(Preference)) %>%
+  dplyr::rename(geneSymbol = Gene_Symbol)
 
-dex_df_up  <-  vroom(de_file, comment = "#", delim="\t") %>%
-  filter(log2FoldChange > 2 & padj < 0.05) %>%
-  mutate(Preference='Up')
+intersect <- psi_comb %>%
+  inner_join(dex_comb, by='geneSymbol', relationship = "many-to-many",
+             suffix = c("_psi", "_de")) %>%
+  dplyr::select(geneSymbol, Preference_psi, Preference_de)
 
-dex_df_down  <-  vroom(de_file, comment = "#", delim="\t") %>%
-  filter(log2FoldChange < 2 & padj < 0.05) %>%
-  mutate(Preference='Up')
-
-dex_comb <- rbind(dex_df_up,dex_df_down) %>% 
-  dplyr::rename(geneSymbol=Gene_Symbol)
-  
-intersect <- inner_join(psi_comb,dex_comb, by='geneSymbol') %>%
-  dplyr::select(geneSymbol,Preference.x,Preference.y)
-
-total_events <- full_join(psi_comb,dex_comb, by='geneSymbol') %>%
-  dplyr::select(geneSymbol,Preference.x,Preference.y) %>% 
+total_events <- psi_comb %>%
+  full_join(dex_comb, by='geneSymbol', relationship = "many-to-many",
+            suffix = c("_psi", "_de")) %>%
+  dplyr::select(geneSymbol, Preference_psi, Preference_de) %>% 
   dplyr::select(geneSymbol) %>% 
   unique()
 
 ## vennn
 ## plot venn diagram based on genes for each cluster (up/down/all)
-#venn_diag<- ggVennDiagram(x=list(dex_comb$geneSymbol, psi_comb$geneSymbol), edge_lty = "dashed", edge_size = 1,set_size = 4,
-#                              category.names = c("DE" , "DS")) +  scale_fill_distiller(palette = "RdBu") + labs(title = "Dysregulaetd genes by splicing and expression")
+venn_diag<- ggVennDiagram(x=list(dex_comb$geneSymbol, psi_comb$geneSymbol), 
+                          edge_lty = "dashed", edge_size = 1,set_size = 4,
+                              category.names = c("DE" , "DS")) +  
+  scale_fill_distiller(palette = "RdBu") + 
+  labs(title = "Dysregulaetd genes by splicing and expression")
 
 
-#ggplot2::ggsave(venn_output_file,
-#                plot=venn_diag,
-#                width=4.5,
-#                height=4,
-#                device="pdf",
-#                dpi=300)
+ggplot2::ggsave(venn_output_file,
+                plot=venn_diag,
+                width=4.5,
+                height=4,
+                device="pdf",
+                dpi=300)
 
 
 ## get gene sets relevant to H. sapiens
@@ -94,7 +98,7 @@ pathway_df <- hs_msigdb_df %>%
 
 ## run enrichR to compute and identify significant over-repr pathways
 ora_results <- enricher(
-  gene = intersect$geneSymbol, # A vector of your genes of interest
+  gene = unique(intersect$geneSymbol), # A vector of your genes of interest
   pvalueCutoff = 1, 
   pAdjustMethod = "BH", 
   TERM2GENE = dplyr::select(
