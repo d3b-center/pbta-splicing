@@ -44,37 +44,43 @@ palette_file <- file.path(map_dir,"histologies-plot-group.tsv")
 hist_pal <- read_tsv(palette_file) %>%
   filter(!is.na(pathology_diagnosis),
          !is.na(plot_group)) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, cancer_group, plot_group)
+  dplyr::select(Kids_First_Biospecimen_ID, match_id, cancer_group, plot_group)
 
 indep_rna_df <- read_tsv(indep_rna_file) %>% 
   filter(cohort == "PBTA") %>%
-  dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>%
-  dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_RNA)
+ # dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>%
+  dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID)
 indep_wgs_df <- read_tsv(indep_wgs_file) %>% 
   filter(cohort == "PBTA") %>%
-  dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID) %>%
-  dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_DNA)
+  #dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID) %>%
+  dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID)
 
 ## get tmb file (source: OpenPedCan v13)
 tmb_coding_df  <-  read_tsv(tmb_coding_file)  %>% 
   mutate(mutation_status = case_when(tmb <10 ~ "Normal",
                                      tmb >=10 & tmb < 100 ~ "Hypermutant",
                                      tmb >=100 ~ "Ultra-hypermutant")) %>%
-  dplyr::rename(Kids_First_Biospecimen_ID_DNA = Tumor_Sample_Barcode) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
+  left_join(hist_pal[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
   dplyr::select(-experimental_strategy) %>%
-  right_join(indep_wgs_df)
+  right_join(indep_wgs_df) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID)
+
 
 sbi_coding_df  <-  read_tsv(sbi_coding_file) %>% 
-  dplyr::rename(Kids_First_Biospecimen_ID_RNA = Sample) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = Sample) %>%
+  left_join(hist_pal[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
   dplyr::select(-Histology) %>%
-  right_join(indep_rna_df)
+  right_join(indep_rna_df) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID)
+
 
 ## intersect tmb values with SBI tumors 
 sbi_vs_tmb_innerjoin_df <- tmb_coding_df %>%
-  inner_join(sbi_coding_df, by="Kids_First_Participant_ID") %>%
+  inner_join(sbi_coding_df, by=c("Kids_First_Participant_ID", "match_id")) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
   # add histology
-  left_join(hist_pal)
+  left_join(hist_pal) 
 
 sbi_tmb_no_hyper <- sbi_vs_tmb_innerjoin_df %>%
   filter(mutation_status == "Normal")
@@ -87,8 +93,8 @@ pdf(file.path(corplot_sbi_vs_tmb_file), width = 4.5, height = 4.5)
 
 for (each_df in df_list) {
   p <- ggscatter(each_df, 
-                         x= "SI", 
-                         y= "tmb", 
+                         y= "SI", 
+                         x= "tmb", 
                          add = "reg.line", 
                          conf.int = TRUE, 
                          cor.coef = TRUE, 
@@ -97,8 +103,8 @@ for (each_df in df_list) {
                                            fill = NA),
                          ticks = TRUE,
                  alpha = 0.6) + 
-  xlab("Splicing Burden Index") +
-  ylab("TMB") +
+  ylab("Splicing Burden Index") +
+  xlab("Tumor Mutation Burden") +
   theme_Publication()
   print(p)
 }
@@ -194,8 +200,8 @@ sbi_tmb_no_hyper_subset <- sbi_tmb_no_hyper %>%
 
 pdf(corplot_sbi_vs_tmb_by_cg_file, width = 16, height = 8)
 ggscatter(sbi_tmb_no_hyper, 
-          x= "SI", 
-          y= "tmb", 
+          y= "SI", 
+          x= "tmb", 
           add = "reg.line", 
           conf.int = TRUE, 
           cor.coef = TRUE, 
@@ -204,13 +210,11 @@ ggscatter(sbi_tmb_no_hyper,
                             fill = NA),
           ticks = TRUE,
           alpha = 0.6) + 
-  xlab("Splicing Burden Index") +
-  ylab("TMB") +
   facet_wrap("plot_group", labeller = labeller(plot_group = label_wrap_gen(width = 18)), 
              nrow  = 3,
              scales = "free") +
   theme_Publication() + 
-  labs(y="Tumor Mutation Burden", x="Splicing Burden Level") + 
+  labs(x="Tumor Mutation Burden", y="Splicing Burden Index") + 
   theme(legend.position = "none", strip.text = element_text(size = 13))  # Adjust the size here
 dev.off()
 
