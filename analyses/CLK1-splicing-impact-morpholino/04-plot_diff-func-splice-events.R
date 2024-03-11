@@ -66,15 +66,16 @@ psi_comb <- rbind(dpsi_unip_incl,dpsi_unip_skp) %>%
   )
 
 
-## ggstatplot across functional sites
+## plot across functional sites
 set.seed(123)
 counts_psi_comb <- psi_comb %>% 
-  count(Preference, Uniprot_wrapped)
+  dplyr::count(Preference, Uniprot_wrapped)
+
 plot_dsp <-  ggplot(psi_comb, aes(Uniprot_wrapped, dPSI*100) ) +  
   ylab(expression(bold("dPSI"))) +
   ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 5, method="density") +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
-  facet_wrap("Preference") +
+  facet_wrap("Preference", nrow=2) +
   stat_compare_means(method = "wilcox.test", comparisons = list(c("Disulfide\nBond", "Localization\nSignal"),
                                                                 c("Disulfide\nBond", "Modifications"),
                                                                 c("Disulfide\nBond", "Other"),
@@ -92,7 +93,7 @@ plot_dsp <-  ggplot(psi_comb, aes(Uniprot_wrapped, dPSI*100) ) +
 
 # Save plot as PDF
 pdf(file_dpsi_plot, 
-    width = 8, height = 5)
+    width = 16, height = 9)
 print (plot_dsp)
 dev.off()
 
