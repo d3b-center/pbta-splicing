@@ -94,8 +94,9 @@ for (each_df in df_list) {
                          cor.coef = TRUE, 
                          cor.method = "pearson",
                          add.params = list(color = "red",
-                                           fill = "pink"),
-                         ticks = TRUE) + 
+                                           fill = NA),
+                         ticks = TRUE,
+                 alpha = 0.6) + 
   xlab("Splicing Burden Index") +
   ylab("TMB") +
   theme_Publication()
@@ -185,5 +186,34 @@ ggplot(by_hist, aes(SBI_level, log10(tmb))) +
   ylim(c(-2,2.5)) +
   theme(legend.position = "none", strip.text = element_text(size = 10))  # Adjust the size here
 dev.off()
+
+# plot cancer group corplots
+sbi_tmb_no_hyper_subset <- sbi_tmb_no_hyper %>%
+  filter(plot_group != "Other tumor",
+         plot_group != "Non−neoplastic tumor")
+
+pdf(corplot_sbi_vs_tmb_by_cg_file, width = 16, height = 8)
+ggscatter(sbi_tmb_no_hyper, 
+          x= "SI", 
+          y= "tmb", 
+          add = "reg.line", 
+          conf.int = TRUE, 
+          cor.coef = TRUE, 
+          cor.method = "pearson",
+          add.params = list(color = "red",
+                            fill = NA),
+          ticks = TRUE,
+          alpha = 0.6) + 
+  xlab("Splicing Burden Index") +
+  ylab("TMB") +
+  facet_wrap("plot_group", labeller = labeller(plot_group = label_wrap_gen(width = 18)), 
+             nrow  = 3,
+             scales = "free") +
+  theme_Publication() + 
+  labs(y="Tumor Mutation Burden", x="Splicing Burden Level") + 
+  theme(legend.position = "none", strip.text = element_text(size = 13))  # Adjust the size here
+dev.off()
+
+
 
 
