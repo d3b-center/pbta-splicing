@@ -30,6 +30,8 @@ source(file.path(root_dir, "figures", "theme_for_plots.R"))
 ## define output files
 boxplot_sbi_vs_tmb_by_mutation_status_file  <- file.path(plots_dir, "boxplot_sbi-tmb-by-mutation-status.pdf")
 boxplot_sbi_vs_tmb_by_cg_file  <- file.path(plots_dir, "boxplot_sbi-tmb-by-cg.pdf")
+corplot_sbi_vs_tmb_file <- file.path(plots_dir, "corplot_sbi-tmb.pdf")
+corplot_sbi_vs_tmb_by_cg_file <- file.path(plots_dir, "corplot_sbi-tmb-by-cg.pdf")
 
 ## input files
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
@@ -67,12 +69,41 @@ sbi_coding_df  <-  read_tsv(sbi_coding_file) %>%
   dplyr::select(-Histology) %>%
   right_join(indep_rna_df)
 
-## intersect tmb values with SBI tumors
+## intersect tmb values with SBI tumors 
 sbi_vs_tmb_innerjoin_df <- tmb_coding_df %>%
   inner_join(sbi_coding_df, by="Kids_First_Participant_ID") %>%
   dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
   # add histology
   left_join(hist_pal)
+
+sbi_tmb_no_hyper <- sbi_vs_tmb_innerjoin_df %>%
+  filter(mutation_status == "Normal")
+
+# generate corplot
+## create plot
+df_list <- list(sbi_vs_tmb_innerjoin_df, sbi_tmb_no_hyper)
+  
+pdf(file.path(corplot_sbi_vs_tmb_file), width = 4.5, height = 4.5)
+
+for (each_df in df_list) {
+  p <- ggscatter(each_df, 
+                         x= "SI", 
+                         y= "tmb", 
+                         add = "reg.line", 
+                         conf.int = TRUE, 
+                         cor.coef = TRUE, 
+                         cor.method = "pearson",
+                         add.params = list(color = "red",
+                                           fill = "pink"),
+                         ticks = TRUE) + 
+  xlab("Splicing Burden Index") +
+  ylab("TMB") +
+  theme_Publication()
+  print(p)
+}
+
+dev.off()
+
 
 ## identify samples by high vs low SBI tumors
 quartiles_sbi <- quantile(sbi_vs_tmb_innerjoin_df$SI, probs=c(.25, .75), na.rm = TRUE)
