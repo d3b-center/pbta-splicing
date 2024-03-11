@@ -54,7 +54,7 @@ psi_comb <- splicing_df %>%
          abs_IncLevelDifference = abs(IncLevelDifference)) %>%
   filter(!is.na(Preference))
 
-de_df  <-  read_tsv(de_file) %>%
+dex_comb  <-  read_tsv(de_file) %>%
   mutate(Preference = case_when(log2FoldChange > 2 & padj < 0.05 ~ "Up",
                                 log2FoldChange < 2 & padj < 0.05 ~ "Down",
                                 TRUE ~ NA_character_)) %>%
@@ -64,28 +64,30 @@ de_df  <-  read_tsv(de_file) %>%
 intersect <- psi_comb %>%
   inner_join(dex_comb, by='geneSymbol', relationship = "many-to-many",
              suffix = c("_psi", "_de")) %>%
-  dplyr::select(geneSymbol, Preference_psi, Preference_de)
+  dplyr::select(geneSymbol, Preference_psi, Preference_de) %>%
+  unique
 
 total_events <- psi_comb %>%
   full_join(dex_comb, by='geneSymbol', relationship = "many-to-many",
             suffix = c("_psi", "_de")) %>%
   dplyr::select(geneSymbol, Preference_psi, Preference_de) %>% 
-  dplyr::select(geneSymbol) %>% 
   unique()
 
-## vennn
-## plot venn diagram based on genes for each cluster (up/down/all)
+## plot venn diagram
 venn_diag<- ggVennDiagram(x=list(dex_comb$geneSymbol, psi_comb$geneSymbol), 
-                          edge_lty = "dashed", edge_size = 1,set_size = 4,
-                              category.names = c("DE" , "DS")) +  
-  scale_fill_distiller(palette = "RdBu") + 
-  labs(title = "Dysregulaetd genes by splicing and expression")
-
+                          edge_lty = "dashed", 
+                          edge_size = 1,
+                          label_size = 6,
+                          set_size = 5,
+                          category.names = c("DE" , "DS"),
+                          label_percent_digit = 1) +  
+  scale_fill_distiller(palette = "Blues", direction = 1, name = expression(bold("Gene count"))) + 
+  labs(title = expression(bold("Genes dysregulated by splicing and expression")))
 
 ggplot2::ggsave(venn_output_file,
                 plot=venn_diag,
-                width=4.5,
-                height=4,
+                width=6,
+                height=5,
                 device="pdf",
                 dpi=300)
 
