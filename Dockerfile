@@ -67,6 +67,7 @@ RUN ./install_bioc.r \
 	ggpubr \
 	ggstatsplot \
   ggthemes \
+  ggVennDiagram \
   gridExtra \
 	GSVA \
 	hrbrthemes \
