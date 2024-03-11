@@ -182,7 +182,7 @@ There are 3 types of outputs to this script per input data matrix:
 
 1. `*_gsva_output.tsv`: Full GSVA output scores per sample using `GSVA`.
 2. `*_k_pathway.tsv`: Differentially regulated pathways in a specific cluster `k` using `GSVA`.
-3. `*_top10_pathways.pdf`: Heatmap of top 10 differentially regulated pathways per cluster `k`.
+3. `*_top*n*_pathways.pdf`: Heatmap of top n differentially regulated pathways per cluster `k`.
 
 ```
 # pbta splicing outputs
@@ -191,16 +191,8 @@ output/diff_pathways
 ├── non_expr_pan_cancer_splice_subset_km_euclidean_0_cluster_2_pathway.tsv
 ├── non_expr_pan_cancer_splice_subset_km_euclidean_0_cluster_3_pathway.tsv
 ├── non_expr_pan_cancer_splice_subset_km_euclidean_0_gsva_output.tsv
-└── non_expr_pan_cancer_splice_subset_km_euclidean_0_top10_pathways.pdf
+└── non_expr_pan_cancer_splice_subset_km_euclidean_0_top*n*_pathways.pdf
 
-# pbta mRNA outputs
-output/diff_pathways
-├── raw_counts_pbta_subset_km_euclidean_0_cluster_1_pathway.tsv
-├── raw_counts_pbta_subset_km_euclidean_0_cluster_2_pathway.tsv
-├── raw_counts_pbta_subset_km_euclidean_0_cluster_3_pathway.tsv
-├── raw_counts_pbta_subset_km_euclidean_0_gsva_output.tsv
-└── raw_counts_pbta_subset_km_euclidean_0_top10_pathways.pdf
-```
 
 ### 07-plot-clustering-heatmap.R
 
