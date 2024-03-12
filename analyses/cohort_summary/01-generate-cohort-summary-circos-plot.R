@@ -46,6 +46,8 @@ hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %
   # collapse reported gender to 3 groups
   mutate(reported_gender = case_when(reported_gender == "Not Reported" ~ "Unknown",
                                      TRUE ~ reported_gender),
+         germline_sex_estimate = case_when(is.na(germline_sex_estimate) ~ "Unknown",
+                                        TRUE ~ germline_sex_estimate),
          # update 7316-3066
          broad_histology = case_when(sample_id == "7316-3066" ~ "Tumor of cranial and paraspinal nerves", 
                                      broad_histology == "Other" ~ "Other tumor",
@@ -171,7 +173,7 @@ lgd_tum_loc = Legend(title = "Tumor location",
                        at =  names(loc_cols),
                        legend_gp = gpar(fill = loc_cols))
 
-lgd_gender = Legend(title = "Sex", 
+lgd_gender = Legend(title = "Gender", 
                     at =  names(gender_cols), 
                     legend_gp = gpar(fill = gender_cols))
 
