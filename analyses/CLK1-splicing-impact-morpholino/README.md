@@ -69,7 +69,8 @@ plots/gsva_heatmap_kegg_de.pdf
 * `04-plot_diff-func-splice-events.R` plots PSI distributions of differential splice events categorized by functionnal site and then subsets cancer genes
 * `05-ora-analysis.R` performs an over-representation analysis on above splice events that hit functional sites
 * `06-conduct-gsva-analysis.R` performs GSVA on HALLMARK, KEGG, and DNA repair pathways from https://pubmed.ncbi.nlm.nih.gov/29617664/
-* ` 07-run-gsva-comparisons.Rmd` performs CLK1 morpholino vs non targeting morpholino cell line treatment comparisons of GSVA scores HALLMARK, KEGG, and DNA repair pathways from https://pubmed.ncbi.nlm.nih.gov/29617664/.
+* `07-run-gsva-comparisons.Rmd` performs CLK1 morpholino vs non targeting morpholino cell line treatment comparisons of GSVA scores HALLMARK, KEGG, and DNA repair pathways from https://pubmed.ncbi.nlm.nih.gov/29617664/.
+* `08-intersection-dex-des.R` intersects dysregulated genes to assess overlap between genes that are both differentially spliced and expressed. Generates Venn diagram and performs ORA of overlapping genes. 
 
 ## Directory structure
 ```
@@ -82,6 +83,7 @@ plots/gsva_heatmap_kegg_de.pdf
 ├── 06-conduct-gsva-analysis.R
 ├── 07-run-gsva-comparisons.Rmd
 ├── 07-run-gsva-comparisons.html
+├── 08-intersection-dex-des.R
 ├── README.md
 ├── input
 │   ├── RBP_known.txt
