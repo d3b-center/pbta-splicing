@@ -11,6 +11,7 @@ suppressPackageStartupMessages({
   library("tidyverse")
   library("ggpubr")
   library("vroom")
+  library('data.table')
 })
 
 # Get `magrittr` pipe
@@ -33,7 +34,7 @@ source(file.path(analysis_dir, "util", "function-create-scatter-plot.R"))
 
 ## define input files
 clin_file <- file.path(data_dir,"histologies.tsv")
-tpm_file <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
+rsem_counts <- file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds")
 rmats_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
 
 ## read in histology file and count data
@@ -45,11 +46,11 @@ all_hgg_bsids <- read_tsv(clin_file, guess_max = 10000) %>%
   select(Kids_First_Biospecimen_ID, CNS_region)
 
 # keep only hgg ids
-tpm_df <- readRDS(tpm_file) %>%
+rsem_df <- readRDS(rsem_counts) %>%
   select(all_hgg_bsids$Kids_First_Biospecimen_ID)
 
 ## load rmats input for CLK1
-clk1_rmats <- vroom::vroom(rmats_file) %>%
+clk1_rmats <- fread(rmats_file) %>%
   # filter for CLK1 and exon 4
   filter(sample_id %in% all_hgg_bsids$Kids_First_Biospecimen_ID,
          geneSymbol=="CLK1",
@@ -85,8 +86,8 @@ for (gene in goi_list) {
     # filter for bs ids of interest and CLK1 and exon 4
     filter(sample_id %in% bs_id_list)
     
-  # filter count data
-    rmats_exp_df <- tpm_df %>%
+  # filter count data. 
+    rmats_exp_df <- rsem_df %>%
       filter(rownames(.) == gene)  %>% 
       select(all_of(bs_id_list)) %>% 
       pivot_longer(cols = tidyselect::everything(),
