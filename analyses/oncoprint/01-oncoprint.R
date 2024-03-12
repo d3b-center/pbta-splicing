@@ -30,7 +30,7 @@ plots_dir   <- file.path(analysis_dir, "plots")
 results_dir   <- file.path(analysis_dir, "results")
 
 # Load functions
-source(file.path(analysis_dir, "util/cooccur_functions.R"))
+#source(file.path(analysis_dir, "util/cooccur_functions.R"))
 
 ## check and create plots/results dir
 if(!dir.exists(plots_dir)){
@@ -142,14 +142,16 @@ splice_CLK1_df <- splice_CLK1_df %>%
   dplyr::select(Kids_First_Participant_ID, PSI)
 
 
+
 # mutate the hgg dataframe for plotting
-histologies_df <- histologies_df %>%
+histologies_df_sorted <- histologies_df %>%
   inner_join(splice_CLK1_df, by = "Kids_First_Participant_ID") %>%
   unique() %>%
   column_to_rownames("Kids_First_Biospecimen_ID") %>%
-  distinct(RNA_id, .keep_all = TRUE)
+  distinct(RNA_id, .keep_all = TRUE) %>%
+  arrange(PSI)
 
-ha = HeatmapAnnotation(name = "annotation", df = histologies_df[histologies_df$Kids_First_Participant_ID %in% colnames(gene_matrix),c("reported_gender","molecular_subtype","PSI")],
+ha = HeatmapAnnotation(name = "annotation", df = histologies_df_sorted[histologies_df_sorted$Kids_First_Participant_ID %in% colnames(gene_matrix),c("reported_gender","molecular_subtype","PSI")],
                        col=list(
                          "PSI" = colorRamp2(c(0, .5, 1.0), c("whitesmoke", "#CAE1FF","#0072B2")),
                          annotation_name_side = "right", 
@@ -158,7 +160,7 @@ ha = HeatmapAnnotation(name = "annotation", df = histologies_df[histologies_df$K
 
 
 col = colors
-df = histologies_df[,c("Kids_First_Participant_ID", "reported_gender","PSI")]
+df = histologies_df_sorted[,c("Kids_First_Participant_ID", "reported_gender","PSI")]
 
 colorder <- df$Kids_First_Participant_ID
 
@@ -187,8 +189,7 @@ plot_oncoprint <- oncoPrint(gene_matrix, get_type = function(x) strsplit(x, ",")
           top_annotation = ha,
           alter_fun_is_vectorized = FALSE,
           #bottom_annotation = ha1,
-          column_order =  colnames(gene_matrix)
-)
+          column_order =  colnames(gene_matrix) )
                   
 # Save plot as PDF
 pdf(plot_out, width = 20, height = 10)
