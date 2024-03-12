@@ -32,6 +32,7 @@ RUN apt install -y  \
 	libssl-dev \
 	libv8-dev \
 	libxt-dev \
+	libudunits2-dev\
 	zlib1g-dev
 
 # Install java
@@ -67,6 +68,7 @@ RUN ./install_bioc.r \
 	ggpubr \
 	ggstatsplot \
   ggthemes \
+  ggVennDiagram \
   gridExtra \
 	GSVA \
 	hrbrthemes \
