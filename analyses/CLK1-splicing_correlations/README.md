@@ -24,7 +24,7 @@ Input files:
 ## Folder content
 * `run_module.sh` shell script to run analysis
 * `01-plot_highExon4_vs_lowExon4_and_SBI.R` correlate high vs low levels of overall splicing burden with CLK1 exon 4 inclusion levels
-* `02-plot_splicing_vs_expr.R` correlate CLK1 exon 4 inclusion levels with RNA expression, including CLK1 and SRSF1
+* `02-plot_splicing_vs_expr.R` correlate CLK1 exon 4 inclusion levels with RNA expression, including CLK1, SRSF1, SRSF2, SRSF10
 * `03-plot_CLK1-Ex4-splicing_vs_SRSF1-expr.R` correlate CLK1 RNA expression with RNA SRSFs, phospho, and total proteomics across brain tumor types
 * `04-CLK1_PSI_plots.R` generates stacked barplot of relative inclusion/skipping of exon 4 across midline HGG tumors with differential splicing in CLK1.
 * `04-plot-diffExp_highlowSBI.R` perform differential gene expression on high vs low SBI HGG tumors
@@ -41,15 +41,17 @@ Input files:
 ├── input
 │   └── CPTAC3-pbt.xls
 ├── plots
-│   ├── CLK1_exp_vs_CLK1_psi_all_hgg.pdf
-│   ├── CLK1_exp_vs_CLK1_psi_midline_hgg.pdf
-│   ├── SRSF1_exp_vs_CLK1_psi_all_hgg.pdf
-│   ├── SRSF1_exp_vs_CLK1_psi_midline_hgg.pdf
-│   ├── SR_phos_CLK1_exp_heatmap.pdf
-│   ├── boxplot_high_vs_low_SBI.pdf
-│   └── enhancedVolcano_hgg_sbi.pdf
-├── results
-│   └── mean_clk1_psi.txt
+├── CLK1_exon4_inclusion_fraction_hgg_stacked.pdf
+├── CLK1_exp_vs_CLK1_psi_all_hgg.pdf
+├── CLK1_exp_vs_CLK1_psi_midline_hgg.pdf
+├── SRSF10_exp_vs_CLK1_psi_all_hgg.pdf
+├── SRSF10_exp_vs_CLK1_psi_midline_hgg.pdf
+├── SRSF1_exp_vs_CLK1_psi_all_hgg.pdf
+├── SRSF1_exp_vs_CLK1_psi_midline_hgg.pdf
+├── SRSF2_exp_vs_CLK1_psi_all_hgg.pdf
+├── SRSF2_exp_vs_CLK1_psi_midline_hgg.pdf
+├── SR_phos_CLK1_exp_heatmap.pdf
+└── boxplot_high_vs_low_SBI.pdf
 └── util
     └── function-create-scatter-plot.R
 ```
