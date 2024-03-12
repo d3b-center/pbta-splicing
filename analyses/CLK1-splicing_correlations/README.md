@@ -48,6 +48,8 @@ Input files:
 │   ├── SR_phos_CLK1_exp_heatmap.pdf
 │   ├── boxplot_high_vs_low_SBI.pdf
 │   └── enhancedVolcano_hgg_sbi.pdf
+├── results
+│   └── mean_clk1_psi.txt
 └── util
     └── function-create-scatter-plot.R
 ```
