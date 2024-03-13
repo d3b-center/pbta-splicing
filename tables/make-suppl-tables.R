@@ -137,6 +137,24 @@ es_events_df <- vroom(histology_es_splice_events)
 ## sheet 3, optimal clustering output/lspline
 opt_cluster_df <- read_tsv(optimal_cluster_tsv)
 
+# subset columns used for scoring methods
+opt_cluster_df <- opt_cluster_df %>%
+  dplyr::select(algorithm,
+                distance,
+                feature_selection,
+                k,
+                stretch,
+                delta_auc,
+                p_val,
+                average.between,
+                average.within,
+                within.cluster.ss,
+                dunn,
+                entropy,
+                avg_sil,
+                cluster_qual,
+                rank)
+    
 ## sheet 4, cluster membership
 cluster_membership_df <- read_tsv(cluster_membership)
 
