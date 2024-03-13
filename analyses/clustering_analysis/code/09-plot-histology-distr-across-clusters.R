@@ -46,6 +46,22 @@ histologies_df <- read_tsv(file.path(root_dir,"analyses", "cohort_summary", "res
   dplyr::select(Kids_First_Biospecimen_ID, broad_histology, cancer_group, plot_group, plot_group_hex, molecular_subtype) %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in% cluster_df$Kids_First_Biospecimen_ID) %>%
   unique() %>%
+  mutate(molecular_subtype_display = case_when(grepl("KIAA", molecular_subtype) ~ "KIAA1549--BRAF",
+                                               grepl("LGG, BRAF V600|LGG, RTK, BRAF V600E", molecular_subtype) ~ "BRAF V600E",
+                                               grepl("LGG, IDH|LGG, other MAPK, IDH", molecular_subtype) ~ "IDH",
+                                               molecular_subtype %in% c("LGG, wildtype", "SEGA, wildtype") ~ "Wildtype",
+                                               grepl("To be classified", molecular_subtype) ~ "To be classified",
+                                               grepl("LGG|SEGA, RTK", molecular_subtype) ~ "Other MAPK",
+                                               grepl("HGG, IDH", molecular_subtype) ~ "IDH",
+                                               grepl("HGG, H3 wildtype", molecular_subtype) ~ "H3 wildtype",
+                                               grepl("HGG, PXA", molecular_subtype) ~ "PXA",
+                                               grepl("IHG", molecular_subtype) ~ "IHG",
+                                               cancer_group == "Diffuse intrinsic pontine glioma" ~ "DIPG",
+                                               grepl("H3 G35", molecular_subtype) ~ "H3 G35",
+                                               grepl("H3 K28", molecular_subtype) ~ "H3 K28",
+                                               is.na(molecular_subtype) & plot_group == "Other high-grade glioma" ~ "Oligodendroglioma",
+                                               
+         TRUE ~ molecular_subtype)) %>%
   dplyr::right_join(cluster_df)
 
 color_df <- histologies_df %>%
@@ -65,67 +81,30 @@ ggplot(histologies_df, aes(fill=plot_group, x= factor(cluster_assigned))) +
 dev.off()
 
 ## stratify by molecular subtype
-pdf(file.path(plots_dir, "cluster_membership-MB.pdf"), height = 4, width = 7)
-histologies_MB_plot <-  histologies_df %>% filter(plot_group=='Medulloblastoma') %>% 
-  ggplot(aes(fill=molecular_subtype, x= factor(cluster_assigned))) +
+# subset to only those plot groups: ATRT, MB, LGG, HGG, EPN
+hist_subset <- histologies_df %>%
+  filter(plot_group %in% c("Medulloblastoma", 
+                           "Ependymoma",
+                           "Low-grade glioma",
+                           "Other high-grade glioma",
+                           "DIPG or DMG")) %>%
+  mutate(plot_group = case_when(plot_group %in% c("Other high-grade glioma",
+                                                  "DIPG or DMG") ~ "High-grade glioma",
+                                TRUE ~ plot_group))
+
+pdf(file.path(plots_dir, "cluster_membership-subtypes.pdf"), height = 6, width = 11)
+hist_subset %>% 
+  ggplot(aes(fill=molecular_subtype_display, x= factor(cluster_assigned))) +
   geom_bar(stat="count", position="stack") + 
-  xlab("Cluster") + ylab("Frequency") +
-  #scale_fill_manual("Histology", values = cols) + 
-  theme_Publication()
-histologies_MB_plot
+  facet_wrap(~plot_group, nrow = 2, scales = "free_y") +
+  xlab("Cluster") + 
+  ylab("Frequency") +
+  theme_Publication() +
+  labs(fill = "Molecular Subtype")
 dev.off()
 
-pdf(file.path(plots_dir, "cluster_membership-ATRT.pdf"), height = 4, width = 7)
-histologies_ATRT_plot <-  histologies_df %>% filter(plot_group=='Atypical Teratoid Rhabdoid Tumor') %>% 
-  ggplot(aes(fill=molecular_subtype, x= factor(cluster_assigned))) +
-  geom_bar(stat="count", position="stack") + 
-  xlab("Cluster") + ylab("Frequency") +
-  #scale_fill_manual("Histology", values = cols) + 
-  theme_Publication()
-histologies_ATRT_plot
-dev.off()
-
-pdf(file.path(plots_dir, "cluster_membership-EPN.pdf"), height = 4, width = 7)
-histologies_EPN_plot <-  histologies_df %>% filter(plot_group=='Ependymoma') %>% 
-  ggplot(aes(fill=molecular_subtype, x= factor(cluster_assigned))) +
-  geom_bar(stat="count", position="stack") + 
-  xlab("Cluster") + ylab("Frequency") +
-  #scale_fill_manual("Histology", values = cols) + 
-  theme_Publication()
-histologies_EPN_plot
-dev.off()
-
-pdf(file.path(plots_dir, "cluster_membership-DMG.pdf"), height = 4, width = 7)
-histologies_DMG_plot <-  histologies_df %>% filter(plot_group=='DIPG or DMG') %>% 
-  ggplot(aes(fill=molecular_subtype, x= factor(cluster_assigned))) +
-  geom_bar(stat="count", position="stack") + 
-  xlab("Cluster") + ylab("Frequency") +
-  #scale_fill_manual("Histology", values = cols) + 
-  theme_Publication()
-histologies_DMG_plot
-dev.off()
-
-pdf(file.path(plots_dir, "cluster_membership-OHGG.pdf"), height = 4, width = 7)
-histologies_HGG_plot <-  histologies_df %>% filter(plot_group=='Other high-grade glioma') %>% 
-  ggplot(aes(fill=molecular_subtype, x= factor(cluster_assigned))) +
-  geom_bar(stat="count", position="stack") + 
-  xlab("Cluster") + ylab("Frequency") +
-  #scale_fill_manual("Histology", values = cols) + 
-  theme_Publication()
-histologies_HGG_plot
-dev.off()
-
-pdf(file.path(plots_dir, "cluster_membership-LGG.pdf"), height = 4, width = 14) ## too many subtypes! 
-histologies_LGG_plot <-  histologies_df %>% filter(plot_group=='Low-grade glioma') %>% 
-  ggplot(aes(fill=molecular_subtype, x= factor(cluster_assigned))) +
-  geom_bar(stat="count", position="stack") + 
-  xlab("Cluster") + ylab("Frequency") +
-  #scale_fill_manual("Histology", values = cols) + 
-  theme_Publication()
-histologies_LGG_plot
-dev.off()
 
 # write out bs id with cancer group, subtype, and cluster
 histologies_df %>%
-  dplyr::select(Kids_First_Biospecimen_ID, cancer_group, plot_group, molecular_subtype, cluster_assigned) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, cancer_group, plot_group, molecular_subtype, molecular_subtype_display, cluster_assigned) %>%
   write_tsv(cluster_membership_tsv)
