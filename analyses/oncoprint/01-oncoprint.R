@@ -47,7 +47,6 @@ maf_df <- data.table::fread(file.path(data_dir,"snv-consensus-plus-hotspots.maf.
 clin_file <- file.path(data_dir, "histologies.tsv")
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 indep_wgs_file <- file.path(data_dir, "independent-specimens.wgswxspanel.primary.prefer.wgs.tsv")
-diff_psi_file <- file.path(root_dir, "analyses/splicing_events_functional_sites/results/splice_events.diff.SE.HGG.txt")
 diff_psi_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
 goi_file <- file.path(input_dir,"oncoprint-goi-lists-OpenPedCan-gencode-v39.csv")
 
@@ -139,18 +138,21 @@ splice_CLK1_df <- splice_CLK1_df %>%
   dplyr::rename(PSI = IncLevel1) %>%
   dplyr::select(Kids_First_Participant_ID, PSI)
 
-
-
 # mutate the hgg dataframe for plotting
 histologies_df_sorted <- histologies_df %>%
   inner_join(splice_CLK1_df, by = "Kids_First_Participant_ID") %>%
   unique() %>%
   column_to_rownames("Kids_First_Biospecimen_ID") %>%
   distinct(RNA_id, .keep_all = TRUE) %>%
-  arrange(PSI)
+  arrange(PSI) %>%
+  dplyr::rename("Gender"=reported_gender,
+                "Molecular Subtype"=molecular_subtype,
+                "CNS Region"=CNS_region, 
+                "CLK1 Ex4 PSI"=PSI)
 
-ha = HeatmapAnnotation(name = "annotation", df = histologies_df_sorted[histologies_df_sorted$Kids_First_Participant_ID %in% colnames(gene_matrix),c("reported_gender","molecular_subtype","PSI")],
+ha = HeatmapAnnotation(name = "annotation", df = histologies_df_sorted[histologies_df_sorted$Kids_First_Participant_ID %in% colnames(gene_matrix),c("Gender","Molecular Subtype","CLK1 Ex4 PSI")],
                        col=list(
+                         "Gender" = c("Male" = "#56B4E9","Female" = "#CC79A7","Not Reported" = "white"),
                          "PSI" = colorRamp2(c(0, .5, 1.0), c("whitesmoke", "#CAE1FF","#0072B2")),
                          annotation_name_side = "right", 
                          annotation_name_gp = gpar(fontsize = 9),
@@ -158,7 +160,7 @@ ha = HeatmapAnnotation(name = "annotation", df = histologies_df_sorted[histologi
 
 
 col = colors
-df = histologies_df_sorted[,c("Kids_First_Participant_ID", "reported_gender","PSI")]
+df = histologies_df_sorted[,c("Kids_First_Participant_ID", "Gender","CLK1 Ex4 PSI")]
 
 colorder <- df$Kids_First_Participant_ID
 
