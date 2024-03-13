@@ -38,15 +38,16 @@ snv-mutation-tmb-coding.tsv
 ├── input
 │   └── snv-mutation-tmb-coding.tsv
 ├── plots
-│   ├── boxplot_sbi-tmb-by-cg.pdf
-│   ├── boxplot_sbi-tmb-by-mutation-status.pdf
-│   ├── enhancedVolcano_hgg_sbi.pdf
-│   ├── hist_by_sbi_level_barplot.pdf
-│   ├── sbi-plot-A3SS.pdf
-│   ├── sbi-plot-A5SS.pdf
-│   ├── sbi-plot-RI.pdf
-│   ├── sbi-plot-SE.pdf
-│   └── splice-types.pdf
+├── boxplot_sbi-tmb-by-cg.pdf
+├── boxplot_sbi-tmb-by-mutation-status.pdf
+├── corplot_sbi-tmb-by-cg.pdf
+├── corplot_sbi-tmb.pdf
+├── hist_by_sbi_level_barplot.pdf
+├── sbi-plot-A3SS.pdf
+├── sbi-plot-A5SS.pdf
+├── sbi-plot-RI.pdf
+├── sbi-plot-SE.pdf
+└── splice-types.pdf
 ├── results
 │   ├── histologies-plot-group.tsv
 │   ├── splice_events.diff.A3SS.txt

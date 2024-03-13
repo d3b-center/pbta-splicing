@@ -14,7 +14,6 @@ suppressPackageStartupMessages({
   library("ggpubr")
   library("ggplot2")
   library("vroom")
-  library("data.table")
 })
 
 # Get `magrittr` pipe
@@ -31,6 +30,10 @@ plots_dir   <- file.path(analysis_dir, "plots")
 ## create plots dir if it doesn't exist
 if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive=TRUE)
+}
+
+if(!dir.exists(results_dir)){
+  dir.create(results_dir, recursive=TRUE)
 }
 
 ## theme for all plots
@@ -55,9 +58,10 @@ histologies_df <- vroom(hist_file) %>%
                   indep_df$Kids_First_Biospecimen_ID)
 
 ## load rmats input for CLK1
-clk1_rmats <- fread(rmats_file) %>%
-  # filter for CLK1 and exon 4
-  dplyr::filter(geneSymbol=="CLK1",
+clk1_rmats <- vroom::vroom(rmats_file) %>%
+  # filter for CLK1 and exon 4, HGGs
+  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID,
+                geneSymbol=="CLK1",
          exonStart_0base=="200860124", 
          exonEnd=="200860215",
          #FDR < 0.05, 
@@ -71,7 +75,6 @@ clk1_rmats <- fread(rmats_file) %>%
   pivot_longer(!Kids_First_Biospecimen_ID, 
                names_to = "Type",
                values_to = "PSI") %>% 
-  dplyr::filter(Kids_First_Biospecimen_ID %in% histologies_df$Kids_First_Biospecimen_ID) %>% 
   right_join(histologies_df, by='Kids_First_Biospecimen_ID') %>% 
   dplyr::select(sample_id, Type, PSI) 
   
@@ -101,6 +104,9 @@ stacked_barplot <- ggplot(plot_df, aes(x = sample_id, y = PSI, fill= Type)) +
   scale_y_continuous(expand = c(0, 0))  + # Set the expand argument to ensure the bottom line starts from 0
   geom_hline(yintercept = mean(plot_df_incl$PSI), color="black",linetype='dotted')
 
+# save mean CLK1 PSI for manuscript
+write_lines(mean(plot_df_incl$PSI), 
+            file.path(results_dir, "mean_clk1_psi.txt"))
 
 # Save plot as pdf
 pdf(CLK1_plot_path, height = 3, width = 6, useDingbats = FALSE)
