@@ -22,7 +22,7 @@ if(!dir.exists(supp_tables_dir)){
 histology_file <- file.path(data_dir, "histologies.tsv")
 histology_ei_splice_events <- file.path(analysis_dir, "histology-specific-splicing", "results", "unique_events-ei.tsv")
 histology_es_splice_events <- file.path(analysis_dir, "histology-specific-splicing", "results", "unique_events-es.tsv")
-optimal_cluster_tsv <- file.path(analysis_dir, "clustering_analysis", "output", "/optimal_clustering/lspline_output.tsv")
+optimal_cluster_tsv <- file.path(analysis_dir, "clustering_analysis", "output", "optimal_clustering", "lspline_output.tsv")
 cluster_membership <- file.path(analysis_dir, "clustering_analysis", "output", "cluster_members_by_cancer_group_subtype.tsv")
 CNS_match_json <- file.path(table_dir, "input", "CNS_primary_site_match.json")
 deseq2_sf_file <- file.path(analysis_dir, "splicing-factor_dysregulation", "results", "diffSFs_sig_genes.txt")
