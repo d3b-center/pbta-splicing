@@ -91,8 +91,6 @@ splice_CLK1_df <-  fread(diff_psi_file) %>%
 
 
 
-maf_df <- maf_df %>% 
-  dplyr::mutate(vaf = t_alt_count / (t_ref_count + t_alt_count))
 
 
 ## filter maf table for samples with RNA splicing + HGGs + midline + req'd cols
