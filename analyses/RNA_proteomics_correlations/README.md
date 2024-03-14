@@ -10,7 +10,7 @@ The purpose of this module is to compare the total protein distributions for eac
 
 Input files (`./input` directory)
 ```
-splicing_events-psi.tsv: File containing differential splicing events and Psi values for each sample
+prots_for_violinplots.txt: File containing a list of proteins for which the abundance distribution violin plots will be drawn
 hope-protein-imputed-prot-expression-abundance.tsv.gz: File containing total proteome abundance from HOPE cohort
 gbm-protein-imputed-prot-expression-abundance.tsv.gz: File containing total proteome abundance from GBM cohort
 ```
@@ -23,7 +23,7 @@ gbm-protein-imputed-prot-expression-abundance.tsv.gz: File containing total prot
 ├── WCPproteomics-abundance-violinplots.R
 ├── README.md
 ├── input
-│   ├── splicing_events-psi.tsv
+│   ├── prots_for_violinplots.txt
 ├── plots
 │   ├── SampleAbundanceDist_CLK1_violin.pdf
 │   ├── SampleAbundanceDist_YAP1_violin.pdf
