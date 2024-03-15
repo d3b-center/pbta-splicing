@@ -11,8 +11,19 @@ The purpose of this module is to compare the total and phospho protein data with
 Input files (`./input` directory)
 ```
 splicing_events-psi.tsv: File containing differential splicing events and Psi values for each sample
-Hope-GBM-histologies-base.tsv: Histologies file with relevant IDs
 ```
+
+Data files (data directory in root directory)
+```
+histologies.tsv: Histologies file with IDs and clinical info
+hope-protein-imputed-phospho-expression-abundance.tsv.gz: File containing protein phospho abundances
+independent-specimens.rnaseqpanel.primary.tsv: File that provides IDs of primary tumors in order to remove redundancy of recurrent tumor IDs
+gene-expression-rsem-tpm-collapsed.rds: File containing tmp quantified RNA expression
+gene-counts-rsem-expected_count-collapsed.rds: File containing expected count quantified RNA expression
+```
+
+
+
 ## Folder content
 * `RNAsplicing-PHOSproteomics-scatterplots.R` Creates scatter plots comparing RNA splicing (Psi) or abundance values (TPM or EC) with phosphorylation event abundance for specified splicing event
 
@@ -23,7 +34,6 @@ Hope-GBM-histologies-base.tsv: Histologies file with relevant IDs
 ├── README.md
 ├── input
 │   ├── splicing_events-psi.tsv
-│   └── Hope-GBM-histologies-base.tsv
 ├── plots
 │   ├── RnaPsiPhosAbundance_RnaTPMgt1_CLK1_scatter.pdf - scatterplot comparing CLK1 Psi and phosphorylation abundance for splicing event in exon 4 on S182
 │   ├── RnaTPMAbundancePhosAbundance_RnaTPMgt1_CLK1_scatter.pdf - scatterplot comparing CLK1 TPM and phosphorylation abundance for splicing event in exon 4 on S182
