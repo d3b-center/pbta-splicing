@@ -161,7 +161,10 @@ histologies_df_sorted <- splice_CLK1_df %>%
   column_to_rownames("match_id") %>%
   #distinct(match_id, .keep_all = TRUE) %>%
   arrange(PSI) %>%
-  dplyr::mutate(molecular_subtype = gsub(", TP53", "", molecular_subtype)) %>%
+  dplyr::mutate(molecular_subtype = gsub(", TP53", "", molecular_subtype),
+                CNS_region = case_when(CNS_region == "" ~ "Unknown",
+                                    TRUE ~ CNS_region)) %>%
+  select(reported_gender, cancer_group, molecular_subtype, CNS_region, tmb_status, PSI) %>%
   dplyr::rename("Gender"=reported_gender,
                 "Cancer Group" = cancer_group,
                 "Molecular Subtype"=molecular_subtype,
@@ -171,7 +174,7 @@ histologies_df_sorted <- splice_CLK1_df %>%
 
 loc_cols <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
               "#44AA99", "#882255", "#6699CC")
-names(loc_cols) <- c(sort(unique(histologies_df$CNS_region)))
+names(loc_cols) <- c(sort(unique(histologies_df_sorted$`CNS Region`)))
 
 ha = HeatmapAnnotation(name = "annotation", 
                        df = histologies_df_sorted,
@@ -197,14 +200,16 @@ ha = HeatmapAnnotation(name = "annotation",
                          annotation_name_side = "right", 
                          annotation_name_gp = gpar(fontsize = 9),
                          na_col = "whitesmoke"))
-
-
+                       
 
 col = colors
 df = histologies_df_sorted
 
 gene_matrix_sorted <- gene_matrix %>%
   select(all_of(rownames(df)))
+
+# global option to increase space between heatmap and annotations
+ht_opt$ROW_ANNO_PADDING = unit(1, "cm")
 
 plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:50,], get_type = function(x) strsplit(x, ",")[[1]],
           column_names_gp = gpar(fontsize = 9), show_column_names = F,
@@ -234,7 +239,7 @@ plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:50,], get_type = function(x) st
           column_order =  colnames(gene_matrix_sorted))
                   
 # Save plot as PDF
-pdf(plot_out, width = 20, height = 10)
+pdf(plot_out, width = 15, height = 8)
 plot_oncoprint
 dev.off()
 
