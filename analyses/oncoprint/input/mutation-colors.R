@@ -17,8 +17,8 @@ colors = c("Missense_Mutation" = "#3CB371",
             "Del" = "#313695",
             "Amp" = "#c51b7d",
             "Likely Oncogenic" = "#c51b7d",
-            "VUS" = "gray",
-           "5'Flank" = "#E66101")
+            "VUS" = "gray")#,
+           #"5'Flank" = "#E66101")
 
 mut.labels = c("Missense Mutation", 
                "Nonsense Mutation",
