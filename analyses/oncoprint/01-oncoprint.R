@@ -140,13 +140,26 @@ select(Hugo_Symbol,Tumor_Sample_Barcode,Variant_Classification) %>%
   left_join(matched_dna_samples[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
   select(-Kids_First_Biospecimen_ID)
 
+# get genes in order of most to least mutations
+gene_row_order <- collapse_snv_dat %>%
+  count(Hugo_Symbol) %>%
+  arrange(-n)
+
 # complex heatmap
 gene_matrix <- reshape2::acast(collapse_snv_dat,
                                Hugo_Symbol ~ match_id,
                                value.var = "Variant_Classification",
                                fun.aggregate = function(x) paste(unique(x), collapse = ", ")) %>%
   as.data.frame() %>%
-  dplyr::mutate_if(is.character, ~replace_na(.,""))
+  dplyr::mutate_if(is.character, ~replace_na(.,"")) %>%
+  rownames_to_column(var = "Hugo_Symbol") %>%
+  mutate(Sort_Order = match(Hugo_Symbol, gene_row_order$Hugo_Symbol)) %>%
+  arrange(Sort_Order)
+
+rownames(gene_matrix) <- gene_matrix$Hugo_Symbol 
+
+gene_matrix <- gene_matrix %>%
+  select(-c(Sort_Order, Hugo_Symbol)) 
 
 # mutate the hgg dataframe for plotting
 histologies_df_sorted <- splice_CLK1_df %>%
@@ -209,7 +222,7 @@ gene_matrix_sorted <- gene_matrix %>%
   select(all_of(rownames(df)))
 
 # global option to increase space between heatmap and annotations
-ht_opt$ROW_ANNO_PADDING = unit(1, "cm")
+ht_opt$ROW_ANNO_PADDING = unit(1.25, "cm")
 
 plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:50,], get_type = function(x) strsplit(x, ",")[[1]],
           column_names_gp = gpar(fontsize = 9), show_column_names = F,
