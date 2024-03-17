@@ -27,8 +27,9 @@ create_scatterplot <- function(expr_psi_df) {
                                             fill = "pink"),
                            ticks = TRUE) + 
                            xlab(expression(bold(bolditalic("CLK1")~"Exon 4 Inclusion (PSI)"))) +
-                           ylab(substitute(bold(bolditalic(var_name)~"Expression (log2 TPM)"), list(var_name = goi))) +
-                          theme_Publication()
+                           ylab(substitute(bold(bolditalic(var_name)~"RSEM expected counts (log2)"), list(var_name = goi))) +
+                          theme_Publication()                         
+
   
     return(scatterplot)
 }

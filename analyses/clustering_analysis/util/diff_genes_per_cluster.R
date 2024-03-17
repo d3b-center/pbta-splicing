@@ -19,11 +19,13 @@ diff_genes_per_cluster <- function(input_mat, cluster_output, n_cluster, gene_se
   cluster_tree <- cluster_output[[n_cluster]]$consensusTree
   
   # cluster class
-  cluster_output <- cluster_output[[n_cluster]]$consensusClass %>%
+
+    cluster_output <- cluster_output[[13]]$consensusClass %>%
     as.data.frame() %>%
     rownames_to_column('sample_id') %>%
-    dplyr::rename('cluster_class' = '.')
-  
+    dplyr::rename("cluster_class"=".")
+    print(head(cluster_output))
+    
   # match up
   expr_mat <- input_mat %>%
     as.data.frame() %>%
