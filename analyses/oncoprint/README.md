@@ -10,7 +10,7 @@ The purpose of this module is to assess CLK1 exon 4 PSI levels in the context of
 Rscript --vanilla 01-co-occurence-interactions.R
 ```
 
-## Input
+#### Input:
 * MAF: ```./data/snv-consensus-plus-hotspots.maf.tsv.gz``` <br>
 * clinical info: ```./data/histologies.tsv```  <br>
 * genes of interest: ```input/oncoprint-goi-lists-OpenPedCan-gencode-v39.csv``` <br>
