@@ -18,7 +18,7 @@ Rscript --vanilla 01-co-occurence-interactions.R
 * independent specimen file (RNA): ```./data/independent-specimens.rnaseqpanel.primary.tsv```  <br>
 * mutation colors: ```input/mutation-colors.R``` <br>
 * splicing events: ```./data/splice-events-rmats.tsv.gz```  <br>
-* tumor mutation burden `<- ```./data/snv-mutation-tmb-coding.tsv``` <br>
+* tumor mutation burden: ```./data/snv-mutation-tmb-coding.tsv``` <br>
 
 #### Output:
 ```plots/oncoprint.pdf``` <br>
