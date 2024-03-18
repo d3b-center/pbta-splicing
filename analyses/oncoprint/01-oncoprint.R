@@ -44,7 +44,7 @@ clin_file <- file.path(data_dir, "histologies.tsv")
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 diff_psi_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
 goi_file <- file.path(input_dir,"oncoprint-goi-lists-OpenPedCan-gencode-v39.csv")
-tmb_file <- file.path(data_dir, "snv-mutation-tmb-coding.tsv")
+tmb_file <- file.path(input_dir, "snv-mutation-tmb-coding.tsv")
 cnv_file <- file.path(data_dir, "consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz")
 
 ## color for barplot
@@ -76,7 +76,7 @@ matched_dna_samples <- histologies_df %>%
 tmb_df <- read_tsv(tmb_file) %>%
   filter(Tumor_Sample_Barcode %in% matched_dna_samples$Kids_First_Biospecimen_ID) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
-  left_join(matched_dna_samples[c("Kids_First_Biospecimen_ID", "match_id")]) %>%
+  left_join(histologies_df[c("Kids_First_Biospecimen_ID", "match_id")]) %>%
   mutate(tmb_status = case_when(tmb <10 ~ "Normal",
                                 tmb >=10 & tmb < 100 ~ "Hypermutant",
                                 tmb >= 100 ~ "Ultra-hypermutant")) %>%
@@ -149,7 +149,7 @@ select(Tumor_Sample_Barcode,Hugo_Symbol,Variant_Classification) %>%
   select(-Kids_First_Biospecimen_ID)
 
 # create df for enrichment
-collapse_snv_dat 
+collapse_snv_dat %>%
 
 # get genes in order of most to least mutations
 gene_row_order <- collapse_snv_dat %>%
@@ -187,10 +187,12 @@ histologies_df_sorted <- splice_CLK1_df %>%
   column_to_rownames("match_id") %>%
   arrange(PSI) %>%
   dplyr::mutate(molecular_subtype = gsub(", TP53", "", molecular_subtype),
-                molecular_subtype = case_when(grepl("To be classified", molecular_subtype) ~ NA_character_,
+                molecular_subtype = case_when(grepl("To be classified", molecular_subtype) ~ "To be classified",
                                               TRUE ~ molecular_subtype),
                 CNS_region = case_when(CNS_region == "" ~ "Unknown",
-                                    TRUE ~ CNS_region)) 
+                                    TRUE ~ CNS_region),
+                tmb_status = case_when(is.na(tmb_status) ~ "DNA not profiled",
+                                       TRUE ~ tmb_status)) 
 
 # get clk1 high/low
 quantiles_clk1 <- quantile(histologies_df_sorted$PSI, probs=c(.25, .75), na.rm = TRUE)
@@ -200,7 +202,7 @@ upper_sbi <- quantiles_clk1[2]
 histologies_df_sorted <- histologies_df_sorted %>%
   mutate(clk1_status = case_when(PSI > upper_sbi ~ "High",
                                  PSI < lower_sbi ~ "Low",
-                                 TRUE ~ NA_character_)) %>%
+                                 TRUE ~ NA)) %>%
   select(reported_gender, cancer_group, molecular_subtype, CNS_region, tmb_status, clk1_status, PSI) %>%
   dplyr::rename("Gender"=reported_gender,
                 "Cancer Group" = cancer_group,
@@ -217,7 +219,9 @@ names(loc_cols) <- c(sort(unique(histologies_df_sorted$`CNS Region`)))
 ha = HeatmapAnnotation(name = "annotation", 
                        df = histologies_df_sorted,
                        col=list(
-                         "Gender" = c("Male" = "#56B4E9","Female" = "lavender","Not Reported" = "whitesmoke"),
+                         "Gender" = c("Male" = "#56B4E9",
+                                      "Female" = "lavender",
+                                      "Not Reported" = "whitesmoke"),
                          "Cancer Group" = c("Diffuse hemispheric glioma" = "springgreen4", 
                                             "Diffuse midline glioma" = "#ff40d9",
                                             "High-grade glioma" = "#ffccf5",
@@ -233,10 +237,10 @@ ha = HeatmapAnnotation(name = "annotation",
                                                  "HGG, PXA" = "navy",
                                                  na_col = "whitesmoke"),
                          "CNS Region" = loc_cols,
-                         "Mutation Status" = c("Normal" = "grey70",
+                         "Mutation Status" = c("Normal" = "grey80",
                                                "Hypermutant" = "orange",
                                                "Ultra-hypermutant" = "red",
-                                               na_col = "whitesmoke"),
+                                               "DNA not profiled" = "whitesmoke"),
                          "CLK1 status" = c("High" = "navy", "Low" = "#CAE1FF",  na_col = "whitesmoke"),
                          "CLK1 Ex4 PSI" = colorRamp2(c(0, 0.25, 0.75, 1.0), c("whitesmoke", "#CAE1FF","cornflowerblue", "navy")),
                          annotation_name_side = "right", 
