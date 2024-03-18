@@ -45,6 +45,7 @@ indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary
 diff_psi_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
 goi_file <- file.path(input_dir,"oncoprint-goi-lists-OpenPedCan-gencode-v39.csv")
 tmb_file <- file.path(data_dir, "snv-mutation-tmb-coding.tsv")
+cnv_file <- file.path(data_dir, "consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz")
 
 ## color for barplot
 source(file.path(input_dir, "mutation-colors.R"))
@@ -54,6 +55,10 @@ plot_out <- file.path(plots_dir,"oncoprint.pdf")
 
 # read in files
 histologies_df <- read_tsv(clin_file, guess_max = 100000)
+
+goi <- read_csv(goi_file) %>%
+  pull(HGAT) %>%
+  unique()
 
 indep_rna_df <- vroom(indep_rna_file) %>% 
   dplyr::filter(cohort == 'PBTA') %>%
@@ -88,57 +93,63 @@ splice_CLK1_df <-  fread(diff_psi_file) %>%
     left_join(histologies_df[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
   dplyr::select(match_id, PSI) %>%
   filter(match_id %in% indep_rna_df$match_id)
-  
+
+# read in cnv file and reformat to add to maf
+cnv_df <- read_tsv(cnv_file) %>%
+  # select only goi, DNA samples of interest
+  filter(gene_symbol %in% goi,
+         biospecimen_id %in% matched_dna_samples$Kids_First_Biospecimen_ID) %>%
+  mutate(Variant_Classification = case_when(status == "amplification" ~ "Amp",
+                                            status == "deep deletion" ~ "Del",
+                                            TRUE ~ NA_character_)) %>%
+  filter(!is.na(Variant_Classification)) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id,
+                Hugo_Symbol = gene_symbol) %>%
+  select(Kids_First_Biospecimen_ID, Hugo_Symbol, Variant_Classification)
+
+
+# maf cols to select
+maf_cols <- c("Hugo_Symbol", 
+                  "Chromosome", 
+                  "Start_Position", 
+                  "End_Position", 
+                  "Reference_Allele", 
+                  "Tumor_Seq_Allele2", 
+                  "Variant_Classification", 
+                  "Variant_Type",
+                  "Tumor_Sample_Barcode",
+                  "t_ref_count",
+                  "t_alt_count")
+
 # read in and combine MAFs
 cons_maf <- data.table::fread(cons_maf_file, data.table = FALSE) %>%
-  dplyr::select(
-    "Hugo_Symbol", 
-    "Chromosome", 
-    "Start_Position", 
-    "End_Position", 
-    "Reference_Allele", 
-    "Tumor_Seq_Allele2", 
-    "Variant_Classification", 
-    "Variant_Type",
-    "Tumor_Sample_Barcode",
-    "t_ref_count",
-    "t_alt_count"
-  ) 
+  dplyr::select(all_of(maf_cols)) 
+
 tumor_only_maf <- data.table::fread(tumor_only_maf_file, data.table = FALSE) %>%
-  dplyr::select(
-    "Hugo_Symbol", 
-    "Chromosome", 
-    "Start_Position", 
-    "End_Position", 
-    "Reference_Allele", 
-    "Tumor_Seq_Allele2", 
-    "Variant_Classification", 
-    "Variant_Type",
-    "Tumor_Sample_Barcode",
-    "t_ref_count",
-    "t_alt_count"
-  ) 
+  dplyr::select(all_of(maf_cols)) 
 
 maf <- cons_maf %>%
   bind_rows(tumor_only_maf) %>% 
   dplyr::mutate(vaf = t_alt_count / (t_ref_count + t_alt_count))
 
-## filter maf table for samples with RNA splicing + HGGs + midline + req'd cols
-
-## select required columns only
+## filter maf for samples with RNA splicing + HGGs
 maf_filtered <- maf %>%
-  dplyr::filter(Hugo_Symbol %in% goi_df$gene,
+  dplyr::filter(Hugo_Symbol %in% goi,
                 Tumor_Sample_Barcode  %in% matched_dna_samples$Kids_First_Biospecimen_ID,
                 Variant_Classification %in% names(colors))
                   
 collapse_snv_dat <- maf_filtered %>%
-select(Hugo_Symbol,Tumor_Sample_Barcode,Variant_Classification) %>%
+select(Tumor_Sample_Barcode,Hugo_Symbol,Variant_Classification) %>%
   dplyr::group_by(Hugo_Symbol,Tumor_Sample_Barcode) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
+  bind_rows(cnv_df) %>%
   dplyr::summarise(count = as.double(length(Variant_Classification[!is.na(Variant_Classification)])),
             Variant_Classification=str_c(unique(Variant_Classification),collapse = ",")) %>%
   left_join(matched_dna_samples[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
   select(-Kids_First_Biospecimen_ID)
+
+# create df for enrichment
+collapse_snv_dat 
 
 # get genes in order of most to least mutations
 gene_row_order <- collapse_snv_dat %>%
@@ -152,6 +163,8 @@ gene_matrix <- reshape2::acast(collapse_snv_dat,
                                fun.aggregate = function(x) paste(unique(x), collapse = ", ")) %>%
   as.data.frame() %>%
   dplyr::mutate_if(is.character, ~replace_na(.,"")) %>%
+  # add multi-hits
+  mutate(across(everything(), ~if_else(str_detect(., ","), "Multi_Hit", .))) %>%
   rownames_to_column(var = "Hugo_Symbol") %>%
   mutate(Sort_Order = match(Hugo_Symbol, gene_row_order$Hugo_Symbol)) %>%
   arrange(Sort_Order)
@@ -172,17 +185,29 @@ histologies_df_sorted <- splice_CLK1_df %>%
   left_join(unique(tmb_df[,c("tmb_status", "match_id")])) %>%
   filter(match_id %in% names(gene_matrix)) %>%
   column_to_rownames("match_id") %>%
-  #distinct(match_id, .keep_all = TRUE) %>%
   arrange(PSI) %>%
   dplyr::mutate(molecular_subtype = gsub(", TP53", "", molecular_subtype),
+                molecular_subtype = case_when(grepl("To be classified", molecular_subtype) ~ NA_character_,
+                                              TRUE ~ molecular_subtype),
                 CNS_region = case_when(CNS_region == "" ~ "Unknown",
-                                    TRUE ~ CNS_region)) %>%
-  select(reported_gender, cancer_group, molecular_subtype, CNS_region, tmb_status, PSI) %>%
+                                    TRUE ~ CNS_region)) 
+
+# get clk1 high/low
+quantiles_clk1 <- quantile(histologies_df_sorted$PSI, probs=c(.25, .75), na.rm = TRUE)
+lower_sbi <- quantiles_clk1[1]
+upper_sbi <- quantiles_clk1[2]
+
+histologies_df_sorted <- histologies_df_sorted %>%
+  mutate(clk1_status = case_when(PSI > upper_sbi ~ "High",
+                                 PSI < lower_sbi ~ "Low",
+                                 TRUE ~ NA_character_)) %>%
+  select(reported_gender, cancer_group, molecular_subtype, CNS_region, tmb_status, clk1_status, PSI) %>%
   dplyr::rename("Gender"=reported_gender,
                 "Cancer Group" = cancer_group,
                 "Molecular Subtype"=molecular_subtype,
                 "CNS Region"=CNS_region, 
                 "Mutation Status"=tmb_status,
+                "CLK1 status" = clk1_status,
                 "CLK1 Ex4 PSI"=PSI)
 
 loc_cols <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
@@ -193,7 +218,8 @@ ha = HeatmapAnnotation(name = "annotation",
                        df = histologies_df_sorted,
                        col=list(
                          "Gender" = c("Male" = "#56B4E9","Female" = "lavender","Not Reported" = "whitesmoke"),
-                         "Cancer Group" = c("Diffuse hemispheric glioma" = "springgreen4", 
+                         "Cancer Group" = c("Astroblastoma" = "yellow",
+                                            "Diffuse hemispheric glioma" = "springgreen4", 
                                             "Diffuse midline glioma" = "#ff40d9",
                                             "High-grade glioma" = "#ffccf5",
                                             "Infant-type hemispheric glioma" = "lightblue2",
@@ -203,12 +229,16 @@ ha = HeatmapAnnotation(name = "annotation",
                                                  "HGG, H3 wildtype" = "lightpink",
                                                  "HGG, IDH" = "indianred",
                                                  "IHG, NTRK-altered" = "cornflowerblue",
+                                                 "IHG, ALK-altered" = "skyblue4",
                                                  "IHG, ROS1-altered" = "lightblue1",
-                                                 "HGG, PXA" = "navy"),
+                                                 "HGG, PXA" = "navy",
+                                                 na_col = "whitesmoke"),
                          "CNS Region" = loc_cols,
-                         "Mutation Status" = c("Normal" = "grey40",
+                         "Mutation Status" = c("Normal" = "grey70",
                                                "Hypermutant" = "orange",
-                                               "Ultra-hypermutant" = "red"),
+                                               "Ultra-hypermutant" = "red",
+                                               na_col = "whitesmoke"),
+                         "CLK1 status" = c("High" = "navy", "Low" = "#CAE1FF",  na_col = "whitesmoke"),
                          "CLK1 Ex4 PSI" = colorRamp2(c(0, 0.25, 0.75, 1.0), c("whitesmoke", "#CAE1FF","cornflowerblue", "navy")),
                          annotation_name_side = "right", 
                          annotation_name_gp = gpar(fontsize = 9),
@@ -243,8 +273,8 @@ plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:50,], get_type = function(x) st
             Multi_Hit_Fusion  = function(x, y, w, h) grid.rect(x, y, w*0.85, h*0.85, gp = gpar(fill = unname(col["Multi_Hit_Fusion"]),col = NA)),
             Multi_Hit = function(x, y, w, h) grid.rect(x, y, w*0.75, h*0.85, gp = gpar(fill = unname(col["Multi_Hit"]), col = NA)),
             Del = function(x, y, w, h) grid.rect(x, y, w*0.85, h*0.85, gp = gpar(fill = unname(col["Del"]), col = NA)),
-            Amp = function(x, y, w, h) grid.rect(x, y, w*0.85, h*0.85, gp = gpar(fill = unname(col["Amp"]), col = NA))),
-          #  `5'Flank` = function(x, y, w, h) grid.rect(x, y, w*0.85, h*0.85, gp = gpar(fill = unname(col["5'Flank"]), col = NA))),
+            Amp = function(x, y, w, h) grid.rect(x, y, w*0.85, h*0.85, gp = gpar(fill = unname(col["Amp"]), col = NA)),
+            Loss = function(x, y, w, h) grid.rect(x, y, w*0.85, h*0.85, gp = gpar(fill = unname(col["Loss"]), col = NA))),
           col = col,
           top_annotation = ha,
           alter_fun_is_vectorized = TRUE,
