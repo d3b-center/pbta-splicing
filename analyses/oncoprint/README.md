@@ -10,16 +10,16 @@ The purpose of this module is to assess CLK1 exon 4 PSI levels in the context of
 Rscript --vanilla 01-co-occurence-interactions.R
 ```
 
-#### Input:
-MAF: ```./data/snv-consensus-plus-hotspots.maf.tsv.gz``` <br>
-clinical info: ```./data/histologies.tsv```  <br>
-genes of interest: ```input/oncoprint-goi-lists-OpenPedCan-gencode-v39.csv``` <br>
-independent specimen file (RNA): ```./data/independent-specimens.rnaseqpanel.primary.tsv```  <br>
-independent specimen file (DNA): ```./data/independent-specimens.wgswxspanel.primary.prefer.wgs.tsv```  <br>
-mutation colors: ```input/mutation-colors.R``` <br>
-splicing events: ```./data/splice-events-rmats.tsv.gz```  <br>
-tumor only maf: ```./data/snv-mutect2-tumor-only-plus-hotspots.maf.tsv.gz```  <br>
-tumor mutation burden `<- ```./data/snv-mutation-tmb-coding.tsv``` <br>
+## Input
+* MAF: ```./data/snv-consensus-plus-hotspots.maf.tsv.gz``` <br>
+* clinical info: ```./data/histologies.tsv```  <br>
+* genes of interest: ```input/oncoprint-goi-lists-OpenPedCan-gencode-v39.csv``` <br>
+* independent specimen file (RNA): ```./data/independent-specimens.rnaseqpanel.primary.tsv```  <br>
+* independent specimen file (DNA): ```./data/independent-specimens.wgswxspanel.primary.prefer.wgs.tsv```  <br>
+* mutation colors: ```input/mutation-colors.R``` <br>
+* splicing events: ```./data/splice-events-rmats.tsv.gz```  <br>
+* tumor only maf: ```./data/snv-mutect2-tumor-only-plus-hotspots.maf.tsv.gz```  <br>
+* tumor mutation burden `<- ```./data/snv-mutation-tmb-coding.tsv``` <br>
 
 #### Output:
 ```plots/oncoprint.pdf``` <br>
