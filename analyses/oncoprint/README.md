@@ -7,7 +7,7 @@ The purpose of this module is to assess CLK1 exon 4 PSI levels in the context of
 ## Usage
 ### How to Run:
 ```
-Rscript --vanilla 01-co-occurence-interactions.R
+Rscript --vanilla 01-oncoprint.R
 ```
 
 #### Input:
