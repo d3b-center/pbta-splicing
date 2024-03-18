@@ -15,7 +15,6 @@ Rscript --vanilla 01-co-occurence-interactions.R
 * clinical info: ```./data/histologies.tsv```  <br>
 * genes of interest: ```input/oncoprint-goi-lists-OpenPedCan-gencode-v39.csv``` <br>
 * independent specimen file (RNA): ```./data/independent-specimens.rnaseqpanel.primary.tsv```  <br>
-* independent specimen file (DNA): ```./data/independent-specimens.wgswxspanel.primary.prefer.wgs.tsv```  <br>
 * mutation colors: ```input/mutation-colors.R``` <br>
 * splicing events: ```./data/splice-events-rmats.tsv.gz```  <br>
 * tumor only maf: ```./data/snv-mutect2-tumor-only-plus-hotspots.maf.tsv.gz```  <br>
