@@ -1,4 +1,3 @@
-#col2hex("violetred1")
 
 colors = c("Missense_Mutation" = "#3CB371", 
             "Nonsense_Mutation" = "#000000",
@@ -7,7 +6,7 @@ colors = c("Missense_Mutation" = "#3CB371",
             "Splice_Site" = "#F0E442",
             "Translation_Start_Site" = "#191970",
             "Nonstop_Mutation" = "#545454",
-            "In_Frame_Del" = "#CAE1FF",
+            "In_Frame_Del" = "#E66101",
             "In_Frame_Ins" = "#FFE4E1",
             "Stop_Codon_Ins" = "#CC79A7",
             "Start_Codon_Del" = "#56B4E9",
@@ -15,10 +14,10 @@ colors = c("Missense_Mutation" = "#3CB371",
             "Multi_Hit_Fusion" = "#CD96CD",
             "Multi_Hit" = "#FF3E96",
             "Del" = "#313695",
+            "Loss" = "#CAE1FF",
             "Amp" = "#c51b7d",
             "Likely Oncogenic" = "#c51b7d",
-            "VUS" = "gray")#,
-           #"5'Flank" = "#E66101")
+            "VUS" = "gray")
 
 mut.labels = c("Missense Mutation", 
                "Nonsense Mutation",
@@ -35,6 +34,6 @@ mut.labels = c("Missense Mutation",
                "Multi-Hit RNA Fusion",
                "Multi-Hit",
                "Del",
-               "Amp",
-               "5'Flank")
+               "Loss",
+               "Amp")
 
