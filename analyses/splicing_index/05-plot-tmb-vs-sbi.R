@@ -19,10 +19,11 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses", "splicing_index")
 map_dir <- file.path(root_dir, "analyses", "cohort_summary", "results")
-input_dir   <- file.path(analysis_dir, "input")
-data_dir   <- file.path(root_dir, "data")
-results_dir   <- file.path(analysis_dir, "results")
-plots_dir   <- file.path(analysis_dir, "plots")
+input_dir <- file.path(analysis_dir, "input")
+data_dir <- file.path(root_dir, "data")
+tmb_dir <- file.path(root_dir, "analyses", "oncoprint", "input")
+results_dir <- file.path(analysis_dir, "results")
+plots_dir <- file.path(analysis_dir, "plots")
 
 ## Call plot publication theme script 
 source(file.path(root_dir, "figures", "theme_for_plots.R"))
@@ -36,7 +37,7 @@ corplot_sbi_vs_tmb_by_cg_file <- file.path(plots_dir, "corplot_sbi-tmb-by-cg.pdf
 ## input files
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 indep_wgs_file <- file.path(data_dir, "independent-specimens.wgswxspanel.primary.prefer.wgs.tsv")
-tmb_coding_file  <- file.path(input_dir,"snv-mutation-tmb-coding.tsv") # OPC v13 TMB file
+tmb_coding_file  <- file.path(tmb_dir,"snv-mutation-tmb-coding.tsv") # OPC v13 TMB file
 sbi_coding_file  <- file.path(results_dir,"splicing_index.SE.txt")
 palette_file <- file.path(map_dir,"histologies-plot-group.tsv") 
 
