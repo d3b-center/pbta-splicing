@@ -2,7 +2,7 @@
 
 Module authors: Ammar Naqvi (@naqvia), Jo Lynne Rokita (@jharenza)
 
-The purpose of this module is to assess CLK1 exon 4 PSI levels in the context of 
+The purpose of this module is to assess CLK1 exon 4 PSI levels in the context of mutations
 
 ## Usage
 ### How to Run:
@@ -18,13 +18,13 @@ Rscript --vanilla 01-oncoprint.R
 * independent specimen file (RNA): ```./data/independent-specimens.rnaseqpanel.primary.tsv```  <br>
 * mutation colors: ```input/mutation-colors.R``` <br>
 * splicing events: ```./data/splice-events-rmats.tsv.gz```  <br>
-* tumor mutation burden: ```./data/snv-mutation-tmb-coding.tsv``` <br>
+* tumor mutation burden: ```./input/snv-mutation-tmb-coding.tsv``` <br>
 
 #### Output:
 ```plots/oncoprint.pdf``` <br>
 
 ## Scripts
-* `01-oncoprint.R` generates oncoprint with mutation frequencies with CLK1 exon 4 PSI, gender, molecular subtype, CNS region and mutation status information across pediatric HGGs 
+* `01-oncoprint.R` generates oncoprint with mutation frequencies with CLK1 exon 4 PSI, gender, molecular subtype, CNS region and mutation status information across pediatric HGGs, as well as enrichment of CLK1 high/low tumors by gene alteration 
 
 ## Directory Structure
 ```
@@ -33,9 +33,10 @@ Rscript --vanilla 01-oncoprint.R
 ├── README.md
 ├── input
 │   ├── mutation-colors.R
-│   └── oncoprint-goi-lists-OpenPedCan-gencode-v39.csv
+│   ├── oncoprint-goi-lists-OpenPedCan-gencode-v39.csv
+│   └── snv-mutation-tmb-coding.tsv
 ├── plots
 │   └── oncoprint.pdf
-├── results
-└── util
+└── results
+    └── clk1_high_low_mutation_counts.tsv
 ```
