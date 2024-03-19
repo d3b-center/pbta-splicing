@@ -148,9 +148,6 @@ select(Tumor_Sample_Barcode,Hugo_Symbol,Variant_Classification) %>%
   left_join(matched_dna_samples[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
   select(-Kids_First_Biospecimen_ID)
 
-# create df for enrichment
-collapse_snv_dat %>%
-
 # get genes in order of most to least mutations
 gene_row_order <- collapse_snv_dat %>%
   count(Hugo_Symbol) %>%
@@ -191,7 +188,7 @@ histologies_df_sorted <- splice_CLK1_df %>%
                                               TRUE ~ molecular_subtype),
                 CNS_region = case_when(CNS_region == "" ~ "Unknown",
                                     TRUE ~ CNS_region),
-                tmb_status = case_when(is.na(tmb_status) ~ "DNA not profiled",
+                tmb_status = case_when(is.na(tmb_status) ~ "Unknown",
                                        TRUE ~ tmb_status)) 
 
 # get clk1 high/low
@@ -202,7 +199,7 @@ upper_sbi <- quantiles_clk1[2]
 histologies_df_sorted <- histologies_df_sorted %>%
   mutate(clk1_status = case_when(PSI > upper_sbi ~ "High",
                                  PSI < lower_sbi ~ "Low",
-                                 TRUE ~ NA)) %>%
+                                 TRUE ~ "Middle")) %>%
   select(reported_gender, cancer_group, molecular_subtype, CNS_region, tmb_status, clk1_status, PSI) %>%
   dplyr::rename("Gender"=reported_gender,
                 "Cancer Group" = cancer_group,
@@ -234,14 +231,13 @@ ha = HeatmapAnnotation(name = "annotation",
                                                  "IHG, NTRK-altered" = "cornflowerblue",
                                                  "IHG, ALK-altered" = "skyblue4",
                                                  "IHG, ROS1-altered" = "lightblue1",
-                                                 "HGG, PXA" = "navy",
-                                                 na_col = "whitesmoke"),
+                                                 "HGG, PXA" = "navy"),
                          "CNS Region" = loc_cols,
                          "Mutation Status" = c("Normal" = "grey80",
                                                "Hypermutant" = "orange",
                                                "Ultra-hypermutant" = "red",
-                                               "DNA not profiled" = "whitesmoke"),
-                         "CLK1 status" = c("High" = "navy", "Low" = "#CAE1FF",  na_col = "whitesmoke"),
+                                               "Unknown" = "whitesmoke"),
+                         "CLK1 status" = c("High" = "navy", "Low" = "#CAE1FF",  "Middle" = "grey80"),
                          "CLK1 Ex4 PSI" = colorRamp2(c(0, 0.25, 0.75, 1.0), c("whitesmoke", "#CAE1FF","cornflowerblue", "navy")),
                          annotation_name_side = "right", 
                          annotation_name_gp = gpar(fontsize = 9),
@@ -288,4 +284,42 @@ plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:50,], get_type = function(x) st
 pdf(plot_out, width = 15, height = 8)
 plot_oncoprint
 dev.off()
+
+# create df for enrichment
+ids_clk1 <- histologies_df_sorted %>%
+  rownames_to_column(var = "match_id") %>%
+  select(match_id, `CLK1 status`)
+
+total_high <- nrow(ids_clk1)/2
+total_low <- nrow(ids_clk1)/2
+
+
+alteration_counts <- collapse_snv_dat %>%
+  full_join(ids_clk1) %>%
+  filter(`CLK1 status` != "Middle") %>%
+## group by junction and calculate means
+select(Hugo_Symbol, `CLK1 status`) %>%
+  group_by(Hugo_Symbol, `CLK1 status`) %>%
+  count() %>%
+  ungroup() %>%
+  # Spread to wide format to get separate columns for "High" and "Low"
+  pivot_wider(names_from = `CLK1 status`, values_from = n, values_fill = list(n = 0)) %>%
+  rowwise() %>%
+   mutate(
+      Fisher_Test = list(
+        fisher.test(
+          matrix(
+            c(High, total_high - High,  # Counts of High and the absence of High
+              Low, total_low - Low),    # Counts of Low and the absence of Low
+            nrow = 2
+          )
+        )
+      ),
+      P_Value = Fisher_Test$p.value
+    ) %>%
+    select(Hugo_Symbol, High, Low, P_Value) %>%
+    ungroup() %>%
+  arrange(P_Value) %>%
+  write_tsv(file.path(results_dir, "clk1_high_low_mutation_counts.tsv"))
+
 
