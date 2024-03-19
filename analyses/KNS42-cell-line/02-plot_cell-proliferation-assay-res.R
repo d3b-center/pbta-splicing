@@ -33,6 +33,7 @@ file_line_plot = file.path(plots_dir,"cell_prolif-line.pdf")
 cell_prolif_res_file <- file.path(input_dir,"cell_prolif_res.tsv")
 
 cell_prolif_df <- read_tsv(cell_prolif_res_file) %>% 
+  dplyr::select(Time, Ctrl_1, Ctrl_2, Ctrl_3, CLK1_1, CLK1_2, CLK1_3) %>%
   pivot_longer(
     c(-Time), 
     names_pattern = "(.+)_([0-9])", 
@@ -40,9 +41,8 @@ cell_prolif_df <- read_tsv(cell_prolif_res_file) %>%
     values_to = "Absorbance"
   ) %>%
   mutate(Treatment = case_when(Treatment == "CLK1" ~ "CLK1 Exon 4 morpholino",
-                               Treatment == "Ctrl" ~ "Non-targeting morpholino",
-                               Treatment == "Untreated" ~ "No morpholino"),
-         Time = as.factor(Time)) 
+                               Treatment == "Ctrl" ~ "Non-targeting morpholino"),
+                                Time = as.factor(Time)) 
 
 # Subset the data to include only the two treatments of interest for stats
 filtered_df <- cell_prolif_df %>%
@@ -62,9 +62,10 @@ ribbon_plot <- ggplot(cell_prolif_df, aes(x = Time, y = Absorbance)) +
   stat_summary(aes(fill = Treatment, group = Treatment), fun.data = mean_sd, geom = "ribbon", alpha = 0.25) +
   geom_text(data = stat_results, aes(x = Time, y = y_pos, label = p_sig), size = 3.5) + # Add p-values
   xlab("Time") + 
-  ylab("Absorbance") +
+  ylab("Luminescence (RLU)") +
   ylim(c(10000,60000)) +
   theme_Publication()
+
 
 pdf(file_line_plot, width = 6.5, height = 3)
 print(ribbon_plot)
