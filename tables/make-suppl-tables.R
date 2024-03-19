@@ -22,6 +22,7 @@ if(!dir.exists(supp_tables_dir)){
 histology_file <- file.path(data_dir, "histologies.tsv")
 histology_ei_splice_events <- file.path(analysis_dir, "histology-specific-splicing", "results", "unique_events-ei.tsv")
 histology_es_splice_events <- file.path(analysis_dir, "histology-specific-splicing", "results", "unique_events-es.tsv")
+optimal_cluster_tsv <- file.path(analysis_dir, "clustering_analysis", "output", "optimal_clustering", "lspline_output.tsv")
 cluster_membership <- file.path(analysis_dir, "clustering_analysis", "output", "cluster_members_by_cancer_group_subtype.tsv")
 CNS_match_json <- file.path(table_dir, "input", "CNS_primary_site_match.json")
 deseq2_sf_file <- file.path(analysis_dir, "splicing-factor_dysregulation", "results", "diffSFs_sig_genes.txt")
@@ -133,12 +134,34 @@ ei_events_df <- vroom(histology_ei_splice_events)
 ## sheet 2, exon inclusion splicing
 es_events_df <- vroom(histology_es_splice_events)
 
-## sheet 3, cluster membership
+## sheet 3, optimal clustering output/lspline
+opt_cluster_df <- read_tsv(optimal_cluster_tsv)
+
+# subset columns used for scoring methods
+opt_cluster_df <- opt_cluster_df %>%
+  dplyr::select(algorithm,
+                distance,
+                feature_selection,
+                k,
+                stretch,
+                delta_auc,
+                p_val,
+                average.between,
+                average.within,
+                within.cluster.ss,
+                dunn,
+                entropy,
+                avg_sil,
+                cluster_qual,
+                rank)
+    
+## sheet 4, cluster membership
 cluster_membership_df <- read_tsv(cluster_membership)
 
 # Combine and output
 list_s2_table <- list(exon_inclusion = ei_events_df,
                       exon_skipping = es_events_df,
+                      opt_cluster = opt_cluster_df,
                       clust_memb = cluster_membership_df)
 
 write.xlsx(list_s2_table,
