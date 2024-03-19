@@ -37,6 +37,7 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 ## filepaths 
 optimal_cluster_tsv <- file.path(output_dir, "optimal_clustering", "ccp_optimal_clusters.tsv")
 cluster_membership_tsv <-  file.path(output_dir, "cluster_members_by_cancer_group_subtype.tsv")
+subtype_hex <- file.path(input_dir, "subtype_hex.tsv")
 
 # read in palette and cluster file
 cluster_df <- read_tsv(optimal_cluster_tsv) %>%
@@ -63,6 +64,7 @@ histologies_df <- read_tsv(file.path(root_dir,"analyses", "cohort_summary", "res
                                                
          TRUE ~ molecular_subtype)) %>%
   dplyr::right_join(cluster_df)
+
 
 color_df <- histologies_df %>%
   dplyr::select(plot_group_hex, plot_group) %>%
@@ -92,15 +94,19 @@ hist_subset <- histologies_df %>%
                                                   "DIPG or DMG") ~ "High-grade glioma",
                                 TRUE ~ plot_group))
 
+subtype_hex_codes <- read_tsv(subtype_hex)
+cols <- subtype_hex_codes$hex_code
+names(cols) <- subtype_hex_codes$molecular_subtype_display
+
 pdf(file.path(plots_dir, "cluster_membership-subtypes.pdf"), height = 6, width = 11)
 hist_subset %>% 
   ggplot(aes(fill=molecular_subtype_display, x= factor(cluster_assigned))) +
-  geom_bar(stat="count", position="stack") + 
+  geom_bar(stat="count", position="stack", color = "black", size = 0.2) + 
   facet_wrap(~plot_group, nrow = 2, scales = "free_y") +
   xlab("Cluster") + 
   ylab("Frequency") +
   theme_Publication() +
-  labs(fill = "Molecular Subtype")
+  scale_fill_manual(name = "Molecular Subtype", values = cols) 
 dev.off()
 
 
