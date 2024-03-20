@@ -31,6 +31,8 @@ func_sites_ei_file <- file.path(analysis_dir, "splicing_events_functional_sites"
 kinase_func_sites_file <- file.path(analysis_dir, "splicing_events_functional_sites", "results", "kinases-functional_sites.tsv")
 deseq2_morph_file <- file.path(root_dir,"analyses/CLK1-splicing-impact-morpholino","results","ctrl_vs_treated.de.tsv")
 rmats_tsv_file <- file.path(data_dir,"ctrl-vs-morpholino-merged-rmats.tsv")
+func_sites_morpho_tsv_file <- file.path(analysis_dir,"CLK1-splicing-impact-morpholino","results","splicing_events.morpho.intersectUnip.ggplot.txt")
+
 
 # define suppl output files and sheet names, when appropriate
 table_s1_file <- file.path(supp_tables_dir, "TableS1-histologies.xlsx")
@@ -215,10 +217,11 @@ deseq2_morpholino_df <- vroom(deseq2_morph_file) %>%
                 padj)
   
 rmats_df <-  vroom(rmats_tsv_file)
-
+ds_func_df <- vroom(func_sites_morpho_tsv_file)
 
 list_s5_table <- list(deseq2_morp = deseq2_morpholino_df,
-                      rmats = rmats_df)
+                      rmats = rmats_df,
+                      func_sites = ds_func_df)
 
 write.xlsx(list_s5_table,
            table_s5_file,
