@@ -207,7 +207,13 @@ histologies_df_sorted <- histologies_df_sorted %>%
                 "CNS Region"=CNS_region, 
                 "Mutation Status"=tmb_status,
                 "CLK1 status" = clk1_status,
-                "CLK1 Ex4 PSI"=PSI)
+                "CLK1 Ex4 PSI"=PSI) 
+
+# write out metadata
+histologies_df_sorted %>%
+  rownames_to_column(var = "match_id") %>%
+  left_join(unique(histologies_df[,c("match_id", "Kids_First_Participant_ID")])) %>%
+  write_tsv(file.path(results_dir, "oncoprint_sample_metadata.tsv"))
 
 loc_cols <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
               "#44AA99", "#882255", "#6699CC")
