@@ -49,6 +49,7 @@ results/gsva_score_diff_kegg_de.tsv
 results/splicing_events.morpho.intersectUnip.ggplot.txt
 plots/CLK1_targets_ora_dotplot.func-sites.pdf
 plots/CLK1_targets_ora_dotplot.pdf
+plots/corr-CLK1-targets-patient.pdf
 plots/ctrl_vs_clk1-morp_volcano.pdf
 plots/dPSI-distr-func-goi.pdf
 plots/dPSI-distr-func.pdf
@@ -71,6 +72,7 @@ plots/gsva_heatmap_kegg_de.pdf
 * `06-conduct-gsva-analysis.R` performs GSVA on HALLMARK, KEGG, and DNA repair pathways from https://pubmed.ncbi.nlm.nih.gov/29617664/
 * `07-run-gsva-comparisons.Rmd` performs CLK1 morpholino vs non targeting morpholino cell line treatment comparisons of GSVA scores HALLMARK, KEGG, and DNA repair pathways from https://pubmed.ncbi.nlm.nih.gov/29617664/.
 * `08-intersection-dex-des.R` intersects dysregulated genes to assess overlap between genes that are both differentially spliced and expressed. Generates Venn diagram and performs ORA of overlapping genes. 
+* `09-splicing-expr-corr-in-patients.R` correlates identified CLK1 targets from above to patient sample CLK1 exon 4 splicing. 
 
 ## Directory structure
 ```
@@ -84,6 +86,7 @@ plots/gsva_heatmap_kegg_de.pdf
 ├── 07-run-gsva-comparisons.Rmd
 ├── 07-run-gsva-comparisons.html
 ├── 08-intersection-dex-des.R
+├── 09-splicing-expr-corr-in-patients.R
 ├── README.md
 ├── input
 │   ├── RBP_known.txt
@@ -97,12 +100,15 @@ plots/gsva_heatmap_kegg_de.pdf
 │   ├── nucleotide_excision_repair.txt
 │   └── oncoprint-goi-lists-OpenPedCan-gencode-v39.csv
 ├── plots
+│   ├── CLK1_ds-dex-targets_ora_dotplot.pdf
 │   ├── CLK1_targets_ora_dotplot.func-sites.pdf
 │   ├── CLK1_targets_ora_dotplot.pdf
+│   ├── corr-CLK1-targets-patient.pdf
 │   ├── ctrl_vs_clk1-morp_volcano.pdf
 │   ├── dPSI-distr-func-goi.pdf
 │   ├── dPSI-distr-func.pdf
 │   ├── dPSI_distr.pdf
+│   ├── des-dex-venn.pdf
 │   ├── gene-fam-DE-plot.pdf
 │   ├── gsva_heatmap_dna_repair.pdf
 │   ├── gsva_heatmap_dna_repair_de.pdf
@@ -127,5 +133,7 @@ plots/gsva_heatmap_kegg_de.pdf
 │   ├── gsva_score_diff_kegg.tsv
 │   ├── gsva_score_diff_kegg_de.tsv
 │   └── splicing_events.morpho.intersectUnip.ggplot.txt
-└── run_module.sh
+├── run_module.sh
+└── util
+    └── function-create-scatter-plot.R
 ```
