@@ -32,7 +32,7 @@ if(!dir.exists(plots_dir)){
 
 # theme for all plots
 source(file.path(figures_dir, "theme_for_plots.R"))
-source(file.path(root_dir, "analyses","CLK1-splicing_correlations", "util", "function-create-scatter-plot.R"))
+source(file.path(analysis_dir, "util", "function-create-scatter-plot.R"))
 
 ## define input files
 clin_file <- file.path(data_dir,"histologies.tsv")
@@ -79,10 +79,12 @@ neg_genes <-vroom(file.path(analysis_dir,"results","ctrl_vs_treated.de.formatted
   select(gene) %>% 
   pull()
 
-goi_pos_list <- c("CLK1", pos_genes)
+plot_list_neg <- list()
+plot_list_pos <- list()
+
 region_list <- c("all")
 
-for (gene in goi_pos_list) {
+for (gene in pos_genes) {
   for (brain_region in region_list) {
     
     if (brain_region == "all"){
@@ -122,20 +124,18 @@ for (gene in goi_pos_list) {
     pval = cor.test(rmats_exp_df$IncLevel1, rmats_exp_df$Expr)$p.value 
     corr = cor.test(rmats_exp_df$IncLevel1, rmats_exp_df$Expr)$estimate 
     
-    if(pval <= 0.05 && corr > .2)
+    if(pval <= 0.05 & corr > .2)
     {
       p <- create_scatterplot(rmats_exp_df) 
-      # save plot 
-      pdf(file.path(paste(plots_dir, "/", gene, "_exp_vs_CLK1_psi_", brain_region, "-pos_hgg.pdf", sep = "")), width = 4.5, height = 4.5)
-      print(p)
-      dev.off()
+      plot_list_pos <- append(plot_list_pos, list(p))
     }
   }
 }
 
-goi_neg_list <- c("CLK1", neg_genes)
 region_list <- c("all")
-for (gene in goi_neg_list) {
+
+
+for (gene in neg_genes) {
   for (brain_region in region_list) {
     
     if (brain_region == "all"){
@@ -175,13 +175,20 @@ for (gene in goi_neg_list) {
     pval = cor.test(rmats_exp_df$IncLevel1, rmats_exp_df$Expr)$p.value 
     corr = cor.test(rmats_exp_df$IncLevel1, rmats_exp_df$Expr)$estimate 
     
-    if(pval <= 0.05 && corr <= -.2)
+    if(pval <= 0.05 & corr <= -.2)
     {
       p <- create_scatterplot(rmats_exp_df) 
-      # save plot 
-      pdf(file.path(paste(plots_dir, "/", gene, "_exp_vs_CLK1_psi_", brain_region, "-neg_hgg.pdf", sep = "")), width = 4.5, height = 4.5)
-      print(p)
-      dev.off()
+      plot_list_neg <- append(plot_list_neg, list(p))
+      
     }
   }
 }
+
+# save plots
+plot_list_all = list()
+plot_list_all = c(plot_list_pos,plot_list_neg)
+
+# save plot 
+pdf(file.path(paste(plots_dir, "/corr-CLK1-targets-patient.pdf", sep = "")), width = 21.3, height = 10.6)
+plot_grid(plotlist = plot_list_all, ncol = 4, nrow=2)
+dev.off()
