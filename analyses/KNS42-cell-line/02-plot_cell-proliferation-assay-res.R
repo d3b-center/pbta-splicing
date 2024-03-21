@@ -27,7 +27,7 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## output for plot
-file_line_plot = file.path(plots_dir,"cell_prolif-line.pdf")
+file_line_plot = file.path(plots_dir,"cell_viability-barplot.pdf")
 
 ## input file
 cell_prolif_res_file <- file.path(input_dir,"cell_prolif_res.tsv")
@@ -60,12 +60,14 @@ stat_results <- filtered_df %>%
 
 barplot <- ggplot(cell_prolif_df, aes(x = Time, y = Absorbance)) +
   stat_summary(aes(colour = Treatment, group = Treatment), fun = mean, geom = "bar", position = "dodge") + # Change geom to "bar"
-  stat_summary(aes(fill = Treatment, group = Treatment), fun.data = mean_sd, geom = "errorbar", alpha = 0.25) +
-  geom_bar(stat = "summary", aes(fill = Treatment), position = "dodge",linewidth = 2) +
+  stat_summary(aes(fill = Treatment, group = Treatment), fun.data = mean_sd, geom = "errorbar", position = position_dodge(width = 0.9), width = 0.7) + # Adjust position and width
   geom_text(data = stat_results, aes(x = Time, y = y_pos+35000, label = p_sig), size = 3.5) + # Add p-values
   xlab("Time") + 
   ylab("Luminescence (RLU)") +
   theme_Publication()
+
+barplot
+
 
 
 pdf(file_line_plot, width = 6.5, height = 3)
