@@ -56,18 +56,19 @@ stat_results <- filtered_df %>%
                           TRUE ~ ""),
          y_pos = 20000,
          x_pos = Time)
-# plot
-ribbon_plot <- ggplot(cell_prolif_df, aes(x = Time, y = Absorbance)) + 
-  stat_summary(aes(colour = Treatment, group = Treatment), fun = mean, geom = "line") +
-  stat_summary(aes(fill = Treatment, group = Treatment), fun.data = mean_sd, geom = "ribbon", alpha = 0.25) +
-  geom_text(data = stat_results, aes(x = Time, y = y_pos, label = p_sig), size = 3.5) + # Add p-values
+
+
+barplot <- ggplot(cell_prolif_df, aes(x = Time, y = Absorbance)) +
+  stat_summary(aes(colour = Treatment, group = Treatment), fun = mean, geom = "bar", position = "dodge") + # Change geom to "bar"
+  stat_summary(aes(fill = Treatment, group = Treatment), fun.data = mean_sd, geom = "errorbar", alpha = 0.25) +
+  geom_bar(stat = "summary", aes(fill = Treatment), position = "dodge",linewidth = 2) +
+  geom_text(data = stat_results, aes(x = Time, y = y_pos+35000, label = p_sig), size = 3.5) + # Add p-values
   xlab("Time") + 
   ylab("Luminescence (RLU)") +
-  ylim(c(10000,60000)) +
   theme_Publication()
 
 
 pdf(file_line_plot, width = 6.5, height = 3)
-print(ribbon_plot)
+print(barplot)
 dev.off()
 
