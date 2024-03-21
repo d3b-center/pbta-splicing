@@ -1,9 +1,9 @@
 ################################################################################
-# 02-plot_cell-proliferation-assay-res.R
+# 02-plot_cell-viability-assay-res.R
 # script that generates line graph and compares Treatment absorbance levels
 # written by Ammar Naqvi, Jo Lynne Rokita
 #
-# usage: Rscript 02-plot_cell-proliferation-assay-res.R 
+# usage: Rscript 02-plot_cell-viability-res.R 
 ################################################################################
 
 ## libraries used 
@@ -46,31 +46,49 @@ cell_prolif_df <- read_tsv(cell_prolif_res_file) %>%
 
 # Subset the data to include only the two treatments of interest for stats
 filtered_df <- cell_prolif_df %>%
-  filter(Treatment %in% c("CLK1 Exon 4 morpholino", "Non-targeting morpholino"))
+  filter(Treatment %in% c("CLK1 Exon 4 morpholino", "Non-targeting morpholino")) %>%
+  mutate(Treatment = as.factor(Treatment),
+         Treatment = fct_relevel(Treatment, "Non-targeting morpholino", "CLK1 Exon 4 morpholino"))
 
-# Perform statistical tests
+# Define mean_se function if not already defined
+mean_se <- function(x) {
+  n <- length(x)
+  mean <- mean(x)
+  sd <- sd(x)
+  ymin <- mean - sd
+  ymax <- mean + sd
+  
+  return(c(y = mean, ymin = ymin, ymax = ymax))
+}
+
+# Perform statistical tests using rstatix
 stat_results <- filtered_df %>%
   group_by(Time) %>%
-  t_test(Absorbance ~ Treatment, paired = TRUE) %>%  # Adjust as per your study design
-  mutate(p_sig = case_when(p < 0.05 ~ paste0("*", round(p, 2)),
-                          TRUE ~ ""),
-         y_pos = 20000,
-         x_pos = Time)
+  t_test(Absorbance ~ Treatment, paired = TRUE) %>%  # Adjust for your study design
+  mutate(p_sig = case_when(p < 0.05 ~ paste0("*", "p=", round(p, 2)),
+                           TRUE ~ ""),
+         y_pos = c(40000,42000,44000, 46000, 56000),
+         #y_pos = max(filtered_df$Absorbance, na.rm = TRUE) + 1000,
+         Treatment = "Non-targeting morpholino")
 
-
-barplot <- ggplot(cell_prolif_df, aes(x = Time, y = Absorbance)) +
-  stat_summary(aes(colour = Treatment, group = Treatment), fun = mean, geom = "bar", position = "dodge") + # Change geom to "bar"
-  stat_summary(aes(fill = Treatment, group = Treatment), fun.data = mean_sd, geom = "errorbar", position = position_dodge(width = 0.9), width = 0.7) + # Adjust position and width
-  geom_text(data = stat_results, aes(x = Time, y = y_pos+35000, label = p_sig), size = 3.5) + # Add p-values
-  xlab("Time") + 
+# Generate the bar plot
+barplot <- ggplot(filtered_df, aes(x = Time, y = Absorbance, fill = Treatment)) +
+  stat_summary(fun = mean, geom = "bar", position = position_dodge(width = 0.8), width = 0.7, color = "black") +
+  stat_summary(fun.data = mean_se, geom = "errorbar", position = position_dodge(width = 0.8), width = 0.25) +
+  geom_text(data = stat_results, aes(x = Time, y = y_pos, label = p_sig), vjust = -0.5, size = 4) +
+  xlab("Time (hours)") + 
   ylab("Luminescence (RLU)") +
-  theme_Publication()
-
-barplot
-
-
+  scale_y_continuous(labels = scales::scientific) +
+  scale_fill_manual(values = c("lightgrey", "#0C7BDC")) +
+  ylim(c(0, 6e4))+
+  theme_Publication() 
 
 pdf(file_line_plot, width = 6.5, height = 3)
 print(barplot)
 dev.off()
+
+
+
+
+
 
