@@ -50,9 +50,18 @@ Input files:
 │   ├── SRSF2_exp_vs_CLK1_psi_all_hgg.pdf
 │   ├── SRSF2_exp_vs_CLK1_psi_midline_hgg.pdf
 │   ├── SR_phos_CLK1_exp_heatmap.pdf
-│   ├── all_hgg_boxplot_SBI_high_vs_low_CLK1.pdf
-│   ├── dmg_boxplot_SBI_high_vs_low_CLK1.pdf
-│   └── other_hgg_boxplot_SBI_high_vs_low_CLK1.pdf
+│   ├── all_hgg_SBI_high_vs_low_CLK1_exome_capture.pdf
+│   ├── all_hgg_SBI_high_vs_low_CLK1_poly-A stranded.pdf
+│   ├── all_hgg_SBI_high_vs_low_CLK1_poly-A.pdf
+│   ├── all_hgg_SBI_high_vs_low_CLK1_stranded.pdf
+│   ├── dmg_SBI_high_vs_low_CLK1_exome_capture.pdf
+│   ├── dmg_SBI_high_vs_low_CLK1_poly-A stranded.pdf
+│   ├── dmg_SBI_high_vs_low_CLK1_poly-A.pdf
+│   ├── dmg_SBI_high_vs_low_CLK1_stranded.pdf
+│   ├── other_hgg_SBI_high_vs_low_CLK1_exome_capture.pdf
+│   ├── other_hgg_SBI_high_vs_low_CLK1_poly-A stranded.pdf
+│   ├── other_hgg_SBI_high_vs_low_CLK1_poly-A.pdf
+│   └── other_hgg_SBI_high_vs_low_CLK1_stranded.pdf
 ├── results
 │   └── mean_clk1_psi.txt
 ├── run_module.sh
