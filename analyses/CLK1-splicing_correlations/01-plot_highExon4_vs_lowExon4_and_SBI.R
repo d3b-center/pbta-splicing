@@ -81,59 +81,62 @@ sbi_vs_inclEx4_df <-  vroom(sbi_file) %>%
 
 set.seed(45)
 
-bs_list <- list("hgg" = hgg_bs_id, "dmg" = dmg_bs_id, "other" = other_hgg_bs_id)
+bs_list <- list("all_hgg" = hgg_bs_id, "dmg" = dmg_bs_id, "other_hgg" = other_hgg_bs_id)
+library_types <- unique(sbi_vs_inclEx4_df$RNA_library)
 names <- names(bs_list)
 
 # Loop through groups
-for (each in names) {
-  # Assign correct plot file
-  if (each == "hgg") {
-    plot_file <- hgg_plot_file
-  } else if (each == "dmg") {
-    plot_file <- dmg_plot_file
-  } else if (each == "other") {
-    plot_file <- other_hgg_plot_file
-  }
+for (lib in library_types){
   
-  # Filter the DataFrame based on current group's IDs
-  new_df <- sbi_vs_inclEx4_df %>%
-    filter(Sample %in% bs_list[[each]],
-           RNA_library == "stranded")
-  ## Compute quantiles to define high vs low Exon 4 PSI groups
-  quartiles_psi <- quantile(new_df$IncLevel1, probs=c(.25, .75), na.rm = FALSE)
-  # Calculate IQR
-  IQR_psi <- IQR(new_df$IncLevel1)
+  for (each in names) {
+    # Assign correct plot file
+    if (each == "all_hgg") {
+      plot_file <- hgg_plot_file
+    } else if (each == "dmg") {
+      plot_file <- dmg_plot_file
+    } else if (each == "other_hgg") {
+     plot_file <- other_hgg_plot_file
+   }
+  
+    # Filter the DataFrame based on current group's IDs
+    new_df <- sbi_vs_inclEx4_df %>%
+      filter(Sample %in% bs_list[[each]],
+             RNA_library == lib)
+    ## Compute quantiles to define high vs low Exon 4 PSI groups
+    quartiles_psi <- quantile(new_df$IncLevel1, probs=c(.25, .75), na.rm = FALSE)
+    # Calculate IQR
+    IQR_psi <- IQR(new_df$IncLevel1)
+  
+    # Get lower quantile (25%)
+    lower_psi <- quartiles_psi[1] 
+    # Get upper quantile (75%)
+    upper_psi <- quartiles_psi[2]
+  
+    # Create df with high/low PSI
+    sbi_vs_inclEx4_by_extremePSI_df <- new_df %>%
+      mutate(PSI = case_when(new_df$IncLevel1 > upper_psi ~ "high",
+                             new_df$IncLevel1 < lower_psi ~ "low",
+                           TRUE ~ NA_character_)
+             ) %>%
+      filter(!is.na(PSI)) %>%
+      select(Sample,SI,PSI)
+  
+    # add a little extra room for wilcoxon test
+    ylim_max <- max(sbi_vs_inclEx4_by_extremePSI_df$SI)+0.10*(max(sbi_vs_inclEx4_by_extremePSI_df$SI))
+  
+    ## Make box plot with stats
+    boxplot_sbi_vs_incl <- ggboxplot(sbi_vs_inclEx4_by_extremePSI_df,x = "PSI", y = "SI") +
+      xlab(expression(bold(bolditalic("CLK1")~"Exon 4 PSI Level"))) +
+      ylab(expression(bold("Splicing Burden Index"))) +
+      lims(y = c(0,ylim_max)) +
+      ggforce::geom_sina(aes(color = PSI), size = 2, shape = 21, fill = NA, stroke = 1) +
+      scale_color_manual(name = "PSI Level", values = c(high = "#FFC20A", low = "#0C7BDC")) +
+      stat_compare_means(position = "identity", label.x = 1) +
+      theme_Publication()
 
-  # Get lower quantile (25%)
-  lower_psi <- quartiles_psi[1] 
-  # Get upper quantile (75%)
-  upper_psi <- quartiles_psi[2]
-
-  # Create df with high/low PSI
-  sbi_vs_inclEx4_by_extremePSI_df <- new_df %>%
-    mutate(PSI = case_when(new_df$IncLevel1 > upper_psi ~ "high",
-                           new_df$IncLevel1 < lower_psi ~ "low",
-                         TRUE ~ NA_character_)
-           ) %>%
-    filter(!is.na(PSI)) %>%
-    select(Sample,SI,PSI)
-
-  # add a little extra room for wilcoxon test
-  ylim_max <- max(sbi_vs_inclEx4_by_extremePSI_df$SI)+0.10*(max(sbi_vs_inclEx4_by_extremePSI_df$SI))
-
-  ## Make box plot with stats
-  boxplot_sbi_vs_incl <- ggboxplot(sbi_vs_inclEx4_by_extremePSI_df,x = "PSI", y = "SI") +
-    xlab(expression(bold(bolditalic("CLK1")~"Exon 4 PSI Level"))) +
-    ylab(expression(bold("Splicing Burden Index"))) +
-    lims(y = c(0,ylim_max)) +
-    ggforce::geom_sina(aes(color = PSI), size = 2, shape = 21, fill = NA, stroke = 1) +
-    scale_color_manual(name = "PSI Level", values = c(high = "#FFC20A", low = "#0C7BDC")) +
-    stat_compare_means(position = "identity", label.x = 1) +
-    theme_Publication()
-
-  # Save plot pdf
-  pdf(plot_file, height = 4, width = 4)
-  print(boxplot_sbi_vs_incl)
-  dev.off()
-
+    # Save plot pdf
+    pdf(file.path(plots_dir, paste0(each, "_SBI_high_vs_low_CLK1_", lib, ".pdf")), height = 4, width = 4.5)
+    print(boxplot_sbi_vs_incl)
+    dev.off()
+  }
 }
