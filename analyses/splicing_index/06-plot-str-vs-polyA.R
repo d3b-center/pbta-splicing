@@ -9,6 +9,12 @@
 # usage: Rscript 06-plot-str-vs-polyA.R
 ################################################################################
 
+## libraries used
+library(tidyverse)
+library(vroom)
+library(data.table)
+library(ggpubr)
+
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "splicing_index")
@@ -17,6 +23,10 @@ plots_dir <- file.path(analysis_dir, "plots")
 # Specify file paths
 clin_file  <- file.path(data_dir,"histologies.tsv")
 rmats_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
+
+## theme for all plots
+figures_dir <- file.path(root_dir, "figures")
+source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## ouput
 PT_RYMG3M91_scatter_path <- file.path(plots_dir,"PT_RYMG3M91_scatter.pdf")
@@ -37,11 +47,10 @@ clin_to_check_df <- clin_df %>% filter(Kids_First_Participant_ID=='PT_RYMG3M91' 
 sample1_id <- "BS_68KX6A42"
 sample2_id <- "BS_D7XRFE0R"
 
-rmats_df <- fread(rmats_file)
-psi_subset_df <- fread(rmats_file) %>% filter(sample_id==sample1_id| 
-                                                  sample_id==sample2_id) 
-
-psi_PT_RYMG3M91 <- psi_subset_df %>% filter(splicing_case=='SE') %>%
+psi_PT_RYMG3M91 <- rmats_df %>% 
+  filter(sample_id==sample1_id| 
+         sample_id==sample2_id) %>% 
+  filter(splicing_case=='SE') %>%
   dplyr::mutate(SpliceID = paste(geneSymbol, exonStart_0base, exonEnd, upstreamES,upstreamEE,downstreamES,downstreamEE, sep = ":") ) %>%
   select(sample_id,SpliceID,IncLevel1)
 
@@ -79,13 +88,12 @@ sample1_id <- "BS_7WM3MNZ0"
 sample2_id <- "BS_KABQQA0T"
 
 ##  same with PT_W5GP3F6B
-psi_PT_W5GP3F6B <- rmats_df %>% filter(sample_id==sample1_id | 
-                                                  sample_id==sample2_id) %>% 
-                                filter(splicing_case=='SE') %>%
-                                dplyr::mutate(SpliceID = paste(geneSymbol, exonStart_0base, exonEnd, upstreamES,upstreamEE,downstreamES,downstreamEE, sep = ":") ) %>%
-                                select(sample_id,SpliceID,IncLevel1)
-
-
+psi_PT_W5GP3F6B <- rmats_df %>% 
+  filter(sample_id==sample1_id| 
+           sample_id==sample2_id) %>% 
+  filter(splicing_case=='SE') %>%
+  dplyr::mutate(SpliceID = paste(geneSymbol, exonStart_0base, exonEnd, upstreamES,upstreamEE,downstreamES,downstreamEE, sep = ":") ) %>%
+  select(sample_id,SpliceID,IncLevel1)
 
 # Filter data for the selected sample_ids
 sample1_data <- psi_PT_W5GP3F6B %>%
