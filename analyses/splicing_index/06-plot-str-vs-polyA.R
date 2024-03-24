@@ -105,8 +105,8 @@ sample2_data <- psi_PT_W5GP3F6B %>%
 merged_data <- merge(sample1_data, sample2_data, by = "SpliceID", suffixes = c("_sample1", "_sample2"))
 
 PT_W5GP3F6B_scatter <- ggscatter(merged_data, x = "IncLevel1_sample1", y = "IncLevel1_sample2", 
-               xlab = paste("Total PSI for", sample1_id),
-               ylab = paste("Total PSI for", sample2_id),
+               xlab = paste("Total PSI for", sample1_id,"(poly-A)"),
+               ylab = paste("Total PSI for", sample2_id,"(stranded)"),
                title = "polyA vs stranded comparison of PSI ",
                add = "reg.line", 
                conf.int = TRUE, 
