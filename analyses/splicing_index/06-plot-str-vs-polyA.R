@@ -44,8 +44,8 @@ clin_to_check_df <- clin_df %>% filter(Kids_First_Participant_ID=='PT_RYMG3M91' 
                                          Kids_First_Participant_ID=='PT_W5GP3F6B')
 
 # Select two sample_ids for comparison
-sample1_id <- "BS_68KX6A42"
-sample2_id <- "BS_D7XRFE0R"
+polya_id <- "BS_68KX6A42"
+stranded_id <- "BS_D7XRFE0R"
 
 psi_PT_RYMG3M91 <- rmats_df %>% 
   filter(sample_id==sample1_id| 
@@ -56,18 +56,17 @@ psi_PT_RYMG3M91 <- rmats_df %>%
 
 # Filter data for the selected sample_ids
 sample1_data <- psi_PT_RYMG3M91 %>%
-  filter(sample_id == sample1_id)
+  filter(sample_id == polya_id)
 sample2_data <- psi_PT_RYMG3M91 %>%
-  filter(sample_id == sample2_id)
+  filter(sample_id == stranded_id)
 
 # Merge data for the same SpliceID
-merged_data <- merge(sample1_data, sample2_data, by = "SpliceID", suffixes = c("_sample1", "_sample2"))
+merged_data <- merge(sample1_data, sample2_data, by = "SpliceID", suffixes = c("_polya", "_stranded"))
 
 # Create scatterplot using ggscatter
-PT_RYMG3M91_scatter <- ggscatter(merged_data, x = "IncLevel1_sample1", y = "IncLevel1_sample2", 
-               xlab = paste("Total PSI of", sample1_id,"(poly-A)"),
-               ylab = paste("Total PSI of", sample2_id,"(stranded)"),
-               title = "polyA vs stranded comparison of PSI ",
+PT_RYMG3M91_scatter <- ggscatter(merged_data, x = "IncLevel1_polya", y = "IncLevel1_stranded", 
+               xlab = paste(polya_id,"PSI (poly-A)"),
+               ylab = paste(stranded_id,"PSI (stranded)"),
                add = "reg.line", 
                conf.int = TRUE, 
                cor.coef = TRUE, 
@@ -79,35 +78,33 @@ PT_RYMG3M91_scatter <- ggscatter(merged_data, x = "IncLevel1_sample1", y = "IncL
               
 
 # Save plot as pdf
-pdf(PT_RYMG3M91_scatter_path, height = 4, width = 6, useDingbats = FALSE)
+pdf(PT_RYMG3M91_scatter_path, height = 4, width = 4, useDingbats = FALSE)
 print(PT_RYMG3M91_scatter)
 dev.off()
 
 # Select two sample_ids for comparison from PT_W5GP3F6B (these are known same aliquots)
-sample1_id <- "BS_7WM3MNZ0"
-sample2_id <- "BS_KABQQA0T"
+polya_id2 <- "BS_7WM3MNZ0"
+stranded_id2 <- "BS_KABQQA0T"
 
 ##  same with PT_W5GP3F6B
 psi_PT_W5GP3F6B <- rmats_df %>% 
-  filter(sample_id==sample1_id| 
-           sample_id==sample2_id) %>% 
+  filter(sample_id %in% c(polya_id2, stranded_id2)) %>% 
   filter(splicing_case=='SE') %>%
   dplyr::mutate(SpliceID = paste(geneSymbol, exonStart_0base, exonEnd, upstreamES,upstreamEE,downstreamES,downstreamEE, sep = ":") ) %>%
   select(sample_id,SpliceID,IncLevel1)
 
 # Filter data for the selected sample_ids
 sample1_data <- psi_PT_W5GP3F6B %>%
-  filter(sample_id == sample1_id)
+  filter(sample_id == polya_id2)
 sample2_data <- psi_PT_W5GP3F6B %>%
-  filter(sample_id == sample2_id)
+  filter(sample_id == stranded_id2)
 
 # Merge data for the same SpliceID
-merged_data <- merge(sample1_data, sample2_data, by = "SpliceID", suffixes = c("_sample1", "_sample2"))
+merged_data <- merge(sample1_data, sample2_data, by = "SpliceID", suffixes = c("_polya", "_stranded"))
 
-PT_W5GP3F6B_scatter <- ggscatter(merged_data, x = "IncLevel1_sample1", y = "IncLevel1_sample2", 
-               xlab = paste("Total PSI for", sample1_id,"(poly-A)"),
-               ylab = paste("Total PSI for", sample2_id,"(stranded)"),
-               title = "polyA vs stranded comparison of PSI ",
+PT_W5GP3F6B_scatter <- ggscatter(merged_data, x = "IncLevel1_polya", y = "IncLevel1_stranded", 
+               xlab = paste(sample1_id,"PSI (poly-A)"),
+               ylab = paste(sample2_id,"PSI (stranded)"),
                add = "reg.line", 
                conf.int = TRUE, 
                cor.coef = TRUE, 
@@ -119,6 +116,6 @@ PT_W5GP3F6B_scatter <- ggscatter(merged_data, x = "IncLevel1_sample1", y = "IncL
               theme_Publication()
 
 # Save plot as pdf
-pdf(PT_W5GP3F6B_scatter_path, height = 4, width = 6, useDingbats = FALSE)
+pdf(PT_W5GP3F6B_scatter_path, height = 4, width = 4, useDingbats = FALSE)
 print(PT_W5GP3F6B_scatter)
 dev.off()
