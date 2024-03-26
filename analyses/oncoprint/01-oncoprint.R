@@ -58,7 +58,8 @@ histologies_df <- read_tsv(clin_file, guess_max = 100000)
 
 goi <- read_csv(goi_file) %>%
   pull(HGAT) %>%
-  unique()
+  unique() %>%
+  c("CLK1")
 
 indep_rna_df <- vroom(indep_rna_file) %>% 
   dplyr::filter(cohort == 'PBTA') %>%
