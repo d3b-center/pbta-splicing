@@ -1,6 +1,6 @@
 # CLK1 Splicing Correlations
 
-Module authors: Ammar Naqvi (@naqvia)
+Module authors: Ammar Naqvi (@naqvia), Jo Lynne Rokita (@jharenza)
 
 The purpose of this module is to correlate CLK1 Exon 4 splicing with splicing
 burden, RNA expression and proteomics
@@ -32,26 +32,39 @@ Input files:
 
 ## Directory structure
 ```
-.
 ├── 01-plot_highExon4_vs_lowExon4_and_SBI.R
 ├── 02-plot_splicing_vs_expr.R
 ├── 03-plot_SR-phosp_vs_CLK1-RNA.R
-├── 04-plot_diffExp_highlowSBI.R
+├── 04-CLK1_PSI_plots.R
 ├── README.md
 ├── input
 │   └── CPTAC3-pbt.xls
 ├── plots
-├── CLK1_exon4_inclusion_fraction_hgg_stacked.pdf
-├── CLK1_exp_vs_CLK1_psi_all_hgg.pdf
-├── CLK1_exp_vs_CLK1_psi_midline_hgg.pdf
-├── SRSF10_exp_vs_CLK1_psi_all_hgg.pdf
-├── SRSF10_exp_vs_CLK1_psi_midline_hgg.pdf
-├── SRSF1_exp_vs_CLK1_psi_all_hgg.pdf
-├── SRSF1_exp_vs_CLK1_psi_midline_hgg.pdf
-├── SRSF2_exp_vs_CLK1_psi_all_hgg.pdf
-├── SRSF2_exp_vs_CLK1_psi_midline_hgg.pdf
-├── SR_phos_CLK1_exp_heatmap.pdf
-└── boxplot_high_vs_low_SBI.pdf
+│   ├── CLK1_exon4_inclusion_fraction_hgg_stacked.pdf
+│   ├── CLK1_exp_vs_CLK1_psi_all_hgg.pdf
+│   ├── CLK1_exp_vs_CLK1_psi_midline_hgg.pdf
+│   ├── SRSF10_exp_vs_CLK1_psi_all_hgg.pdf
+│   ├── SRSF10_exp_vs_CLK1_psi_midline_hgg.pdf
+│   ├── SRSF1_exp_vs_CLK1_psi_all_hgg.pdf
+│   ├── SRSF1_exp_vs_CLK1_psi_midline_hgg.pdf
+│   ├── SRSF2_exp_vs_CLK1_psi_all_hgg.pdf
+│   ├── SRSF2_exp_vs_CLK1_psi_midline_hgg.pdf
+│   ├── SR_phos_CLK1_exp_heatmap.pdf
+│   ├── all_hgg_SBI_high_vs_low_CLK1_exome_capture.pdf
+│   ├── all_hgg_SBI_high_vs_low_CLK1_poly-A stranded.pdf
+│   ├── all_hgg_SBI_high_vs_low_CLK1_poly-A.pdf
+│   ├── all_hgg_SBI_high_vs_low_CLK1_stranded.pdf
+│   ├── dmg_SBI_high_vs_low_CLK1_exome_capture.pdf
+│   ├── dmg_SBI_high_vs_low_CLK1_poly-A stranded.pdf
+│   ├── dmg_SBI_high_vs_low_CLK1_poly-A.pdf
+│   ├── dmg_SBI_high_vs_low_CLK1_stranded.pdf
+│   ├── other_hgg_SBI_high_vs_low_CLK1_exome_capture.pdf
+│   ├── other_hgg_SBI_high_vs_low_CLK1_poly-A stranded.pdf
+│   ├── other_hgg_SBI_high_vs_low_CLK1_poly-A.pdf
+│   └── other_hgg_SBI_high_vs_low_CLK1_stranded.pdf
+├── results
+│   └── mean_clk1_psi.txt
+├── run_module.sh
 └── util
     └── function-create-scatter-plot.R
 ```
