@@ -59,7 +59,7 @@ indep_rna_df <- vroom(indep_rna_file) %>%
 # extract HGG samples, retain stranded and polyA libraries, and filter for independent specimens
 hist_rna <- hist %>% 
   filter(short_histology == "HGAT",
-         RNA_library != "exome_capture",
+#         RNA_library == "stranded",
          cohort == "PBTA",
          Kids_First_Biospecimen_ID %in% indep_rna_df$Kids_First_Biospecimen_ID) %>%
   select(Kids_First_Biospecimen_ID, CNS_region, match_id, molecular_subtype) %>%
@@ -208,6 +208,7 @@ incl_cor_mat <- data.frame(row.names = features,
 
 # create same empty df for CLK1 expression cor values
 expr_cor_mat <- incl_cor_mat
+phospho_cor_mat <- incl_cor_mat
 
 # loop through subtypes and features to calculate pearson correlation coefficients
 id_list <- list("DMG" = dmg_ids, "HGG" = hgg_ids)
@@ -233,8 +234,12 @@ for (subtype in c("DMG", "HGG")) {
                                                                  unlist(mol_df[mol_df$match_id %in% ids, feature]),
                                                                  method = "pearson")$p.value
     
+    phospho_cor_mat[feature, subtype] <- cor.test(unlist(mol_df[mol_df$match_id %in% ids, colnames(mol_df) == "CLK1-S182"]),
+                                               unlist(mol_df[mol_df$match_id %in% ids, feature]))$estimate
     
-  }
+    phospho_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(unlist(mol_df[mol_df$match_id %in% ids, colnames(mol_df) == "CLK1-S182"]),
+                                                                 unlist(mol_df[mol_df$match_id %in% ids, feature]),
+                                                                 method = "pearson")$p.value  }
   
 }
 
@@ -250,6 +255,7 @@ rownames(row_annot) <- rownames(expr_cor_mat)
 # rename cor mat colnames for plotting
 colnames(incl_cor_mat)[1:2] <- c("DIPG\nor DMG", "Other\nHGG")
 colnames(expr_cor_mat)[1:2]  <- c("DIPG\nor DMG", "Other\nHGG")
+colnames(phospho_cor_mat)[1:2]  <- c("DIPG\nor DMG", "Other\nHGG")
 
 # create Heatmap row annotation for feature type
 anno_col <- list(Feature = c("RNA log2Exp" = "#DC3220", "Total Protein z-score" = "#005AB5", "Phospho-Protein z-score" = "#40B0A6"))
@@ -260,6 +266,7 @@ row_anno = rowAnnotation(df = row_annot,
 # define matrix indicating if correlation p < 0.05
 incl_pval_mat <- ifelse(incl_cor_mat[,3:4] < 0.05, "*", "")
 expr_pval_mat <- ifelse(expr_cor_mat[,3:4] < 0.05, "*", "")
+phospho_pval_mat <- ifelse(phospho_cor_mat[,3:4] < 0.05, "*", "")
 
 # create CLK1 ex4 psi correlation heatmap
 incl_ht <- Heatmap(incl_cor_mat[,1:2],
@@ -269,6 +276,7 @@ incl_ht <- Heatmap(incl_cor_mat[,1:2],
                      row_split = row_annot$Feature,
                      column_gap = 0.5,
                      show_row_names = TRUE,
+                   #  show_column_names = TRUE,
                      show_heatmap_legend=TRUE,
                      cluster_columns = FALSE,
                      right_annotation = row_anno,
@@ -298,7 +306,26 @@ expr_ht <- Heatmap(expr_cor_mat[,1:2],
                      grid.text(sprintf("%s", expr_pval_mat[i, j]), x, y, gp = gpar(fontsize = 14))
                    })
 
+# create CLK1 expression correlation heatmap
+phospho_ht <- Heatmap(phospho_cor_mat[,1:2],
+                   name = "Pearson Correlation Coefficient",
+                   col = colorRamp2(c(-1, 0, 1), c("#E66100", "white", "#5D3A9B")),
+                   cluster_rows = FALSE,
+                   row_split = row_annot$Feature,
+                   column_gap = 0.5,
+                   show_row_names = TRUE,
+                   #  show_column_names = TRUE,
+                   show_heatmap_legend=TRUE,
+                   cluster_columns = FALSE,
+                   right_annotation = row_anno,
+                   row_title = NULL,
+                   column_title = "CLK1-S182 z-score",
+                   column_title_side = "top",
+                   cell_fun = function(j, i, x, y, width, height, fill) {
+                     grid.text(sprintf("%s", phospho_pval_mat[i, j]), x, y, gp = gpar(fontsize = 14))
+                   })
+
 # save merged plot
-pdf(file.path(plots_dir, "CLK1-psi-expr-correlation-heatmap.pdf"), width = 7.5, height = 12)
-print(incl_ht + expr_ht)
+pdf(file.path(plots_dir, "CLK1-psi-expr-correlation-heatmap.pdf"), width = 10, height = 12)
+print(incl_ht + expr_ht + phospho_ht)
 dev.off()
