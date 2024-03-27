@@ -34,7 +34,7 @@ kinase_func_sites_file <- file.path(analysis_dir, "splicing_events_functional_si
 deseq2_morph_file <- file.path(root_dir,"analyses/CLK1-splicing-impact-morpholino","results","ctrl_vs_treated.de.tsv")
 rmats_tsv_file <- file.path(data_dir,"ctrl-vs-morpholino-merged-rmats.tsv")
 func_sites_morpho_tsv_file <- file.path(analysis_dir,"CLK1-splicing-impact-morpholino","results","splicing_events.morpho.intersectUnip.ggplot.txt")
-primers_file <-  file.path(input_dir,"primers.txt")
+primers_file <-  file.path(input_dir,"primers.tsv")
 
 # define suppl output files and sheet names, when appropriate
 table_s1_file <- file.path(supp_tables_dir, "TableS1-histologies.xlsx")
