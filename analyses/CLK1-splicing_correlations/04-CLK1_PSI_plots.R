@@ -14,7 +14,7 @@ suppressPackageStartupMessages({
   library("ggpubr")
   library("ggplot2")
   library("vroom")
-  library('data.table')
+  library("data.table")
 })
 
 # Get `magrittr` pipe
@@ -42,27 +42,26 @@ if(!dir.exists(results_dir)){
 figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
+## input files
+rmats_file <- file.path(data_dir,"splice-events-rmats.tsv.gz")
+clin_file  <- file.path(hist_dir,"histologies-plot-group.tsv")
+
 ## output files for final plots
-#CLK1_plot_path <- file.path(plots_dir, "CLK1_exon4_inclusion_fraction_hgg_stacked.pdf")
 hgg_plot_file <- file.path(plots_dir,"all_hgg_CLK1_exon4_inclusion_fraction_hgg_stacked.pdf")
 dmg_plot_file <- file.path(plots_dir,"dmg_CLK1_exon4_inclusion_fraction_hgg_stacked.pdf")
 other_hgg_plot_file <- file.path(plots_dir,"other_hgg_CLK1_exon4_inclusion_fraction_hgg_stacked.pdf")
 
 ## get CLK1 psi values in tumors and ctrls
 indep_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
-indep_df <- vroom(indep_file) %>% 
-  dplyr::filter(cohort=='PBTA')
-
-rmats_file <- file.path(data_dir,"splice-events-rmats.tsv.gz")
-clin_file  <- file.path(hist_dir,"histologies-plot-group.tsv")
+indep_df <- vroom(indep_file)
 
 ## load histologies info for HGG subty  
 histologies_df  <-  read_tsv(clin_file) %>%
   filter(cohort == "PBTA",
+         experimental_strategy == "RNA-Seq",
          Kids_First_Biospecimen_ID %in% indep_df$Kids_First_Biospecimen_ID)
 
 hgg_bs_id <- histologies_df %>%
-  # Select only "RNA-Seq" samples
   filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma")) %>%
   pull(Kids_First_Biospecimen_ID)
 
@@ -74,7 +73,6 @@ dmg_bs_id <- histologies_df %>%
 other_hgg_bs_id <- histologies_df %>%
   filter(plot_group == "Other high-grade glioma") %>%
   pull(Kids_First_Biospecimen_ID)
-
 
 ## load rmats input for CLK1
 clk1_rmats <- fread(rmats_file) %>%
@@ -148,7 +146,7 @@ for (each in names) {
               file.path(results_dir, paste0(each,"-mean_clk1_psi.txt")) )
   
   # Save plot pdf
-  pdf(file.path(plots_dir, paste0(each, "-CLK1-PSI", ".pdf")), height = 4, width = 4.5)
+  pdf(plot_file, height = 3, width = 6)
   print(stacked_barplot)
   dev.off()
  
