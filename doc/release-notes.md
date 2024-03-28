@@ -7,6 +7,7 @@
 - status: available
 
 Additional files:
+- `clk1-splice-events-rmats.tsv` file from `CLK1-splicing_correlations` module results folder added
 - `histologies-plot-group.tsv` from `cohort_summary` module added
 - `snv-mutation-tmb-coding.tsv` and `snv-mutation-tmb-all.tsv` added from [PR 560](https://github.com/d3b-center/OpenPedCan-analysis/pull/560/commits/256ef04c3af141a8289a0efa68cf63b8aa4e30a4) to include missed samples
 - `rna-isoform-expression-rsem-tpm.rds` added, but subsetted for PBTA samples
@@ -16,6 +17,7 @@ Additional files:
 v8
 .
 ├── CLK1-CRISPR-DepMap-score.csv
+├── clk1-splice-events-rmats.tsv
 ├── OmicsDefaultModelProfiles.csv
 ├── OmicsExpressionTranscriptsTPMLogp1Profile.csv
 ├── consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz
