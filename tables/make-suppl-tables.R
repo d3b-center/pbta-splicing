@@ -11,6 +11,8 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses")
 table_dir <- file.path(root_dir, "tables")
 data_dir <- file.path(root_dir, "data")
+input_dir <- file.path(table_dir, "input")
+
 
 # output directory for supplementary tables
 supp_tables_dir <- file.path(table_dir, "output")
@@ -32,7 +34,7 @@ kinase_func_sites_file <- file.path(analysis_dir, "splicing_events_functional_si
 deseq2_morph_file <- file.path(root_dir,"analyses/CLK1-splicing-impact-morpholino","results","ctrl_vs_treated.de.tsv")
 rmats_tsv_file <- file.path(data_dir,"ctrl-vs-morpholino-merged-rmats.tsv")
 func_sites_morpho_tsv_file <- file.path(analysis_dir,"CLK1-splicing-impact-morpholino","results","splicing_events.morpho.intersectUnip.ggplot.txt")
-
+primers_file <-  file.path(input_dir,"primers.tsv")
 
 # define suppl output files and sheet names, when appropriate
 table_s1_file <- file.path(supp_tables_dir, "TableS1-histologies.xlsx")
@@ -218,10 +220,12 @@ deseq2_morpholino_df <- vroom(deseq2_morph_file) %>%
   
 rmats_df <-  vroom(rmats_tsv_file)
 ds_func_df <- vroom(func_sites_morpho_tsv_file)
+primers_df <- vroom(primers_file, delim = "\t")
 
 list_s5_table <- list(deseq2_morp = deseq2_morpholino_df,
                       rmats = rmats_df,
-                      func_sites = ds_func_df)
+                      func_sites = ds_func_df,
+                      primers = primers_df)
 
 write.xlsx(list_s5_table,
            table_s5_file,

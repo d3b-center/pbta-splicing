@@ -83,8 +83,8 @@ lower_sbi <- quantiles_clk1[1]
 upper_sbi <- quantiles_clk1[2]
 
 hgg_hist <- hgg_hist %>%
-  mutate(clk1_status = case_when(PSI > upper_sbi ~ "High",
-                                 PSI < lower_sbi ~ "Low",
+  mutate(clk1_status = case_when(PSI > upper_sbi ~ "CLK1 exon 4 High",
+                                 PSI < lower_sbi ~ "CLK1 exon 4 Low",
                                  TRUE ~ "Middle"))
 ```
 
@@ -92,7 +92,7 @@ Create survival df with only high & low CLK1 status, and relevel mol subgroups
 
 ```{r}
 survival_df <- hgg_hist %>%
-  dplyr::filter(clk1_status %in% c("High", "Low")) %>%
+  dplyr::filter(clk1_status %in% c("CLK1 exon 4 High", "CLK1 exon 4 Low")) %>%
   dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group,
                                             c("HGG, H3 wildtype", "HGG, H3 wildtype, TP53",
                                               "DHG, H3 G35", "DHG, H3 G35, TP53",
@@ -162,7 +162,7 @@ int_model_os <- fit_save_model(survival_df,
 int_os_forest_plot <- plotForest(readRDS(int_os_surv_result))
 
 ggsave(file.path(plot_dir, "forest_HGG_DMG_OS_int_subtype_clk1_status.pdf"), 
-       int_os_forest_plot, width = 7.5, height = 3)
+       int_os_forest_plot, width = 12, height = 3)
 ```
 
 OS additive model: 
@@ -202,7 +202,7 @@ int_model_efs <- fit_save_model(survival_df,
 int_efs_forest_plot <- plotForest(readRDS(int_efs_surv_result))
 
 ggsave(file.path(plot_dir, "forest_HGG_DMG_EFS_int_subtype_clk1_status.pdf"), 
-       int_efs_forest_plot, width = 7.5, height = 4)
+       int_efs_forest_plot, width = 12, height = 4)
 ```
 
 EFS additive model: 
