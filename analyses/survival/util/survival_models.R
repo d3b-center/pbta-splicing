@@ -553,20 +553,20 @@ plotForest <- function(model) {
                     labels = term_labels)
     ) %>%
     filter(estimate > 1e-4 & estimate < 1500) %>%
-    arrange(term) %>%
-    dplyr::mutate(term_display = str_replace(str_replace(term, paste(names(model$xlevels), collapse = "|"), ""), paste(names(model$xlevels), collapse = "|"), "")) %>%
-    dplyr::mutate(term_display = fct_relevel(term_display, unique(term_display)))
+    arrange(term)
+    # dplyr::mutate(term_display = str_replace(str_replace(term, paste(names(model$xlevels), collapse = "|"), ""), paste(names(model$xlevels), collapse = "|"), "")) %>%
+    # dplyr::mutate(term_display = fct_relevel(term_display, unique(term_display)))
   
   
   forest_plot <- ggplot(survival_df) +
-    aes(x = estimate, y = factor(term_display), fill = significant
+    aes(x = estimate, y = factor(term), fill = significant
     ) + 
     # add CI first so line doesn't cover open point
     geom_errorbarh(
       aes(xmin = conf.low,xmax = conf.high,
       ), height = 0.15, linewidth = 0.65) + 
     geom_point(size = 3.5, shape = 23) +
-    # Point fill based on sigificance
+    # Point fill based on significance
     scale_fill_manual(
       values = c("FALSE" = "white", 
                  "TRUE" = "black",
