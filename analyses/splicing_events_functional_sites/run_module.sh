@@ -32,7 +32,7 @@ bash 03-format_for_ggplot.sh
 
 ## make plots
 echo "make plots ...";
-Rscript 04-plot_splicing_across_functional_sites.R
+#Rscript 04-plot_splicing_across_functional_sites.R
 
 ## make plots
 echo "plot splice patterns";
