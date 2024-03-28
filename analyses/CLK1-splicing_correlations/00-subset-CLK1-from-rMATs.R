@@ -32,4 +32,4 @@ rmats_df <-  fread(rmats_file) %>%
   # Select CLK1 gene
   filter(geneSymbol=="CLK1") 
 
-write_tsv(rmats_df,file.path(input_dir, "CLK1-rmats.tsv"))
+write_tsv(rmats_df,file.path(input_dir, "clk1-splice-events-rmats.tsv"))
