@@ -43,6 +43,7 @@ cohort_file <- file.path(root_dir, "analyses", "cohort_summary",
                          "results", "histologies-plot-group.tsv")
 rsem_counts <- file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds")
 clk1_psi_file <- file.path(results_dir, "clk1-exon4-psi-hgg.tsv")
+isoform_file <- file.path(root_dir, "rna-isoform-expression-rsem-tpm.rds")
 
 cptac_proteo_file <- file.path(input_dir, "cptac-protein-imputed-prot-expression-abundance.tsv.gz")
 hope_proteo_file <- file.path(input_dir, "hope-protein-imputed-prot-expression-abundance.tsv.gz")
@@ -59,15 +60,27 @@ indep_rna_df <- vroom(indep_rna_file) %>%
 # extract HGG samples, retain stranded and polyA libraries, and filter for independent specimens
 hist_rna <- hist %>% 
   filter(short_histology == "HGAT",
-#         RNA_library == "stranded",
+         RNA_library == "stranded",
          cohort == "PBTA",
          Kids_First_Biospecimen_ID %in% indep_rna_df$Kids_First_Biospecimen_ID) %>%
-  select(Kids_First_Biospecimen_ID, CNS_region, match_id, molecular_subtype) %>%
+  select(Kids_First_Biospecimen_ID, CNS_region, RNA_library, match_id, molecular_subtype) %>%
   left_join(cohort_df %>% dplyr::select(Kids_First_Biospecimen_ID, plot_group))
 
 # filter expr df for hgg samples
 rsem_df <- readRDS(rsem_counts) %>%
   select(hist_rna$Kids_First_Biospecimen_ID)
+
+transcript_df <- readRDS(isoform_file)
+
+CLK1_ex4_rsem <- transcript_df %>%
+  filter(transcript_id == "ENST00000321356.9")  %>%
+  dplyr::select(-transcript_id) %>%
+  gather(key = "Kids_First_Biospecimen_ID", value = "Expr", -gene_symbol) %>%
+  dplyr::mutate(CLK1_201 = log(Expr+1, 2)) %>%
+  dplyr::filter(Kids_First_Biospecimen_ID %in% hist_rna$Kids_First_Biospecimen_ID,
+                !is.infinite(CLK1_201)) %>%
+  left_join(hist_rna %>% dplyr::select(Kids_First_Biospecimen_ID, match_id)) %>%
+  dplyr::select(-gene_symbol, -Expr)
 
 ## load CLK1 psi file
 clk1_rmats <- read_tsv(clk1_psi_file) %>%
@@ -163,7 +176,7 @@ clk_srsf_proteo_df <- proteo_df %>%
   dplyr::mutate(GeneSymbol = glue::glue("{GeneSymbol} ")) %>%
   dplyr::select(GeneSymbol, match_id, proteo_zscore) %>%
   spread(GeneSymbol, proteo_zscore)
-  
+
 # merge CLK1 PSI and CLK and SRSF RNA, protein, and phosphoprotein expression
 mol_df <- rsem_df %>%
   filter(rownames(.) %in% c(clk_list, srsf_list))  %>%
@@ -175,8 +188,9 @@ mol_df <- rsem_df %>%
   spread(GeneSymbol, logExp) %>%
   left_join(clk_srsf_proteo_df) %>%
   left_join(clk_srsf_phospho_df) %>%
-  left_join(clk1_rmats)
-  
+  left_join(clk1_rmats) %>%
+  left_join(CLK1_ex4_rsem)
+
 # save df
 write_tsv(mol_df, 
           file.path(results_dir, "hgg-dmg-clk-srsf-expression-phosphorylation.tsv"))
@@ -192,7 +206,8 @@ hgg_ids <- hist_rna %>%
 
 # extract molecular features from mol_df
 features <- names(mol_df)[!names(mol_df) %in% c("match_id", "Kids_First_Biospecimen_ID",
-                                                    "IncLevel1")]
+                                                "IncLevel1")]
+features <- features[c(length(features), 1:(length(features)-1))]
 
 # create empty df to store correlation coefficients between PSI and feature values
 incl_cor_mat <- data.frame(row.names = features,
@@ -208,7 +223,7 @@ incl_cor_mat <- data.frame(row.names = features,
 
 # create same empty df for CLK1 expression cor values
 expr_cor_mat <- incl_cor_mat
-phospho_cor_mat <- incl_cor_mat
+ex4_expr_cor_mat <- incl_cor_mat
 
 # loop through subtypes and features to calculate pearson correlation coefficients
 id_list <- list("DMG" = dmg_ids, "HGG" = hgg_ids)
@@ -221,25 +236,29 @@ for (subtype in c("DMG", "HGG")) {
     
     incl_cor_mat[feature, subtype] <- cor.test(mol_df$IncLevel1[mol_df$match_id %in% ids],
                                                unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                               method = "pearson")$estimate
+                                               method = "spearman")$estimate
     
     incl_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(mol_df$IncLevel1[mol_df$match_id %in% ids],
                                                                  unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                                                 method = "pearson")$p.value
+                                                                 method = "spearman")$p.value
     
     expr_cor_mat[feature, subtype] <- cor.test(mol_df$CLK1[mol_df$match_id %in% ids],
-                                               unlist(mol_df[mol_df$match_id %in% ids, feature]))$estimate
+                                               unlist(mol_df[mol_df$match_id %in% ids, feature]),
+                                               method = "spearman")$estimate
     
     expr_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(mol_df$CLK1[mol_df$match_id %in% ids],
                                                                  unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                                                 method = "pearson")$p.value
+                                                                 method = "spearman")$p.value
     
-    phospho_cor_mat[feature, subtype] <- cor.test(unlist(mol_df[mol_df$match_id %in% ids, colnames(mol_df) == "CLK1-S182"]),
-                                               unlist(mol_df[mol_df$match_id %in% ids, feature]))$estimate
+    ex4_expr_cor_mat[feature, subtype] <- cor.test(unlist(mol_df$CLK1_201[mol_df$match_id %in% ids]),
+                                                   unlist(mol_df[mol_df$match_id %in% ids, feature]),
+                                                   method = "spearman")$estimate
     
-    phospho_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(unlist(mol_df[mol_df$match_id %in% ids, colnames(mol_df) == "CLK1-S182"]),
-                                                                 unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                                                 method = "pearson")$p.value  }
+    ex4_expr_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(mol_df$CLK1_201[mol_df$match_id %in% ids],
+                                                                     unlist(mol_df[mol_df$match_id %in% ids, feature]),
+                                                                     method = "spearman")$p.value
+    
+  }
   
 }
 
@@ -247,7 +266,7 @@ for (subtype in c("DMG", "HGG")) {
 row_annot <- expr_cor_mat %>%
   dplyr::select(Feature) %>%
   dplyr::mutate(Feature = factor(Feature,
-                               levels = c("RNA log2Exp", "Total Protein z-score", "Phospho-Protein z-score")))
+                                 levels = c("RNA log2Exp", "Total Protein z-score", "Phospho-Protein z-score")))
 
 # add rownames
 rownames(row_annot) <- rownames(expr_cor_mat)
@@ -255,7 +274,7 @@ rownames(row_annot) <- rownames(expr_cor_mat)
 # rename cor mat colnames for plotting
 colnames(incl_cor_mat)[1:2] <- c("DIPG\nor DMG", "Other\nHGG")
 colnames(expr_cor_mat)[1:2]  <- c("DIPG\nor DMG", "Other\nHGG")
-colnames(phospho_cor_mat)[1:2]  <- c("DIPG\nor DMG", "Other\nHGG")
+colnames(ex4_expr_cor_mat)[1:2]  <- c("DIPG\nor DMG", "Other\nHGG")
 
 # create Heatmap row annotation for feature type
 anno_col <- list(Feature = c("RNA log2Exp" = "#DC3220", "Total Protein z-score" = "#005AB5", "Phospho-Protein z-score" = "#40B0A6"))
@@ -266,30 +285,30 @@ row_anno = rowAnnotation(df = row_annot,
 # define matrix indicating if correlation p < 0.05
 incl_pval_mat <- ifelse(incl_cor_mat[,3:4] < 0.05, "*", "")
 expr_pval_mat <- ifelse(expr_cor_mat[,3:4] < 0.05, "*", "")
-phospho_pval_mat <- ifelse(phospho_cor_mat[,3:4] < 0.05, "*", "")
+ex4_expr_pval_mat <- ifelse(ex4_expr_cor_mat[,3:4] < 0.05, "*", "")
 
 # create CLK1 ex4 psi correlation heatmap
 incl_ht <- Heatmap(incl_cor_mat[,1:2],
-                     name = "Pearson Correlation Coefficient",
-                     col = colorRamp2(c(-1, 0, 1), c("#E66100", "white", "#5D3A9B")),
-                     cluster_rows = FALSE,
-                     row_split = row_annot$Feature,
-                     column_gap = 0.5,
-                     show_row_names = TRUE,
+                   name = "Spearman Correlation Coefficient",
+                   col = colorRamp2(c(-1, 0, 1), c("#E66100", "white", "#5D3A9B")),
+                   cluster_rows = FALSE,
+                   row_split = row_annot$Feature,
+                   column_gap = 0.5,
+                   show_row_names = TRUE,
                    #  show_column_names = TRUE,
-                     show_heatmap_legend=TRUE,
-                     cluster_columns = FALSE,
-                     right_annotation = row_anno,
-                     row_title = NULL,
-                     column_title = "CLK1 Exon4 PSI",
-                     column_title_side = "top",
-                     cell_fun = function(j, i, x, y, width, height, fill) {
-                       grid.text(sprintf("%s", incl_pval_mat[i, j]), x, y, gp = gpar(fontsize = 14))
-                     })
+                   show_heatmap_legend=TRUE,
+                   cluster_columns = FALSE,
+                   right_annotation = row_anno,
+                   row_title = NULL,
+                   column_title = "CLK1 Exon4 PSI",
+                   column_title_side = "top",
+                   cell_fun = function(j, i, x, y, width, height, fill) {
+                     grid.text(sprintf("%s", incl_pval_mat[i, j]), x, y, gp = gpar(fontsize = 14))
+                   })
 
 # create CLK1 expression correlation heatmap
 expr_ht <- Heatmap(expr_cor_mat[,1:2],
-                   name = "Pearson Correlation Coefficient",
+                   name = "Spearman Correlation Coefficient",
                    col = colorRamp2(c(-1, 0, 1), c("#E66100", "white", "#5D3A9B")),
                    cluster_rows = FALSE,
                    row_split = row_annot$Feature,
@@ -307,25 +326,25 @@ expr_ht <- Heatmap(expr_cor_mat[,1:2],
                    })
 
 # create CLK1 expression correlation heatmap
-phospho_ht <- Heatmap(phospho_cor_mat[,1:2],
-                   name = "Pearson Correlation Coefficient",
-                   col = colorRamp2(c(-1, 0, 1), c("#E66100", "white", "#5D3A9B")),
-                   cluster_rows = FALSE,
-                   row_split = row_annot$Feature,
-                   column_gap = 0.5,
-                   show_row_names = TRUE,
-                   #  show_column_names = TRUE,
-                   show_heatmap_legend=TRUE,
-                   cluster_columns = FALSE,
-                   right_annotation = row_anno,
-                   row_title = NULL,
-                   column_title = "CLK1-S182 z-score",
-                   column_title_side = "top",
-                   cell_fun = function(j, i, x, y, width, height, fill) {
-                     grid.text(sprintf("%s", phospho_pval_mat[i, j]), x, y, gp = gpar(fontsize = 14))
-                   })
+ex4_expr_ht <- Heatmap(ex4_expr_cor_mat[,1:2],
+                       name = "Spearman Correlation Coefficient",
+                       col = colorRamp2(c(-1, 0, 1), c("#E66100", "white", "#5D3A9B")),
+                       cluster_rows = FALSE,
+                       row_split = row_annot$Feature,
+                       column_gap = 0.5,
+                       show_row_names = TRUE,
+                       #  show_column_names = TRUE,
+                       show_heatmap_legend=TRUE,
+                       cluster_columns = FALSE,
+                       right_annotation = row_anno,
+                       row_title = NULL,
+                       column_title = "CLK1-201 log2Expr",
+                       column_title_side = "top",
+                       cell_fun = function(j, i, x, y, width, height, fill) {
+                         grid.text(sprintf("%s", ex4_expr_pval_mat[i, j]), x, y, gp = gpar(fontsize = 14))
+                       })
 
 # save merged plot
 pdf(file.path(plots_dir, "CLK1-psi-expr-correlation-heatmap.pdf"), width = 10, height = 12)
-print(incl_ht + expr_ht + phospho_ht)
+print(incl_ht + ex4_expr_ht + expr_ht)
 dev.off()
