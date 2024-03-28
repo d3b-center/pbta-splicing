@@ -25,6 +25,5 @@ rmats_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
 ## Load rmats file
 rmats_df <-  fread(rmats_file) %>%
   # Select CLK1 gene
-  filter(geneSymbol=="CLK1") 
-
-write_tsv(rmats_df,file.path(results_dir, "clk1-splice-events-rmats.tsv"))
+  filter(geneSymbol=="CLK1") %>%
+  write_tsv(file.path(results_dir, "clk1-splice-events-rmats.tsv"))
