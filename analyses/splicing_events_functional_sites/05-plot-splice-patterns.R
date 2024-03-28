@@ -107,7 +107,6 @@ create_splice_pattern_plot <- function(psi_tab_file, psi_func_incl_file, psi_fun
                               unidirectional_skip_events_func_df,
                               unidirectional_incl_events_func_df)
 
-      print(psi_events_total)
         plot_pattern <- ggplot(psi_events_total,
                            aes(x = type, fill = Impact)) +
       geom_bar(position = "fill", stat = "count", color = "black") +
@@ -125,8 +124,7 @@ create_splice_pattern_plot <- function(psi_tab_file, psi_func_incl_file, psi_fun
     pdf(output_file, width = 6, height = 4)
     print(plot_pattern)
     dev.off()
-    print(plot_pattern)
-    
+
   
 }
 
