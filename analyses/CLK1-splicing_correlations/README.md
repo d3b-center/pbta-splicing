@@ -23,6 +23,7 @@ Input files:
 
 ## Folder content
 * `run_module.sh` shell script to run analysis
+* `00-subset-CLK1-from-rMATs.R` subset rMATs output for CLK1
 * `01-plot_highExon4_vs_lowExon4_and_SBI.R` correlate high vs low levels of overall splicing burden with CLK1 exon 4 inclusion levels
 * `02-plot_splicing_vs_expr.R` correlate CLK1 exon 4 inclusion levels with RNA expression, including CLK1, SRSF1, SRSF2, SRSF10
 * `03-plot_CLK1-Ex4-splicing_vs_SRSF1-expr.R` correlate CLK1 RNA expression with RNA SRSFs, phospho, and total proteomics across brain tumor types
@@ -32,6 +33,8 @@ Input files:
 
 ## Directory structure
 ```
+.
+├── 00-subset-CLK1-from-rMATs.R
 ├── 01-plot_highExon4_vs_lowExon4_and_SBI.R
 ├── 02-plot_splicing_vs_expr.R
 ├── 03-plot_SR-phosp_vs_CLK1-RNA.R
