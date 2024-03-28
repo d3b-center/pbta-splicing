@@ -21,6 +21,9 @@ echo $rmats_file ;
 
 ## Process rMATS files given histologies file. Keep only HGG midlines samples and storng splicing events
 perl 01-extract_recurrent_splicing_events_hgg.pl $input_file $rmats_file $primary_specimens SE
+perl 01-extract_recurrent_splicing_events_hgg.pl $input_file $rmats_file $primary_specimens SE "Other high-grade glioma"
+perl 01-extract_recurrent_splicing_events_hgg.pl $input_file $rmats_file $primary_specimens SE "DMG"
+
 echo "bedtools intersect...";
 bash 02-run_bedtools_intersect.sh
 
@@ -37,4 +40,4 @@ Rscript --vanilla 05-plot-splice-patterns.R
 
 ##rm intermediatery files
 rm results/splicing_events.total.*.wo.txt
-rm results/*bed 
+rm results/*bed
