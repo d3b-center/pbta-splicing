@@ -156,7 +156,7 @@ for (goi in names(goi_list)) {
        labs(x = "CLK1 Exon 4 Inclusion (PSI)",
             y = "RSEM expected counts (log2)",
             colour = "Library type") + 
-       stat_cor(method = "spearman", cor.coef.name = "rho",
+       stat_cor(method = "pearson",
                 label.x = 0, label.y = 4, size = 3) +
        ylim(c(7.5, 15)) +
        facet_wrap(~geneSymbol, nrow = 4) + 
@@ -185,7 +185,7 @@ for (goi in names(goi_list)) {
        labs(x = "CLK1 Exon 4 Inclusion (PSI)",
             y = "RSEM expected counts (log2)",
             fill = "Library type") + 
-       stat_cor(method = "spearman", cor.coef.name = "rho",
+       stat_cor(method = "pearson",
                 label.x = 0, label.y = 4, size = 3) +
        ylim(c(NA, 14)) +
        facet_wrap(~geneSymbol, nrow = 5, scales = "free_y") + 
@@ -252,7 +252,7 @@ for (clk in clk_list) {
                     linetype="dashed") +
         labs(x = glue::glue("{clk} RSEM expected counts (log2)"),
              y = "RSEM expected counts (log2)") + 
-        stat_cor(method = "spearman", cor.coef.name = "rho",
+        stat_cor(method = "pearson",
                  label.x = -4, label.y = 15, size = 3) +
         xlim(c(-5,6)) +
         ylim(c(NA, 15.5)) +
@@ -271,7 +271,7 @@ for (clk in clk_list) {
                     linetype="dashed") +
         labs(x = glue::glue("{clk} RSEM expected counts (log2)"),
              y = "RSEM expected counts (log2)") + 
-        stat_cor(method = "spearman", cor.coef.name = "rho",
+        stat_cor(method = "pearson",
                  label.x = 8, label.y = 15, size = 3) +
         xlim(c(NA,12)) +
         ylim(c(NA, 15.5)) +
@@ -290,7 +290,7 @@ for (clk in clk_list) {
                     linetype="dashed") +
         labs(x = glue::glue("{clk} RSEM expected counts (log2)"),
              y = "RSEM expected counts (log2)") + 
-        stat_cor(method = "spearman", cor.coef.name = "rho",
+        stat_cor(method = "pearson",
                  label.x = 8, label.y = 15, size = 3) +
         xlim(c(NA,13)) +
         ylim(c(NA, 15.5)) +
@@ -309,7 +309,7 @@ for (clk in clk_list) {
                     linetype="dashed") +
         labs(x = glue::glue("{clk} RSEM expected counts (log2)"),
              y = "RSEM expected counts (log2)") + 
-        stat_cor(method = "spearman", cor.coef.name = "rho",
+        stat_cor(method = "pearson",
                  label.x = 8, label.y = 15, size = 3) +
         xlim(c(NA,13)) +
         ylim(c(NA, 15.5)) +
