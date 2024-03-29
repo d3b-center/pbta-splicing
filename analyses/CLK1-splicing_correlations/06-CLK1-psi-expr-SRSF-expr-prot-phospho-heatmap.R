@@ -235,31 +235,39 @@ for (subtype in c("DMG", "HGG")) {
   
   ids <- id_list[[subtype]]
   
-  for (feature in rownames(incl_cor_mat)) {
+  for (i in 1:nrow(incl_cor_mat)) {
+    
+    feature <- rownames(incl_cor_mat)[i]
     
     incl_cor_mat[feature, subtype] <- cor.test(mol_df$IncLevel1[mol_df$match_id %in% ids],
                                                unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                               method = "spearman")$estimate
+                                               method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
+                                                               "pearson", "spearman"))$estimate
     
     incl_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(mol_df$IncLevel1[mol_df$match_id %in% ids],
                                                                  unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                                                 method = "spearman")$p.value
+                                                                 method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
+                                                                                 "pearson", "spearman"))$p.value
     
     expr_cor_mat[feature, subtype] <- cor.test(mol_df$CLK1[mol_df$match_id %in% ids],
                                                unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                               method = "spearman")$estimate
+                                               method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
+                                                               "pearson", "spearman"))$estimate
     
     expr_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(mol_df$CLK1[mol_df$match_id %in% ids],
                                                                  unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                                                 method = "spearman")$p.value
+                                                                 method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
+                                                                                 "pearson", "spearman"))$p.value
     
     ex4_expr_cor_mat[feature, subtype] <- cor.test(unlist(mol_df$CLK1_201[mol_df$match_id %in% ids]),
                                                    unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                                   method = "spearman")$estimate
+                                                   method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
+                                                                   "pearson", "spearman"))$estimate
     
     ex4_expr_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(mol_df$CLK1_201[mol_df$match_id %in% ids],
                                                                      unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                                                     method = "spearman")$p.value
+                                                                     method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
+                                                                                     "pearson", "spearman"))$p.value
     
   }
   
