@@ -11,7 +11,6 @@ suppressPackageStartupMessages({
   library("tidyverse")
   library("ggpubr")
   library("vroom")
-  library("data.table")
   library("ComplexHeatmap")
   library("circlize")
   library("stringr")
@@ -121,11 +120,13 @@ srsf_list <- c("SRSF1", "SRSF2", "SRSF3", "SRSF4",
                "SRSF5", "SRSF6", "SRSF7", "SRSF8", "SRSF9",
                "SRSF10", "SRSF11")
 clk_list <- c("CLK1", "CLK2", "CLK3", "CLK4")
+srpk_list <- c("SRPK1", "SRPK2", "SRPK3")
+
 
 # filter cptac proteo and phosphoproteo dfs for clk and srsf genes
 cptac_proteo_df <- cptac_proteo %>%
   dplyr::select(-NP_id) %>%
-  dplyr::filter(GeneSymbol %in% c(clk_list, srsf_list)) %>%
+  dplyr::filter(GeneSymbol %in% c(clk_list, srsf_list, srpk_list)) %>%
   gather(key = "Kids_First_Biospecimen_ID_proteo",
          value = "abundance",
          -GeneSymbol) %>%
@@ -134,7 +135,7 @@ cptac_proteo_df <- cptac_proteo %>%
 # Merge proteomics data frames and calculate z-scores
 proteo_df <- hope_proteo %>%
   dplyr::select(-NP_id) %>%
-  dplyr::filter(GeneSymbol %in% c(clk_list, srsf_list)) %>%
+  dplyr::filter(GeneSymbol %in% c(clk_list, srsf_list, srpk_list)) %>%
   gather(key = "Kids_First_Biospecimen_ID_proteo",
          value = "abundance",
          -GeneSymbol) %>%
@@ -148,7 +149,7 @@ proteo_df <- hope_proteo %>%
 phospho_df <- hope_phospho %>%
   dplyr::select(-NP_id, -Peptide_res_num,
                 -Peptide_sequence) %>%
-  dplyr::filter(GeneSymbol %in% c(clk_list, srsf_list)) %>%
+  dplyr::filter(GeneSymbol %in% c(clk_list, srsf_list, srpk_list)) %>%
   gather(key = "Kids_First_Biospecimen_ID_phospho",
          value = "abundance",
          -GeneSymbol, -Site) %>%
@@ -181,7 +182,7 @@ clk_srsf_proteo_mat <- clk_srsf_proteo_df%>%
 
 # merge CLK1 PSI and CLK and SRSF RNA, protein, and phosphoprotein expression
 mol_df <- rsem_df %>%
-  filter(rownames(.) %in% c(clk_list, srsf_list))  %>%
+  filter(rownames(.) %in% c(clk_list, srsf_list, srpk_list))  %>%
   rownames_to_column("GeneSymbol") %>%
   gather(key = "Kids_First_Biospecimen_ID", value = "Expr", -GeneSymbol) %>%
   dplyr::mutate(logExp = log(Expr, 2)) %>%
