@@ -45,9 +45,9 @@ rsem_counts <- file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds
 clk1_psi_file <- file.path(results_dir, "clk1-exon4-psi-hgg.tsv")
 isoform_file <- file.path(data_dir, "rna-isoform-expression-rsem-tpm.rds")
 
-cptac_proteo_file <- file.path(input_dir, "cptac-protein-imputed-prot-expression-abundance.tsv.gz")
-hope_proteo_file <- file.path(input_dir, "hope-protein-imputed-prot-expression-abundance.tsv.gz")
-hope_phospho_file <- file.path(input_dir, "hope-protein-imputed-phospho-expression-abundance.tsv.gz")
+cptac_proteo_file <- file.path(data_dir, "cptac-protein-imputed-prot-expression-abundance.tsv.gz")
+hope_proteo_file <- file.path(data_dir, "hope-protein-imputed-prot-expression-abundance.tsv.gz")
+hope_phospho_file <- file.path(data_dir, "hope-protein-imputed-phospho-expression-abundance.tsv.gz")
 
 ## read in histology, cohort, and independent specimens file
 hist <- read_tsv(clin_file, guess_max = 10000)
@@ -374,8 +374,8 @@ for (subtype in c("DMG", "HGG")) {
                       linetype="dashed") +
           labs(x = glue::glue("CLK1 RSEM expected counts (log2)"),
                y = "Total protein abundance z-score") + 
-          stat_cor(method = "spearman", label.x = 9,
-                   label.y = 3, size = 3) +
+          stat_cor(method = "spearman", cor.coef.name = "rho",
+                   label.x = 9, label.y = 3, size = 3) +
           facet_wrap(~GeneSymbol, nrow = 4) + 
           theme_Publication()
   
@@ -395,8 +395,8 @@ for (subtype in c("DMG", "HGG")) {
                 linetype="dashed") +
     labs(x = glue::glue("CLK1-201 RSEM expected counts (log2)"),
          y = "Total protein abundance z-score") + 
-    stat_cor(method = "spearman", label.x = 0,
-             label.y = 4, size = 3) +
+    stat_cor(method = "spearman", cor.coef.name = "rho",
+             label.x = 0, label.y = 4, size = 3) +
     facet_wrap(~GeneSymbol, nrow = 4) + 
     theme_Publication()
   
@@ -416,8 +416,8 @@ for (subtype in c("DMG", "HGG")) {
                 linetype="dashed") +
     labs(x = glue::glue("CLK1 RSEM expected counts (log2)"),
          y = "Phospho-protein abundance z-score") + 
-    stat_cor(method = "spearman", label.x = 9,
-             label.y = 3, size = 3) +
+    stat_cor(method = "spearman", cor.coef.name = "rho",
+             label.x = 9, label.y = 3, size = 3) +
     facet_wrap(~gene_site, nrow = 6) + 
     theme_Publication()
   
@@ -437,13 +437,13 @@ for (subtype in c("DMG", "HGG")) {
                 linetype="dashed") +
     labs(x = glue::glue("CLK1-201 RSEM expected counts (log2)"),
          y = "Phospho-protein abundance z-score") + 
-    stat_cor(method = "spearman", label.x = 9,
-             label.y = 3, size = 3) +
+    stat_cor(method = "spearman", cor.coef.name = "rho",
+             label.x = 0, label.y = 4, size = 3) +
     facet_wrap(~gene_site, nrow = 6) + 
     theme_Publication()
   
   pdf(file.path(paste(plots_dir, "/", "CLK1_SRSF_phospho_vs_CLK1_201_exp_", subtype, ".pdf", sep = "")), width = 14, height = 14)
-  print(p_phospho)
+  print(p_201_phospho)
   dev.off()
   
 }
