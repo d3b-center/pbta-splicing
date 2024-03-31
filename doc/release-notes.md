@@ -13,11 +13,14 @@ Additional files:
 - `rna-isoform-expression-rsem-tpm.rds` added, but subsetted for PBTA samples
 - `gene-counts-rsem-expected_count-collapsed.rds` subsetted for PBTA samples
 - `gene-expression-rsem-tpm-collapsed.rds` subsetted for PBTA samples
+- `GTEx_Analysis_2017-06-05_v8_RSEMv1.3.0_transcript_tpm.gct.gz` from GTEX portal
+- `control-rna-isoform-expression-rsem-counts-tpm.rds` GENCODE v39 processed controls 
 
 v8
 .
 ├── CLK1-CRISPR-DepMap-score.csv
 ├── clk1-splice-events-rmats.tsv
+├── control-rna-isoform-expression-rsem-counts-tpm.rds
 ├── OmicsDefaultModelProfiles.csv
 ├── OmicsExpressionTranscriptsTPMLogp1Profile.csv
 ├── consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz
@@ -31,6 +34,7 @@ v8
 ├── gbm-protein-imputed-prot-expression-abundance.tsv.gz
 ├── gene-counts-rsem-expected_count-collapsed.rds
 ├── gene-expression-rsem-tpm-collapsed.rds
+├── GTEx_Analysis_2017-06-05_v8_RSEMv1.3.0_transcript_tpm.gct.gz
 ├── histologies-plot-group.tsv
 ├── histologies.tsv
 ├── hope-protein-imputed-phospho-expression-abundance.tsv.gz
