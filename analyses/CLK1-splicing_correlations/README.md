@@ -35,6 +35,7 @@ Input files:
 * `04-CLK1_PSI_plots.R` generates stacked barplot of relative inclusion/skipping of exon 4 across midline HGG tumors with differential splicing in CLK1.
 * `05-CLK-SRSF-expr-correlations.R` generates scatter plots of CLK and SRSF transcript abundance vs. CLK1 exon 4 PSI and transcript abundance
 * `06-CLK1-psi-expr-SRSF-expr-prot-phospho-heatmap.R` generates summary heatmap of spearman correlation coefficients between CLK1 PSI and transcript abundance against CLK and SRSF RNA, total protein, and phosphoprotein expression
+* `07-plot-clk1ex4-hgg-normals.R` plots CLK1 exon 4 transcript expression for HGGs, GTEX normals, fetal brain, and TGEN pediatric normals.
 
 ## Directory structure
 ```
@@ -46,6 +47,7 @@ Input files:
 ├── 04-CLK1_PSI_plots.R
 ├── 05-CLK-SRSF-expr-correlations.R
 ├── 06-CLK1-psi-expr-SRSF-expr-prot-phospho-heatmap.R
+├── 07-plot-clk1ex4-hgg-normals.R
 ├── README.md
 ├── input
 │   └── CPTAC3-pbt.xls
@@ -82,6 +84,7 @@ Input files:
 │   ├── CLK_exp_vs_CLK1_psi_all_hgg.pdf
 │   ├── CLK_exp_vs_CLK1_psi_midline_hgg.pdf
 │   ├── CLK_exp_vs_CLK1_psi_other_hgg.pdf
+│   ├── CLK1ex4-hgg-normals.pdf
 │   ├── SRPK_exp_vs_CLK1_psi_all_hgg.pdf
 │   ├── SRPK_exp_vs_CLK1_psi_midline_hgg.pdf
 │   ├── SRPK_exp_vs_CLK1_psi_other_hgg.pdf
