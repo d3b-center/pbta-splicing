@@ -8,7 +8,6 @@
 ## load libraries
 suppressPackageStartupMessages({
   library("ggplot2")
-  library("dplyr")
   library("tidyverse")
   library("ggpubr")
   library("vroom")
@@ -35,7 +34,7 @@ source(file.path(analysis_dir, "util", "function-create-scatter-plot.R"))
 
 ## define input files
 clin_file <- file.path(data_dir,"histologies.tsv")
-file_gene_counts <- file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds")
+rsem_counts <- file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds")
 rmats_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
 
 ## read in histology file and count data
@@ -47,22 +46,24 @@ all_hgg_bsids <- read_tsv(clin_file, guess_max = 10000) %>%
   select(Kids_First_Biospecimen_ID, CNS_region)
 
 # keep only hgg ids
-count_df <- readRDS(file_gene_counts) %>%
+rsem_df <- readRDS(rsem_counts) %>%
   select(all_hgg_bsids$Kids_First_Biospecimen_ID)
 
 ## load rmats input for CLK1
 clk1_rmats <- fread(rmats_file) %>%
   # filter for CLK1 and exon 4
-  filter(geneSymbol=="CLK1",
+  filter(sample_id %in% all_hgg_bsids$Kids_First_Biospecimen_ID,
+         geneSymbol=="CLK1",
          exonStart_0base=="200860124", 
          exonEnd=="200860215") %>% 
   # select minimal info
-  select(sample_id, IncLevel1) 
+  select(sample_id, IncLevel1) %>%
+  unique()
 
 set.seed(2023)
 
 ## combine RNA with psi values for scatter plot/correlation for goi 
-goi_list <- c("CLK1", "SRSF1")
+goi_list <- c("CLK1", "SRSF1", "SRSF2", "SRSF10")
 region_list <- c("midline", "all")
 
 for (gene in goi_list) {
@@ -85,8 +86,8 @@ for (gene in goi_list) {
     # filter for bs ids of interest and CLK1 and exon 4
     filter(sample_id %in% bs_id_list)
     
-  # filter count data
-    rmats_exp_df <- count_df %>%
+  # filter count data. 
+    rmats_exp_df <- rsem_df %>%
       filter(rownames(.) == gene)  %>% 
       select(all_of(bs_id_list)) %>% 
       pivot_longer(cols = tidyselect::everything(),

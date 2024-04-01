@@ -1,0 +1,398 @@
+---
+title: "Assess survival in patients with HGG by CLK1 status"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Ryan Corbett, Jo Lynne Rokita
+date: 2023
+params:
+  plot_ci: TRUE
+---
+
+**Purpose:** 
+
+- Generate survival models with CLK1 status (high vs. low) as covariate
+- Plot survival by CLK1 status
+
+## Setup
+
+#### Packages and functions
+
+load libraries and set directories
+
+```{r Set up library}
+library(survival)
+library(ggpubr)
+library(tidyverse)
+library('data.table')
+library(patchwork)
+
+# Set directories
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses", "survival")
+results_dir <- file.path(analysis_dir, "results")
+plot_dir <- file.path(analysis_dir, "plots")
+
+# Load survival functions
+source(file.path(analysis_dir, "util", "survival_models.R"))
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+Set file paths
+
+```{r}
+histologies_file <- file.path(results_dir, "splicing_indices_with_survival.tsv")
+
+diff_psi_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
+```
+
+Load histologies and subset for HGG and DMG
+
+```{r}
+hgg_hist <- read_tsv(histologies_file) %>%
+  dplyr::filter(Histology %in% c("DIPG or DMG", "Other high-grade glioma")) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, mol_sub_group,
+                OS_days, OS_years, OS_status,
+                EFS_days, EFS_years, EFS_status)
+```
+
+Load rMATs file and subset for CLK1 exon 4 PSI values
+
+```{r}
+splice_CLK1_df <-  fread(diff_psi_file) %>%
+   dplyr::filter(geneSymbol=="CLK1",
+                 exonStart_0base=="200860124", exonEnd=="200860215") %>%
+  dplyr::rename('Kids_First_Biospecimen_ID'=sample_id,
+                PSI = IncLevel1) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, PSI)
+
+# join PSI value to hgg_hist
+hgg_hist <- hgg_hist %>%
+  left_join(splice_CLK1_df)
+```
+
+Calculate CLK1 quantiles and define samples as Low, Medium, High
+
+```{r}
+quantiles_clk1 <- quantile(hgg_hist$PSI, probs=c(.25, .75), na.rm = TRUE)
+lower_sbi <- quantiles_clk1[1]
+upper_sbi <- quantiles_clk1[2]
+
+hgg_hist <- hgg_hist %>%
+  mutate(clk1_status = case_when(PSI > upper_sbi ~ "CLK1 exon 4 High",
+                                 PSI < lower_sbi ~ "CLK1 exon 4 Low",
+                                 TRUE ~ "Middle"))
+```
+
+Create survival df with only high & low CLK1 status, and relevel mol subgroups
+
+```{r}
+survival_df <- hgg_hist %>%
+  dplyr::filter(clk1_status %in% c("CLK1 exon 4 High", "CLK1 exon 4 Low")) %>%
+  dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group,
+                                            c("HGG, H3 wildtype", "HGG, H3 wildtype, TP53",
+                                              "DHG, H3 G35", "DHG, H3 G35, TP53",
+                                              "DMG, H3 K28", "DMG, H3 K28, TP53",
+                                              "HGG, IDH, TP53", "HGG, PXA",
+                                              "HGG, PXA, TP53", "IHG, NTRK-altered",
+                                              "IHG, ROS1-altered")))
+```
+
+Generate KM models wiht `clk1_status` as variable
+
+```{r}
+kap_os <- survival_analysis(
+  metadata  = survival_df,
+  ind_var = "clk1_status",
+  test = "kap.meier",
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  days_col = "OS_days",
+  status_col = "OS_status"
+)
+
+readr::write_rds(kap_os, file.path(results_dir,
+                                   "logrank_HGG_OS_CLK1_status.RDS"))
+
+kap_efs <- survival_analysis(
+  metadata  = survival_df,
+  ind_var = "clk1_status",
+  test = "kap.meier",
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  days_col = "EFS_days",
+  status_col = "EFS_status"
+)
+
+readr::write_rds(kap_efs, file.path(results_dir,
+                                    "logrank_HGG_EFS_CLK1_status.RDS"))
+```
+
+Create KM plot
+
+```{r}
+km_plot <- plotKM(model = list(kap_os, kap_efs),
+                  variable = "clk1_status",
+                  combined = T, 
+                  title = "")
+              
+ggsave(file.path(plot_dir, "km_HGG_DMG_OS_EFS_CLK1_status.pdf"), km_plot,
+       width = 10, height = 6, units = "in",
+       device = "pdf")
+```
+
+### Generate cox proportional hazards models 
+
+Interaction model OS:
+
+```{r}
+int_os_surv_result <- file.path(results_dir, 
+                     "cox_HGG_OS_interaction_terms_subtype_clk1_status.RDS")
+
+int_model_os <- fit_save_model(survival_df,
+                               terms = "mol_sub_group*clk1_status",
+                               int_os_surv_result,
+                               "multivariate",
+                               years_col = "OS_years",
+                               status_col = "OS_status"
+                              )
+
+int_os_forest_plot <- plotForest(readRDS(int_os_surv_result))
+
+ggsave(file.path(plot_dir, "forest_HGG_DMG_OS_int_subtype_clk1_status.pdf"), 
+       int_os_forest_plot, width = 12, height = 3)
+```
+
+OS additive model: 
+
+```{r}
+add_os_surv_result <- file.path(results_dir, 
+                     "cox_HGG_OS_additive_terms_subtype_clk1_status.RDS")
+
+add_model_os <- fit_save_model(survival_df,
+                               terms = "mol_sub_group+clk1_status",
+                               add_os_surv_result,
+                               "multivariate",
+                               years_col = "OS_years",
+                               status_col = "OS_status"
+                              )
+
+add_os_forest_plot <- plotForest(readRDS(add_os_surv_result))
+
+ggsave(file.path(plot_dir, "forest_HGG_DMG_OS_add_subtype_clk1_status.pdf"), 
+       add_os_forest_plot, width = 7.5, height = 3)
+```
+
+EFS interaction model:
+
+```{r}
+int_efs_surv_result <- file.path(results_dir, 
+                     "cox_HGG_EFS_interaction_terms_subtype_clk1_status.RDS")
+
+int_model_efs <- fit_save_model(survival_df,
+                               terms = "mol_sub_group*clk1_status",
+                               int_efs_surv_result,
+                               "multivariate",
+                               years_col = "EFS_years",
+                               status_col = "EFS_status"
+                              )
+
+int_efs_forest_plot <- plotForest(readRDS(int_efs_surv_result))
+
+ggsave(file.path(plot_dir, "forest_HGG_DMG_EFS_int_subtype_clk1_status.pdf"), 
+       int_efs_forest_plot, width = 12, height = 4)
+```
+
+EFS additive model: 
+
+```{r}
+add_efs_surv_result <- file.path(results_dir, 
+                     "cox_HGG_EFS_additive_terms_subtype_clk1_status.RDS")
+
+add_model_efs <- fit_save_model(survival_df,
+                               terms = "mol_sub_group+clk1_status",
+                               add_efs_surv_result,
+                               "multivariate",
+                               years_col = "EFS_years",
+                               status_col = "EFS_status"
+                              )
+
+add_efs_forest_plot <- plotForest(readRDS(add_efs_surv_result))
+
+ggsave(file.path(plot_dir, "forest_HGG_EFS_add_subtype_clk1_status.pdf"), 
+       add_efs_forest_plot, width = 7.5, height = 3)
+```
+
+There appears to be a subtype x clk1_status interaction effect, such that survival trends may differ in DMG vs. other HGG. 
+
+Create models and plots for DMG separately:
+
+```{r}
+kap_os_dmg <- survival_analysis(
+  metadata  = survival_df[grepl("DMG", survival_df$mol_sub_group),],
+  ind_var = "clk1_status",
+  test = "kap.meier",
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  days_col = "OS_days",
+  status_col = "OS_status"
+)
+
+readr::write_rds(kap_os_dmg, file.path(results_dir,
+                                       "logrank_DMG_OS_CLK1_status.RDS"))
+
+kap_efs_dmg <- survival_analysis(
+  metadata  = survival_df[grepl("DMG", survival_df$mol_sub_group),],
+  ind_var = "clk1_status",
+  test = "kap.meier",
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  days_col = "EFS_days",
+  status_col = "EFS_status"
+)
+
+readr::write_rds(kap_efs_dmg, file.path(results_dir,
+                                        "logrank_DMG_EFS_CLK1_status.RDS"))
+```
+
+Plot KM
+
+```{r}
+km_plot <- plotKM(model = list(kap_os_dmg, kap_efs_dmg),
+                  variable = "clk1_status",
+                  combined = T, 
+                  title = "")
+              
+ggsave(file.path(plot_dir, "km_DMG_OS_EFS_CLK1_status.pdf"), km_plot,
+       width = 10, height = 6, units = "in",
+       device = "pdf")
+```
+
+Generate and plot DMG survival models:
+
+```{r}
+survival_dmg_df <- survival_df %>%
+  dplyr::filter(grepl("DMG", mol_sub_group)) %>%
+  dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group,
+                                            c("DMG, H3 K28",
+                                              "DMG, H3 K28, TP53")))
+
+add_dmg_os_surv_result <- file.path(results_dir, 
+                     "cox_DMG_OS_additive_terms_subtype_clk1_status.RDS")
+
+add_model_os_dmg <- fit_save_model(survival_dmg_df,
+                               terms = "mol_sub_group+clk1_status",
+                               add_dmg_os_surv_result,
+                               "multivariate",
+                               years_col = "OS_years",
+                               status_col = "OS_status"
+                              )
+
+add_os_dmg_forest_plot <- plotForest(readRDS(add_dmg_os_surv_result))
+
+ggsave(file.path(plot_dir, "forest_DMG_OS_add_subtype_clk1_status.pdf"), 
+       add_os_dmg_forest_plot, width = 7.5, height = 3)
+```
+
+```{r}
+add_dmg_efs_surv_result <- file.path(results_dir, 
+                     "cox_DMG_EFS_additive_terms_subtype_clk1_status.RDS")
+
+add_model_efs_dmg <- fit_save_model(survival_dmg_df,
+                               terms = "mol_sub_group+clk1_status",
+                               add_dmg_efs_surv_result,
+                               "multivariate",
+                               years_col = "EFS_years",
+                               status_col = "EFS_status"
+                              )
+
+add_efs_dmg_forest_plot <- plotForest(readRDS(add_dmg_efs_surv_result))
+
+ggsave(file.path(plot_dir, "forest_DMG_EFS_add_subtype_clk1_status.pdf"), 
+       add_efs_dmg_forest_plot, width = 7.5, height = 3)
+```
+
+Generate and plot models for HGG separately: 
+
+```{r}
+kap_os_hgg <- survival_analysis(
+  metadata  = survival_df[!grepl("DMG", survival_df$mol_sub_group),],
+  ind_var = "clk1_status",
+  test = "kap.meier",
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  days_col = "OS_days",
+  status_col = "OS_status"
+)
+
+readr::write_rds(kap_os_hgg, file.path(results_dir,
+                                       "logrank_HGG_OS_CLK1_status.RDS"))
+
+kap_efs_hgg <- survival_analysis(
+  metadata  = survival_df[!grepl("DMG", survival_df$mol_sub_group),],
+  ind_var = "clk1_status",
+  test = "kap.meier",
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  days_col = "EFS_days",
+  status_col = "EFS_status"
+)
+
+readr::write_rds(kap_efs_hgg, file.path(results_dir,
+                                        "logrank_HGG_EFS_CLK1_status.RDS"))
+```
+
+Plot KM 
+
+```{r}
+km_plot <- plotKM(model = list(kap_os_hgg, kap_efs_hgg),
+                  variable = "clk1_status",
+                  combined = T, 
+                  title = "")
+              
+ggsave(file.path(plot_dir, "km_HGG_OS_EFS_CLK1_status.pdf"), km_plot,
+       width = 10, height = 6, units = "in",
+       device = "pdf")
+```
+
+Generate and plot coxph models in HGG:  
+
+```{r}
+add_hgg_os_surv_result <- file.path(results_dir, 
+                     "cox_HGG_OS_additive_terms_subtype_clk1_status.RDS")
+
+add_model_os_hgg <- fit_save_model(survival_df[!grepl("DMG", survival_df$mol_sub_group),],
+                               terms = "mol_sub_group+clk1_status",
+                               add_hgg_os_surv_result,
+                               "multivariate",
+                               years_col = "OS_years",
+                               status_col = "OS_status"
+                              )
+
+add_os_hgg_forest_plot <- plotForest(readRDS(add_hgg_os_surv_result))
+
+ggsave(file.path(plot_dir, "forest_HGG_OS_add_subtype_clk1_status.pdf"), 
+       add_os_hgg_forest_plot, width = 7.5, height = 3)
+```
+
+```{r}
+add_hgg_efs_surv_result <- file.path(results_dir, 
+                     "cox_HGG_EFS_additive_terms_subtype_clk1_status.RDS")
+
+add_model_efs_hgg <- fit_save_model(survival_df[!grepl("DMG", survival_df$mol_sub_group),],
+                               terms = "mol_sub_group+clk1_status",
+                               add_hgg_efs_surv_result,
+                               "multivariate",
+                               years_col = "EFS_years",
+                               status_col = "EFS_status"
+                              )
+
+add_efs_hgg_forest_plot <- plotForest(readRDS(add_hgg_efs_surv_result))
+
+ggsave(file.path(plot_dir, "forest_HGG_EFS_add_subtype_clk1_status.pdf"), 
+       add_efs_hgg_forest_plot, width = 7.5, height = 3)
+```
+
+Print session info
+
+```{r}
+sessionInfo()
+```
