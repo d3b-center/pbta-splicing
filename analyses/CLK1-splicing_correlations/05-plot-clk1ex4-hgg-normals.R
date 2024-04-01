@@ -86,7 +86,8 @@ gtex_clk1ex4_counts <- fread(gtex_trans_tpm_file, skip = 2) %>%
   dplyr::mutate(plot_group = gsub("Brain - ", "", plot_group))
 
 control_counts <- readRDS(control_tpm_file) %>%
-  filter(transcript_id == "ENST00000321356.9_CLK1-201") %>%
+  filter(transcript_id == "ENST00000321356.9_CLK1-201",
+         sample_id != "BM") %>%
   dplyr::mutate(plot_group = gsub("_", " ", sample_id)) %>%
   dplyr::rename(ENST00000321356 = TPM) %>%
   select(ENST00000321356, plot_group) %>%
@@ -134,9 +135,6 @@ legend_colors <- c("DIPG or DMG" = "#ff40d9",
                    "Other high-grade glioma" = "#ffccf5", 
                    "GTEx Brain" = "gray93", 
                    "Pediatric Brain" = "lightskyblue1")
-
-# Plot configuration
-title_grob <- textGrob("Tissue", gp = gpar(fontface = "bold", fontsize = 12))
 
 # Manual legend creation
 legend_grob <- grid::grid.legend(draw = TRUE, labels = c("Tissue", "DIPG or DMG", "Other high-grade glioma", "GTEx Brain", "Pediatric Brain"),
