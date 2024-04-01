@@ -1,9 +1,9 @@
-# 08-plot_total-splicing-cases.R
+# 09-plot_total-splicing-cases.R
 # written by Ammar Naqvi
 #
 # This script plots total splicing cases comparing treated vs ctrl
 #
-# usage: Rscript 04-plot_total-splicing-cases.R
+# usage: Rscript 09-plot_total-splicing-cases.R
 ################################################################################
 
 suppressPackageStartupMessages({
@@ -20,6 +20,7 @@ suppressPackageStartupMessages({
 
 ##directory setup
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing-impact-morpholino")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir <- file.path(analysis_dir, "plots")
