@@ -40,7 +40,7 @@ rmats_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
 
 ## output file
 plot_high_low_CLK1_file <- file.path(plots_dir,"high-low-CLK1_NF1.pdf")
-plot_high_low_NF1_file <- file.path(plots_dir,"high-low-CLK1_CLK1.pdf")
+plot_high_low_NF1_file <- file.path(plots_dir,"high-low-NF1_CLK1.pdf")
 plot_scatter_file <- file.path(plots_dir,"scatter-CLK1-NF1-PSI.pdf")
 
 ## get CLK1 psi values in tumors and ctrls
@@ -248,7 +248,7 @@ scatterplot_included <- ggscatter(expr_psi_df_log,
                                            fill = "pink"),
                          ticks = TRUE) + 
   xlab(expression(bold(bolditalic("CLK1")~"Exon 4 Inclusion (PSI)"))) +
-  ylab(substitute(bold(bolditalic(var_name)~"RSEM expected counts (log2)"), list(var_name = goi))) +
+  ylab(substitute(bold("23a Included Transcript (RSEM)"))) +
   theme_Publication()  
 
 # save plot 
