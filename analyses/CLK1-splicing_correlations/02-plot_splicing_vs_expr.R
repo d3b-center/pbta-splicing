@@ -81,12 +81,12 @@ for (gene in goi_list) {
         pull(Kids_First_Biospecimen_ID)
     }
     
-  # filter RMATs file for the bs ids of interest
+    # filter RMATs file for the bs ids of interest
     rmats_df <- clk1_rmats %>%
-    # filter for bs ids of interest and CLK1 and exon 4
-    filter(sample_id %in% bs_id_list)
+      # filter for bs ids of interest and CLK1 and exon 4
+      filter(sample_id %in% bs_id_list)
     
-  # filter count data. 
+    # filter count data. 
     rmats_exp_df <- rsem_df %>%
       filter(rownames(.) == gene)  %>% 
       select(all_of(bs_id_list)) %>% 
@@ -97,7 +97,7 @@ for (gene in goi_list) {
       # need to add this so that we can use this in the plot axis
       mutate(geneSymbol = paste0(gene))
     
-  # make scatterplot
+    # make scatterplot
     p <- create_scatterplot(rmats_exp_df) 
     # save plot 
     pdf(file.path(paste(plots_dir, "/", gene, "_exp_vs_CLK1_psi_", brain_region, "_hgg.pdf", sep = "")), width = 4.5, height = 4.5)
