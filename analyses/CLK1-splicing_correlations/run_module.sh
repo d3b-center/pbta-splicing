@@ -1,3 +1,6 @@
+## subset rMATs for CLK1
+Rscript --vanilla 00-subset-CLK1-from-rMATs.R
+
 ## plot HGGs with high vs low exon 4
 Rscript --vanilla 01-plot_highExon4_vs_lowExon4_and_SBI.R
 
