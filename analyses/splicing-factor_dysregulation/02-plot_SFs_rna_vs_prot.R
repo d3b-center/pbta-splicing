@@ -57,7 +57,9 @@ cptac_data <- readxl::read_excel(cptac_output_file) %>%
                                   Assay == "Whole Cell Proteomics" ~ paste(`Gene symbol`, " ", sep = " "),
                                   TRUE ~ `Gene symbol`)
   ) %>%
-  dplyr::select(display_name, Assay, starts_with("7316"))
+  dplyr::select(display_name, Assay, starts_with("7316")) %>%
+  # remove NAs
+  select_if(~ !any(is.na(.)))
 
 # preserve gene names for rownames
 rownames <- cptac_data$display_name
@@ -77,10 +79,6 @@ rownames(mat) <- rownames
 row_annot <- cptac_data %>%
   dplyr::select(Assay) %>%
   as.data.frame()
-
-# add rownames
-#rownames(row_annot) <- rownames(mat)
-
 
 # create anno colors
 anno_col <- list(Assay = c("RNA-Seq" = "#DC3220", "Whole Cell Proteomics" = "#40B0A6"))

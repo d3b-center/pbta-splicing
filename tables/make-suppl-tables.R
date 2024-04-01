@@ -11,6 +11,8 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses")
 table_dir <- file.path(root_dir, "tables")
 data_dir <- file.path(root_dir, "data")
+input_dir <- file.path(table_dir, "input")
+
 
 # output directory for supplementary tables
 supp_tables_dir <- file.path(table_dir, "output")
@@ -22,6 +24,7 @@ if(!dir.exists(supp_tables_dir)){
 histology_file <- file.path(data_dir, "histologies.tsv")
 histology_ei_splice_events <- file.path(analysis_dir, "histology-specific-splicing", "results", "unique_events-ei.tsv")
 histology_es_splice_events <- file.path(analysis_dir, "histology-specific-splicing", "results", "unique_events-es.tsv")
+optimal_cluster_tsv <- file.path(analysis_dir, "clustering_analysis", "output", "optimal_clustering", "lspline_output.tsv")
 cluster_membership <- file.path(analysis_dir, "clustering_analysis", "output", "cluster_members_by_cancer_group_subtype.tsv")
 CNS_match_json <- file.path(table_dir, "input", "CNS_primary_site_match.json")
 deseq2_sf_file <- file.path(analysis_dir, "splicing-factor_dysregulation", "results", "diffSFs_sig_genes.txt")
@@ -30,6 +33,8 @@ func_sites_ei_file <- file.path(analysis_dir, "splicing_events_functional_sites"
 kinase_func_sites_file <- file.path(analysis_dir, "splicing_events_functional_sites", "results", "kinases-functional_sites.tsv")
 deseq2_morph_file <- file.path(root_dir,"analyses/CLK1-splicing-impact-morpholino","results","ctrl_vs_treated.de.tsv")
 rmats_tsv_file <- file.path(data_dir,"ctrl-vs-morpholino-merged-rmats.tsv")
+func_sites_morpho_tsv_file <- file.path(analysis_dir,"CLK1-splicing-impact-morpholino","results","splicing_events.morpho.intersectUnip.ggplot.txt")
+primers_file <-  file.path(input_dir,"primers.tsv")
 
 # define suppl output files and sheet names, when appropriate
 table_s1_file <- file.path(supp_tables_dir, "TableS1-histologies.xlsx")
@@ -133,12 +138,34 @@ ei_events_df <- vroom(histology_ei_splice_events)
 ## sheet 2, exon inclusion splicing
 es_events_df <- vroom(histology_es_splice_events)
 
-## sheet 3, cluster membership
+## sheet 3, optimal clustering output/lspline
+opt_cluster_df <- read_tsv(optimal_cluster_tsv)
+
+# subset columns used for scoring methods
+opt_cluster_df <- opt_cluster_df %>%
+  dplyr::select(algorithm,
+                distance,
+                feature_selection,
+                k,
+                stretch,
+                delta_auc,
+                p_val,
+                average.between,
+                average.within,
+                within.cluster.ss,
+                dunn,
+                entropy,
+                avg_sil,
+                cluster_qual,
+                rank)
+    
+## sheet 4, cluster membership
 cluster_membership_df <- read_tsv(cluster_membership)
 
 # Combine and output
 list_s2_table <- list(exon_inclusion = ei_events_df,
                       exon_skipping = es_events_df,
+                      opt_cluster = opt_cluster_df,
                       clust_memb = cluster_membership_df)
 
 write.xlsx(list_s2_table,
@@ -192,10 +219,13 @@ deseq2_morpholino_df <- vroom(deseq2_morph_file) %>%
                 padj)
   
 rmats_df <-  vroom(rmats_tsv_file)
-
+ds_func_df <- vroom(func_sites_morpho_tsv_file)
+primers_df <- vroom(primers_file, delim = "\t")
 
 list_s5_table <- list(deseq2_morp = deseq2_morpholino_df,
-                      rmats = rmats_df)
+                      rmats = rmats_df,
+                      func_sites = ds_func_df,
+                      primers = primers_df)
 
 write.xlsx(list_s5_table,
            table_s5_file,
