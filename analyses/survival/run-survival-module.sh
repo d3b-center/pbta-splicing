@@ -12,3 +12,6 @@ Rscript -e "rmarkdown::render('03-run-survival-SI.Rmd')"
 
 # run plot-survival script
 Rscript 04-plot-survival.R
+
+# run HGG survival by CLK1 status
+Rscript -e "rmarkdown::render('05-survival-hgg-clk1-status.Rmd')"
