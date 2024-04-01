@@ -34,8 +34,8 @@ source(file.path(analysis_dir, "util", "function-create-scatter-plot.R"))
 
 ## define input files
 clin_file <- file.path(data_dir,"histologies.tsv")
-rsem_counts <- file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds")
-rmats_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
+rsem_counts <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
+rmats_file <- file.path(data_dir, "clk1-splice-events-rmats.tsv")
 
 ## read in histology file and count data
 ## filter histology file for all HGG, only stranded samples
