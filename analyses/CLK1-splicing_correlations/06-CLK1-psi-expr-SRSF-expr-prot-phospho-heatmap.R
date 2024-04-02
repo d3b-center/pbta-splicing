@@ -120,7 +120,7 @@ srpk_list <- c("SRPK1", "SRPK2", "SRPK3")
 # filter cptac proteo and phosphoproteo dfs for clk and srsf genes
 cptac_proteo_df <- cptac_proteo %>%
   dplyr::select(-NP_id) %>%
-  dplyr::filter(GeneSymbol %in% c(clk_list, srsf_list, srpk_list)) %>%
+  dplyr::filter(GeneSymbol %in% c(srsf_list, srpk_list)) %>%
   gather(key = "Kids_First_Biospecimen_ID_proteo",
          value = "abundance",
          -GeneSymbol) %>%
@@ -129,7 +129,7 @@ cptac_proteo_df <- cptac_proteo %>%
 # Merge proteomics data frames and calculate z-scores
 proteo_df <- hope_proteo %>%
   dplyr::select(-NP_id) %>%
-  dplyr::filter(GeneSymbol %in% c(clk_list, srsf_list, srpk_list)) %>%
+  dplyr::filter(GeneSymbol %in% c(srsf_list, srpk_list)) %>%
   gather(key = "Kids_First_Biospecimen_ID_proteo",
          value = "abundance",
          -GeneSymbol) %>%
@@ -143,7 +143,7 @@ proteo_df <- hope_proteo %>%
 phospho_df <- hope_phospho %>%
   dplyr::select(-NP_id, -Peptide_res_num,
                 -Peptide_sequence) %>%
-  dplyr::filter(GeneSymbol %in% c(clk_list, srsf_list, srpk_list)) %>%
+  dplyr::filter(GeneSymbol %in% c(srsf_list, srpk_list)) %>%
   gather(key = "Kids_First_Biospecimen_ID_phospho",
          value = "abundance",
          -GeneSymbol, -Site) %>%
@@ -280,9 +280,9 @@ row_annot <- expr_cor_mat %>%
 rownames(row_annot) <- rownames(expr_cor_mat)
 
 # rename cor mat colnames for plotting
-colnames(incl_cor_mat)[1:2] <- c("DIPG\nor DMG", "Other\nHGG")
-colnames(expr_cor_mat)[1:2]  <- c("DIPG\nor DMG", "Other\nHGG")
-colnames(ex4_expr_cor_mat)[1:2]  <- c("DIPG\nor DMG", "Other\nHGG")
+colnames(incl_cor_mat)[1:2] <- c("DIPG or DMG", "Other HGG")
+colnames(expr_cor_mat)[1:2]  <- c("DIPG or DMG", "Other HGG")
+colnames(ex4_expr_cor_mat)[1:2]  <- c("DIPG or DMG", "Other HGG")
 
 # create Heatmap row annotation for feature type
 anno_col <- list(Feature = c("RNA log2Exp" = "#DC3220", "Total Protein z-score" = "#005AB5", "Phospho-Protein z-score" = "#40B0A6"))
@@ -297,62 +297,71 @@ ex4_expr_pval_mat <- ifelse(ex4_expr_cor_mat[,3:4] < 0.05, "*", "")
 
 # create CLK1 ex4 psi correlation heatmap
 incl_ht <- Heatmap(incl_cor_mat[,1:2],
+                   width = unit(13, "mm"),
                    name = "Correlation Coefficient",
                    col = colorRamp2(c(-1, 0, 1), c("#E66100", "white", "#5D3A9B")),
                    cluster_rows = FALSE,
                    row_split = row_annot$Feature,
                    column_gap = 0.5,
                    show_row_names = TRUE,
+                   column_names_rot = 75,
                    show_heatmap_legend=TRUE,
                    cluster_columns = FALSE,
-                   right_annotation = row_anno,
+                  # right_annotation = row_anno,
                    row_title = NULL,
-                   column_title = "CLK1 Exon4 PSI",
+                   column_title = "CLK1\n Exon4 PSI",
                    column_title_side = "top",
-                   cell_fun = function(j, i, x, y, width, height, fill) {
-                     grid.text(sprintf("%s", incl_pval_mat[i, j]), x, y, gp = gpar(fontsize = 14))
+                  column_title_rot = 75,
+                  cell_fun = function(j, i, x, y, width, height, fill) {
+                     grid.text(sprintf("%s", incl_pval_mat[i, j]), x, y, gp = gpar(fontsize = 12))
                    })
 
 # create CLK1 expression correlation heatmap
 expr_ht <- Heatmap(expr_cor_mat[,1:2],
+                   width = unit(13, "mm"),
                    name = "Correlation Coefficient",
                    col = colorRamp2(c(-1, 0, 1), c("#E66100", "white", "#5D3A9B")),
                    cluster_rows = FALSE,
                    row_split = row_annot$Feature,
                    column_gap = 0.5,
                    show_row_names = TRUE,
+                   column_names_rot = 75,
                    show_heatmap_legend=TRUE,
                    cluster_columns = FALSE,
                    right_annotation = row_anno,
                    row_title = NULL,
-                   column_title = "CLK1 log2Expr",
+                   column_title = "CLK1\n log2Expr",
                    column_title_side = "top",
+                   column_title_rot = 75,
                    cell_fun = function(j, i, x, y, width, height, fill) {
-                     grid.text(sprintf("%s", expr_pval_mat[i, j]), x, y, gp = gpar(fontsize = 14))
+                     grid.text(sprintf("%s", expr_pval_mat[i, j]), x, y, gp = gpar(fontsize = 12))
                    })
 
 # create CLK1 expression correlation heatmap
 ex4_expr_ht <- Heatmap(ex4_expr_cor_mat[,1:2],
+                       width = unit(13, "mm"),
                        name = "Correlation Coefficient",
                        col = colorRamp2(c(-1, 0, 1), c("#E66100", "white", "#5D3A9B")),
                        cluster_rows = FALSE,
                        row_split = row_annot$Feature,
                        column_gap = 0.5,
                        show_row_names = TRUE,
+                       column_names_rot = 75,
                        #  show_column_names = TRUE,
                        show_heatmap_legend=TRUE,
                        cluster_columns = FALSE,
-                       right_annotation = row_anno,
+                       # right_annotation = row_anno,
                        row_title = NULL,
-                       column_title = "CLK1-201 log2Expr",
+                       column_title = "CLK1-201\n log2Expr",
                        column_title_side = "top",
+                       column_title_rot = 75,
                        na_col = "gray",
                        cell_fun = function(j, i, x, y, width, height, fill) {
-                         grid.text(sprintf("%s", ex4_expr_pval_mat[i, j]), x, y, gp = gpar(fontsize = 14))
+                         grid.text(sprintf("%s", ex4_expr_pval_mat[i, j]), x, y, gp = gpar(fontsize = 12))
                        })
 
 # save merged plot
-pdf(file.path(plots_dir, "CLK1-psi-expr-correlation-heatmap.pdf"), width = 10, height = 12)
+pdf(file.path(plots_dir, "CLK1-psi-expr-correlation-heatmap.pdf"), width = 7, height = 13)
 print(incl_ht + ex4_expr_ht + expr_ht)
 dev.off()
 
