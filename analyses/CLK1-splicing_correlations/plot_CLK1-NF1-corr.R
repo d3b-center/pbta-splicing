@@ -271,7 +271,7 @@ NF1_morpho_incl_exon_df <- rsem_ENST0000047157_df %>%
                values_to="Expr") %>%
   inner_join(NF1_included_exon, by= "sample_id", suffix = c("_morpho","_ex23a" )) %>%
   # need to add this so that we can use this in the plot axis
-  mutate(transcript = paste0(gene)) %>%
+  #mutate(transcript = paste0(gene)) %>%
   dplyr::filter(Expr_morpho > 1,
                 Expr_ex23a > 1)
 
@@ -286,7 +286,7 @@ scatterplot_morpho_vs_incl <- ggscatter(NF1_morpho_incl_exon_df,
                                                     fill = "pink"),
                                   ticks = TRUE) + 
   xlab(expression(bold("Morpholino Transcript (RSEM)"))) +
-  ylab(substitute(bold("23a Included Transcript (RSEM)"), list(var_name = goi))) +
+  ylab(substitute(bold("23a Included Transcript (RSEM)"))) +
   theme_Publication()  
 
 
