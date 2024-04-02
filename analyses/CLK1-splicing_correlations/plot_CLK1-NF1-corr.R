@@ -21,6 +21,8 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing_correlations")
+results_dir <- file.path(analysis_dir, "results")
+
 plots_dir <- file.path(analysis_dir, "plots")
 figures_dir <- file.path(root_dir, "figures")
 
@@ -36,7 +38,7 @@ source(file.path(analysis_dir, "util", "function-create-scatter-plot.R"))
 clin_file <- file.path(data_dir,"histologies-plot-group.tsv")
 rsem_transc_counts <- file.path(data_dir,"rna-isoform-expression-rsem-tpm.rds")
 rmats_clk1_file <- file.path(data_dir, "clk1-splice-events-rmats.tsv")
-rmats_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
+rmats_nf1_file <- file.path(results_dir, "nf1-splice-events-rmats.tsv")
 
 ## output file
 plot_high_low_CLK1_file <- file.path(plots_dir,"high-low-CLK1_NF1.pdf")
@@ -107,10 +109,10 @@ clk1_HGG_rmats <- fread(rmats_clk1_file) %>%
 
 
 
-## CLK1 
+## CLK1 PSI correlations
 CLK1_NF1_rmats_HGG_df <- inner_join(clk1_HGG_rmats, NF1_rmats_df, by= "sample_id",suffix = c("_CLK1", "_NF1"))
 
-## remove non-splice events
+## remove non-splice events (to remove ones that are 1 and 0)
 CLK1_NF1_rmats_HGG_filter_df <- CLK1_NF1_rmats_HGG_df %>%
   filter(IncLevel1_NF1 < .95 & IncLevel1_NF1 > 0.05,
          IncLevel1_CLK1 < .95 & IncLevel1_CLK1 > 0.05)
@@ -171,7 +173,7 @@ pdf(plot_high_low_CLK1_file, width = 4.5, height = 4.5)
 print(boxplot_CLK_vs_NF1_incl)
 dev.off()
 
-## separate by high vs low NF1 PSI
+## same idea but separate by high vs low NF1 PSI
 ## Compute quantiles to define high vs low Exon 4 PSI groups
 quartiles_NF1_ex4_psi <- quantile(CLK1_NF1_rmats_HGG_df$IncLevel1_NF1, probs=c(.25, .75), na.rm = FALSE)
 
@@ -206,20 +208,19 @@ pdf(plot_high_low_NF1_file, width = 4.5, height = 4.5)
 print(boxplot_NF1_vs_CLK1_incl)
 dev.off()
 
-## expr
-# keep only hgg ids
+## Transcript expression based
 rsem_skipped_NF1_exon_df <- readRDS(rsem_transc_counts) %>%
   filter(grepl("ENST00000356175", transcript_id))
 
 rsem_included_NF1_exon_df <- readRDS(rsem_transc_counts) %>%
   filter(grepl("ENST00000358273", transcript_id))
 
+## transcript we saw in morpho vs untreated comparison
 rsem_ENST0000047157_df <- readRDS(rsem_transc_counts) %>%
   filter(grepl("ENST0000047157", transcript_id))
 
 
 rmats_exp_CLK1_NF1_incl_HGG_df <- rsem_included_NF1_exon_df %>%
-  #filter(rownames(.) == transcript_id)  %>% 
   select(all_of(clk1_HGG_rmats$sample_id)) %>% 
   pivot_longer(cols = tidyselect::everything(),
                names_to=c("sample_id"), 
@@ -232,7 +233,7 @@ rmats_exp_CLK1_NF1_incl_HGG_df <- rsem_included_NF1_exon_df %>%
 
 set.seed(2023)
 
-## first log2 expression
+##log2 expression
 expr_psi_df_log <- rmats_exp_CLK1_NF1_incl_HGG_df %>%
   mutate(logExp = log(Expr, 2))
 
