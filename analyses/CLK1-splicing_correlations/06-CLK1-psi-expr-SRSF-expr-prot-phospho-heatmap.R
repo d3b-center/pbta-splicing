@@ -36,11 +36,10 @@ if(!dir.exists(plots_dir)){
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## define input files
-clin_file <- file.path(data_dir,"histologies.tsv")
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 cohort_file <- file.path(root_dir, "analyses", "cohort_summary",
                          "results", "histologies-plot-group.tsv")
-rsem_counts <- file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds")
+rsem_tpm <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
 clk1_psi_file <- file.path(results_dir, "clk1-exon4-psi-hgg.tsv")
 isoform_file <- file.path(data_dir, "rna-isoform-expression-rsem-tpm.rds")
 
@@ -49,24 +48,19 @@ hope_proteo_file <- file.path(data_dir, "hope-protein-imputed-prot-expression-ab
 hope_phospho_file <- file.path(data_dir, "hope-protein-imputed-phospho-expression-abundance.tsv.gz")
 
 ## read in histology, cohort, and independent specimens file
-hist <- read_tsv(clin_file, guess_max = 10000)
-
 cohort_df <- read_tsv(cohort_file)
+indep_rna_df <- read_tsv(indep_rna_file)
 
-indep_rna_df <- vroom(indep_rna_file) %>% 
-  dplyr::filter(cohort == 'PBTA')
-
-# extract HGG samples, retain stranded and polyA libraries, and filter for independent specimens
-hist_rna <- hist %>% 
-  filter(short_histology == "HGAT",
+# extract HGG samples, retain stranded libraries, and filter for independent specimens
+hist_rna <- cohort_df %>% 
+  filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma"),
          RNA_library == "stranded",
          cohort == "PBTA",
          Kids_First_Biospecimen_ID %in% indep_rna_df$Kids_First_Biospecimen_ID) %>%
-  select(Kids_First_Biospecimen_ID, CNS_region, RNA_library, match_id, molecular_subtype) %>%
-  left_join(cohort_df %>% dplyr::select(Kids_First_Biospecimen_ID, plot_group))
+  select(Kids_First_Biospecimen_ID, RNA_library, CNS_region, match_id, molecular_subtype, plot_group)
 
 # filter expr df for hgg samples
-rsem_df <- readRDS(rsem_counts) %>%
+rsem_df <- readRDS(rsem_tpm) %>%
   select(hist_rna$Kids_First_Biospecimen_ID)
 
 CLK1_ex4_rsem <- readRDS(isoform_file) %>%
@@ -85,14 +79,14 @@ clk1_rmats <- read_tsv(clk1_psi_file) %>%
   left_join(hist_rna %>% dplyr::select(Kids_First_Biospecimen_ID, match_id))
 
 # define proteomics and phosphoproteomics-specific histologies files
-hist_proteo <- hist %>%
-  dplyr::filter(short_histology == "HGAT",
+hist_proteo <- cohort_df %>%
+  dplyr::filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma"),
                 experimental_strategy %in% c("Whole Cell Proteomics")) %>%
   dplyr::select(Kids_First_Biospecimen_ID, match_id) %>%
   dplyr::rename(Kids_First_Biospecimen_ID_proteo = Kids_First_Biospecimen_ID)
 
-hist_phospho <- hist %>%
-  dplyr::filter(short_histology == "HGAT",
+hist_phospho <- cohort_df %>%
+  dplyr::filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma"),
                 experimental_strategy %in% c("Phospho-Proteomics")) %>%
   dplyr::select(Kids_First_Biospecimen_ID, match_id) %>%
   dplyr::rename(Kids_First_Biospecimen_ID_phospho = Kids_First_Biospecimen_ID)
@@ -185,7 +179,8 @@ mol_df <- rsem_df %>%
   filter(rownames(.) %in% c(clk_list, srsf_list, srpk_list))  %>%
   rownames_to_column("GeneSymbol") %>%
   gather(key = "Kids_First_Biospecimen_ID", value = "Expr", -GeneSymbol) %>%
-  dplyr::mutate(logExp = log(Expr, 2)) %>%
+  # if exp value is 0, make NA since it will give Inf log value
+  dplyr::mutate(logExp = ifelse(Expr != 0, log(Expr, 2), NA)) %>%
   left_join(hist_rna %>% dplyr::select(Kids_First_Biospecimen_ID, match_id)) %>%
   dplyr::select(-Expr, -Kids_First_Biospecimen_ID) %>%
   spread(GeneSymbol, logExp) %>%
@@ -280,6 +275,7 @@ row_annot <- expr_cor_mat %>%
   dplyr::mutate(Feature = factor(Feature,
                                  levels = c("RNA log2Exp", "Total Protein z-score", "Phospho-Protein z-score")))
 
+
 # add rownames
 rownames(row_annot) <- rownames(expr_cor_mat)
 
@@ -295,7 +291,7 @@ row_anno = rowAnnotation(df = row_annot,
                          col = anno_col, show_legend = TRUE)
 
 # define matrix indicating if correlation p < 0.05
-incl_pval_mat <- ifelse(incl_cor_mat[,3:4] < 0.05, "*", "")
+incl_pval_mat <- ifelse(incl_cor_mat[,3:4] < 0.05, "*", "") 
 expr_pval_mat <- ifelse(expr_cor_mat[,3:4] < 0.05, "*", "")
 ex4_expr_pval_mat <- ifelse(ex4_expr_cor_mat[,3:4] < 0.05, "*", "")
 
@@ -350,6 +346,7 @@ ex4_expr_ht <- Heatmap(ex4_expr_cor_mat[,1:2],
                        row_title = NULL,
                        column_title = "CLK1-201 log2Expr",
                        column_title_side = "top",
+                       na_col = "gray",
                        cell_fun = function(j, i, x, y, width, height, fill) {
                          grid.text(sprintf("%s", ex4_expr_pval_mat[i, j]), x, y, gp = gpar(fontsize = 14))
                        })
@@ -381,10 +378,10 @@ for (subtype in c("DMG", "HGG")) {
                       colour = "red",
                       fill = "pink",
                       linetype="dashed") +
-          labs(x = glue::glue("CLK1 RSEM expected counts (log2)"),
+          labs(x = glue::glue("CLK1 RSEM TPM (log2)"),
                y = "Total protein abundance z-score") + 
           stat_cor(method = "spearman", cor.coef.name = "rho",
-                   label.x = 9, label.y = 3, size = 3) +
+                   label.x = 0, label.y = 3, size = 3) +
           facet_wrap(~GeneSymbol, nrow = 4) + 
           theme_Publication()
   
@@ -402,7 +399,7 @@ for (subtype in c("DMG", "HGG")) {
                 colour = "red",
                 fill = "pink",
                 linetype="dashed") +
-    labs(x = glue::glue("CLK1-201 RSEM expected counts (log2)"),
+    labs(x = glue::glue("CLK1-201 RSEM TPM (log2)"),
          y = "Total protein abundance z-score") + 
     stat_cor(method = "spearman", cor.coef.name = "rho",
              label.x = 0, label.y = 4, size = 3) +
@@ -423,10 +420,10 @@ for (subtype in c("DMG", "HGG")) {
                 colour = "red",
                 fill = "pink",
                 linetype="dashed") +
-    labs(x = glue::glue("CLK1 RSEM expected counts (log2)"),
+    labs(x = glue::glue("CLK1 RSEM TPM (log2)"),
          y = "Phospho-protein abundance z-score") + 
     stat_cor(method = "spearman", cor.coef.name = "rho",
-             label.x = 9, label.y = 3, size = 3) +
+             label.x = 0, label.y = 3, size = 3) +
     facet_wrap(~gene_site, nrow = 6) + 
     theme_Publication()
   
@@ -444,7 +441,7 @@ for (subtype in c("DMG", "HGG")) {
                 colour = "red",
                 fill = "pink",
                 linetype="dashed") +
-    labs(x = glue::glue("CLK1-201 RSEM expected counts (log2)"),
+    labs(x = glue::glue("CLK1-201 RSEM TPM (log2)"),
          y = "Phospho-protein abundance z-score") + 
     stat_cor(method = "spearman", cor.coef.name = "rho",
              label.x = 0, label.y = 4, size = 3) +
@@ -456,3 +453,4 @@ for (subtype in c("DMG", "HGG")) {
   dev.off()
   
 }
+

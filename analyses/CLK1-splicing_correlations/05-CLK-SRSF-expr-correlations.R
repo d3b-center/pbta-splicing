@@ -32,9 +32,8 @@ if(!dir.exists(plots_dir)){
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## define input files
-clin_file <- file.path(data_dir,"histologies.tsv")
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
-rsem_counts <- file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds")
+rsem_tpm <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
 isoform_file <- file.path(data_dir, "rna-isoform-expression-rsem-tpm.rds")
 rmats_file <- file.path(data_dir, "clk1-splice-events-rmats.tsv")
 
@@ -43,25 +42,16 @@ cohort_file <- file.path(root_dir, "analyses", "cohort_summary",
 
 ## read in histology file and count data
 ## filter histology file for all HGG, only stranded samples
-hist <- read_tsv(clin_file, guess_max = 10000)
-
 cohort_df <- read_tsv(cohort_file)
-
-indep_rna_df <- vroom(indep_rna_file) %>% 
-  dplyr::filter(cohort == 'PBTA')
+indep_rna_df <- read_tsv(indep_rna_file)
 
 # extract hgg samples in indepenent specimens file, add plot_group
-all_hgg_bsids <- hist %>% 
-  filter(short_histology == "HGAT",
+all_hgg_bsids <- cohort_df %>% 
+  filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma"),
          RNA_library == "stranded",
          cohort == "PBTA",
       Kids_First_Biospecimen_ID %in% indep_rna_df$Kids_First_Biospecimen_ID) %>%
-  select(Kids_First_Biospecimen_ID, RNA_library, CNS_region, match_id, molecular_subtype) %>%
-  left_join(cohort_df %>% dplyr::select(Kids_First_Biospecimen_ID, plot_group))
-
-# filter expr df for hgg samples
-rsem_df <- readRDS(rsem_counts) %>%
-  select(all_hgg_bsids$Kids_First_Biospecimen_ID)
+  select(Kids_First_Biospecimen_ID, RNA_library, CNS_region, match_id, molecular_subtype, plot_group)
 
 CLK1_ex4_rsem <- readRDS(isoform_file) %>%
   filter(transcript_id == "ENST00000321356.9")  %>%
@@ -94,7 +84,7 @@ write_tsv(clk1_rmats,
           file.path(results_dir, "clk1-exon4-psi-hgg.tsv"))
 
 # load gene expression counts and merge CLK1 transcript counts, exon4 PSI values
-rmats_exp_df <- readRDS(rsem_counts) %>%
+rmats_exp_df <- readRDS(rsem_tpm) %>%
   select(all_hgg_bsids$Kids_First_Biospecimen_ID) %>%
   filter(rownames(.) %in% c(srsf_list, clk_list, srpk_list))  %>%
   rownames_to_column("geneSymbol") %>%
@@ -153,11 +143,10 @@ for (goi in names(goi_list)) {
                    fill = "pink",
                    linetype="dashed") +
        labs(x = "CLK1 Exon 4 Inclusion (PSI)",
-            y = "RSEM expected counts (log2)",
-            colour = "Library type") + 
+            y = "RSEM TPM (log2)") + 
        stat_cor(method = "pearson",
-                label.x = 0, label.y = 4, size = 3) +
-       ylim(c(7.5, 15)) +
+                label.x = 0, label.y = 8, size = 3) +
+      # ylim(c(7.5, 15)) +
        facet_wrap(~geneSymbol, nrow = 4) + 
        theme_Publication()
      
@@ -183,11 +172,10 @@ for (goi in names(goi_list)) {
                    fill = "pink",
                    linetype="dashed") +
        labs(x = "CLK1 Exon 4 Inclusion (PSI)",
-            y = "RSEM expected counts (log2)",
-            fill = "Library type") + 
+            y = "RSEM TPM (log2)") + 
        stat_cor(method = "pearson",
-                label.x = 0, label.y = 4, size = 3) +
-       ylim(c(NA, 14)) +
+                label.x = 0, label.y = 6, size = 3) +
+      # ylim(c(NA, 15)) +
        facet_wrap(~geneSymbol, nrow = 5, scales = "free_y") + 
        theme_Publication()
      
@@ -250,50 +238,12 @@ for (clk in clk_list) {
                     colour = "red",
                     fill = "pink",
                     linetype="dashed") +
-        labs(x = glue::glue("{clk} RSEM expected counts (log2)"),
-             y = "RSEM expected counts (log2)") + 
+        labs(x = glue::glue("{clk} RSEM TPM (log2)"),
+             y = "RSEM TPM (log2)") + 
         stat_cor(method = "pearson",
-                 label.x = -4, label.y = 15, size = 3) +
-        xlim(c(-5,6)) +
-        ylim(c(NA, 15.5)) +
-        facet_wrap(~geneSymbol, nrow = 3, scales = "free_y") + 
-        theme_Publication()
-      
-    } else if (clk == "CLK4"){
-      
-      p <-  ggplot(exp_df, aes(x = clk_logExp, y = logExp)) +
-        geom_point(colour = "black") +
-        stat_smooth(method = "lm", 
-                    formula = y ~ x, 
-                    geom = "smooth", 
-                    colour = "red",
-                    fill = "pink",
-                    linetype="dashed") +
-        labs(x = glue::glue("{clk} RSEM expected counts (log2)"),
-             y = "RSEM expected counts (log2)") + 
-        stat_cor(method = "pearson",
-                 label.x = 8, label.y = 15, size = 3) +
-        xlim(c(NA,12)) +
-        ylim(c(NA, 15.5)) +
-        facet_wrap(~geneSymbol, nrow = 3, scales = "free_y") + 
-        theme_Publication()
-      
-    } else if (clk == "CLK2"){
-      
-      p <-  ggplot(exp_df, aes(x = clk_logExp, y = logExp)) +
-        geom_point(colour = "black") +
-        stat_smooth(method = "lm", 
-                    formula = y ~ x, 
-                    geom = "smooth", 
-                    colour = "red",
-                    fill = "pink",
-                    linetype="dashed") +
-        labs(x = glue::glue("{clk} RSEM expected counts (log2)"),
-             y = "RSEM expected counts (log2)") + 
-        stat_cor(method = "pearson",
-                 label.x = 8, label.y = 15, size = 3) +
-        xlim(c(NA,13)) +
-        ylim(c(NA, 15.5)) +
+                 label.x = -4, label.y = 8, size = 3) +
+       # xlim(c(-5,6)) +
+       # ylim(c(NA, 15.5)) +
         facet_wrap(~geneSymbol, nrow = 3, scales = "free_y") + 
         theme_Publication()
       
@@ -307,12 +257,12 @@ for (clk in clk_list) {
                     colour = "red",
                     fill = "pink",
                     linetype="dashed") +
-        labs(x = glue::glue("{clk} RSEM expected counts (log2)"),
-             y = "RSEM expected counts (log2)") + 
+        labs(x = glue::glue("{clk} RSEM TPM (log2)"),
+             y = "RSEM TPM (log2)") + 
         stat_cor(method = "pearson",
-                 label.x = 8, label.y = 15, size = 3) +
-        xlim(c(NA,13)) +
-        ylim(c(NA, 15.5)) +
+                 label.x = 0, label.y = 8, size = 3) +
+       # xlim(c(NA,13)) +
+       # ylim(c(NA, 15.5)) +
         facet_wrap(~geneSymbol, nrow = 3, scales = "free_y") + 
         theme_Publication()
       
@@ -326,3 +276,4 @@ for (clk in clk_list) {
   }
   
 }
+
