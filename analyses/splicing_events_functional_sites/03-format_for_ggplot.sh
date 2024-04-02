@@ -1,40 +1,42 @@
 #!/bin/sh
 
-## Generate for ggplot for all events corresponding to functional sites
-echo -e "SpliceID\tdPSI\tUniprot" > results/splicing_events.total.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.pos.intersectUnipMod.wo.txt |  awk '{print $4"\t"$5"\tModifications"}'|sort -u >> results/splicing_events.total.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.pos.intersectUnipOther.wo.txt | awk '{print $4"\t"$5"\tOther"}' |sort -u >> results/splicing_events.total.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.pos.intersectUnipDisulfBond.wo.txt | awk '{print $4"\t"$5"\tDisulfBond"}' |sort -u  >> results/splicing_events.total.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.pos.intersectUnipLocSignal.wo.txt | awk '{print $4"\t"$5"\tLocSignal"}' |sort -u  >> results/splicing_events.total.pos.intersectUnip.ggplot.txt
+# Define input and output directories
+input_dir="input/"
+output_dir="results/"
 
-echo -e "SpliceID\tdPSI\tUniprot" > results/splicing_events.total.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.neg.intersectUnipMod.wo.txt |  awk '{print $4"\t"$5"\tModifications"}'|sort -u >> results/splicing_events.total.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.neg.intersectUnipOther.wo.txt | awk '{print $4"\t"$5"\tOther"}' |sort -u >> results/splicing_events.total.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.neg.intersectUnipDisulfBond.wo.txt | awk '{print $4"\t"$5"\tDisulfBond"}' |sort -u  >> results/splicing_events.total.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.neg.intersectUnipLocSignal.wo.txt | awk '{print $4"\t"$5"\tLocSignal"}' |sort -u  >> results/splicing_events.total.neg.intersectUnip.ggplot.txt
+# Define the bed files
+bed_files=("unipMod.hg38.col.bed" "unipOther.hg38.col.bed" "unipDisulfBond.hg38col.bed" "unipLocSignal.hg38.col.bed" "unipDomain.hg38.col.bed")
+#!/bin/sh
 
-## Generate for ggplot for all events corresponding to functional sites
-echo -e "SpliceID\tdPSI\tUniprot" > results/splicing_events.total.other-HGG.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.other-HGG.pos.intersectUnipMod.wo.txt |  awk '{print $4"\t"$5"\tModifications"}'|sort -u >> results/splicing_events.total.other-HGG.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.other-HGG.pos.intersectUnipOther.wo.txt | awk '{print $4"\t"$5"\tOther"}' |sort -u >> results/splicing_events.total.other-HGG.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.other-HGG.pos.intersectUnipDisulfBond.wo.txt | awk '{print $4"\t"$5"\tDisulfBond"}' |sort -u  >> results/splicing_events.total.other-HGG.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.other-HGG.pos.intersectUnipLocSignal.wo.txt | awk '{print $4"\t"$5"\tLocSignal"}' |sort -u  >> results/splicing_events.total.other-HGG.pos.intersectUnip.ggplot.txt
+# Define input and output directories
+input_dir="input/"
+output_dir="results/"
 
-echo -e "SpliceID\tdPSI\tUniprot" > results/splicing_events.total.other-HGG.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.other-HGG.neg.intersectUnipMod.wo.txt |  awk '{print $4"\t"$5"\tModifications"}'|sort -u >> results/splicing_events.total.other-HGG.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.other-HGG.neg.intersectUnipOther.wo.txt | awk '{print $4"\t"$5"\tOther"}' |sort -u >> results/splicing_events.total.other-HGG.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.other-HGG.neg.intersectUnipDisulfBond.wo.txt | awk '{print $4"\t"$5"\tDisulfBond"}' |sort -u  >> results/splicing_events.total.other-HGG.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.other-HGG.neg.intersectUnipLocSignal.wo.txt | awk '{print $4"\t"$5"\tLocSignal"}' |sort -u  >> results/splicing_events.total.other-HGG.neg.intersectUnip.ggplot.txt
+# Define the bed files
+bed_files=("unipMod.hg38.col.bed" "unipOther.hg38.col.bed" "unipDisulfBond.hg38col.bed" "unipLocSignal.hg38.col.bed" "unipDomain.hg38.col.bed")
 
-## Generate for ggplot for all events corresponding to functional sites
-echo -e "SpliceID\tdPSI\tUniprot" > results/splicing_events.total.DMG.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.DMG.pos.intersectUnipMod.wo.txt |  awk '{print $4"\t"$5"\tModifications"}'|sort -u >> results/splicing_events.total.DMG.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.DMG.pos.intersectUnipOther.wo.txt | awk '{print $4"\t"$5"\tOther"}' |sort -u >> results/splicing_events.total.DMG.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.DMG.pos.intersectUnipDisulfBond.wo.txt | awk '{print $4"\t"$5"\tDisulfBond"}' |sort -u  >> results/splicing_events.total.DMG.pos.intersectUnip.ggplot.txt
-cat results/splicing_events.total.DMG.pos.intersectUnipLocSignal.wo.txt | awk '{print $4"\t"$5"\tLocSignal"}' |sort -u  >> results/splicing_events.total.DMG.pos.intersectUnip.ggplot.txt
+# Define corresponding functional site names
+functional_sites=("Modifications" "Other" "DisulfBond" "LocSignal" "Domain")
 
-echo -e "SpliceID\tdPSI\tUniprot" > results/splicing_events.total.DMG.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.DMG.neg.intersectUnipMod.wo.txt |  awk '{print $4"\t"$5"\tModifications"}'|sort -u >> results/splicing_events.total.DMG.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.DMG.neg.intersectUnipOther.wo.txt | awk '{print $4"\t"$5"\tOther"}' |sort -u >> results/splicing_events.total.DMG.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.DMG.neg.intersectUnipDisulfBond.wo.txt | awk '{print $4"\t"$5"\tDisulfBond"}' |sort -u  >> results/splicing_events.total.DMG.neg.intersectUnip.ggplot.txt
-cat results/splicing_events.total.DMG.neg.intersectUnipLocSignal.wo.txt | awk '{print $4"\t"$5"\tLocSignal"}' |sort -u  >> results/splicing_events.total.DMG.neg.intersectUnip.ggplot.txt
+# Define splicing event files
+splicing_event_files=("splicing_events.SE.total.pos" "splicing_events.SE.total.neg" "splicing_events.SE.total.Other high-grade glioma.pos" "splicing_events.SE.total.Other high-grade glioma.neg" "splicing_events.SE.total.DMG.pos" "splicing_events.SE.total.DMG.neg")
+
+# Loop through each splicing event file
+for splicing_file in "${splicing_event_files[@]}"; do
+    # Create a temporary file for each splicing event file
+    tmp_file="${output_dir}${splicing_file}.intersectUnip.ggplot.tmp.txt"
+    echo -e "SpliceID\tdPSI\tUniprot" > "$tmp_file"
+
+    # Loop through each bed file
+    for ((i=0; i<${#bed_files[@]}; i++)); do
+        # Generate ggplot data and append to the temporary file
+        cat "${output_dir}${splicing_file}.intersect${bed_files[i]%.*}.wo.txt" | awk -v var="${bed_files[i]}" -v site="${functional_sites[i]}" '{print $4"\t"$5"\t"site}' | sort -u >> "$tmp_file"
+    done
+
+    # Create the final ggplot file
+    final_file="${output_dir}${splicing_file}.intersectUnip.ggplot.txt"
+    cat "$tmp_file" > "$final_file"
+
+    # Remove the temporary file
+    rm "$tmp_file"
+done

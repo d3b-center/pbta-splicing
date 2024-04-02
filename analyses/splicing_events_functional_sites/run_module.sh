@@ -32,12 +32,13 @@ bash 03-format_for_ggplot.sh
 
 ## make plots
 echo "make plots ...";
-#Rscript 04-plot_splicing_across_functional_sites.R
+Rscript 04-plot_splicing_across_functional_sites.R
 
 ## make plots
 echo "plot splice patterns";
 Rscript --vanilla 05-plot-splice-patterns.R
 
 ##rm intermediatery files
-rm results/splicing_events.total.*.wo.txt
+rm results/splicing_events*.wo.txt
 rm results/*bed
+rm results/*col.ggplot.txt
