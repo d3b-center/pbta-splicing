@@ -249,7 +249,7 @@ scatterplot_included <- ggscatter(expr_psi_df_log,
                                            fill = "pink"),
                          ticks = TRUE) + 
   xlab(expression(bold(bolditalic("CLK1")~"Exon 4 Inclusion (PSI)"))) +
-  ylab(substitute(bold("23a Included Transcript (RSEM)"))) +
+  ylab(substitute(bold("23a Included Transcript (TPM)"))) +
   theme_Publication()  
 
 # save plot 
@@ -285,8 +285,8 @@ scatterplot_morpho_vs_incl <- ggscatter(NF1_morpho_incl_exon_df,
                                   add.params = list(color = "red",
                                                     fill = "pink"),
                                   ticks = TRUE) + 
-  xlab(expression(bold("Morpholino Transcript (RSEM)"))) +
-  ylab(substitute(bold("23a Included Transcript (RSEM)"))) +
+  xlab(expression(bold("Morpholino Transcript (TPM)"))) +
+  ylab(substitute(bold("23a Included Transcript (TPM)"))) +
   theme_Publication()  
 
 
