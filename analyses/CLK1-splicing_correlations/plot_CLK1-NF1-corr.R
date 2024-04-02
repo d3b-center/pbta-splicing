@@ -68,7 +68,7 @@ other_hgg_bs_id <- histologies_df %>%
   filter(plot_group == "Other high-grade glioma") 
 
 
-NF1_rmats <- fread(rmats_file) %>%
+NF1_rmats <- fread(rmats_nf1_file) %>%
   dplyr::filter(sample_id %in% hgg_bs_id$Kids_First_Biospecimen_ID,
          geneSymbol=="NF1",
          splicing_case =='SE',
@@ -213,7 +213,7 @@ rsem_skipped_NF1_exon_df <- readRDS(rsem_transc_counts) %>%
   filter(grepl("ENST00000356175", transcript_id))
 
 rsem_included_NF1_exon_df <- readRDS(rsem_transc_counts) %>%
-  filter(grepl("ENST00000358273", transcript_id))
+  filter(grepl("ENST00000358273", transcript_id)) # ENST00000358273
 
 ## transcript we saw in morpho vs untreated comparison
 rsem_ENST0000047157_df <- readRDS(rsem_transc_counts) %>%
@@ -227,7 +227,7 @@ rmats_exp_CLK1_NF1_incl_HGG_df <- rsem_included_NF1_exon_df %>%
                values_to="Expr") %>% 
   inner_join(clk1_HGG_rmats, by= "sample_id") %>%
   # need to add this so that we can use this in the plot axis
-  mutate(transcript = paste0(gene)) %>%
+  #mutate(transcript = paste0(transcript_id)) %>%
   dplyr::filter(Expr > 1)
 
 
