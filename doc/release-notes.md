@@ -1,16 +1,16 @@
 # release notes
 
 ## current release (v8)
-- Data release data: 2024-03-28
+- Data release data: 2024-04-05
 - OpenPedCan data release date: 2024-01-03 (v13)
 	- v14 pre-release `histologies.tsv` was created in [PR 542](https://github.com/d3b-center/OpenPedCan-analysis/pull/542) and is used here
 - status: available
 
 Additional files:
-- `clk1-splice-events-rmats.tsv` file from `CLK1-splicing_correlations` module results folder added
+- `clk1-splice-events-rmats.tsv` and `nf1-splice-events-rmats.tsv` files from `CLK1-splicing_correlations` module results folder added
 - `histologies-plot-group.tsv` from `cohort_summary` module added
 - `snv-mutation-tmb-coding.tsv` and `snv-mutation-tmb-all.tsv` added from [PR 560](https://github.com/d3b-center/OpenPedCan-analysis/pull/560/commits/256ef04c3af141a8289a0efa68cf63b8aa4e30a4) to include missed samples
-- `rna-isoform-expression-rsem-tpm.rds` added, but subsetted for PBTA samples
+- `rna-isoform-expression-rsem-tpm.rds` and `rna-isoform-expression-rsem-expected-counts.rds` added, but subsetted for PBTA samples
 - `gene-counts-rsem-expected_count-collapsed.rds` subsetted for PBTA samples
 - `gene-expression-rsem-tpm-collapsed.rds` subsetted for PBTA samples
 - `GTEx_Analysis_2017-06-05_v8_RSEMv1.3.0_transcript_tpm.gct.gz` from GTEX portal
@@ -74,7 +74,9 @@ v8
 ├── independent-specimens.wgswxspanel.relapse.prefer.wxs.tsv
 ├── md5sum.txt
 ├── morpholno.merged.rmats.tsv
+├── nf1-splice-events-rmats.tsv
 ├── release-notes.md
+├── rna-isoform-expression-rsem-expected-counts.rds
 ├── rna-isoform-expression-rsem-tpm.rds
 ├── snv-consensus-plus-hotspots.maf.tsv.gz
 ├── snv-mutation-tmb-all.tsv
