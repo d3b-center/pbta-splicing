@@ -23,6 +23,8 @@ suppressPackageStartupMessages({
   library("ggpubr")
   library("vroom")
   library('data.table')
+  library(grid)
+  library(gridExtra)
 })
 ```
 
@@ -310,5 +312,171 @@ print(plot_nf1_psi_srsf11_groups)
 dev.off()
 
 plot_nf1_psi_srsf11_groups
+```
+## make barplots out of correlations
+```{r}
+library(ggplot2)
+# Calculate correlation for each plot group
+library(dplyr)
+
+# Calculate correlation and approximate p-value
+correlation_results_CLK1 <- NF1_PSI_CLK1_expr_df %>%
+  group_by(plot_group) %>%
+  summarize(correlation = cor(IncLevel1, TPM, method = "spearman"),
+            p_value = cor.test(IncLevel1, TPM, method = "spearman", exact = FALSE)$p.value)
+
+
+# Create correlation matrix and significance matrix
+cor_matrix_CLK1 <- matrix(correlation_results_CLK1$correlation, nrow = 1)
+p_value_matrix_CLK1 <- matrix(correlation_results_CLK1$p_value < 0.05, nrow = 1)
+
+
+# Create a dataframe with correlation values and significance indicators
+cor_df_CLK1 <- data.frame(plot_group = correlation_results_CLK1$plot_group,
+                      correlation = correlation_results_CLK1$correlation,
+                      p_value = correlation_results_CLK1$p_value)
+
+# Sort the dataframe by absolute correlation values in descending order
+cor_df_CLK1 <- cor_df_CLK1[order(abs(cor_df_CLK1$correlation), decreasing = TRUE), ]
+
+# Determine the number of negative and positive correlations
+num_negative_CLK1 <- sum(cor_df_CLK1$correlation < 0)
+num_positive_CLK1<- sum(cor_df_CLK1$correlation  > 0)
+
+# Create a column to specify the position of the bars
+cor_df_CLK1$position <- ifelse(cor_df_CLK1$correlation < 0, "Negative", "Positive")
+
+# Sort plot_group factor levels based on sorted cor_df
+cor_df_CLK1$plot_group <- factor(cor_df_CLK1$plot_group, levels = cor_df_CLK1$plot_group)
+
+plot_colors <- c("blue","red")
+names(plot_colors) <- c("Negative","Positive")
+
+# Plot using ggplot2
+plot_corr_CLK1 <- ggplot(cor_df_CLK1, aes(x = plot_group, y = abs(correlation), fill = position)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = ifelse(p_value < 0.05, "*", "")), position = position_dodge(width = 0.9), vjust = -0.5) +
+  labs(title = "CLK1 Expression vs NF1 Retained Intron PSI", x = "Histology", y = "Correlation") +
+  guides(fill = FALSE) + 
+  theme_Publication() + 
+  scale_fill_manual(values = plot_colors) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+print(plot_corr_CLK1)
+
+# Calculate correlation and approximate p-value
+correlation_results_SRSF11 <- NF1_PSI_SRSF_expr_df %>%
+  group_by(plot_group) %>%
+  summarize(correlation = cor(IncLevel1, TPM, method = "spearman"),
+            p_value = cor.test(IncLevel1, TPM, method = "spearman", exact = FALSE)$p.value)
+
+
+# Create correlation matrix and significance matrix
+cor_matrix_SRSF11 <- matrix(correlation_results_SRSF11$correlation, nrow = 1)
+p_value_matrix_SRSF11 <- matrix(correlation_results_SRSF11$p_value < 0.05, nrow = 1)
+
+
+# Create a dataframe with correlation values and significance indicators
+cor_df_SRSF11 <- data.frame(plot_group = correlation_results_SRSF11$plot_group,
+                      correlation = correlation_results_SRSF11$correlation,
+                      p_value = correlation_results_SRSF11$p_value)
+
+# Sort the dataframe by absolute correlation values in descending order
+cor_df_SRSF11 <- cor_df_SRSF11[order(abs(cor_df_SRSF11$correlation), decreasing = TRUE), ]
+
+# Determine the number of negative and positive correlations
+num_negative_SRSF11 <- sum(cor_df_SRSF11$correlation < 0)
+num_positive_SRSF11 <- sum(cor_df_SRSF11$correlation > 0)
+
+# Create a column to specify the position of the bars
+cor_df_SRSF11$position <- ifelse(cor_df_SRSF11$correlation < 0, "Negative", "Positive")
+
+# Sort plot_group factor levels based on sorted cor_df
+cor_df_SRSF11$plot_group <- factor(cor_df_SRSF11$plot_group, levels = cor_df_SRSF11$plot_group)
+
+# Plot using ggplot2
+plot_corr_SRSF11 <- ggplot(cor_df_SRSF11, aes(x = plot_group, y = abs(correlation), fill = position)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = ifelse(p_value < 0.05, "*", "")), position = position_dodge(width = 0.9), vjust = -0.5) +
+  labs(title = "SRSF11 Expression vs NF1 Retained Intron PSI", x = "Histology", y = "Correlation") +
+  guides(fill = FALSE) + 
+  theme_Publication() + 
+  scale_fill_manual(values = plot_colors) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+print(plot_corr_SRSF11)
+```
+
+## combine barplots
+```{r}
+## combine plots
+cor_df_combined <- inner_join(cor_df_CLK1,cor_df_SRSF11, by='plot_group', suffix = c("_CLK1","_SRSF11"))
+
+g.mid <- ggplot(cor_df_combined,aes(x=1,y=plot_group)) +
+  geom_text(aes(label=plot_group), size = 4.25) +
+  ylab(NULL)+
+  xlab(NULL) +
+  scale_x_continuous(expand=c(0,0),limits=c(0.94,1.06))+
+  theme(axis.title=element_blank(),
+        panel.grid=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.background=element_blank(),
+        axis.text.x=element_text(color=NA),
+        axis.ticks.x=element_line(color=NA),
+        plot.margin = unit(c(2,1,10,2), "mm")) 
+
+g1 <- ggplot(cor_df_combined, 
+             aes(x = plot_group, 
+                 y = abs(correlation_CLK1), 
+                 fill = position_CLK1)) +
+  geom_bar(stat = "identity", position = "dodge") +
+ labs(title = "", x = "", y = "") +
+  guides(fill = FALSE) + 
+  theme_Publication() + 
+  scale_fill_manual(values = plot_colors) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  theme(#axis.title.x = element_blank(), 
+    axis.title.y = element_blank(), 
+    axis.text.y = element_blank(), 
+    axis.ticks.y = element_blank(), 
+    plot.margin = unit(c(2,1,1,1), "mm"),
+    axis.line.y.left = element_blank(),
+    panel.grid.major.y = element_blank(),  # Remove major grid lines
+    panel.grid.minor.y = element_blank())  + # Remove minor grid lines
+  scale_y_reverse(limits = c(.75,0)) +
+  coord_flip() +
+  geom_text(aes(label = ifelse(p_value_CLK1 < 0.05, "*    ", "")), 
+            position = position_dodge(width = 1), 
+            vjust = 0.5) 
+
+g2 <- ggplot(cor_df_combined, aes(x = plot_group, y = abs(correlation_SRSF11), fill = position_SRSF11)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "", x="", y="") +
+  guides(fill = FALSE) + 
+  theme_Publication() + 
+  scale_fill_manual(values = plot_colors) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  theme(#axis.title.x = element_blank(), 
+    axis.title.y = element_blank(), 
+    axis.text.y = element_blank(), 
+    axis.ticks.y = element_blank(),
+    plot.margin = unit(c(1,1,1,2), "mm"),
+    axis.line.y.left = element_blank(),
+    panel.grid.major.y = element_blank(),  # Remove major grid lines
+    panel.grid.minor.y = element_blank())  + # Remove minor grid lines) +
+    scale_y_continuous(limits = c(0,.75)) +
+    coord_flip() +
+  geom_text(aes(label = ifelse(p_value_SRSF11 < 0.05, "    *", "")), position = position_dodge(width = 0.9), vjust = 0.5) 
+
+gg1 <- ggplot_gtable(ggplot_build(g1))
+gg2 <- ggplot_gtable(ggplot_build(g2))
+gg.mid <- ggplot_gtable(ggplot_build(g.mid))
+grid.arrange(gg1,gg.mid,gg2,ncol=3,widths=c(2/7,1.5/7,2/7))
+
+# save plot
+pdf(file.path(paste(plots_dir, "/NF1-PSI-CLK1-SRSF11-expr_corr-groups.pdf", sep = "")), width = 9.8, height = 4)
+grid.arrange(gg1,gg.mid,gg2,ncol=3,widths=c(2/7,1.5/7,2/7))
+dev.off()
 ```
 
