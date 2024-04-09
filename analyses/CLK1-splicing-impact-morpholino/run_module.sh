@@ -32,5 +32,10 @@ Rscript -e "rmarkdown::render('07-run-gsva-comparisons.Rmd', clean = TRUE)"
 ## intersect DE and DS
 Rscript --vanilla 08-intersection-dex-des.R
 
+<<<<<<< HEAD
 ## correlat with patient samples
 Rscript --vanilla 09-splicing-expr-corr-in-patients.R
+=======
+## lolliplot of splicing cases
+Rscript --vanilla 08-plot_total-splicing-cases.R
+>>>>>>> main

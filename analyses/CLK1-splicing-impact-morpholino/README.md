@@ -115,7 +115,8 @@ plots/gsva_heatmap_kegg_de.pdf
 │   ├── gsva_heatmap_hallmark.pdf
 │   ├── gsva_heatmap_hallmark_de.pdf
 │   ├── gsva_heatmap_kegg.pdf
-│   └── gsva_heatmap_kegg_de.pdf
+│   ├── gsva_heatmap_kegg_de.pdf
+│   └── splice-types.pdf
 ├── results
 │   ├── ctrl_vs_morpho.rsem.genes.collapsed.rds
 │   ├── ctrl_vs_treated.de.formatted.tsv
