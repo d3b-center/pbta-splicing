@@ -32,12 +32,17 @@ RUN apt install -y  \
 	libssl-dev \
 	libv8-dev \
 	libxt-dev \
+	libudunits2-dev\
 	zlib1g-dev
 
 # Install java
 RUN apt-get update && apt-get -y --no-install-recommends install \
   default-jdk \
   libxt6
+
+
+## install annoFuse
+RUN ./install_github.r 'd3b-center/annoFuseData' --ref '321bc4f6db6e9a21358f0d09297142f6029ac7aa'
 
 # install R packages
 RUN ./install_bioc.r \
@@ -63,6 +68,7 @@ RUN ./install_bioc.r \
 	ggpubr \
 	ggstatsplot \
   ggthemes \
+  ggVennDiagram \
   gridExtra \
 	GSVA \
 	hrbrthemes \
@@ -71,6 +77,7 @@ RUN ./install_bioc.r \
   msigdbr \
 	optparse \
   org.Hs.eg.db \
+  PMCMRplus \
 	patchwork \
 	pheatmap \
   reshape2 \
