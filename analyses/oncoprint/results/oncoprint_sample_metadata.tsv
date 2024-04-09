@@ -1,0 +1,153 @@
+match_id	Gender	Cancer Group	Molecular Subtype	CNS Region	Mutation Status	CLK1 status	CLK1 Ex4 PSI	Kids_First_Participant_ID
+PT_91PDAFH0_7316-5267_Solid Tissue_Initial CNS Tumor	Male	Diffuse hemispheric glioma	DHG, H3 G35	Hemispheric	Normal	Low	0.111	PT_91PDAFH0
+PT_YKFSBN25_7316-8461_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Low	0.244	PT_YKFSBN25
+PT_DB281Z4K_7316UP-310_Solid Tissue_Primary Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Low	0.259	PT_DB281Z4K
+PT_9PDE9KSB_7316-4723_Solid Tissue_Initial CNS Tumor	Female	Diffuse hemispheric glioma	DHG, H3 G35	Hemispheric	Normal	Low	0.292	PT_9PDE9KSB
+PT_R4T1V1K4_7316-2784_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Low	0.37	PT_R4T1V1K4
+PT_TWAHK62W_7316-9055_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Midline	Normal	Low	0.37200000000000005	PT_TWAHK62W
+PT_N13MXT13_7316-7758_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Posterior fossa	Normal	Low	0.377	PT_N13MXT13
+PT_CSZ9QA1N_7316-1464_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Mixed	Normal	Low	0.391	PT_CSZ9QA1N
+PT_QTDY0Y9A_7316-3771_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Mixed	Normal	Low	0.406	PT_QTDY0Y9A
+PT_G8ZTC724_7316-6813_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Low	0.45299999999999996	PT_G8ZTC724
+PT_GBCZ0RW3_7316-9642_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Unknown	Normal	Low	0.47	PT_GBCZ0RW3
+PT_X5SGG610_7316UP-1104_Solid Tissue_Primary Tumor	Female	Diffuse hemispheric glioma	DHG, H3 G35	Hemispheric	Normal	Low	0.48700000000000004	PT_X5SGG610
+PT_18QG3Z4H_7316-1052_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Posterior fossa	Unknown	Low	0.49700000000000005	PT_18QG3Z4H
+PT_0324HWD5_7316-7091_Solid Tissue_Initial CNS Tumor	Female	Pleomorphic xanthoastrocytoma	HGG, PXA	Hemispheric	Normal	Low	0.515	PT_0324HWD5
+PT_A64KYWHR_7316-4543_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Low	0.515	PT_A64KYWHR
+PT_0FNG5FK3_7316-7756_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Low	0.523	PT_0FNG5FK3
+PT_JSFBMK5V_7316-392_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Low	0.523	PT_JSFBMK5V
+PT_5D439P2D_7316-9945_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Midline	Normal	Low	0.529	PT_5D439P2D
+PT_D5KKHPAE_7316-4337_Solid Tissue_Initial CNS Tumor	Female	Pleomorphic xanthoastrocytoma	HGG, PXA	Hemispheric	Normal	Low	0.5489999999999999	PT_D5KKHPAE
+PT_1B1Z7BRQ_7316-287_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Unknown	Low	0.55	PT_1B1Z7BRQ
+PT_9X1XY3JK_7316-6041_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Spine	Normal	Low	0.555	PT_9X1XY3JK
+PT_H9QTD79G_7316-7533_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Low	0.5660000000000001	PT_H9QTD79G
+PT_0DXHDZJR_7316-2857_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Low	0.57	PT_0DXHDZJR
+PT_C7HHJG7Z_7316-4516_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Low	0.581	PT_C7HHJG7Z
+PT_9BZETM0M_7316-158_Solid Tissue_Initial CNS Tumor	Male	Diffuse hemispheric glioma	DHG, H3 G35	Hemispheric	Normal	Low	0.5914999999999999	PT_9BZETM0M
+PT_9RTMDPES_7316-4220_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Midline	Normal	Low	0.599	PT_9RTMDPES
+PT_ZKQTJ7F7_7316-9560_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, IDH	Unknown	Normal	Low	0.599	PT_ZKQTJ7F7
+PT_RSDTCFDA_7316-204_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Low	0.6	PT_RSDTCFDA
+PT_CQS4V67V_7316-9212_Solid Tissue_Initial CNS Tumor	Male	Diffuse hemispheric glioma	DHG, H3 G35	Hemispheric	Normal	Low	0.604	PT_CQS4V67V
+PT_DRRTC594_7316-8856_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Low	0.605	PT_DRRTC594
+PT_D9A6G154_7316-9211_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Spine	Normal	Low	0.611	PT_D9A6G154
+PT_TWF36J8K_7316-6251_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Mixed	Normal	Low	0.616	PT_TWF36J8K
+PT_ZBHAAB3G_7316-7498_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Mixed	Normal	Low	0.617	PT_ZBHAAB3G
+PT_R0R6VWX9_7316-9343_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Unknown	Normal	Low	0.624	PT_R0R6VWX9
+PT_RYMG3M91_A18777_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Low	0.6325000000000001	PT_RYMG3M91
+PT_SGJK5KSB_7316-9140_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Midline	Normal	Low	0.643	PT_SGJK5KSB
+PT_0FGS6YME_7316-8811_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Low	0.645	PT_0FGS6YME
+PT_QQZXYR4M_7316-1946_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, IDH	Hemispheric	Normal	Low	0.6459999999999999	PT_QQZXYR4M
+PT_3AWKWXEV_7316-85_Solid Tissue_Initial CNS Tumor	Male	Pleomorphic xanthoastrocytoma	HGG, PXA	Hemispheric	Normal	Middle	0.649	PT_3AWKWXEV
+PT_N3205P0D_7316-1099_Solid Tissue_Initial CNS Tumor	Male	Diffuse hemispheric glioma	DHG, H3 G35	Hemispheric	Normal	Middle	0.652	PT_N3205P0D
+PT_AZFSRAWZ_7316-4553_Solid Tissue_Initial CNS Tumor	Female	Diffuse hemispheric glioma	DHG, H3 G35	Hemispheric	Normal	Middle	0.654	PT_AZFSRAWZ
+PT_3CHB9PK5_7316-515_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Ultra-hypermutant	Middle	0.6579999999999999	PT_3CHB9PK5
+PT_6PJ126FF_7316-8815_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Middle	0.6609999999999999	PT_6PJ126FF
+PT_H5R0M2P6_7316-3677_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Mixed	Normal	Middle	0.6629999999999999	PT_H5R0M2P6
+PT_394ZA6P7_7316-5741_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Posterior fossa	Normal	Middle	0.664	PT_394ZA6P7
+PT_45T6E38N_7316-5227_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Midline	Hypermutant	Middle	0.672	PT_45T6E38N
+PT_59FJRPVX_7316-3769_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Middle	0.685	PT_59FJRPVX
+PT_6VD8J6FB_7316-8032_Solid Tissue_Initial CNS Tumor	Female	Diffuse hemispheric glioma	DHG, H3 G35	Hemispheric	Normal	Middle	0.685	PT_6VD8J6FB
+PT_G3MPFYCD_7316-6535_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Suprasellar	Normal	Middle	0.685	PT_G3MPFYCD
+PT_KEQ53KRH_7316-440_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Mixed	Normal	Middle	0.695	PT_KEQ53KRH
+PT_5K5CZXYB_7316-8035_Solid Tissue_Initial CNS Tumor	Female	Diffuse hemispheric glioma	DHG, H3 G35	Hemispheric	Normal	Middle	0.698	PT_5K5CZXYB
+PT_S0Q27J13_7316-2307_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Hypermutant	Middle	0.698	PT_S0Q27J13
+PT_XHV730W9_7316-6791_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Posterior fossa	Normal	Middle	0.6990000000000001	PT_XHV730W9
+PT_JT9HH7M6_7316-1455_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Unknown	Middle	0.6995	PT_JT9HH7M6
+PT_97F1YCGF_7316-3026_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Mixed	Normal	Middle	0.701	PT_97F1YCGF
+PT_VWZZTK38_7316-1844_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Mixed	Unknown	Middle	0.7120000000000001	PT_VWZZTK38
+PT_5BFEWBGY_7316-6079_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Middle	0.713	PT_5BFEWBGY
+PT_6H8X6RZ1_7316-9014_Solid Tissue_Initial CNS Tumor	Female	Diffuse hemispheric glioma	DHG, H3 G35	Hemispheric	Normal	Middle	0.713	PT_6H8X6RZ1
+PT_CB1DN0V8_7316-2241_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Unknown	Middle	0.715	PT_CB1DN0V8
+PT_VKRWCBA2_7316-6982_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Mixed	Normal	Middle	0.7170000000000001	PT_VKRWCBA2
+PT_6GDPNFA6_7316-2610_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Mixed	Normal	Middle	0.7190000000000001	PT_6GDPNFA6
+PT_VVCN8DXT_7316-71_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Middle	0.72	PT_VVCN8DXT
+PT_7WT6P5M8_7316-2308_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Posterior fossa	Normal	Middle	0.722	PT_7WT6P5M8
+PT_7FZ8SE69_7316-2152_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Middle	0.726	PT_7FZ8SE69
+PT_H3KTPFRH_7316-717_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, IDH	Hemispheric	Ultra-hypermutant	Middle	0.726	PT_H3KTPFRH
+PT_37B5JRP1_7316-2217_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Midline	Normal	Middle	0.727	PT_37B5JRP1
+PT_A325EYR2_7316-2557_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Mixed	Normal	Middle	0.732	PT_A325EYR2
+PT_SSE4AH59_7316-1776_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Middle	0.732	PT_SSE4AH59
+PT_JJZ5PN64_7316-8964_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Middle	0.737	PT_JJZ5PN64
+PT_G9A050X1_7316-8028_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Other	Hypermutant	Middle	0.7390000000000001	PT_G9A050X1
+PT_M1BBF6RA_7316-9799_Solid Tissue_Initial CNS Tumor	Female	Diffuse hemispheric glioma	DHG, H3 G35	Unknown	Normal	Middle	0.742	PT_M1BBF6RA
+PT_89HXDTTW_7316-4842_Solid Tissue_Initial CNS Tumor	Male	Infant-type hemispheric glioma	IHG, NTRK-altered	Hemispheric	Normal	Middle	0.748	PT_89HXDTTW
+PT_BC0B16HC_7316-7075_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Mixed	Normal	Middle	0.7490000000000001	PT_BC0B16HC
+PT_TVJ5EGMR_7316-8033_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Middle	0.75	PT_TVJ5EGMR
+PT_V482NWB8_7316-8037_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Middle	0.7509999999999999	PT_V482NWB8
+PT_HA0E85NR_7316-10221_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Unknown	Hypermutant	Middle	0.755	PT_HA0E85NR
+PT_MP85FHCR_7316-9850_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Unknown	Normal	Middle	0.76	PT_MP85FHCR
+PT_BQJK7KPK_7316-6574_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Hemispheric	Normal	Middle	0.7609999999999999	PT_BQJK7KPK
+PT_M8MDJNZB_7316-8965_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Ultra-hypermutant	Middle	0.763	PT_M8MDJNZB
+PT_P2NGYMG5_7316-1956_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Posterior fossa	Normal	Middle	0.769	PT_P2NGYMG5
+PT_X7HC5YCY_7316-255_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Unknown	Middle	0.7825	PT_X7HC5YCY
+PT_8P368R5B_7316-4998_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Midline	Normal	Middle	0.7859999999999999	PT_8P368R5B
+PT_C2D4JXS1_7316-1746_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Posterior fossa	Normal	Middle	0.789	PT_C2D4JXS1
+PT_1FQFJ0V1_7316-5087_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Mixed	Normal	Middle	0.794	PT_1FQFJ0V1
+PT_KX1QQQRC_7316-8939_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Middle	0.795	PT_KX1QQQRC
+PT_ZH3SBJPZ_7316-4215_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, IDH	Other	Hypermutant	Middle	0.7959999999999999	PT_ZH3SBJPZ
+PT_X5TQR8V2_7316-343_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Middle	0.7979999999999999	PT_X5TQR8V2
+PT_2JDDX6TJ_7316-409_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Middle	0.8	PT_2JDDX6TJ
+PT_84Q11Z5X_7316-288_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Unknown	Middle	0.802	PT_84Q11Z5X
+PT_TNJPSPW3_7316-10002_Solid Tissue_Initial CNS Tumor	Female	Diffuse hemispheric glioma	DHG, H3 G35	Unknown	Normal	Middle	0.804	PT_TNJPSPW3
+PT_S7JCQ3TH_7316-8828_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Spine	Normal	Middle	0.805	PT_S7JCQ3TH
+PT_KVMF5TFW_7316-3030_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Middle	0.809	PT_KVMF5TFW
+PT_YRNATR8Q_7316-8039_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Middle	0.812	PT_YRNATR8Q
+PT_63HDZHCN_7316-2980_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Middle	0.8140000000000001	PT_63HDZHCN
+PT_38B4CHBF_7316-9849_Solid Tissue_Initial CNS Tumor	Male	Diffuse hemispheric glioma	DHG, H3 G35	Unknown	Normal	Middle	0.815	PT_38B4CHBF
+PT_FMS4AXKD_7316-9049_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Middle	0.815	PT_FMS4AXKD
+PT_FKCPVY7V_7316-8031_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Middle	0.821	PT_FKCPVY7V
+PT_S2M5KJTJ_7316-3655_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Middle	0.8240000000000001	PT_S2M5KJTJ
+PT_7TF40D8R_7316-3079_Solid Tissue_Initial CNS Tumor	Female	Diffuse hemispheric glioma	DHG, H3 G35	Other	Normal	Middle	0.83	PT_7TF40D8R
+PT_G395P98S_7316-8826_Solid Tissue_Initial CNS Tumor	Male	Diffuse hemispheric glioma	DHG, H3 G35	Hemispheric	Normal	Middle	0.833	PT_G395P98S
+PT_H62STE27_7316-5323_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Mixed	Normal	Middle	0.8390000000000001	PT_H62STE27
+PT_Z4PJA6KT_7316-1763_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Middle	0.841	PT_Z4PJA6KT
+PT_7KS8C9Y6_7316-4952_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Middle	0.8420000000000001	PT_7KS8C9Y6
+PT_WMWFCG6J_7316-8038_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Other	Normal	Middle	0.8420000000000001	PT_WMWFCG6J
+PT_HV1DFFQ1_7316-9139_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Middle	0.846	PT_HV1DFFQ1
+PT_T9F17G9F_7316-8814_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	Middle	0.853	PT_T9F17G9F
+PT_ZRZRHGQJ_7316-4036_Solid Tissue_Initial CNS Tumor	Male	Diffuse hemispheric glioma	DHG, H3 G35	Hemispheric	Normal	Middle	0.8540000000000001	PT_ZRZRHGQJ
+PT_59D00MBQ_7316-1936_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Middle	0.855	PT_59D00MBQ
+PT_QBEA1CGX_7316-10711_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Posterior fossa	Normal	Middle	0.856	PT_QBEA1CGX
+PT_Y5KY6KN9_7316-195_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Posterior fossa	Normal	Middle	0.856	PT_Y5KY6KN9
+PT_HMF8J4EG_7316-644_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	Middle	0.857	PT_HMF8J4EG
+PT_E9PS2A96_7316-9011_Solid Tissue_Initial CNS Tumor	Male	Diffuse hemispheric glioma	DHG, H3 G35	Hemispheric	Normal	Middle	0.8590000000000001	PT_E9PS2A96
+PT_E4TXAYR6_7316-9077_Solid Tissue_Initial CNS Tumor	Female	Infant-type hemispheric glioma	IHG, ALK-altered	Hemispheric	Normal	Middle	0.86	PT_E4TXAYR6
+PT_YSYNKHAE_7316-4466_Solid Tissue_Initial CNS Tumor	Male	Pleomorphic xanthoastrocytoma	HGG, PXA	Hemispheric	Normal	Middle	0.867	PT_YSYNKHAE
+PT_Q37KKTVP_7316-6985_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	High	0.868	PT_Q37KKTVP
+PT_T8V9ES93_7316-1106_Solid Tissue_Initial CNS Tumor	Male	Pleomorphic xanthoastrocytoma	HGG, PXA	Hemispheric	Normal	High	0.871	PT_T8V9ES93
+PT_PF9EC93Q_7316-3765_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	High	0.872	PT_PF9EC93Q
+PT_SEKXH6HT_7316-4698_Solid Tissue_Initial CNS Tumor	Female	Pleomorphic xanthoastrocytoma	HGG, PXA	Hemispheric	Normal	High	0.873	PT_SEKXH6HT
+PT_H2HT2WQX_7316-619_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Unknown	High	0.8809999999999999	PT_H2HT2WQX
+PT_Z4BF2NSB_7316-161_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	High	0.8819999999999999	PT_Z4BF2NSB
+PT_0SPKM4S8_7316-2640_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Ultra-hypermutant	High	0.8859999999999999	PT_0SPKM4S8
+PT_DF8P04Y1_7316-9253_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, IDH	Hemispheric	Normal	High	0.888	PT_DF8P04Y1
+PT_4XB3YTJM_7316-388_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	High	0.89	PT_4XB3YTJM
+PT_Y660CKCB_7316-3122_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	High	0.89	PT_Y660CKCB
+PT_19GCSK2S_7316-6761_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	High	0.895	PT_19GCSK2S
+PT_DJ106XYS_7316-3935_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Other	Normal	High	0.8959999999999999	PT_DJ106XYS
+PT_6RZ363TJ_7316UP-2035_Solid Tissue_Primary Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	High	0.899	PT_6RZ363TJ
+PT_R5T773FS_7316-8029_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Posterior fossa	Normal	High	0.899	PT_R5T773FS
+PT_8HZN8J7C_7316-8034_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	High	0.91	PT_8HZN8J7C
+PT_5SKQHRC5_7316-9013_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Spine	Normal	High	0.9109999999999999	PT_5SKQHRC5
+PT_J5NSRW1Y_7316-3817_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	High	0.922	PT_J5NSRW1Y
+PT_JNEV57VK_7316-2594_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	High	0.922	PT_JNEV57VK
+PT_FYPWZBH0_7316-1085_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	High	0.9229999999999999	PT_FYPWZBH0
+PT_5BWZA0NT_7316-1102_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Ventricles	Normal	High	0.925	PT_5BWZA0NT
+PT_TPDB1WC8_7316-2777_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Unknown	High	0.9259999999999999	PT_TPDB1WC8
+PT_9KK0BAGK_7316-3161_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Posterior fossa	Normal	High	0.927	PT_9KK0BAGK
+PT_MV5WXTQV_7316-8036_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	High	0.93	PT_MV5WXTQV
+PT_2SFE7WGQ_7316-9497_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Mixed	Normal	High	0.932	PT_2SFE7WGQ
+PT_GHTSGFCT_7316-4438_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Midline	Normal	High	0.9359999999999999	PT_GHTSGFCT
+PT_MSQ6GSVP_7316-2274_Solid Tissue_Initial CNS Tumor	Female	Infant-type hemispheric glioma	IHG, NTRK-altered	Mixed	Normal	High	0.937	PT_MSQ6GSVP
+PT_89XRZBSG_7316-445_Solid Tissue_Initial CNS Tumor	Male	High-grade glioma	HGG, H3 wildtype	Hemispheric	Normal	High	0.94	PT_89XRZBSG
+PT_40HTPY49_7316-466_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	High	0.9470000000000001	PT_40HTPY49
+PT_9Z1FS69W_7316-3155_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	High	0.9490000000000001	PT_9Z1FS69W
+PT_VCD0W8HG_7316-2756_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Mixed	Normal	High	0.9490000000000001	PT_VCD0W8HG
+PT_2A5QN7QS_7316-10004_Solid Tissue_Initial CNS Tumor	Female	Diffuse hemispheric glioma	DHG, H3 G35	Hemispheric	Normal	High	0.953	PT_2A5QN7QS
+PT_ERTJRQ37_7316-9854_Solid Tissue_Initial CNS Tumor	Not Reported	Diffuse midline glioma	DMG, H3 K28	Spine	Normal	High	0.9670000000000001	PT_ERTJRQ37
+PT_FRHVM7G9_7316-9048_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	High	0.9740000000000001	PT_FRHVM7G9
+PT_ZSHEMD0K_7316-6773_Solid Tissue_Initial CNS Tumor	Male	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	High	0.9840000000000001	PT_ZSHEMD0K
+PT_FA2F3HQG_7316-3858_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	High	0.985	PT_FA2F3HQG
+PT_PR4YBBH3_7316-116_Solid Tissue_Initial CNS Tumor	Female	Diffuse midline glioma	DMG, H3 K28	Midline	Normal	High	0.986	PT_PR4YBBH3
+PT_6D9C46GC_7316-620_Solid Tissue_Initial CNS Tumor	Female	Infant-type hemispheric glioma	IHG, ROS1-altered	Hemispheric	Unknown	High	1	PT_6D9C46GC
+PT_SDPA6AAP_7316-624_Solid Tissue_Initial CNS Tumor	Female	High-grade glioma	HGG, H3 wildtype	Hemispheric	Unknown	High	1	PT_SDPA6AAP

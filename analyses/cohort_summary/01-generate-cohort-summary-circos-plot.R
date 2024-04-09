@@ -39,13 +39,15 @@ file_circos_plot <- file.path(analysis_dir, "plots", "cohort_circos.pdf")
 # Load datasets and pre-process
 hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %>% 
   # filter
-  filter(experimental_strategy == "RNA-Seq",
-         cohort == "PBTA",
+  filter(cohort == "PBTA",
+         !broad_histology %in% c("Eye tumor", "Hematologic malignancy", "Mixed tumor"),
          !is.na(pathology_diagnosis),
-         composition != "Derived Cell Line") %>%
+         !composition %in% c("Derived Cell Line", "Patient Derived Xenograft")) %>%
   # collapse reported gender to 3 groups
   mutate(reported_gender = case_when(reported_gender == "Not Reported" ~ "Unknown",
                                      TRUE ~ reported_gender),
+         germline_sex_estimate = case_when(is.na(germline_sex_estimate) ~ "Unknown",
+                                        TRUE ~ germline_sex_estimate),
          # update 7316-3066
          broad_histology = case_when(sample_id == "7316-3066" ~ "Tumor of cranial and paraspinal nerves", 
                                      broad_histology == "Other" ~ "Other tumor",
@@ -69,10 +71,7 @@ hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %
                                   TRUE ~ cancer_group))
 
 # add cancer/plot group mapping file 
-map_file <- read_tsv(file.path(input_dir, "plot-mapping.tsv")) %>%
-  # fix one hex code
-  mutate(plot_group_hex = case_when(plot_group == "DIPG or DMG" ~ "#ff40d9",
-                                    TRUE ~ plot_group_hex))
+map_file <- read_tsv(file.path(input_dir, "plot-mapping.tsv"))
 
 # add plot mapping file and old plot groups, export this.
 combined_plot_map <- hist_df %>%
@@ -84,10 +83,15 @@ combined_plot_map <- hist_df %>%
 
 # add plot mapping to histlogy df
 combined_hist_map <- hist_df %>%
-  left_join(map_file, by = c("broad_histology", "cancer_group")) 
-  
+  left_join(map_file, by = c("broad_histology", "cancer_group")) %>%
+  write_tsv(file.path(results_dir, "histologies-plot-group.tsv"))
+
+combined_hist_map <- combined_hist_map %>%
+  filter(experimental_strategy == "RNA-Seq",
+         !is.na(pathology_diagnosis))
+
 ## filter using independent specimens file
-independent_specimens_df <- read_tsv(file.path(data_dir,"independent-specimens.rnaseqpanel.primary-plus.tsv")) %>%
+independent_specimens_df <- read_tsv(file.path(data_dir,"independent-specimens.rnaseqpanel.primary.tsv")) %>%
   filter(cohort == "PBTA",
          experimental_strategy == "RNA-Seq")
 
@@ -169,7 +173,7 @@ lgd_tum_loc = Legend(title = "Tumor location",
                        at =  names(loc_cols),
                        legend_gp = gpar(fill = loc_cols))
 
-lgd_gender = Legend(title = "Sex", 
+lgd_gender = Legend(title = "Gender", 
                     at =  names(gender_cols), 
                     legend_gp = gpar(fill = gender_cols))
 

@@ -1,0 +1,244 @@
+---
+title: 'GSVA score comparisons in CLK1 treated cell lines'
+output: 
+  html_document:
+  toc: TRUE
+toc_float: TRUE
+author: Jo Lynne Rokita
+date: "2024"
+---
+
+This script compares GSVA scores for hallmark and KEGG pathways between PBTA samples with and without DNA repair gene germline PLP variants
+
+Load packages and set directories
+
+```{r load libraries, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(tibble)
+library(ComplexHeatmap)
+library(circlize)
+```
+
+Set filepaths
+```{r set directory paths}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing-impact-morpholino")
+results_dir <- file.path(analysis_dir, "results")
+plots_dir <- file.path(analysis_dir, "plots")
+source(file.path(root_dir, "figures", "theme_for_plots.R"))
+```
+
+Set file paths
+
+```{r set file paths}
+gsva_file <- file.path(results_dir, "expr_collapsed_clk1_ctrl_morpho_hallmark_gsva_scores.tsv")
+de_gsva_file <- file.path(results_dir, "expr_collapsed_de_clk1_ctrl_morpho_hallmark_gsva_scores.tsv")
+kegg_file <- file.path(results_dir, "expr_collapsed_clk1_ctrl_morpho_kegg_gsva_scores.tsv")
+de_kegg_file <- file.path(results_dir, "expr_collapsed_de_clk1_ctrl_morpho_kegg_gsva_scores.tsv")
+dna_file <- file.path(results_dir, "expr_collapsed_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv")
+de_dna_file <- file.path(results_dir, "expr_collapsed_de_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv")
+```
+
+Create histology file for grouping samples
+
+```{r load files}
+sample_ids <- c("CTRL1", "CTRL2", "CTRL3", "Treated1", "Treated2", "Treated3")
+treatments <- c("Non-targeting Morpholino", 
+                "Non-targeting Morpholino", 
+                "Non-targeting Morpholino", 
+                "CLK1 Exon 4 Morpholino", 
+                "CLK1 Exon 4 Morpholino",
+                "CLK1 Exon 4 Morpholino")
+df <- tibble(sample_id = sample_ids, Treatment = treatments)
+
+# read in scores and de results
+hallmark_scores <- read_tsv(gsva_file)
+hallmark_pathways <- unique(hallmark_scores$geneset)
+
+kegg_scores <- read_tsv(kegg_file)
+kegg_pathways <- unique(kegg_scores$geneset)
+
+dna_scores <- read_tsv(dna_file)
+dna_pathways <- unique(dna_scores$geneset)
+
+hallmark_scores_de <- read_tsv(de_gsva_file)
+hallmark_pathways_de <- unique(hallmark_scores_de$geneset)
+
+kegg_scores_de <- read_tsv(de_kegg_file)
+kegg_pathways_de <- unique(kegg_scores_de$geneset)
+
+dna_scores_de <- read_tsv(de_dna_file)
+dna_pathways_de <- unique(dna_scores_de$geneset)
+```
+
+Run GSVA score comparisons between samples with and without CLK1 morpholino
+
+```{r compare scores}
+# Define repair gene source input directories 
+treat_ids <- df %>%
+  filter(Treatment == "CLK1 Exon 4 Morpholino") %>%
+  pull(sample_id) %>%
+  unique()
+
+ctrl_ids <- df %>%
+  filter(Treatment == "Non-targeting Morpholino") %>%
+  pull(sample_id) %>%
+  unique()
+```
+
+# define data frame to store GSVA scores, differences between groups, and corresponding test statistic p-values 
+# Assuming you have defined kegg_pathways, hallmark_pathways, dna_pathways lists
+# And kegg_scores, hallmark_scores, dna_scores data frames with columns 'geneset', 'sample_id', and 'gsva_score'
+# treat_ids and ctrl_ids are vectors containing IDs for treated and control samples
+```{r create gene lists}
+# Lists of score data frames and pathway lists
+score_sources <- list(kegg_scores, hallmark_scores, dna_scores, kegg_scores_de, hallmark_scores_de, dna_scores_de)
+pathway_sources <- list(kegg_pathways, hallmark_pathways, dna_pathways, kegg_pathways_de, hallmark_pathways_de, dna_pathways_de)
+score_names <- c("kegg", "hallmark", "dna_repair", "kegg_de", "hallmark_de", "dna_repair_de") # Names for output files
+
+for (i in 1:length(score_sources)) {
+  score_df <- score_sources[[i]]
+  pathway_list <- pathway_sources[[i]]
+  score_name <- score_names[i]
+  
+  gsva_res <- data.frame(pathway = pathway_list,
+                         treat_score = rep(0, length(pathway_list)),
+                         ctrl_score = rep(0, length(pathway_list)),
+                         score_diff = rep(0, length(pathway_list)),
+                         wilcox_stat = rep(0, length(pathway_list)),
+                         pvalue = rep(0, length(pathway_list)))
+  
+ for (k in 1:length(pathway_list)) {
+    treat_scores <- score_df[score_df$geneset == pathway_list[k] & score_df$sample_id %in% treat_ids, ]$gsva_score
+    ctrl_scores <- score_df[score_df$geneset == pathway_list[k] & score_df$sample_id %in% ctrl_ids, ]$gsva_score
+    
+    # Ensure treat_scores and ctrl_scores are numeric vectors
+    treat_scores <- as.numeric(treat_scores)
+    ctrl_scores <- as.numeric(ctrl_scores)
+    
+    # Proceed with mean calculation and Wilcoxon test as before
+    gsva_res$treat_score[k] <- mean(treat_scores, na.rm = TRUE)
+    gsva_res$ctrl_score[k] <- mean(ctrl_scores, na.rm = TRUE)
+    gsva_res$score_diff[k] <- gsva_res$treat_score[k] - gsva_res$ctrl_score[k]
+
+    if (length(treat_scores) > 0 && length(ctrl_scores) > 0) {
+      test_result <- tryCatch({
+        wilcox.test(treat_scores, ctrl_scores, alternative = 'two.sided')
+      }, warning = function(w) {
+        return(list(statistic = NA, p.value = NA))
+      }, error = function(e) {
+        return(list(statistic = NA, p.value = NA))
+      })
+      
+      gsva_res$wilcox_stat[k] <- test_result$statistic
+      gsva_res$pvalue[k] <- test_result$p.value
+    } else {
+      gsva_res$wilcox_stat[k] <- NA
+      gsva_res$pvalue[k] <- NA
+    }
+}
+
+  
+  # Write to output
+  output_filename <- paste0("gsva_score_diff_", score_name, ".tsv")
+  write_tsv(gsva_res, file.path(results_dir, output_filename))
+}
+```
+
+Plot single samples
+```{r gsva heatmaps}
+# create anno colors
+top_annot <- df %>%
+  dplyr::select(Treatment) %>%
+  as.data.frame()
+anno_col <- list(Treatment = c("Non-targeting Morpholino" = "#FFC20A", "CLK1 Exon 4 Morpholino" = "#0C7BDC"))
+
+# Heatmap annotation
+top_anno = HeatmapAnnotation(df = top_annot,
+                         col = anno_col, show_legend = TRUE)
+ 
+# plot
+for (i in 1:length(score_sources)) {
+  score_df <- score_sources[[i]] %>%
+    mutate(geneset = gsub("HALLMARK_|KEGG_", "", geneset),
+           geneset = gsub("_", " ", geneset))
+
+  score_df_summarized <- score_df %>%
+    mutate(Treatment = ifelse(grepl("CTRL", sample_id), "Non-targeting Morpholino", "CLK1 Exon 4 Morpholino")) %>%
+    group_by(geneset, Treatment) %>%
+    summarise(Mean_GSVA_Score = mean(gsva_score, na.rm = TRUE)) %>%
+    ungroup() 
+  
+# Re-order
+ordering_metric <- score_df_summarized %>%
+  filter(Treatment == "CLK1 Exon 4 Morpholino") %>%
+  arrange(desc(Mean_GSVA_Score)) %>%
+  pull(geneset)
+
+# Apply this ordering to the 'geneset' factor
+score_df_summarized$geneset <- factor(score_df_summarized$geneset, levels = ordering_metric)
+
+  gsva_barplot <- ggplot(score_df_summarized, aes(x = geneset, y = Mean_GSVA_Score, fill = Treatment)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  theme_Publication() +
+  labs(x = "Geneset", y = "Mean GSVA score") +
+  scale_fill_manual(values = c("Non-targeting Morpholino" = "#FFC20A", "CLK1 Exon 4 Morpholino" = "#0C7BDC")) +
+  coord_flip() +
+    theme(legend.position = "top") # Positions the legend at the top
+
+    
+  score_name <- score_names[i]
+  gsva_scores_mat <- score_df %>%
+  spread(sample_id, gsva_score) %>%
+  tibble::column_to_rownames("geneset") %>%
+  as.matrix()
+  
+  if (i %in% c(1,4)){
+    height <- 30
+    width <- 12
+    cell_width <- 3
+  }
+  else if (i %in% c(2,5)){
+    height <- 15
+    width <- 8
+    cell_width <- 3
+
+  }
+  else if (i %in% c(3,6)){
+    height <- 3.5
+    width <- 5.5
+    cell_width <- 3
+
+  }
+  
+heatmap_obj <- Heatmap(
+  gsva_scores_mat,
+  col = colorRamp2(c(-.8, 0, .8), c("blue", "white", "darkorange")),
+  name = "GSVA Scores",
+  na_col = "whitesmoke",
+  width = unit(cell_width, "cm"),
+  show_column_names = FALSE,
+  cluster_columns = FALSE,
+  row_names_gp = grid::gpar(fontsize = 12),
+  top_annotation = top_anno,
+  heatmap_legend_param = list(direction = "horizontal"),
+)
+
+gsva_heatmap <- draw(heatmap_obj, annotation_legend_side = "top", heatmap_legend_side = "top")
+
+
+output_filename <- paste0("gsva_heatmap_", score_name, ".pdf")
+pdf(file.path(plots_dir, output_filename),  height = height, width = width)
+print(gsva_heatmap)
+print(gsva_barplot)
+dev.off()
+}
+
+```
+
+Print session info
+```{r print session info}
+sessionInfo()
+```
+
+

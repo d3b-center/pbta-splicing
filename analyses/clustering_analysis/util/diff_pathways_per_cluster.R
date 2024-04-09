@@ -7,6 +7,9 @@ suppressPackageStartupMessages({
   library(Biobase)
 })
 
+# number of clusters to display
+n <- 5
+
 diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_cluster, gene_set, prefix, output_dir){
   
   # output directory
@@ -78,59 +81,69 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
     
     # save filtered output
     out_file <- paste0(prefix, "_cluster_", i, "_pathway.tsv")
-    readr::write_tsv(x = toptable_output %>% filter(P.Value < 0.05), file = file.path(output_dir, out_file))
+    readr::write_tsv(x = toptable_output %>% 
+                       filter(P.Value < 0.05), file = file.path(output_dir, out_file))
     
-    #  pull 10 most significant pathways only
+    #  pull N most significant pathways only
     DEpwys <- toptable_output %>%
-      arrange(adj.P.Val) %>%
       filter(adj.P.Val < 0.05) %>%
-      head(10) %>%
+      arrange(adj.P.Val) %>%
+      head(n) %>%
       pull(Geneset) 
     all_pathways <- c(all_pathways, DEpwys)
   }
   
-  # plot top 10 pathways
+    # plot top 5 pathways per cluster
   all_pathways <- unique(all_pathways)
+
   DEpwys_es <- Biobase::exprs(gsva_eset[all_pathways, ])
+  rownames(DEpwys_es) <- gsub("KEGG_", "", rownames(DEpwys_es))
+  rownames(DEpwys_es) <- gsub("_", " ", rownames(DEpwys_es))
   DEpwys_annot <- pData(gsva_eset[DEpwys,])
   DEpwys_annot['sample_id'] <- NULL
   DEpwys_annot$cluster_class <- as.character(DEpwys_annot$cluster_class)
   
-  # color palette for short histology
-  palettes_dir <- "../../palettes/"
-  palette_file <- file.path(palettes_dir, "short_histology_color_palette.tsv") %>% read_tsv()
   DEpwys_annot <- DEpwys_annot %>%
     rownames_to_column("Kids_First_Biospecimen_ID") %>%
     inner_join(input_clin, by = "Kids_First_Biospecimen_ID") %>%
-    inner_join(palette_file, by = "short_histology") %>%
-    dplyr::select(Kids_First_Biospecimen_ID, cluster_class, plot_group_display, hex_code) %>%
+    #inner_join(palette_file, by = "short_histology") %>%
+    dplyr::select(Kids_First_Biospecimen_ID, cluster_class, plot_group, plot_group_hex) %>%
     column_to_rownames("Kids_First_Biospecimen_ID")
   
   # rename annotation columns
   DEpwys_annot <- DEpwys_annot %>%
-    dplyr::rename("Histology" = "plot_group_display",
+    dplyr::rename("Histology" = "plot_group",
                   "Cluster" = "cluster_class")
   
-  # create annotation for cluster class
-  gg_color_hue <- function(n) {
-    hues = seq(15, 375, length = n + 1)
-    hcl(h = hues, l = 65, c = 100)[1:n]
-  }
-  l <- gg_color_hue(length(n_clusters))
-  names(l) <- as.character(n_clusters)
+  # colors for marking different clusters - to match first clustering heatmap
+  thisPal <- c("#B2DF8A","#E31A1C","#33A02C","#A6CEE3","#FB9A99","#FDBF6F",
+               "#CAB2D6","#FFFF99","#1F78B4","#B15928","#6A3D9A","#FF7F00",
+               "#2ef4ca","#f4cced","#bd18ea","#f4cc03","#05188a","#e5a25a",
+               "#06f106", #bright green
+               "#85848f", #med gray
+               "#000000", #black
+               "#076f25", #dark green
+               "#93cd7f",#lime green
+               "#4d0776" #dark purple
+  )
+  
+  l <- thisPal[1:n_cluster]
+  names(l) <- as.character(1:n_cluster)
   mycolors <- list()
   mycolors[['Cluster']] <- l 
   
-  # create annotation for short histology
+  # create annotation for plot group
   short_histology_palettes <- DEpwys_annot %>%
-    dplyr::select(Histology, hex_code) %>%
+    dplyr::select(Histology, plot_group_hex) %>%
     unique()
-  mycolors[['Histology']] <- short_histology_palettes$hex_code
+  mycolors[['Histology']] <- short_histology_palettes$plot_group_hex
   names(mycolors[['Histology']]) <- short_histology_palettes$Histology
   
   # remove colors from annotation table
-  DEpwys_annot$hex_code <- NULL
-  
+  DEpwys_annot$plot_group_hex <- NULL
+  color_palette <- colorRampPalette(c("blue", "white", "darkorange"))
+  heat_colors <- color_palette(10)
+
   pheatmap::pheatmap(DEpwys_es, scale = "row", 
                      fontsize = 8,
                      treeheight_row = 20, 
@@ -139,6 +152,8 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
                      annotation = DEpwys_annot, 
                      annotation_colors = mycolors, 
                      cluster_cols = cluster_tree, 
-                     filename = file.path(output_dir, paste0(prefix, '_top10_pathways.tiff')), 
+                     color = heat_colors,
+                     name = "GSVA score",
+                     filename = file.path(output_dir, paste0(prefix, "_top", n, "_pathways.pdf")), 
                      width = 12, height = 8)
 }
