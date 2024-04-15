@@ -29,6 +29,7 @@ Input files:
 * `03-plot_CLK1-Ex4-splicing_vs_SRSF1-expr.R` correlate CLK1 RNA expression with RNA SRSFs, phospho, and total proteomics across brain tumor types
 * `04-CLK1_PSI_plots.R` generates stacked barplot of relative inclusion/skipping of exon 4 across midline HGG tumors with differential splicing in CLK1.
 * `04-plot-diffExp_highlowSBI.R` perform differential gene expression on high vs low SBI HGG tumors
+* `05-CLK1-NF1-NMD.Rmd` correlate and ivnestigate NF1 NMD transcripts splicing found to be differentially spliced in morpholino in our patient samples
 
 
 ## Directory structure
