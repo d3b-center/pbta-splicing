@@ -15,6 +15,7 @@ suppressPackageStartupMessages({
   library("EnhancedVolcano")
   library("DESeq2")
   library(ggplot2)
+  library('tidyverse')
 })
 
 
@@ -37,9 +38,8 @@ figures_dir <- file.path(root_dir, "figures")
 source(file.path(figures_dir, "theme_for_plots.R"))
 
 ## output files for final plots and results
-file_volc_hgg_plot <-  "enhancedVolcano_hgg_sbi.pdf"
-file_barplot_SFs_plot <- "barplot_hgg_SFs.pdf"
-
+plot_file <-  "barplot-sbi-SFs.pdf"
+volc_file <-  "enhancedVolcano-sbi.pdf"
 gene_sign_list_file <- "diffSFs_sig_genes.txt"
 
 ## get and setup input files
@@ -48,7 +48,7 @@ sbi_coding_file  <- file.path(root_dir, "analyses/splicing_index/results/splicin
 indep_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 indep_df <- read_tsv(indep_file)
 
-clin_file <- file.path(data_dir, "histologies.tsv")
+clin_file <- file.path(data_dir, "histologies-plot-group.tsv")
 clin_tab  <-  read_tsv(clin_file) %>%
   filter(cohort == "PBTA",
          RNA_library == 'stranded',
@@ -59,12 +59,6 @@ file_gene_counts <- file.path(data_dir,"gene-counts-rsem-expected_count-collapse
 # get splicing factor list to subset later
 sf_file <- file.path(analysis_dir, "input/splicing_factors.txt")
 sf_list <- readr::read_lines(sf_file)
-
-## get clinical histlogy file filtered by HGG samples
-#clin_tab <- readr::read_tsv(clin_file, guess_max = 100000) %>% 
-#  filter(short_histology == 'HGAT',
-#         RNA_library == 'stranded',
-#         cohort == 'PBTA')
 
 hgg_bs_id <- clin_tab %>%
   # Select only "RNA-Seq" samples
@@ -89,14 +83,6 @@ bs_list <- list("all_hgg" = hgg_bs_id, "dmg" = dmg_bs_id, "other_hgg" = other_hg
 names <- names(bs_list)
 
 for (each in names) {
-  # Assign correct plot file
-  if (each == "all_hgg") {
-    plot_file <- hgg_plot_file
-  } else if (each == "dmg") {
-    plot_file <- dmg_plot_file
-  } else if (each == "other_hgg") {
-    plot_file <- other_hgg_plot_file
-  }
   
   # Filter the DataFrame based on current group's IDs
   new_sbi_df <- sbi_coding_df %>%
@@ -157,8 +143,6 @@ for (each in names) {
   res <- as_tibble(res) %>% 
     tibble::add_column(gene=count_data_sf$gene) 
   
-  print (res)
-  
   volc_hgg_plot <- EnhancedVolcano(res,
                                    lab = gsub("ENSG[1234567890]+[.][1234567890]+_", "",count_data_sf$gene), ## remove ensembleid portion
                                    x = 'log2FoldChange',
@@ -204,13 +188,13 @@ for (each in names) {
     ylim(c(0,45))
   
   # Save plots as PDF
-  pdf(file.path(plots_dir, paste0(each,"-",file_volc_hgg_plot)), 
+  pdf(file.path(plots_dir, paste0(each,"-",volc_file)), 
       width = 8, height = 8)
   print(volc_hgg_plot)
   dev.off()
   
   # Save plot as PDF
-  pdf(file.path(plots_dir, paste0(each,"-",file_barplot_SFs_plot)), 
+  pdf(file.path(plots_dir, paste0(each,"-",plot_file)), 
       width = 4, height = 6)
   print(plot_barplot_family)
   dev.off()
