@@ -1,0 +1,532 @@
+---
+title: "CLK1 impact on NF1 NMD transcripts"
+author: "Ammar S Naqvi"
+date: "2024-04-05"
+output: 
+  html_document:
+    theme: united
+    toc: yes
+    toc_float:
+      collapsed: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##  Load libraris
+```{r echo='false'}
+## load libraries
+suppressPackageStartupMessages({
+  library("ggplot2")
+  library("tidyverse")
+  library("ggpubr")
+  library("vroom")
+  library('data.table')
+  library('grid')
+  library('gridExtra')
+})
+```
+
+## Set up directories and define input files
+```{r echo='false' }
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing_correlations")
+results_dir <- file.path(analysis_dir, "results")
+
+plots_dir <- file.path(analysis_dir, "plots")
+figures_dir <- file.path(root_dir, "figures")
+
+## theme for all plots
+figures_dir <- file.path(root_dir, "figures")
+source(file.path(figures_dir, "theme_for_plots.R"))
+
+## define input files
+clin_file <- file.path(data_dir,"histologies-plot-group.tsv")
+rsem_transc_counts <- file.path(data_dir,"rna-isoform-expression-rsem-tpm.rds")
+rsem_tpm_counts <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
+rmats_clk1_file <- file.path(data_dir, "clk1-splice-events-rmats.tsv")
+rmats_nf1_file <- file.path(results_dir, "nf1-splice-events-rmats.tsv")
+```
+
+## Retrieve and store splicing/expression info, including CLK1 and NF1 targeted PSIs 
+```{r  echo='false'}
+## get CLK1 psi values 
+indep_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
+indep_df <- vroom(indep_file, show_col_types = FALSE)
+
+## read in histology file and count data
+## filter histology file for all HGG, only stranded samples
+histologies_df  <-  read_tsv(clin_file) %>%
+  filter(cohort == "PBTA",
+         experimental_strategy == "RNA-Seq",
+         Kids_First_Biospecimen_ID %in% indep_df$Kids_First_Biospecimen_ID,
+         RNA_library == 'stranded'
+  ) 
+
+hgg_bs_id <- histologies_df %>%
+  filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma")) 
+
+NF1_rmats <- fread(rmats_nf1_file) %>%
+  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID,
+                geneSymbol=="NF1",
+                splicing_case =='SE',
+                  exonStart_0base=='31252937', 
+                exonEnd=='31253000') %>% 
+  dplyr::select(sample_id, IncLevel1)
+
+CLK1_rmats <- fread(rmats_clk1_file) %>%
+  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID,
+                geneSymbol=="CLK1",
+               exonStart_0base=="200860124", 
+               exonEnd=="200860215") %>% 
+  dplyr::select(sample_id, IncLevel1)
+  
+##CLK1 SE NMD target
+NF1_morpo_SE_rmats <- fread(rmats_nf1_file) %>%
+  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID,
+                geneSymbol=="NF1",
+                splicing_case =='SE',
+                exonStart_0base=='31338001', 
+                exonEnd=='31338139') %>% 
+  dplyr::select(sample_id, IncLevel1) %>% 
+  mutate(Isoform='NF1_SE')
+
+## CLK1 RI NMD target
+NF1_morpo_RI_rmats <- fread(rmats_nf1_file) %>%
+  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID,
+                geneSymbol=="NF1",
+                splicing_case =='RI',
+                riExonStart_0base=='31229024', 
+                riExonEnd=='31229974') %>% 
+  dplyr::select(sample_id, IncLevel1) %>% 
+  mutate(Isoform='NF1_RI')
+
+NF1_NMD_rmats_df <- rbind(NF1_morpo_SE_rmats,
+                          NF1_morpo_RI_rmats)
+
+```
+
+## Generate PSI box plots across tumors for CLK1 PSI to assess Exon 4 inclusion rates across tumors
+```{r}
+plot_CLK1_PSI_df <- CLK1_rmats %>% 
+  dplyr::rename(Kids_First_Biospecimen_ID=sample_id) %>%
+  inner_join(histologies_df, by='Kids_First_Biospecimen_ID') %>%
+  select(Kids_First_Biospecimen_ID,IncLevel1,plot_group) %>%
+   mutate(plot_group_wrapped = stringr::str_wrap(plot_group, width = 10))
+
+## box plot of NF1-NMD
+plot_CLK1_PSI <-  ggplot(plot_CLK1_PSI_df, aes(plot_group, IncLevel1) ) +  
+  ylab(expression(bold("PSI"))) +
+  ggforce::geom_sina(aes(color = plot_group, alpha = 0.4), pch = 16, size = 3, method="density") +
+  geom_boxplot(outlier.shape = NA, color = "black", size = 0.2, coef = 0, aes(alpha = 0.4)) +
+  #scale_color_manual(name = "Isoform", values = c(NF1_SE = "#0C7BDC", NF1_SE = "#FFC20A"))  + 
+  theme_Publication() + 
+  labs(y="CLK1 Percent Spliced In (PSI)", x= "Histology") +
+  theme(legend.position="none", 
+        axis.text.x = element_text(angle = 40, hjust = 1)) +  # Angles x-axis text
+  ylim(c(-.01,1.01))
+
+# save plot
+pdf(file.path(paste(plots_dir, "/CLK1_PSI-boxplot.pdf", sep = "")), width = 9, height = 7)
+print(plot_CLK1_PSI)
+dev.off()
+
+plot_CLK1_PSI
+```
+
+## Generate boxplots of NF1-NMD PSIs (RI and SE) to assess levels of exon and retained intron splicing
+```{r}
+plot_NMD_PSI_df <- NF1_NMD_rmats_df %>% 
+  dplyr::rename(Kids_First_Biospecimen_ID=sample_id) %>%
+  inner_join(histologies_df, by='Kids_First_Biospecimen_ID') %>%
+  select(Isoform,IncLevel1,Kids_First_Biospecimen_ID, Isoform,plot_group) %>%
+   mutate(plot_group_wrapped = stringr::str_wrap(plot_group, width = 10)
+         )
+
+## box plot of NF1-NMD
+plot_NMD_PSI <-  ggplot(plot_NMD_PSI_df, aes(plot_group, IncLevel1) ) +  
+  ylab(expression(bold("PSI"))) +
+  ggforce::geom_sina(aes(color = Isoform, alpha = 0.4), pch = 16, size = 3, method="density") +
+  geom_boxplot(outlier.shape = NA, color = "black", size = 0.2, coef = 0, aes(alpha = 0.4)) +
+  facet_wrap("Isoform") +
+  scale_color_manual(name = "Isoform", values = c(NF1_SE = "#0C7BDC", NF1_SE = "#FFC20A"))  + 
+  theme_Publication() + 
+  labs(y="Percent Spliced In (PSI)", x= "Histology") +
+  theme(legend.position="none", 
+        axis.text.x = element_text(angle = 40, hjust = 1)) +  # Angles x-axis text
+  ylim(c(-.01,1.01))
+
+# save plot
+pdf(file.path(paste(plots_dir, "/NMD_PSI-boxplot.pdf", sep = "")), width = 9, height = 7)
+print(plot_NMD_PSI)
+dev.off()
+
+plot_NMD_PSI
+```
+
+## Process and store expression of CLK1 and SRSF genes for downstream correlations
+```{r}
+## tpm table 
+tpm_df <- readRDS(rsem_tpm_counts) %>% 
+  mutate(gene = rownames(.)) 
+
+## get SRSF and CLK1
+SRSF_tpm_df <- tpm_df %>%
+  dplyr::filter(gene %in% c('SRSF1','SRSF2','SRSF3','SRSF4','SRSF5','SRSF6','SRSF7',
+                            'SRSF8','SRSF8','SRSF9','SRSF10','SRSF11')) %>%
+  dplyr::select(gene, any_of(histologies_df$Kids_First_Biospecimen_ID)) %>%
+  gather(key = "sample_id", value = "TPM", -gene) %>%
+  arrange(gene,sample_id)
+
+CLK1_tpm_df <- tpm_df %>%
+  dplyr::filter(gene %in% c('CLK1')) %>%
+  dplyr::select(gene, any_of(histologies_df$Kids_First_Biospecimen_ID)) %>%
+  gather(key = "sample_id", value = "TPM", -gene) %>%
+  arrange(gene,sample_id)
+
+## combine PSI and expr for both CLK1/SRSF11 vs NF1-NMD PSIs
+NF1_PSI_SRSF_expr_df <- SRSF_tpm_df %>%
+  inner_join(NF1_NMD_rmats_df, by= "sample_id") %>%
+  dplyr::filter(TPM > 1,
+                IncLevel1 < .98) %>% 
+  dplyr::rename(Kids_First_Biospecimen_ID=sample_id) %>%
+  inner_join(histologies_df, by='Kids_First_Biospecimen_ID') %>%
+  select(gene,TPM, IncLevel1,Kids_First_Biospecimen_ID, Isoform,plot_group) %>%
+  mutate(logExp = log(TPM, 2)) %>% 
+  dplyr::filter(gene=='SRSF11')
+
+NF1_PSI_CLK1_expr_df <- CLK1_tpm_df %>%
+  inner_join(NF1_NMD_rmats_df, by= "sample_id") %>%
+  dplyr::filter(TPM > 1,
+                IncLevel1 < .98) %>% 
+  dplyr::rename(Kids_First_Biospecimen_ID=sample_id) %>%
+  inner_join(histologies_df, by='Kids_First_Biospecimen_ID') %>%
+  select(gene,TPM, IncLevel1,Kids_First_Biospecimen_ID, Isoform,plot_group) %>%
+  mutate(logExp = log(TPM, 2)) %>% 
+  ##only RI, bc SE is always high
+  filter(Isoform=='NF1_RI')
+```
+
+
+## Generate and correlate NF1 RI PSI (there's not much variablity for exon-splicing case) vs CLK Expr plot accross all brain tumor types
+```{r , fig.width=6, fig.height=6 }
+plot_nf1_psi_clk1_all <- ggplot(NF1_PSI_CLK1_expr_df, aes(x = IncLevel1, y = TPM)) +
+  geom_point(colour = "black") +
+  stat_smooth(method = "lm", 
+              formula = y ~ x, 
+              geom = "smooth", 
+              colour = "red",
+              fill = "pink",
+              linetype="dashed") +
+  labs(x = "NF1 RI PSI",y = "CLK1 TPM (log2)") + 
+  stat_cor(method = "spearman",
+           label.x = 0, label.y =0, size = 3) +
+  #xlim(c(0,1.1)) +
+  #ylim(c(0,4)) +
+  #facet_wrap(~Isoform, nrow = 6, scales = "free_y") + 
+  theme_Publication()
+
+# save plot
+pdf(file.path(paste(plots_dir, "/NF1-PSI-CLK1-expr-all.pdf", sep = "")), width = 4, height = 4)
+print(plot_nf1_psi_clk1_all)
+dev.off()
+
+plot_nf1_psi_clk1_all
+```
+
+## plot NF1-RI-NMD vs CLK1 expression separated out by tumor types to see if there histology-specific correlations
+```{r, fig.width=10, fig.height=18 }
+plot_nf1_psi_clk1_group <- ggplot(NF1_PSI_CLK1_expr_df, aes(x = IncLevel1, y = TPM)) +
+  geom_point(colour = "black") +
+  stat_smooth(method = "lm", 
+              formula = y ~ x, 
+              geom = "smooth", 
+              colour = "red",
+              fill = "pink",
+              linetype="dashed") +
+  labs(x = "NF1 RI PSI",y = "CLK1 TPM (log2)") + 
+  stat_cor(method = "spearman",
+           label.x = 0, label.y =0, size = 2) +
+  #xlim(c(0,1.1)) +
+  #ylim(c(0,4)) +
+  facet_wrap(~plot_group, ncol = 3, scales = "free_x") + 
+  theme_Publication()
+
+# save plot
+pdf(file.path(paste(plots_dir, "/NF1-PSI-CLK1-expr-groups.pdf", sep = "")), width = 10, height = 18)
+print(plot_nf1_psi_clk1_group)
+dev.off()
+
+plot_nf1_psi_clk1_group
+```
+
+## Now do same analysis but querying SRSF11 -- splicing factor-- to help us understand how CLK1 may be controlling NMD levels of NF1 
+```{r, fig.width=6, fig.height=6}
+plot_nf1_psi_srsf11_all <- ggplot(NF1_PSI_SRSF_expr_df, aes(x = IncLevel1, y = TPM)) +
+  geom_point(colour = "black") +
+  stat_smooth(method = "lm", 
+              formula = y ~ x, 
+              geom = "smooth", 
+              colour = "red",
+              fill = "pink",
+              linetype="dashed") +
+  labs(x = "NF1 RI PSI",y = "SRSF11 TPM (log2)") + 
+  stat_cor(method = "spearman",
+           label.x = 0, label.y =0, size = 3) +
+  #xlim(c(0,1.1)) +
+  #ylim(c(0,4)) +
+  #facet_wrap(~Isoform, nrow = 6, scales = "free_y") + 
+  theme_Publication()
+
+# save plot
+pdf(file.path(paste(plots_dir, "/NF1-PSI-SRSF11-expr-all.pdf", sep = "")), width = 4, height = 4)
+print(plot_nf1_psi_srsf11_all)
+dev.off()
+
+plot_nf1_psi_srsf11_all
+
+```
+## Generate plot for NF1-NMD transcripts vs SRSF11 expr separated out by plot group/tumor types to assess histology-specific patterns
+```{r, fig.width=10, fig.height=18}
+plot_nf1_psi_srsf11_groups <- ggplot(NF1_PSI_SRSF_expr_df, aes(x = IncLevel1, y = TPM)) +
+  geom_point(colour = "black") +
+  stat_smooth(method = "lm", 
+              formula = y ~ x, 
+              geom = "smooth", 
+              colour = "red",
+              fill = "pink",
+              linetype="dashed") +
+  labs(x = "NF1 RI PSI",y = "SRSF11 TPM (log2)") + 
+  stat_cor(method = "spearman",
+           label.x = 0, label.y =0, size = 3) +
+  #xlim(c(0,.20)) +
+  #ylim(c(0,4)) +
+  facet_wrap(~plot_group, nrow = 6, scales = "free_y") + 
+  theme_Publication()
+
+# save plot
+pdf(file.path(paste(plots_dir, "/NF1-PSI-SRSF11-expr-groups.pdf", sep = "")), width = 10, height = 18)
+print(plot_nf1_psi_srsf11_groups)
+dev.off()
+
+plot_nf1_psi_srsf11_groups
+```
+## Visualize correlations (CLK1 vs NF1-NMD-RI PSI and SRSF11 vs NF1-NMF-RI-PSI) in barplot form, highlighting signficant ones, showing red bars as neg correlations and blue as positive correlations
+```{r}
+# Calculate correlation and approximate p-value
+correlation_results_CLK1 <- NF1_PSI_CLK1_expr_df %>%
+  group_by(plot_group) %>%
+  summarize(correlation = cor(IncLevel1, TPM, method = "spearman"),
+            p_value = cor.test(IncLevel1, TPM, method = "spearman", exact = FALSE)$p.value)
+
+
+# Create correlation matrix and significance matrix
+cor_matrix_CLK1 <- matrix(correlation_results_CLK1$correlation, nrow = 1)
+p_value_matrix_CLK1 <- matrix(correlation_results_CLK1$p_value < 0.05, nrow = 1)
+
+
+# Create a dataframe with correlation values and significance indicators
+cor_df_CLK1 <- data.frame(plot_group = correlation_results_CLK1$plot_group,
+                      correlation = correlation_results_CLK1$correlation,
+                      p_value = correlation_results_CLK1$p_value)
+
+# Sort the dataframe by absolute correlation values in descending order
+cor_df_CLK1 <- cor_df_CLK1[order(abs(cor_df_CLK1$correlation), decreasing = TRUE), ]
+
+# Determine the number of negative and positive correlations
+num_negative_CLK1 <- sum(cor_df_CLK1$correlation < 0)
+num_positive_CLK1<- sum(cor_df_CLK1$correlation  > 0)
+
+# Create a column to specify the position of the bars
+cor_df_CLK1$position <- ifelse(cor_df_CLK1$correlation < 0, "Negative", "Positive")
+
+# Sort plot_group factor levels based on sorted cor_df
+cor_df_CLK1$plot_group <- factor(cor_df_CLK1$plot_group, levels = cor_df_CLK1$plot_group)
+
+plot_colors <- c("red","blue")
+names(plot_colors) <- c("Negative","Positive")
+
+# Plot using ggplot2
+plot_corr_CLK1 <- ggplot(cor_df_CLK1, aes(x = plot_group, y = abs(correlation), fill = position)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = ifelse(p_value < 0.05, "*", "")), position = position_dodge(width = 0.9), vjust = -0.5) +
+  labs(title = "CLK1 Expression vs NF1 Retained Intron PSI", x = "Histology", y = "Correlation") +
+  guides(fill = FALSE) + 
+  theme_Publication() + 
+  scale_fill_manual(values = plot_colors) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+print(plot_corr_CLK1)
+
+# Calculate correlation and approximate p-value
+correlation_results_SRSF11 <- NF1_PSI_SRSF_expr_df %>%
+  group_by(plot_group) %>%
+  summarize(correlation = cor(IncLevel1, TPM, method = "spearman"),
+            p_value = cor.test(IncLevel1, TPM, method = "spearman", exact = FALSE)$p.value)
+
+
+# Create correlation matrix and significance matrix
+cor_matrix_SRSF11 <- matrix(correlation_results_SRSF11$correlation, nrow = 1)
+p_value_matrix_SRSF11 <- matrix(correlation_results_SRSF11$p_value < 0.05, nrow = 1)
+
+
+# Create a dataframe with correlation values and significance indicators
+cor_df_SRSF11 <- data.frame(plot_group = correlation_results_SRSF11$plot_group,
+                      correlation = correlation_results_SRSF11$correlation,
+                      p_value = correlation_results_SRSF11$p_value)
+
+# Sort the dataframe by absolute correlation values in descending order
+cor_df_SRSF11 <- cor_df_SRSF11[order(abs(cor_df_SRSF11$correlation), decreasing = TRUE), ]
+
+# Determine the number of negative and positive correlations
+num_negative_SRSF11 <- sum(cor_df_SRSF11$correlation < 0)
+num_positive_SRSF11 <- sum(cor_df_SRSF11$correlation > 0)
+
+# Create a column to specify the position of the bars
+cor_df_SRSF11$position <- ifelse(cor_df_SRSF11$correlation < 0, "Negative", "Positive")
+
+# Sort plot_group factor levels based on sorted cor_df
+cor_df_SRSF11$plot_group <- factor(cor_df_SRSF11$plot_group, levels = cor_df_SRSF11$plot_group)
+
+# Plot using ggplot2
+plot_corr_SRSF11 <- ggplot(cor_df_SRSF11, aes(x = plot_group, y = abs(correlation), fill = position)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = ifelse(p_value < 0.05, "*", "")), position = position_dodge(width = 0.9), vjust = -0.5) +
+  labs(title = "SRSF11 Expression vs NF1 Retained Intron PSI", x = "Histology", y = "Correlation") +
+  guides(fill = FALSE) + 
+  theme_Publication() + 
+  scale_fill_manual(values = plot_colors) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+print(plot_corr_SRSF11)
+```
+
+## combine barplots from above so we can see both CLK1 and SRSF11 correlation results for each histology. If same direction and signficant it may indicate that NF1 splicing is impacted by CLK1 through SRSF11 regulation 
+```{r}
+## combine plots
+cor_df_combined <- inner_join(cor_df_CLK1,cor_df_SRSF11, by='plot_group', suffix = c("_CLK1","_SRSF11"))
+
+g.mid <- ggplot(cor_df_combined,aes(x=1,y=plot_group)) +
+  geom_text(aes(label=plot_group), size = 4.25) +
+  ylab(NULL)+
+  xlab(NULL) +
+  scale_x_continuous(expand=c(0,0),limits=c(0.94,1.06))+
+  theme(axis.title=element_blank(),
+        panel.grid=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.background=element_blank(),
+        axis.text.x=element_text(color=NA),
+        axis.ticks.x=element_line(color=NA),
+        plot.margin = unit(c(2,1,10,2), "mm")) 
+
+g1 <- ggplot(cor_df_combined, 
+             aes(x = plot_group, 
+                 y = abs(correlation_CLK1), 
+                 fill = position_CLK1)) +
+  geom_bar(stat = "identity", position = "dodge") +
+ labs(title = "", x = "", y = "") +
+  guides(fill = FALSE) + 
+  theme_Publication() + 
+  scale_fill_manual(values = plot_colors) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  theme(#axis.title.x = element_blank(), 
+    axis.title.y = element_blank(), 
+    axis.text.y = element_blank(), 
+    axis.ticks.y = element_blank(), 
+    plot.margin = unit(c(2,1,1,1), "mm"),
+    axis.line.y.left = element_blank(),
+    panel.grid.major.y = element_blank(),  # Remove major grid lines
+    panel.grid.minor.y = element_blank())  + # Remove minor grid lines
+  scale_y_reverse(limits = c(.75,0)) +
+  coord_flip() +
+  geom_text(aes(label = ifelse(p_value_CLK1 < 0.05, "*    ", "")), 
+            position = position_dodge(width = 1), 
+            vjust = 0.5) 
+
+g2 <- ggplot(cor_df_combined, aes(x = plot_group, y = abs(correlation_SRSF11), fill = position_SRSF11)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "", x="", y="") +
+  guides(fill = FALSE) + 
+  theme_Publication() + 
+  scale_fill_manual(values = plot_colors) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  theme(#axis.title.x = element_blank(), 
+    axis.title.y = element_blank(), 
+    axis.text.y = element_blank(), 
+    axis.ticks.y = element_blank(),
+    plot.margin = unit(c(1,1,1,2), "mm"),
+    axis.line.y.left = element_blank(),
+    panel.grid.major.y = element_blank(),  # Remove major grid lines
+    panel.grid.minor.y = element_blank())  + # Remove minor grid lines) +
+    scale_y_continuous(limits = c(0,.75)) +
+    coord_flip() +
+  geom_text(aes(label = ifelse(p_value_SRSF11 < 0.05, "    *", "")), position = position_dodge(width = 0.9), vjust = 0.5) 
+
+gg1 <- ggplot_gtable(ggplot_build(g1))
+gg2 <- ggplot_gtable(ggplot_build(g2))
+gg.mid <- ggplot_gtable(ggplot_build(g.mid))
+grid.arrange(gg1,gg.mid,gg2,ncol=3,widths=c(2/7,1.5/7,2/7))
+
+# save plot
+pdf(file.path(paste(plots_dir, "/NF1-PSI-CLK1-SRSF11-expr_corr-groups.pdf", sep = "")), width = 9.8, height = 4)
+grid.arrange(gg1,gg.mid,gg2,ncol=3,widths=c(2/7,1.5/7,2/7))
+dev.off()
+```
+## Correlate CLK1 PSI with all NF1 known transcripts
+```{r, fig.width=10, fig.height=18}
+source(file.path(analysis_dir, "util", "function-create-scatter-plot.R"))
+
+## read in histology file and count data
+hgg_bs_id <- histologies_df %>%
+  filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma")) 
+
+
+## all transcripts
+rsem_all_transc_df <- readRDS(rsem_transc_counts) %>%
+  filter(grepl("^NF1-", gene_symbol))
+
+rsem_all_transc_tv_df <- rsem_all_transc_df %>% gather(key = "sample_id", value = "TPM", -transcript_id, -gene_symbol) %>%
+  arrange(transcript_id,sample_id)
+
+rmats_exp_CLK1_NF1_df <- rsem_all_transc_tv_df %>%
+  inner_join(CLK1_rmats, by= "sample_id") %>%
+  # need to add this so that we can use this in the plot axis
+  #mutate(transcript = paste0(transcript_id)) %>%
+  dplyr::filter(TPM > 1) %>% 
+  mutate(logExp = log(TPM, 2))
+
+
+# Convert transcript_id to factor for easier plotting
+rmats_exp_CLK1_NF1_df$transcript_id <- factor(rmats_exp_CLK1_NF1_df$transcript_id)
+
+p <- ggplot(rmats_exp_CLK1_NF1_df, aes(x = IncLevel1, y = logExp)) +
+  geom_point(colour = "black") +
+  stat_smooth(method = "lm", 
+              formula = y ~ x, 
+              geom = "smooth", 
+              colour = "red",
+              fill = "pink",
+              linetype="dashed") +
+  labs(x = "Exon 4 CLK1 PSI",y = "NF1 TPM (log2)") + 
+  stat_cor(method = "pearson",
+           label.x = 0, label.y =0, size = 2) +
+  xlim(c(0,1.1)) +
+  #ylim(c(0,4)) +
+  facet_wrap(~transcript_id, nrow = 7, scales = "free_y") + 
+  theme_Publication()
+
+print(p)
+dev.off()
+
+# save plot
+pdf(file.path(paste(plots_dir, "/NF1-transc-expr_vs_CLK1-Ex4-PSI_hgg.pdf", sep = "")), width = 14, height = 10)
+print(p)
+dev.off()
+
+
+```
+
+
