@@ -33,14 +33,8 @@ Input files:
 * `02-plot_splicing_vs_expr.R` correlate CLK1 exon 4 inclusion levels with RNA expression, including CLK1, SRSF1, SRSF2, SRSF10
 * `03-plot_CLK1-Ex4-splicing_vs_SRSF1-expr.R` correlate CLK1 RNA expression with RNA SRSFs, phospho, and total proteomics across brain tumor types
 * `04-CLK1_PSI_plots.R` generates stacked barplot of relative inclusion/skipping of exon 4 across midline HGG tumors with differential splicing in CLK1.
-<<<<<<< HEAD
-* `04-plot-diffExp_highlowSBI.R` perform differential gene expression on high vs low SBI HGG tumors
-* `05-CLK1-NF1-NMD.Rmd` correlate and ivnestigate NF1 NMD transcripts splicing found to be differentially spliced in morpholino in our patient samples
-
-=======
 * `05-CLK-SRSF-expr-correlations.R` generates scatter plots of CLK and SRSF transcript abundance vs. CLK1 exon 4 PSI and transcript abundance
 * `06-CLK1-psi-expr-SRSF-expr-prot-phospho-heatmap.R` generates summary heatmap of spearman correlation coefficients between CLK1 PSI and transcript abundance against CLK and SRSF RNA, total protein, and phosphoprotein expression
->>>>>>> main
 
 ## Directory structure
 ```
