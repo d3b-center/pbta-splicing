@@ -46,8 +46,7 @@ gene_sign_list_file <- "diffSFs_sig_genes.txt"
 sbi_coding_file  <- file.path(root_dir, "analyses/splicing_index/results/splicing_index.SE.txt")
 
 indep_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
-indep_df <- vroom(indep_file) %>% 
-  dplyr::filter(cohort=='PBTA')
+indep_df <- read_tsv(indep_file)
 
 #clin_file <- file.path(data_dir, "histologies.tsv")
 clin_tab  <-  read_tsv(clin_file) %>%
