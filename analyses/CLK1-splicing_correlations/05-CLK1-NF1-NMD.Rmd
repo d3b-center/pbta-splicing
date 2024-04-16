@@ -475,4 +475,53 @@ pdf(file.path(paste(plots_dir, "/NF1-PSI-CLK1-SRSF11-expr_corr-groups.pdf", sep 
 grid.arrange(gg1,gg.mid,gg2,ncol=3,widths=c(2/7,1.5/7,2/7))
 dev.off()
 ```
+## Correlate CLK1 PSI with all NF1 known transcripts
+```{r, fig.width=10, fig.height=18}
+source(file.path(analysis_dir, "util", "function-create-scatter-plot.R"))
+
+## read in histology file and count data
+hgg_bs_id <- histologies_df %>%
+  filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma")) 
+
+
+## all transcripts
+rsem_all_transc_df <- readRDS(rsem_transc_counts) %>%
+  filter(grepl("^NF1-", gene_symbol))
+
+rsem_all_transc_tv_df <- rsem_all_transc_df %>% gather(key = "sample_id", value = "TPM", -transcript_id, -gene_symbol) %>%
+  arrange(transcript_id,sample_id)
+
+rmats_exp_CLK1_NF1_df <- rsem_all_transc_tv_df %>%
+  inner_join(CLK1_rmats, by= "sample_id") %>%
+  # need to add this so that we can use this in the plot axis
+  #mutate(transcript = paste0(transcript_id)) %>%
+  dplyr::filter(TPM > 1) %>% 
+  mutate(logExp = log(TPM, 2))
+
+
+# Convert transcript_id to factor for easier plotting
+rmats_exp_CLK1_NF1_df$transcript_id <- factor(rmats_exp_CLK1_NF1_df$transcript_id)
+
+p <- ggplot(rmats_exp_CLK1_NF1_df, aes(x = IncLevel1, y = logExp)) +
+  geom_point(colour = "black") +
+  stat_smooth(method = "lm", 
+              formula = y ~ x, 
+              geom = "smooth", 
+              colour = "red",
+              fill = "pink",
+              linetype="dashed") +
+  labs(x = "Exon 4 CLK1 PSI",y = "NF1 TPM (log2)") + 
+  stat_cor(method = "pearson",
+           label.x = 0, label.y =0, size = 2) +
+  xlim(c(0,1.1)) +
+  #ylim(c(0,4)) +
+  facet_wrap(~transcript_id, nrow = 7, scales = "free_y") + 
+  theme_Publication()
+
+# save plot
+pdf(file.path(paste(plots_dir, "/NF1-transc-expr_vs_CLK1-Ex4-PSI_hgg.pdf", sep = "")), width = 14, height = 10)
+print(p)
+dev.off()
+```
+
 
