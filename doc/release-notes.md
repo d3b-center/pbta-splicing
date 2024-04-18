@@ -1,5 +1,89 @@
 # release notes
 
+## current release (v8)
+- Data release data: 2024-04-05
+- OpenPedCan data release date: 2024-01-03 (v13)
+	- v14 pre-release `histologies.tsv` was created in [PR 542](https://github.com/d3b-center/OpenPedCan-analysis/pull/542) and is used here
+- status: available
+
+Additional files:
+- `clk1-splice-events-rmats.tsv` and `nf1-splice-events-rmats.tsv` files from `CLK1-splicing_correlations` module results folder added
+- `histologies-plot-group.tsv` from `cohort_summary` module added
+- `snv-mutation-tmb-coding.tsv` and `snv-mutation-tmb-all.tsv` added from [PR 560](https://github.com/d3b-center/OpenPedCan-analysis/pull/560/commits/256ef04c3af141a8289a0efa68cf63b8aa4e30a4) to include missed samples
+- `rna-isoform-expression-rsem-tpm.rds` and `rna-isoform-expression-rsem-expected-counts.rds` added, but subsetted for PBTA samples
+- `gene-counts-rsem-expected_count-collapsed.rds` subsetted for PBTA samples
+- `gene-expression-rsem-tpm-collapsed.rds` subsetted for PBTA samples
+- `GTEx_Analysis_2017-06-05_v8_RSEMv1.3.0_transcript_tpm.gct.gz` from GTEX portal
+- `control-rna-isoform-expression-rsem-counts-tpm.rds` GENCODE v39 processed controls 
+
+v8
+.
+├── CLK1-CRISPR-DepMap-score.csv
+├── clk1-splice-events-rmats.tsv
+├── control-rna-isoform-expression-rsem-counts-tpm.rds
+├── OmicsDefaultModelProfiles.csv
+├── OmicsExpressionTranscriptsTPMLogp1Profile.csv
+├── consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz
+├── cptac-protein-imputed-phospho-expression-log2-ratio.tsv.gz
+├── cptac-protein-imputed-prot-expression-abundance.tsv.gz
+├── ctrl-vs-morpholino-gene-counts-rsem-expected_count.tsv
+├── ctrl-vs-morpholino-merged-rmats.tsv
+├── ctrl_vs_morpho.rsem.genes.results.tsv
+├── fusion-putative-oncogenic.tsv
+├── gbm-protein-imputed-phospho-expression-abundance.tsv.gz
+├── gbm-protein-imputed-prot-expression-abundance.tsv.gz
+├── gene-counts-rsem-expected_count-collapsed.rds
+├── gene-expression-rsem-tpm-collapsed.rds
+├── GTEx_Analysis_2017-06-05_v8_RSEMv1.3.0_transcript_tpm.gct.gz
+├── histologies-plot-group.tsv
+├── histologies.tsv
+├── hope-protein-imputed-phospho-expression-abundance.tsv.gz
+├── hope-protein-imputed-prot-expression-abundance.tsv.gz
+├── independent-specimens.methyl.primary-plus.eachcohort.tsv
+├── independent-specimens.methyl.primary-plus.tsv
+├── independent-specimens.methyl.primary.eachcohort.tsv
+├── independent-specimens.methyl.primary.tsv
+├── independent-specimens.methyl.relapse.eachcohort.tsv
+├── independent-specimens.methyl.relapse.tsv
+├── independent-specimens.rnaseq.primary-plus-pre-release.tsv
+├── independent-specimens.rnaseq.primary-pre-release.tsv
+├── independent-specimens.rnaseq.relapse-pre-release.tsv
+├── independent-specimens.rnaseqpanel.primary-plus.eachcohort.tsv
+├── independent-specimens.rnaseqpanel.primary-plus.tsv
+├── independent-specimens.rnaseqpanel.primary.eachcohort.tsv
+├── independent-specimens.rnaseqpanel.primary.tsv
+├── independent-specimens.rnaseqpanel.relapse.eachcohort.tsv
+├── independent-specimens.rnaseqpanel.relapse.tsv
+├── independent-specimens.wgs.primary-plus.eachcohort.tsv
+├── independent-specimens.wgs.primary-plus.tsv
+├── independent-specimens.wgs.primary.eachcohort.tsv
+├── independent-specimens.wgs.primary.tsv
+├── independent-specimens.wgs.relapse.eachcohort.tsv
+├── independent-specimens.wgs.relapse.tsv
+├── independent-specimens.wgswxspanel.primary-plus.eachcohort.prefer.wgs.tsv
+├── independent-specimens.wgswxspanel.primary-plus.eachcohort.prefer.wxs.tsv
+├── independent-specimens.wgswxspanel.primary-plus.prefer.wgs.tsv
+├── independent-specimens.wgswxspanel.primary-plus.prefer.wxs.tsv
+├── independent-specimens.wgswxspanel.primary.eachcohort.prefer.wgs.tsv
+├── independent-specimens.wgswxspanel.primary.eachcohort.prefer.wxs.tsv
+├── independent-specimens.wgswxspanel.primary.prefer.wgs.tsv
+├── independent-specimens.wgswxspanel.primary.prefer.wxs.tsv
+├── independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wgs.tsv
+├── independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wxs.tsv
+├── independent-specimens.wgswxspanel.relapse.prefer.wgs.tsv
+├── independent-specimens.wgswxspanel.relapse.prefer.wxs.tsv
+├── md5sum.txt
+├── morpholno.merged.rmats.tsv
+├── nf1-splice-events-rmats.tsv
+├── release-notes.md
+├── rna-isoform-expression-rsem-expected-counts.rds
+├── rna-isoform-expression-rsem-tpm.rds
+├── snv-consensus-plus-hotspots.maf.tsv.gz
+├── snv-mutation-tmb-all.tsv
+├── snv-mutation-tmb-coding.tsv
+├── snv-mutect2-tumor-only-plus-hotspots.maf.tsv.gz
+└── splice-events-rmats.tsv.gz
+
 ## current release (v7)
 - Data release data: 2024-01-08
 - OpenPedCan data release date: 2024-01-03 (v13)
