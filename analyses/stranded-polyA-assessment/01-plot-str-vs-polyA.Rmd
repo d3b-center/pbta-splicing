@@ -1,0 +1,164 @@
+---
+title: "polyA vs stranded assessment"
+author: "Ammar S Naqvi, Jo Lynne Rokita"
+date: "2024-04-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load required libraries
+
+```{r load libraries}
+library(tidyverse)
+library(data.table)
+```
+
+# Directory set up and process input data
+
+```{r define directories}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses", "stranded-polyA-assessment")
+plots_dir <- file.path(analysis_dir, "plots")
+figures_dir <- file.path(root_dir, "figures")
+```
+
+# Specify file paths
+
+```{r specify file paths}
+clin_file  <- file.path(data_dir,"histologies.tsv")
+rmats_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
+PT_RYMG3M91_scatter_path <- file.path(plots_dir, "PT_RYMG3M91_polyA_v_stranded_psi.pdf")
+PT_W5GP3F6B_scatter_path <- file.path(plots_dir, "PT_W5GP3F6B_polyA_v_stranded_psi.pdf")
+
+# Read data
+clin_df <- read_tsv(clin_file, guess_max = 100000) %>% 
+  filter(experimental_strategy=='RNA-Seq')
+
+rmats_df <- fread(rmats_file)
+
+# Load custom theme for plots
+source(file.path(figures_dir, "theme_for_plots.R"))
+
+```
+
+# Generate polyA vs stranded plots on known samples: PT_RYMG3M91 and PT_W5GP3F6B
+We would like to assess the correlation between PSI values generated with polyA vs stranded samples.
+First, samples from PT_RYMG3M91 - very tight correlation.
+
+```{r PT_RYMG3M91}
+# General plots assessing PSI in poly A vs Str for known samples PT_RYMG3M91 and PT_W5GP3F6B
+clin_to_check_df <- clin_df %>% 
+  filter(Kids_First_Participant_ID %in% c('PT_RYMG3M91', 'PT_W5GP3F6B'))
+
+# Select two sample_ids for comparison
+polya_id <- "BS_68KX6A42"
+stranded_id <- "BS_D7XRFE0R"
+
+# Filter data for selected sample IDs
+psi_PT_RYMG3M91 <- rmats_df %>% 
+  filter(sample_id %in% c(polya_id, stranded_id)) %>% 
+  filter(splicing_case=='SE') %>%
+  dplyr::mutate(SpliceID = paste(geneSymbol, exonStart_0base, exonEnd, upstreamES,upstreamEE,downstreamES,downstreamEE, sep = ":")) %>%
+  dplyr::select(sample_id,SpliceID,IncLevel1)
+
+# Filter data for the selected sample_ids
+sample1_data <- psi_PT_RYMG3M91 %>%
+  filter(sample_id == polya_id)
+sample2_data <- psi_PT_RYMG3M91 %>%
+  filter(sample_id == stranded_id)
+
+# Merge data for the same SpliceID
+merged_data <- merge(sample1_data, sample2_data, by = "SpliceID", suffixes = c("_polya", "_stranded"))
+
+# Create scatterplot using ggscatter
+library(ggplot2)
+
+# Scatter plot with outlined circles
+PT_RYMG3M91_scatter <- ggplot(merged_data, aes(x = IncLevel1_polya, y = IncLevel1_stranded)) +
+  geom_point(aes(color = "black"), shape = 21, size = 2, fill = NA) + # Outlined circles
+  geom_smooth(method = "lm", aes(color = "red"), se = TRUE) + # Regression line with confidence interval in red
+  labs(x = paste(polya_id, "PSI (poly-A)"), y = paste(stranded_id, "PSI (stranded)")) +
+  theme_Publication() + # Use a minimal theme; replace with theme_Publication() if you have it
+  scale_color_identity() # To ensure colors specified in aes() are used directly
+
+# Print the plot
+print(PT_RYMG3M91_scatter)
+
+# Save
+pdf(PT_RYMG3M91_scatter_path, height = 4, width = 4, useDingbats = FALSE)
+print(PT_RYMG3M91_scatter)
+dev.off()
+```
+
+
+# Samples from PT_W5GP3F6B
+Very tight correlation.
+
+```{r PT_W5GP3F6B}
+# Select two sample_ids for comparison from PT_W5GP3F6B
+polya_id2 <- "BS_7WM3MNZ0"
+stranded_id2 <- "BS_KABQQA0T"
+
+# Filter data for the selected sample_ids
+psi_PT_W5GP3F6B <- rmats_df %>% 
+  filter(sample_id %in% c(polya_id2, stranded_id2)) %>% 
+  filter(splicing_case=='SE') %>%
+  dplyr::mutate(SpliceID = paste(geneSymbol, exonStart_0base, exonEnd, upstreamES,upstreamEE,downstreamES,downstreamEE, sep = ":") ) %>%
+  dplyr::select(sample_id,SpliceID,IncLevel1)
+
+# Filter data for the selected sample_ids
+sample1_data <- psi_PT_W5GP3F6B %>%
+  filter(sample_id == polya_id2)
+sample2_data <- psi_PT_W5GP3F6B %>%
+  filter(sample_id == stranded_id2)
+
+# Merge data for the same SpliceID
+merged_data <- merge(sample1_data, sample2_data, by = "SpliceID", suffixes = c("_polya", "_stranded"))
+
+# Scatter plot with outlined circles
+PT_W5GP3F6B_scatter <- ggplot(merged_data, aes(x = IncLevel1_polya, y = IncLevel1_stranded)) +
+  geom_point(aes(color = "black"), shape = 21, size = 2, fill = NA) + # Outlined circles
+  geom_smooth(method = "lm", aes(color = "red"), se = TRUE) + # Regression line with confidence interval in red
+  labs(x = paste(polya_id, "PSI (poly-A)"), y = paste(stranded_id, "PSI (stranded)")) +
+  theme_Publication() + # Use a minimal theme; replace with theme_Publication() if you have it
+  scale_color_identity() # To ensure colors specified in aes() are used directly
+
+# Print the plot
+print(PT_W5GP3F6B_scatter)
+
+# Save
+pdf(PT_W5GP3F6B_scatter_path, height = 4, width = 4, useDingbats = FALSE)
+print(PT_W5GP3F6B_scatter)
+dev.off()
+```
+
+# Investigating the edge cases with low correlation
+So I did some investigating, and the 0 PSI cases essentially are splice events that have 0 inclusion junction counts. 
+So, when PSI is calculated its IJC/(IJC+SJC). 
+SJC are skip junction counts. 
+These is rare cases, but below I show an example for ABAT.
+
+This would mean that exon skipping is occurring 100% of the time. There are few cases where it's 0 in one and >70% in another condition. 
+For those cases, its likely they are very low expressed genes or non-coding.
+```{r ABAT and ENSG00000253882}
+rmats_df %>% 
+  filter(sample_id=='BS_68KX6A42', geneSymbol=='ABAT') %>% 
+  dplyr::select(IJC_SAMPLE_1,SJC_SAMPLE_1, exonStart_0base, exonEnd)
+
+rmats_df %>% 
+  filter(geneSymbol=='ENSG00000253882') %>% 
+  dplyr::select(IJC_SAMPLE_1,SJC_SAMPLE_1, exonStart_0base, exonEnd)
+
+```
+
+
+# Save Session info
+```{r session info}
+sessionInfo()
+```
+
+
