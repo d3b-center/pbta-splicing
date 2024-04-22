@@ -28,7 +28,7 @@ echo "bedtools intersect...";
 bash 02-run_bedtools_intersect.sh
 
 echo "make tab for ggplot ...";
-bash 03-format_for_ggplot.sh
+perl 03-format_for_ggplot.pl
 
 ## make plots
 echo "make plots ...";
