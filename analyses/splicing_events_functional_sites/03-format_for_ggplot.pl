@@ -4,16 +4,16 @@ use strict;
 use warnings;
 
 # Generate for ggplot for all events corresponding to functional sites
-open(my $out_pos, '>', 'results/splicing_events.SE.total.pos.intersectUnip.ggplot.txt') or die "Cannot open file: $!";
+open(my $out_pos, '>', 'results/splicing_events.SE.total.pos.intersectunip.ggplot.txt') or die "Cannot open file: $!";
 print $out_pos "SpliceID\tdPSI\tUniprot\n";
 
-open(my $out_neg, '>', 'results/splicing_events.SE.total.neg.intersectUnip.ggplot.txt') or die "Cannot open file: $!";
+open(my $out_neg, '>', 'results/splicing_events.SE.total.neg.intersectunip.ggplot.txt') or die "Cannot open file: $!";
 print $out_neg "SpliceID\tdPSI\tUniprot\n";
 
 sub process_file {
     my ($prefix, $suffix, $category, $output) = @_;
 
-    open(my $in, '<', "results/splicing_events.SE.total.$prefix.intersectUnip$suffix.hg38.col.wo.txt") or die "Cannot open file: $!";
+    open(my $in, '<', "results/splicing_events.SE.total.$prefix.intersectunip$suffix.hg38.col.wo.txt") or die "Cannot open file: $!";
     my %seen;
     while (my $line = <$in>) {
         chomp $line;
