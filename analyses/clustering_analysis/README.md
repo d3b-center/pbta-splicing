@@ -32,7 +32,7 @@ These scripts will generate the following input files in the `input` directory:
 ```
 input
 ├── pan_cancer_splicing_SE.gene.rds #  pbta splicing data matrix. Rows are unique features and Columns are Kids_First_Biospecimen_Identifier
-├── kegg_geneset_mrna.rds # kegg gene set for enrichment analyses
+├── hallmark_splice_geneset_mrna.rds # HALLMARK + KEGG SPLICEOSOME gene set for enrichment analyses
 └── raw_counts_pbta_subset.rds # pbta mRNA data matrix subsetted to samples in the splicing matrix. Rows are unique features and Columns are Kids_First_Biospecimen_Identifier
 ```
 
