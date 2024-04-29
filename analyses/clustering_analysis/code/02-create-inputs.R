@@ -42,11 +42,16 @@ saveRDS(pbta_subset, file = counts_rds_output)
 
 
 # 3) create KEGG input file
+human_hallmark  <- msigdbr::msigdbr(species = "Homo sapiens", category = "H") ## human hallmark genes from `migsdbr` package. The loaded data is a tibble.
+
 kegg_db <- msigdbr::msigdbr(species = "Homo sapiens", category = "C2", subcategory = "CP:KEGG")
 kegg_db <- kegg_db %>%
   dplyr::select(gene_symbol, gs_name) %>%
   unique() %>%
   unstack()
+
+splice_genelist <- kegg_db$KEGG_SPLICEOSOME
+
 
 keggdb_rds_output <- file.path(input_dir,"kegg_geneset_mrna.rds")
 saveRDS(kegg_db, file = keggdb_rds_output)
