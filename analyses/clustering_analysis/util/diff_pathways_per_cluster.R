@@ -7,8 +7,8 @@ suppressPackageStartupMessages({
   library(Biobase)
 })
 
-# number of clusters to display
-n <- 5
+# number of pathways per cluster to display
+n <- 2
 
 diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_cluster, gene_set, prefix, output_dir){
   
@@ -97,7 +97,7 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
   all_pathways <- unique(all_pathways)
 
   DEpwys_es <- Biobase::exprs(gsva_eset[all_pathways, ])
-  rownames(DEpwys_es) <- gsub("KEGG_", "", rownames(DEpwys_es))
+  rownames(DEpwys_es) <- gsub("KEGG_|HALLMARK_", "", rownames(DEpwys_es))
   rownames(DEpwys_es) <- gsub("_", " ", rownames(DEpwys_es))
   DEpwys_annot <- pData(gsva_eset[DEpwys,])
   DEpwys_annot['sample_id'] <- NULL
@@ -142,7 +142,7 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
   # remove colors from annotation table
   DEpwys_annot$plot_group_hex <- NULL
   color_palette <- colorRampPalette(c("blue", "white", "darkorange"))
-  heat_colors <- color_palette(10)
+  heat_colors <- color_palette(6)
 
   pheatmap::pheatmap(DEpwys_es, scale = "row", 
                      fontsize = 8,
@@ -155,5 +155,5 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
                      color = heat_colors,
                      name = "GSVA score",
                      filename = file.path(output_dir, paste0(prefix, "_top", n, "_pathways.pdf")), 
-                     width = 12, height = 8)
+                     width = 12, height = 6)
 }
