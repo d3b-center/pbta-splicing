@@ -1,12 +1,7 @@
-FROM --platform=linux/amd64 rocker/tidyverse:4.2
-MAINTAINER naqvia@chop.edu
+FROM rocker/tidyverse:4.4.0
+LABEL maintainer = "Ammar S. Naqvi (naqvia@chop.edu)"
 WORKDIR /rocker-build/
 
-RUN RSPM="https://packagemanager.rstudio.com/cran/2022-10-07" \
-  && echo "options(repos = c(CRAN='$RSPM'), download.file.method = 'libcurl')" >> /usr/local/lib/R/etc/Rprofile.site
-
-COPY scripts/install_bioc.r .
-COPY scripts/install_github.r .
 
 ### Install apt-getable packages to start
 #########################################
@@ -40,61 +35,63 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
   default-jdk \
   libxt6
 
+# Set the Bioconductor repository as the primary repository
+RUN R -e "options(repos = BiocManager::repositories())"
 
-## install annoFuse
-RUN ./install_github.r 'd3b-center/annoFuseData' --ref '321bc4f6db6e9a21358f0d09297142f6029ac7aa'
+# Install BiocManager and the desired version of Bioconductor
+RUN R -e "install.packages('BiocManager', dependencies=TRUE)"
+RUN R -e "BiocManager::install(version = '3.19')"
 
-# install R packages
-RUN ./install_bioc.r \
-	Biobase \
-	BiocManager \
-	broom \
-  circlize \
-	COINr \
-  clusterProfiler \
-  ComplexHeatmap \
-	ConsensusClusterPlus \
-	corrplot \
-  cowplot \
-  DGCA \
-	DESeq2 \
-  DOSE \
-	diptest \
-	edgeR \
-	EnhancedVolcano \
-	factoextra \
-	fgsea \
-	fpc \
-	ggpubr \
-	ggstatsplot \
-  ggthemes \
-  ggVennDiagram \
-  gridExtra \
-	GSVA \
-	hrbrthemes \
-	limma \
-	lspline \
-  msigdbr \
-	optparse \
-  org.Hs.eg.db \
-  PMCMRplus \
-	patchwork \
-	pheatmap \
-  reshape2 \
-  rstatix \
-  rtracklayer \
-  sva \
-  survival \
-  survminer \
-  UpSetR
+# Install packages
+RUN R -e 'BiocManager::install(c( \
+  "Biobase", \
+  "broom", \
+  "circlize", \
+  "COINr", \
+  "clusterProfiler", \
+  "ComplexHeatmap", \
+  "ConsensusClusterPlus", \
+  "corrplot", \
+  "cowplot", \
+  "DGCA", \
+  "DESeq2", \
+  "DOSE", \
+  "diptest", \
+  "edgeR", \
+  "EnhancedVolcano", \
+  "factoextra", \
+  "fgsea", \
+  "fpc", \
+  "ggpubr", \
+  "ggstatsplot", \
+  "ggthemes", \
+  "ggVennDiagram", \
+  "gridExtra", \
+  "GSVA", \
+  "hrbrthemes", \
+  "limma", \
+  "lspline", \
+  "msigdbr", \
+  "optparse", \
+  "org.Hs.eg.db", \
+  "PMCMRplus", \
+  "pheatmap", \
+  "reshape2", \
+  "rstatix", \
+  "rtracklayer", \
+  "R.utils", \
+  "sva", \
+  "survival", \
+  "survminer", \
+  "UpSetR" \
+))' 
 
-# install R packages from GitHub
-RUN ./install_github.r \
-	PoisonAlien/maftools
 
-# Patchwork for plot compositions
-RUN ./install_github.r  'thomasp85/patchwork' --ref 'c67c6603ba59dd46899f17197f9858bc5672e9f4'
-RUN ./install_github.r 'clauswilke/colorblindr' --ref '90d64f8fc50bee7060be577f180ae019a9bbbb84'
+## install GitHub packages
+RUN R -e "remotes::install_github('d3b-center/annoFuseData', ref = '321bc4f6db6e9a21358f0d09297142f6029ac7aa', dependencies = TRUE)"
+RUN R -e "remotes::install_github('PoisonAlien/maftools', ref = 'd99e992e768cba7bfd7d74d47b773c3575d451eb', dependencies = TRUE)"
+RUN R -e "remotes::install_github('thomasp85/patchwork', ref = '1cb732b129ed6a65774796dc1f618558c7498b66', dependencies = TRUE)"
+RUN R -e "remotes::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
 
 # install perl packages
 RUN cpanm install Statistics::Lite
