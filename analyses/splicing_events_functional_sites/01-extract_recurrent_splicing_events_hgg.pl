@@ -6,7 +6,7 @@ use Statistics::Lite qw(:all);
 #
 # Compute splicing index for each sample and generate splicing burden index tables
 ############################################################################################################
-my ($histology,$rmats_tsv,$primary_tumor_file, $splice_case) = ($ARGV[0], $ARGV[1], $ARGV[2],$ARGV[3]);
+my ($histology,$rmats_tsv,$primary_tumor_file, $splice_case, $subtype) = ($ARGV[0], $ARGV[1], $ARGV[2],$ARGV[3], $ARGV[4]);
 my (@broad_hist, @bs_id, @splicing_events);
 my (%histology_ids, %inc_levels, %bs_id_hist, %hist_check, %hist_count);
 my @splicing_events;
@@ -68,8 +68,14 @@ while (<FIL>) {
 
 
   next unless ($primary_initial_sample_list{$bs_id});
-  next unless ( ($hist=~/(high-grade)/) || ($hist=~/DMG/) );
+  #next unless ( ($hist=~/(high-grade)/)); #|| ($hist=~/DMG/) );
+  if($subtype=~/\w+/) {
+    next unless ($hist=~/$subtype/) ;
+  }
+  else{
+    next unless ( ($hist=~/(high-grade)/) || ($hist=~/DMG/) );
 
+  }
   ## make an array and store histology information and BS IDs
   push @broad_hist, $hist;
   push @bs_ids, $bs_id;
@@ -110,7 +116,15 @@ while(<FIL>)
   ## filter for HGG/histology of interest
   my $hist = $bs_id_hist{$bs_id};
   next unless $primary_initial_sample_list{$bs_id};
-  next unless ( ($hist=~/(high-grade)/) || ($hist=~/DMG/) );
+  #next unless ( ($hist=~/(high-grade)/) );# ||
+  if($subtype=~/\w+/) {
+    next unless ($hist=~/$subtype/) ;
+  }
+  else{
+    next unless ( ($hist=~/(high-grade)/) || ($hist=~/DMG/) );
+
+  }
+
 
   ## get gene name
   my $gene         = $cols[4];
@@ -225,11 +239,18 @@ foreach my $splice_event(@splicing_events_uniq)
 }
 
 ## assess each tumor samples to identify if it is aberrant (2 standard deviations from the mean)
-open(EVENTS,">results/splice_events.diff.".$splice_case.".HGG.txt");
-print EVENTS "Splice ID\tCase\tSample\tHistology\tCNS\tType\tdPSI\n";
-open(BEDPOS, ">results/splicing_events.SE.total.HGG.pos.bed");
-open(BEDNEG, ">results/splicing_events.SE.total.HGG.neg.bed");
-
+if($subtype =~/\w+/){
+  open(EVENTS,">results/splice_events.diff.".$splice_case.".".$subtype.".txt");
+  print EVENTS "Splice ID\tCase\tSample\tHistology\tCNS\tType\tdPSI\n";
+  open(BEDPOS, ">results/splicing_events.SE.total.".$subtype.".pos.bed");
+  open(BEDNEG, ">results/splicing_events.SE.total.".$subtype.".neg.bed");
+}
+else{
+  open(EVENTS,">results/splice_events.diff.".$splice_case.".txt");
+  print EVENTS "Splice ID\tCase\tSample\tHistology\tCNS\tType\tdPSI\n";
+  open(BEDPOS, ">results/splicing_events.SE.total.pos.bed");
+  open(BEDNEG, ">results/splicing_events.SE.total.neg.bed");
+}
 foreach my $sample(@bs_ids_uniq)
 {
   foreach my $splice_event(@splicing_events_uniq)
