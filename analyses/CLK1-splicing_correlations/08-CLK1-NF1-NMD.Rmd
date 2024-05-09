@@ -21,7 +21,6 @@ suppressPackageStartupMessages({
   library("ggplot2")
   library("tidyverse")
   library("ggpubr")
-  library("vroom")
   library('data.table')
   library('grid')
   library('gridExtra')
@@ -55,7 +54,7 @@ We want to retrieve CLK1 exon 4 splicing and the two NF1 splice events that came
 ```{r  echo='false'}
 ## get CLK1 psi values 
 indep_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
-indep_df <- vroom(indep_file, show_col_types = FALSE)
+indep_df <- read_tsv(indep_file)
 
 ## read in histology file and count data
 ## filter histology file for all HGG, only stranded samples
@@ -66,76 +65,55 @@ histologies_df  <-  read_tsv(clin_file, show_col_types = FALSE) %>%
          RNA_library == 'stranded'
   ) 
 
-hgg_bs_id <- histologies_df %>%
-  filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma")) 
+hgg_samples <- histologies_df %>%
+  filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma"))
 
-NF1_rmats <- fread(rmats_nf1_file) %>%
-  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID,
-                geneSymbol=="NF1",
-                splicing_case =='SE',
-                  exonStart_0base=='31252937', 
-                exonEnd=='31253000') %>% 
-  dplyr::select(sample_id, IncLevel1)
+# read in rmats file once with genes of interest
+rmats_nf1  <- fread(rmats_nf1_file) %>%
+  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID)
 
-CLK1_rmats <- fread(rmats_clk1_file) %>%
-  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID,
-                geneSymbol=="CLK1",
-               exonStart_0base=="200860124", 
-               exonEnd=="200860215") %>% 
-  dplyr::select(sample_id, IncLevel1)
-  
-##CLK1 SE NMD target
-NF1_morpo_SE_rmats <- fread(rmats_nf1_file) %>%
-  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID,
-                geneSymbol=="NF1",
-                splicing_case =='SE',
-                exonStart_0base=='31338001', 
-                exonEnd=='31338139') %>% 
-  dplyr::select(sample_id, IncLevel1) %>% 
-  mutate(Isoform='NF1_SE')
-
-## CLK1 RI NMD target
-NF1_morpo_RI_rmats <- fread(rmats_nf1_file) %>%
-  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID,
-                geneSymbol=="NF1",
-                splicing_case =='RI',
-                riExonStart_0base=='31229024', 
-                riExonEnd=='31229974') %>% 
-  dplyr::select(sample_id, IncLevel1) %>% 
-  mutate(Isoform='NF1_RI')
-
-NF1_NMD_rmats_df <- rbind(NF1_morpo_SE_rmats,
-                          NF1_morpo_RI_rmats)
-
+rmats_goi  <- fread(rmats_clk1_file) %>%
+  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID) %>%
+  bind_rows(rmats_nf1) %>%
+  # annotated the NF1 and CLK1 transcripts of interest
+  mutate(ENST_id = case_when(geneSymbol == "NF1" & splicing_case == "SE" & exonStart_0base == "31252937" & exonEnd == "31253000" ~ "ENST00000358273",
+                             geneSymbol == "NF1" & splicing_case == "SE" & exonStart_0base == "31338001" & exonEnd == "31338139" ~ "ENST00000471572",
+                             geneSymbol == "NF1" & splicing_case == "RI" & riExonStart_0base == "31229024" & riExonEnd == "31229974" ~ "ENST00000493220",
+                             geneSymbol == "CLK1" & splicing_case == "SE" & exonStart_0base == "200860124" & exonEnd == "200860215" ~ "ENST00000321356",
+                             TRUE ~ NA_character_),
+         event_type = case_when(ENST_id == "ENST00000358273" ~ "NF1_Exon23a_SE",
+                                ENST_id == "ENST00000471572" ~ "NF1_NMD_SE",
+                                ENST_id == "ENST00000493220" ~ "NF1_NMD_RI",
+                                ENST_id == "ENST00000321356" ~ "CLK1_Exon4_SE",
+                                TRUE ~ NA_character_)) %>%
+  filter(!is.na(ENST_id))
 ```
 
 ## Generate PSI box plots across tumors for CLK1 PSI 
 First, we want to visualize exon 4 inclusion across all brain tumor types, to give us a sense of how the splicing is behaving across our brain tumor histologies -- variable with HGGs to be the most heterogeneous
 ```{r}
-plot_CLK1_PSI_df <- CLK1_rmats %>% 
+plot_CLK1_PSI_df <- rmats_goi %>% 
   dplyr::rename(Kids_First_Biospecimen_ID=sample_id) %>%
-  inner_join(histologies_df, by='Kids_First_Biospecimen_ID') %>%
-  select(Kids_First_Biospecimen_ID,IncLevel1,plot_group) %>%
+  left_join(histologies_df, by='Kids_First_Biospecimen_ID') %>%
+  select(Kids_First_Biospecimen_ID,IncLevel1,plot_group, plot_group_hex, geneSymbol) %>%
+  filter(geneSymbol == "CLK1") %>%
    mutate(plot_group_wrapped = stringr::str_wrap(plot_group, width = 10))
 
-## box plot of NF1-NMD
-plot_CLK1_PSI <-  ggplot(plot_CLK1_PSI_df, aes(plot_group, IncLevel1) ) +  
-  ylab(expression(bold("PSI"))) +
-  ggforce::geom_sina(aes(color = plot_group, alpha = 0.4), pch = 16, size = 3, method="density") +
-  geom_boxplot(outlier.shape = NA, color = "black", size = 0.2, coef = 0, aes(alpha = 0.4)) +
-  #scale_color_manual(name = "Isoform", values = c(NF1_SE = "#0C7BDC", NF1_SE = "#FFC20A"))  + 
+## box plot of CLK1 exon 4, ordered by median
+plot_CLK1_PSI <- ggplot(plot_CLK1_PSI_df, aes(reorder(plot_group, IncLevel1, FUN = median), IncLevel1, colour = plot_group_hex, fill = plot_group_hex)) +  
+  ggforce::geom_sina(shape = 21, size = 3, color = "black", alpha = 0.7) + 
+  geom_boxplot(outlier.shape = NA, color = "black", size = 0.2, coef = 0, aes(alpha = 0.2)) +
   theme_Publication() + 
-  labs(y="CLK1 Percent Spliced In (PSI)", x= "Histology") +
-  theme(legend.position="none", 
-        axis.text.x = element_text(angle = 40, hjust = 1)) +  # Angles x-axis text
-  ylim(c(-.01,1.01))
+  labs(y = expression(bold("CLK1 Exon 4 PSI")), x = expression(bold("Histology"))) +
+  theme(legend.position = "none", 
+        axis.text.x = element_text(angle = 70, hjust = 1)) +
+  ylim(c(-0.01, 1.0))
 
 # save plot
-pdf(file.path(paste(plots_dir, "/CLK1_PSI-boxplot.pdf", sep = "")), width = 9, height = 7)
+pdf(file.path(plots_dir, "CLK1-psi-all-cns-boxplot.pdf"), width = 7, height = 6)
 print(plot_CLK1_PSI)
 dev.off()
 
-plot_CLK1_PSI
 ```
 
 ## Generate boxplots of NF1-NMD PSIs (RI and SE) 
