@@ -32,7 +32,7 @@ Rscript code/05-diff-genes-per-clusters.R \
 --input_mat "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_matrix.rds" \
 --cluster_output "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_ccp.rds" \
 --n_cluster "canberra" \
---gene_set "input/kegg_geneset_mrna.rds" \
+--gene_set "input/hallmark_splice_geneset_mrna.rds" \
 --prefix "non_expr_pan_cancer_splice_subset_pam_canberra_0" \
 --output_dir "output/diff_genes"
 
@@ -43,7 +43,7 @@ Rscript code/06-diff-pathways-per-clusters.R \
 --input_clin "../cohort_summary/results/histologies-plot-group.tsv" \
 --cluster_output "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_ccp.rds" \
 --n_cluster "12" \
---gene_set "input/kegg_geneset_mrna.rds" \
+--gene_set "input/hallmark_splice_geneset_mrna.rds" \
 --prefix "non_expr_pan_cancer_splice_subset_pam_canberra_0" \
 --output_dir "output/diff_pathways"
 

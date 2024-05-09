@@ -48,8 +48,8 @@ ora_dotplot_path <- file.path(plots_dir,"kinases-ora-plot.pdf")
 kinases_functional_sites = file.path(results_dir,"kinases-functional_sites.tsv")
 
 ## retrieve psi values from tables
-file_psi_pos_func <- file.path(results_dir,"splicing_events.total.HGG.pos.intersectUnip.ggplot.txt")
-file_psi_neg_func <- file.path(results_dir,"splicing_events.total.HGG.neg.intersectUnip.ggplot.txt")
+file_psi_pos_func <- file.path(results_dir,"splicing_events.SE.total.pos.intersectunip.ggplot.txt")
+file_psi_neg_func <- file.path(results_dir,"splicing_events.SE.total.neg.intersectunip.ggplot.txt")
 
 ## read table of recurrent functional splicing (skipping)
 dpsi_unip_pos <- vroom(file_psi_pos_func) %>% 
