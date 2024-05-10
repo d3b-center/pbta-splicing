@@ -1,6 +1,6 @@
 ---
 title: "CLK1 impact on NF1 NMD transcripts"
-author: "Ammar S Naqvi"
+author: "Ammar S Naqvi, Jo Lynne Rokita"
 date: "2024-04-05"
 output: 
   html_document:
@@ -26,6 +26,7 @@ suppressPackageStartupMessages({
   library('gridExtra')
   library('Hmisc')
   library('corrplot')
+  library('rtracklayer')
 })
 ```
 
@@ -49,6 +50,7 @@ rsem_transc_counts <- file.path(data_dir,"rna-isoform-expression-rsem-tpm.rds")
 rsem_tpm_counts <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
 rmats_clk1_file <- file.path(data_dir, "clk1-splice-events-rmats.tsv")
 rmats_nf1_file <- file.path(results_dir, "nf1-splice-events-rmats.tsv")
+gtf_file <- file.path(data_dir, "gencode.v39.primary_assembly.annotation.gtf.gz")
 ```
 
 ## Retrieve and store splicing/expression info
@@ -70,6 +72,21 @@ histologies_df  <-  read_tsv(clin_file, show_col_types = FALSE) %>%
 hgg_samples <- histologies_df %>%
   filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma"))
 
+# Import GTF file, get NF1 transcript types
+# nf1 transcripts from GTF
+gtf <- import(gtf_file) %>%
+  as.data.frame()
+
+nf1_gtf <- gtf %>%
+  filter(gene_name == "NF1",
+         type == "transcript") %>%
+  mutate(transcript_name_meta = case_when(transcript_type == "protein_coding" ~ paste0(transcript_name, "_PC"),
+                                          transcript_type == "processed_transcript" ~ paste0(transcript_name, "_PT"),
+                                          transcript_type == "retained_intron" ~ paste0(transcript_name, "_RI"),
+                                          transcript_type == "nonsense_mediated_decay" ~ paste0(transcript_name, "_NMD"),
+                                          TRUE ~ NA_character_)) 
+
+
 # read in rmats file once with genes of interest
 rmats_nf1  <- fread(rmats_nf1_file) %>%
   dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID)
@@ -83,10 +100,10 @@ rmats_goi  <- fread(rmats_clk1_file) %>%
                              geneSymbol == "NF1" & splicing_case == "RI" & riExonStart_0base == "31229024" & riExonEnd == "31229974" ~ "ENST00000493220",
                              geneSymbol == "CLK1" & splicing_case == "SE" & exonStart_0base == "200860124" & exonEnd == "200860215" ~ "ENST00000321356",
                              TRUE ~ NA_character_),
-         event_type = case_when(ENST_id == "ENST00000358273" ~ "NF1_Exon23a_SE", # NF1-202, also canonical
-                                ENST_id == "ENST00000471572" ~ "NF1_NMD_SE", # NF1-208
-                                ENST_id == "ENST00000493220" ~ "NF1_NMD_RI", # NF1-215
-                                ENST_id == "ENST00000321356" ~ "CLK1_Exon4_SE", # CLK1-201
+         event_type = case_when(ENST_id == "ENST00000358273" ~ "NF1-Exon23a_PSI", # NF1-202, also canonical
+                                ENST_id == "ENST00000471572" ~ "NF1-208_PSI", # NF1-208
+                                ENST_id == "ENST00000493220" ~ "NF1-215_PSI", # NF1-215
+                                ENST_id == "ENST00000321356" ~ "CLK1-Exon4_PSI", # CLK1-201
                                 TRUE ~ NA_character_)) %>%
   filter(!is.na(ENST_id))
 
@@ -186,9 +203,17 @@ gene_tpm <- readRDS(rsem_tpm_counts) %>%
   t() %>%
   as.data.frame()
 
+# we want to convert these transcript names to indicate the type of transcript from the GTF
+nf1_transcripts <- nf1_gtf %>%
+  select(transcript_name, transcript_name_meta) %>%
+  dplyr::rename(gene_symbol = transcript_name)
+
 transcript_tpm_df <- readRDS(rsem_transc_counts) %>% 
   filter(grepl("^NF1-|^CLK1-201", gene_symbol)) %>% 
   select(gene_symbol, any_of(rmats_goi_full$sample_id)) %>%
+  left_join(nf1_transcripts) %>%
+  mutate(gene_symbol = coalesce(transcript_name_meta, gene_symbol)) %>%
+  select(-transcript_name_meta) %>%
   column_to_rownames(var = "gene_symbol") %>%
   t() %>%
   as.data.frame() %>%
@@ -202,30 +227,35 @@ p.mat <- cor.mtest(mat)$p
 
 # Create correlogram
 pdf(file.path(plots_dir, "CLK1-NF1-all-cors.pdf"), width = 12, height = 12)
-corrplot(mat, type = 'lower', order = 'hclust', tl.col = 'black',
-         cl.ratio = 0.2, tl.srt = 45, col = COL2('PuOr', 10))
+corrplot(mat, type = 'lower', order = 'hclust', tl.col = 'black', diag = FALSE,
+         cl.ratio = 0.2, tl.srt = 45, col = COL2('RdYlBu', 10),
+         p.mat = p.mat, sig.level = 0.05, insig = "blank")
 dev.off()
-
 
 # subset for transcripts of interest
 subset_tpm_df <- transcript_tpm_df %>%
   as.data.frame() %>%
-  select(`Total CLK1`, `CLK1-201`, CLK1_Exon4_SE, `Total NF1`, `NF1-202`, `NF1-208`, `NF1-215`,
-         NF1_Exon23a_SE, NF1_NMD_RI, NF1_NMD_SE) %>%
+  select(`Total CLK1`, `CLK1-201`, `CLK1-Exon4_PSI`, `Total NF1`, `NF1-202_PC`, `NF1-208_PSI`, `NF1-208_NMD`, `NF1-215_PSI`, `NF1-215_RI`,
+         `NF1-Exon23a_PSI`) %>%
   as.matrix()
 
 # Compute the correlation matrix
-mat <- cor(as.matrix(subset_tpm_df))
+mat_subset <- cor(as.matrix(subset_tpm_df))
+
+items_of_interest <- c("Total CLK1", "CLK1-201", "CLK1-Exon4_PSI", "Total NF1", "NF1-202_PC", "NF1-208_PSI", "NF1-208_NMD", "NF1-215_PSI", "NF1-215_RI",
+         "NF1-Exon23a_PSI")
+
+mat_subset <- mat[items_of_interest,items_of_interest]
 
 # Perform significance testing for the correlations
-p.mat <- cor.mtest(mat)$p
+p.mat_subset <- p.mat[items_of_interest,items_of_interest]
 
 # Create correlogram
-pdf(file.path(plots_dir, "CLK1-NF1-subset-cors.pdf"), width = 10, height = 10)
-corrplot(mat, type = 'lower', order = 'hclust', tl.col = 'black',
-         cl.ratio = 0.2, tl.srt = 45, col = COL2('PuOr', 10))
+pdf(file.path(plots_dir, "CLK1-NF1-subset-cors.pdf"), width = 8, height = 8)
+corrplot(mat_subset, type = 'lower', order = 'hclust', tl.col = 'black', diag = FALSE,
+         cl.ratio = 0.2, tl.srt = 45, col = COL2('RdYlBu', 10),
+         p.mat = p.mat_subset, sig.level = 0.05, pch = '*', insig = "label_sig", pch.col = "black") 
 dev.off()
-
 
 
 
