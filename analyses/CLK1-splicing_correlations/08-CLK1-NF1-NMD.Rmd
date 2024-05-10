@@ -200,7 +200,6 @@ mat <- cor(as.matrix(transcript_tpm_df))
 # Perform significance testing for the correlations
 p.mat <- cor.mtest(mat)$p
 
-col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
 # Create correlogram
 pdf(file.path(plots_dir, "CLK1-NF1-all-cors.pdf"), width = 12, height = 12)
 corrplot(mat, type = 'lower', order = 'hclust', tl.col = 'black',
@@ -221,7 +220,6 @@ mat <- cor(as.matrix(subset_tpm_df))
 # Perform significance testing for the correlations
 p.mat <- cor.mtest(mat)$p
 
-col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
 # Create correlogram
 pdf(file.path(plots_dir, "CLK1-NF1-subset-cors.pdf"), width = 10, height = 10)
 corrplot(mat, type = 'lower', order = 'hclust', tl.col = 'black',
