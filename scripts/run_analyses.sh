@@ -31,5 +31,48 @@ bash run_module.sh
 ## histology-specific splice events
 echo "histology-specific splice events"
 cd ${analyses_dir}/histology-specific-splicing
+bash run_module.sh
 
+## splicing index
+echo "splicing index"
+cd ${analyses_dir}/splicing_index
+bash run_module.sh
+
+## survival
+echo "survival"
+cd ${analyses_dir}/survival
+bash run-survival-module.sh
+
+## splicing-factor_dysregulation
+echo "splicing factor dysregulation"
+cd ${analyses_dir}/splicing-factor_dysregulation
+bash run_module.sh
+
+## splicing events functional sites
+echo "splicing events functional sites"
+cd ${analyses_dir}/splicing_events_functional_sites
+bash run_module.sh
+
+## CLK1 splicing correlations
+echo "CLK1 splicing correlations"
+cd ${analyses_dir}/CLK1-splicing_correlations
+bash run_module.sh
+
+## oncoprint
+echo "oncoprint"
+cd ${analyses_dir}/oncoprint
+bash 01-oncoprint.R
+
+## long-read-CLK1-validation
+echo "long-read-CLK1-validation"
+bash run_module.sh
+
+## KNS42-cell-line
+echo "KNS42-cell-line"
+cd ${analyses_dir}/KNS42-cell-line
+bash run_module.sh
+
+## CLK1-splicing-impact-morpholino
+echo "CLK1-splicing-impact-morpholino"
+cd ${analyses_dir}/CLK1-splicing-impact-morpholino
 bash run_module.sh
