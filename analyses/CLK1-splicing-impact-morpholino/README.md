@@ -63,6 +63,7 @@ plots/gsva_heatmap_kegg_de.pdf
 ```
 
 ## Folder content
+* `00-get-splice-transcripts.R` identifies the transcripts which are being spliced, using the rMATs morpholino results file
 * `01-diffExpr-ctrl_vs_morph.R` performs differential expression analysis on ctrl vs treated cells using DESeq2. It also subsets based on genes of interests (transcription factors, kinases, etc)
 * `02-plot_diff-splice-events.R` plots PSI distributions of differential splice events
 * `03-run_bedtools_intersect-morpho.sh` formats rMATs output into bed format, and runs bedtools to intersect with uniprot db files
