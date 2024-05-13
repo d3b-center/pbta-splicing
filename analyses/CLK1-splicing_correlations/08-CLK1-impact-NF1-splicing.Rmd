@@ -129,7 +129,7 @@ plot_CLK1_PSI_df <- rmats_goi_full %>%
    mutate(plot_group_wrapped = stringr::str_wrap(plot_group, width = 10))
 
 ## box plot of CLK1 exon 4, ordered by median
-plot_CLK1_PSI <- ggplot(plot_CLK1_PSI_df, aes(reorder(plot_group, IncLevel1, FUN = median), IncLevel1, colour = plot_group_hex, fill = plot_group_hex)) +  
+plot_CLK1_PSI <- ggplot(plot_CLK1_PSI_df, aes(reorder(plot_group_wrapped, IncLevel1, FUN = median), IncLevel1, colour = plot_group_hex, fill = plot_group_hex)) +  
   ggforce::geom_sina(shape = 21, size = 3, color = "black", alpha = 0.7) + 
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.2, coef = 0, aes(alpha = 0.2)) +
   theme_Publication() + 
@@ -149,26 +149,25 @@ dev.off()
 We want to assess NF1 splicing across all brain tumor types, to give us a sense of how the splicing is behaving across brain tumor histologies -- for the SE splicing type we see it as very high, similar to exon 23a case, but for the RI it is much lower but also a lot more variable, which will allow us to perform correlative analyses below.
 
 ```{r}
-plot_NMD_PSI_df <- rmats_goi_full %>% 
+plot_df <- rmats_goi_full %>% 
   dplyr::rename(Kids_First_Biospecimen_ID=sample_id) %>%
   left_join(histologies_df, by='Kids_First_Biospecimen_ID') %>%
-  select(event_type,IncLevel1,Kids_First_Biospecimen_ID,plot_group) %>%
-   mutate(plot_group_wrapped = stringr::str_wrap(plot_group, width = 10))
+  select(event_type,IncLevel1,Kids_First_Biospecimen_ID,plot_group)
 
 # Calculate the median IncLevel1 for each plot_group within CLK1_Exon4_SE
-median_data <- plot_NMD_PSI_df %>%
-  filter(event_type == "CLK1_Exon4_SE") %>%
+median_data <- plot_df %>%
+  filter(event_type == "CLK1-Exon4_PSI") %>%
   group_by(plot_group) %>%
   summarise(median_IncLevel1 = median(IncLevel1, na.rm = TRUE))
 
 # Reorder plot_group levels based on the median IncLevel1 within CLK1_Exon4_SE
-plot_NMD_PSI_df$plot_group <- factor(plot_NMD_PSI_df$plot_group, levels = median_data$plot_group)
+plot_df$plot_group <- factor(plot_df$plot_group, levels = median_data$plot_group)
 
 # checking that we have an equal number of samples across all events
-table(plot_NMD_PSI_df$plot_group, plot_NMD_PSI_df$event_type)
+table(plot_df$plot_group, plot_df$event_type)
 
 # Create the plot
-plot_NMD_PSI <- ggplot(plot_NMD_PSI_df, aes(IncLevel1, plot_group, colour = event_type, fill = event_type)) +
+plot_psi <- ggplot(plot_df, aes(IncLevel1, plot_group, colour = event_type, fill = event_type)) +
   ggforce::geom_sina(shape = 21, size = 3, color = "black", alpha = 0.7) + 
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.2, coef = 0, aes(alpha = 0.2)) +
   facet_grid(. ~ event_type, scales = "free_x") + 
@@ -180,7 +179,7 @@ plot_NMD_PSI <- ggplot(plot_NMD_PSI_df, aes(IncLevel1, plot_group, colour = even
 
 # save plot
 pdf(file.path(plots_dir, "CLK1-exon4-NF1-psi-all-cns-boxplot.pdf"), width = 12, height = 7)
-print(plot_NMD_PSI)
+print(plot_psi)
 dev.off()
 
 ```
