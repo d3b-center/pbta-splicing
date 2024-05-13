@@ -1,0 +1,264 @@
+---
+title: "CLK1 impact on NF1 splicing"
+author: "Ammar S Naqvi, Jo Lynne Rokita"
+date: "2024-04-05"
+output: 
+  html_document:
+    theme: united
+    toc: yes
+    toc_float:
+      collapsed: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##  Load libraris
+```{r echo='false'}
+## load libraries
+suppressPackageStartupMessages({
+  library("ggplot2")
+  library("tidyverse")
+  library("ggpubr")
+  library('data.table')
+  library('grid')
+  library('gridExtra')
+  library('Hmisc')
+  library('corrplot')
+  library('rtracklayer')
+})
+```
+
+## Set up directories and define input files
+```{r echo='false' }
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing_correlations")
+results_dir <- file.path(analysis_dir, "results")
+
+plots_dir <- file.path(analysis_dir, "plots")
+figures_dir <- file.path(root_dir, "figures")
+
+## theme for all plots
+figures_dir <- file.path(root_dir, "figures")
+source(file.path(figures_dir, "theme_for_plots.R"))
+
+## define input files
+clin_file <- file.path(data_dir,"histologies-plot-group.tsv")
+rsem_transc_counts <- file.path(data_dir,"rna-isoform-expression-rsem-tpm.rds")
+rsem_tpm_counts <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
+rmats_clk1_file <- file.path(data_dir, "clk1-splice-events-rmats.tsv")
+rmats_nf1_file <- file.path(results_dir, "nf1-splice-events-rmats.tsv")
+gtf_file <- file.path(data_dir, "gencode.v39.primary_assembly.annotation.gtf.gz")
+
+```
+
+## Retrieve and store splicing/expression info
+We want to retrieve CLK1 exon 4 splicing and the two NF1 splice events that came up as differential/targets in the morpholino module
+```{r  echo='false'}
+## get CLK1 psi values 
+indep_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
+indep_df <- read_tsv(indep_file)
+
+## read in histology file and count data
+## filter histology file for all HGG, only stranded samples
+histologies_df  <-  read_tsv(clin_file, show_col_types = FALSE) %>%
+  filter(cohort == "PBTA",
+         experimental_strategy == "RNA-Seq",
+         Kids_First_Biospecimen_ID %in% indep_df$Kids_First_Biospecimen_ID,
+         RNA_library == 'stranded'
+  ) 
+
+hgg_samples <- histologies_df %>%
+  filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma"))
+
+# Import GTF file, get NF1 transcript types
+# nf1 transcripts from GTF
+gtf <- import(gtf_file) %>%
+  as.data.frame()
+
+nf1_gtf <- gtf %>%
+  filter(gene_name == "NF1",
+         type == "transcript") %>%
+  mutate(transcript_name_meta = case_when(transcript_type == "protein_coding" ~ paste0(transcript_name, "_PC"),
+                                          transcript_type == "processed_transcript" ~ paste0(transcript_name, "_PT"),
+                                          transcript_type == "retained_intron" ~ paste0(transcript_name, "_RI"),
+                                          transcript_type == "nonsense_mediated_decay" ~ paste0(transcript_name, "_NMD"),
+                                          TRUE ~ NA_character_)) 
+
+
+# read in rmats file once with genes of interest
+rmats_nf1  <- fread(rmats_nf1_file) %>%
+  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID)
+
+rmats_goi  <- fread(rmats_clk1_file) %>%
+  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID) %>%
+  bind_rows(rmats_nf1) %>%
+  # annotated the NF1 and CLK1 transcripts of interest
+  mutate(ENST_id = case_when(geneSymbol == "NF1" & splicing_case == "SE" & exonStart_0base == "31252937" & exonEnd == "31253000" & downstreamES == "31258343" & downstreamEE == "31258502" ~ "ENST00000358273",
+                             geneSymbol == "NF1" & splicing_case == "SE" & exonStart_0base == "31338001" & exonEnd == "31338139" ~ "ENST00000471572",
+                             geneSymbol == "NF1" & splicing_case == "RI" & riExonStart_0base == "31229024" & riExonEnd == "31229974" ~ "ENST00000493220",
+                             geneSymbol == "CLK1" & splicing_case == "SE" & exonStart_0base == "200860124" & exonEnd == "200860215" ~ "ENST00000321356",
+                             TRUE ~ NA_character_),
+         event_type = case_when(ENST_id == "ENST00000358273" ~ "NF1-Exon23a_PSI", # NF1-202, also canonical
+                                ENST_id == "ENST00000471572" ~ "NF1-208_PSI", # NF1-208
+                                ENST_id == "ENST00000493220" ~ "NF1-215_PSI", # NF1-215
+                                ENST_id == "ENST00000321356" ~ "CLK1-Exon4_PSI", # CLK1-201
+                                TRUE ~ NA_character_)) %>%
+  filter(!is.na(ENST_id))
+
+# Create a dataframe with all combinations of sample IDs and event type so we have all samples represented
+all_combinations <- expand.grid(sample_id = unique(rmats_goi$sample_id), event_type = unique(rmats_goi$event_type))
+
+# Left join with the original dataframe
+rmats_goi_full <- left_join(all_combinations, rmats_goi, by = c("sample_id", "event_type")) %>%
+  mutate(IncLevel1 = case_when(is.na(IncLevel1) ~ 0,
+                              TRUE ~ IncLevel1))
+
+```
+
+## Generate PSI box plots across tumors for CLK1 PSI 
+First, we want to visualize exon 4 inclusion across all brain tumor types, to give us a sense of how the splicing is behaving across our brain tumor histologies -- variable with HGGs to be the most heterogeneous
+```{r}
+plot_CLK1_PSI_df <- rmats_goi_full %>% 
+  dplyr::rename(Kids_First_Biospecimen_ID=sample_id) %>%
+  left_join(histologies_df, by='Kids_First_Biospecimen_ID') %>%
+  select(Kids_First_Biospecimen_ID,IncLevel1,plot_group, plot_group_hex, geneSymbol) %>%
+  filter(geneSymbol == "CLK1") %>%
+   mutate(plot_group_wrapped = stringr::str_wrap(plot_group, width = 10))
+
+## box plot of CLK1 exon 4, ordered by median
+plot_CLK1_PSI <- ggplot(plot_CLK1_PSI_df, aes(reorder(plot_group, IncLevel1, FUN = median), IncLevel1, colour = plot_group_hex, fill = plot_group_hex)) +  
+  ggforce::geom_sina(shape = 21, size = 3, color = "black", alpha = 0.7) + 
+  geom_boxplot(outlier.shape = NA, color = "black", size = 0.2, coef = 0, aes(alpha = 0.2)) +
+  theme_Publication() + 
+  labs(y = expression(bold("CLK1 Exon 4 PSI")), x = expression(bold("Histology"))) +
+  theme(legend.position = "none", 
+        axis.text.x = element_text(angle = 70, hjust = 1)) +
+  ylim(c(-0.01, 1.0))
+
+# save plot
+pdf(file.path(plots_dir, "CLK1-psi-all-cns-boxplot.pdf"), width = 7, height = 6)
+print(plot_CLK1_PSI)
+dev.off()
+
+```
+
+## Generate boxplots of CLK1 Exon 4 and NF1 PSIs (RI and SE NMD and Exon 23a) 
+We want to assess NF1 splicing across all brain tumor types, to give us a sense of how the splicing is behaving across brain tumor histologies -- for the SE splicing type we see it as very high, similar to exon 23a case, but for the RI it is much lower but also a lot more variable, which will allow us to perform correlative analyses below.
+
+```{r}
+plot_NMD_PSI_df <- rmats_goi_full %>% 
+  dplyr::rename(Kids_First_Biospecimen_ID=sample_id) %>%
+  left_join(histologies_df, by='Kids_First_Biospecimen_ID') %>%
+  select(event_type,IncLevel1,Kids_First_Biospecimen_ID,plot_group) %>%
+   mutate(plot_group_wrapped = stringr::str_wrap(plot_group, width = 10))
+
+# Calculate the median IncLevel1 for each plot_group within CLK1_Exon4_SE
+median_data <- plot_NMD_PSI_df %>%
+  filter(event_type == "CLK1_Exon4_SE") %>%
+  group_by(plot_group) %>%
+  summarise(median_IncLevel1 = median(IncLevel1, na.rm = TRUE))
+
+# Reorder plot_group levels based on the median IncLevel1 within CLK1_Exon4_SE
+plot_NMD_PSI_df$plot_group <- factor(plot_NMD_PSI_df$plot_group, levels = median_data$plot_group)
+
+# checking that we have an equal number of samples across all events
+table(plot_NMD_PSI_df$plot_group, plot_NMD_PSI_df$event_type)
+
+# Create the plot
+plot_NMD_PSI <- ggplot(plot_NMD_PSI_df, aes(IncLevel1, plot_group, colour = event_type, fill = event_type)) +
+  ggforce::geom_sina(shape = 21, size = 3, color = "black", alpha = 0.7) + 
+  geom_boxplot(outlier.shape = NA, color = "black", size = 0.2, coef = 0, aes(alpha = 0.2)) +
+  facet_grid(. ~ event_type, scales = "free_x") + 
+  theme_Publication() +
+  ylab(expression(bold("Histology"))) +
+  xlab(expression(bold("Percent Spliced In (PSI)"))) +
+  theme(legend.position = "none", 
+        axis.text.x = element_text(angle = 40, hjust = 1))
+
+# save plot
+pdf(file.path(plots_dir, "CLK1-exon4-NF1-psi-all-cns-boxplot.pdf"), width = 12, height = 7)
+print(plot_NMD_PSI)
+dev.off()
+
+```
+
+
+Let's explore whether the NF1 RI transcript is correlated with lower NF1 expression, or if high CLK1 Exon 4 PSI is correlated with lower NF1 expression
+```{r}
+# reformat the psi table
+rmats_goi_mat <- rmats_goi_full %>%
+  select(sample_id, IncLevel1, event_type) %>%
+  pivot_wider(names_from = event_type, values_from = IncLevel1) %>%
+  column_to_rownames(var = "sample_id")
+
+## tpm table 
+gene_tpm <- readRDS(rsem_tpm_counts) %>%
+  dplyr::select(any_of(rmats_goi_full$sample_id)) %>%
+  rownames_to_column(var = "gene_symbol") %>%
+  filter(gene_symbol %in% c("NF1", "CLK1")) %>%
+  mutate(gene_symbol = paste0("Total ", gene_symbol)) %>%
+  column_to_rownames(var = "gene_symbol") %>%
+  t() %>%
+  as.data.frame()
+
+# we want to convert these transcript names to indicate the type of transcript from the GTF
+nf1_transcripts <- nf1_gtf %>%
+  select(transcript_name, transcript_name_meta) %>%
+  dplyr::rename(gene_symbol = transcript_name)
+
+transcript_tpm_df <- readRDS(rsem_transc_counts) %>% 
+  filter(grepl("^NF1-|^CLK1-201", gene_symbol)) %>% 
+  select(gene_symbol, any_of(rmats_goi_full$sample_id)) %>%
+  left_join(nf1_transcripts) %>%
+  mutate(gene_symbol = coalesce(transcript_name_meta, gene_symbol)) %>%
+  select(-transcript_name_meta) %>%
+  column_to_rownames(var = "gene_symbol") %>%
+  t() %>%
+  as.data.frame() %>%
+  bind_cols(gene_tpm, rmats_goi_mat)
+
+# Compute the correlation matrix
+mat <- cor(as.matrix(transcript_tpm_df))
+
+# Perform significance testing for the correlations
+p.mat <- cor.mtest(mat)$p
+
+# Create correlogram
+pdf(file.path(plots_dir, "CLK1-NF1-all-cors.pdf"), width = 12, height = 12)
+corrplot(mat, type = 'lower', order = 'hclust', tl.col = 'black', diag = FALSE,
+         cl.ratio = 0.2, tl.srt = 45, col = COL2('RdYlBu', 10),
+         p.mat = p.mat, sig.level = 0.05, insig = "blank")
+dev.off()
+
+# subset for transcripts of interest
+subset_tpm_df <- transcript_tpm_df %>%
+  as.data.frame() %>%
+  select(`Total CLK1`, `CLK1-201`, `CLK1-Exon4_PSI`, `Total NF1`, `NF1-202_PC`, `NF1-208_PSI`, `NF1-208_NMD`, `NF1-215_PSI`, `NF1-215_RI`,
+         `NF1-Exon23a_PSI`) %>%
+  as.matrix()
+
+# Compute the correlation matrix
+mat_subset <- cor(as.matrix(subset_tpm_df))
+
+items_of_interest <- c("Total CLK1", "CLK1-201", "CLK1-Exon4_PSI", "Total NF1", "NF1-202_PC", "NF1-208_PSI", "NF1-208_NMD", "NF1-215_PSI", "NF1-215_RI",
+         "NF1-Exon23a_PSI")
+
+mat_subset <- mat[items_of_interest,items_of_interest]
+
+# Perform significance testing for the correlations
+p.mat_subset <- p.mat[items_of_interest,items_of_interest]
+
+# Create correlogram
+pdf(file.path(plots_dir, "CLK1-NF1-subset-cors.pdf"), width = 8, height = 8)
+corrplot(mat_subset, type = 'lower', order = 'hclust', tl.col = 'black', diag = FALSE,
+         cl.ratio = 0.2, tl.srt = 45, col = COL2('RdYlBu', 10),
+         p.mat = p.mat_subset, sig.level = 0.05, pch = '*', insig = "label_sig", pch.col = "black") 
+dev.off()
+
+
+
+```
+

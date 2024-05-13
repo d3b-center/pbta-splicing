@@ -1,0 +1,53 @@
+---
+title: "NF1 splice variant exploration"
+author: "Ammar S Naqvi, Jo Lynne Rokita"
+date: "2024-04-05"
+output: 
+  html_document:
+    theme: united
+    toc: yes
+    toc_float:
+      collapsed: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+##  Load libraris
+```{r echo='false'}
+## load libraries
+suppressPackageStartupMessages({
+  library("ggplot2")
+  library("tidyverse")
+  library("ggpubr")
+  library('data.table')
+  library('grid')
+  library('gridExtra')
+})
+```
+
+## Set up directories and define input files
+```{r echo='false' }
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing_correlations")
+results_dir <- file.path(analysis_dir, "results")
+
+plots_dir <- file.path(analysis_dir, "plots")
+figures_dir <- file.path(root_dir, "figures")
+
+## theme for all plots
+figures_dir <- file.path(root_dir, "figures")
+source(file.path(figures_dir, "theme_for_plots.R"))
+
+## define input files
+clin_file <- file.path(data_dir,"histologies-plot-group.tsv")
+rsem_transc_counts <- file.path(data_dir,"rna-isoform-expression-rsem-tpm.rds")
+rsem_tpm_counts <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
+histologies_file <- file.path(root_dir, "analyses", "cohort_summary", "results", "histologies-plot-group.tsv")
+rmats_clk1_file <- file.path(data_dir, "clk1-splice-events-rmats.tsv")
+rmats_nf1_file <- file.path(results_dir, "nf1-splice-events-rmats.tsv")
+
+```
