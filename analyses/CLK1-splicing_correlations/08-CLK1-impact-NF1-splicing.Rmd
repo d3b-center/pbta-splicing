@@ -221,7 +221,8 @@ transcript_tpm_df <- readRDS(rsem_transc_counts) %>%
   column_to_rownames(var = "gene_symbol") %>%
   t() %>%
   as.data.frame() %>%
-  bind_cols(gene_tpm, rmats_goi_mat)
+  bind_cols(gene_tpm, rmats_goi_mat) %>%
+  write_rds(file.path(results_dir, "clk1-nf1-psi-exp-df.rds"))
 
 # Compute the correlation matrix
 mat <- cor(as.matrix(transcript_tpm_df))
