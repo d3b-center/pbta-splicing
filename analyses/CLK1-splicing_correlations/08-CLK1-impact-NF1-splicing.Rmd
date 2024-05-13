@@ -149,21 +149,25 @@ dev.off()
 We want to assess NF1 splicing across all brain tumor types, to give us a sense of how the splicing is behaving across brain tumor histologies -- for the SE splicing type we see it as very high, similar to exon 23a case, but for the RI it is much lower but also a lot more variable, which will allow us to perform correlative analyses below.
 
 ```{r}
-plot_df <- rmats_goi_full %>% 
-  dplyr::rename(Kids_First_Biospecimen_ID=sample_id) %>%
-  left_join(histologies_df, by='Kids_First_Biospecimen_ID') %>%
-  select(event_type,IncLevel1,Kids_First_Biospecimen_ID,plot_group)
+# Prepare the plot_df data frame
+plot_df <- rmats_goi_full %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = sample_id) %>%
+  left_join(histologies_df, by = 'Kids_First_Biospecimen_ID') %>%
+  select(event_type, IncLevel1, Kids_First_Biospecimen_ID, plot_group)
 
-# Calculate the median IncLevel1 for each plot_group within CLK1_Exon4_SE
+# Calculate the median IncLevel1 for each plot_group within CLK1-Exon4_PSI
 median_data <- plot_df %>%
   filter(event_type == "CLK1-Exon4_PSI") %>%
   group_by(plot_group) %>%
-  summarise(median_IncLevel1 = median(IncLevel1, na.rm = TRUE))
+  summarise(median_IncLevel1 = median(IncLevel1, na.rm = TRUE)) %>%
+  arrange(median_IncLevel1) # Ensure the data is sorted by median_IncLevel1
 
-# Reorder plot_group levels based on the median IncLevel1 within CLK1_Exon4_SE
+# Reorder plot_group levels based on the sorted median IncLevel1
 plot_df$plot_group <- factor(plot_df$plot_group, levels = median_data$plot_group)
+# Reorder plot_group levels based on the sorted median IncLevel1
+plot_df$event_type <- factor(plot_df$event_type, levels = c("CLK1-Exon4_PSI", "NF1-Exon23a_PSI", "NF1-215_PSI", "NF1-208_PSI"))
 
-# checking that we have an equal number of samples across all events
+# Check that we have an equal number of samples across all events
 table(plot_df$plot_group, plot_df$event_type)
 
 # Create the plot
@@ -256,8 +260,50 @@ corrplot(mat_subset, type = 'lower', order = 'hclust', tl.col = 'black', diag = 
          cl.ratio = 0.2, tl.srt = 45, col = COL2('RdYlBu', 10),
          p.mat = p.mat_subset, sig.level = 0.05, pch = '*', insig = "label_sig", pch.col = "black") 
 dev.off()
+```
 
+Let's look specifically by plot groups
+```{r cors by cancer groups}
+# add all HGG plot group
+histologies_df_plus <- histologies_df %>%
+  mutate(plot_group = ifelse(plot_group %in% c("DIPG or DMG", "Other high-grade glioma"), "High-grade glioma",
+                                  NA_character_)) %>%
+  filter(plot_group == "High-grade glioma") %>%
+  bind_rows(histologies_df)
 
+plot_groups <- unique(histologies_df_plus$plot_group)
+table(histologies_df_plus$plot_group)
+
+for (group in plot_groups) {
+  
+  # subset samples in plot group
+  bs_ids <- histologies_df_plus %>%
+    filter(plot_group %in% group) %>%
+    pull(Kids_First_Biospecimen_ID)
+  
+  # subset tpm / psi matrix
+  subset_group <- subset_tpm_df[bs_ids,]
+
+  # Compute the correlation matrix
+  gp_mat <- cor(as.matrix(subset_group, use = "pairwise.complete.obs"))
+  
+  # Identify rows and columns that do not contain any NAs
+  na_cols  <- colSums( !is.na(gp_mat) ) != 1
+  na_rows  <- rowSums( !is.na(gp_mat) ) != 1
+
+  # Subset the correlation matrix to keep only valid rows and columns
+  cor_matrix_clean <- gp_mat[na_rows, na_cols]
+
+  # Perform significance testing for the correlations
+  p_gp <- cor.mtest(cor_matrix_clean)$p
+
+# Create correlogram
+pdf(file.path(paste0(plots_dir, "/CLK1-NF1-cors-", group, ".pdf")), width = 8, height = 8)
+corrplot(cor_matrix_clean, type = 'lower', order = 'hclust', tl.col = 'black', diag = TRUE,
+         cl.ratio = 0.2, tl.srt = 45, col = COL2('RdYlBu', 10),
+         p.mat = p_gp, sig.level = 0.05, pch = '*', insig = "label_sig", pch.col = "black") 
+dev.off()
+}
 
 ```
 
