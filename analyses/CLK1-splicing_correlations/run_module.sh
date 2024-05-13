@@ -18,4 +18,4 @@ Rscript --vanilla 05-CLK-SRSF-expr-correlations.R
 Rscript --vanilla 06-CLK1-psi-expr-SRSF-expr-prot-phospho-heatmap.R
 
 ## run correlation analyses for CLK1 and NF1 transcripts
-Rscript -e "rmarkdown::render('08-CLK1-NF1-NMD.Rmd', clean = TRUE)" 
+Rscript -e "rmarkdown::render('08-CLK1-impact-NF1-splicing.Rmd', clean = TRUE)" 
