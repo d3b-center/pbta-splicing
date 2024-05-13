@@ -46,13 +46,25 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 clin_file <- file.path(data_dir,"histologies-plot-group.tsv")
 rsem_transc_counts <- file.path(data_dir,"rna-isoform-expression-rsem-tpm.rds")
 rsem_tpm_counts <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
+histologies_file <- file.path(root_dir, "analyses", "cohort_summary", "results", "histologies-plot-group.tsv")
 rmats_clk1_file <- file.path(data_dir, "clk1-splice-events-rmats.tsv")
 rmats_nf1_file <- file.path(results_dir, "nf1-splice-events-rmats.tsv")
+
 ```
 
 ## Process and store expression of CLK1 and SRSF genes 
 We want to correlate CLK1 expression with these NF1 to see if there is a strong positive correlation in our patient samples, which will further confirm that CLK1 exon 4 impact on NF1 splicing and promotion of NMD NF1 splice variants. To further understand how CLK1 could be doing this, we will also correlate with SRSF11 expression (we chose SRSF11 bc its only SRSF corr that was significant).
 ```{r}
+## histologies
+histologies_df <- read_tsv(histologies_file, guess_max = 100000)
+
+# rmats files
+rmats_nf1 <- read_tsv(rmats_nf1_file)
+rmats_clk1 <- read_tsv(rmats_clk1_file)
+
+rmats_goi_full <- rmats_nf1 %>%
+  bind_rows(rmats_clk1)
+
 ## tpm table 
 tpm_df <- readRDS(rsem_tpm_counts) %>% 
   mutate(gene = rownames(.)) 
