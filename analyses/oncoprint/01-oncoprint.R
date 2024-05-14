@@ -42,10 +42,10 @@ cons_maf_file <- file.path(data_dir,"snv-consensus-plus-hotspots.maf.tsv.gz")
 tumor_only_maf_file <- file.path(data_dir,"snv-mutect2-tumor-only-plus-hotspots.maf.tsv.gz")
 clin_file <- file.path(data_dir, "histologies.tsv")
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
-diff_psi_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
 goi_file <- file.path(input_dir,"oncoprint-goi-lists-OpenPedCan-gencode-v39.csv")
 tmb_file <- file.path(input_dir, "snv-mutation-tmb-coding.tsv")
 cnv_file <- file.path(data_dir, "consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz")
+psi_exp_file <- file.path(root_dir, "analyses", "CLK1-splicing_correlations", "results", "clk1-nf1-psi-exp-df.rds")
 
 ## color for barplot
 source(file.path(input_dir, "mutation-colors.R"))
@@ -54,7 +54,16 @@ source(file.path(input_dir, "mutation-colors.R"))
 plot_out <- file.path(plots_dir,"oncoprint.pdf")
 
 # read in files
-histologies_df <- read_tsv(clin_file, guess_max = 100000)
+histologies_df <- read_tsv(clin_file, guess_max = 100000) %>%
+  mutate(cancer_predisposition = case_when(cancer_predispositions == "Neurofibromatosis, Type 1 (NF-1)" ~ "NF-1",
+                                           cancer_predispositions == "Li-Fraumeni syndrome (TP53)" ~ "LFS",
+                                           cancer_predispositions == "Other inherited conditions NOS" ~ "Other",
+                                           Kids_First_Participant_ID == "PT_3CHB9PK5" ~ "CMMRD",
+                                         #  Kids_First_Participant_ID == "PT_D5KKHPAE" ~ "BRCA1",
+                                          # Kids_First_Participant_ID == "PT_7WT6P5M8" ~ "PNKP",
+                                           Kids_First_Participant_ID == "PT_JNEV57VK" ~ "LS",
+                                           Kids_First_Participant_ID == "PT_ZH3SBJPZ" ~ NA_character_,
+                                           TRUE ~ NA_character_))
 
 goi <- read_csv(goi_file) %>%
   pull(HGAT) %>%
@@ -84,15 +93,13 @@ tmb_df <- read_tsv(tmb_file) %>%
   # remove WXS for a sample we have WGS for
   filter(Kids_First_Biospecimen_ID != "BS_QF7M4SHH")
 
-splice_CLK1_df <-  fread(diff_psi_file) %>%
-   dplyr::filter(geneSymbol=="CLK1",
-                                 exonStart_0base=="200860124", 
-                                 exonEnd=="200860215") %>%
-  dplyr::rename('Kids_First_Biospecimen_ID'=sample_id,
-                'gene'=geneSymbol,
-                PSI = IncLevel1) %>%
+splice_df <-  readRDS(psi_exp_file) %>%
+  rownames_to_column("Kids_First_Biospecimen_ID") %>%
+ # dplyr::rename('Kids_First_Biospecimen_ID'=sample_id,
+#                'gene'=geneSymbol,
+ #               PSI = IncLevel1) %>%
     left_join(histologies_df[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
-  dplyr::select(match_id, PSI) %>%
+ # dplyr::select(match_id, PSI) %>%
   filter(match_id %in% indep_rna_df$match_id)
 
 # read in cnv file and reformat to add to maf
@@ -173,42 +180,51 @@ gene_matrix <- gene_matrix %>%
   select(-c(Sort_Order, Hugo_Symbol)) 
 
 # mutate the hgg dataframe for plotting
-histologies_df_sorted <- splice_CLK1_df %>%
+histologies_df_sorted <- splice_df %>%
   left_join(histologies_df, by = "match_id", relationship = "many-to-many") %>%
-  select(match_id, cancer_group, reported_gender, molecular_subtype, CNS_region, PSI) %>%
+  select(match_id, cancer_group, cancer_predisposition, reported_gender, molecular_subtype, CNS_region, `CLK1-Exon4_PSI`,
+         `NF1-Exon23a_PSI`, `NF1-215_PSI`, `NF1-208_PSI`, `CLK1-201`, `Total NF1`) %>%
   unique() %>%
-  group_by(match_id, cancer_group, reported_gender, molecular_subtype) %>%
+  group_by(match_id, cancer_group, cancer_predisposition, reported_gender, molecular_subtype, `NF1-Exon23a_PSI`, `NF1-215_PSI`, `NF1-208_PSI`, 
+           `CLK1-201`, `Total NF1`) %>%
   summarise(CNS_region = str_c(unique(na.omit(CNS_region)), collapse = ","),
-            PSI = mean(PSI)) %>%
+            CLK1_PSI = mean(`CLK1-Exon4_PSI`)) %>%
   left_join(unique(tmb_df[,c("tmb_status", "match_id")])) %>%
   filter(match_id %in% names(gene_matrix)) %>%
   column_to_rownames("match_id") %>%
-  arrange(PSI) %>%
+  arrange(CLK1_PSI) %>%
   dplyr::mutate(molecular_subtype = gsub(", TP53", "", molecular_subtype),
                 molecular_subtype = case_when(grepl("To be classified", molecular_subtype) ~ "To be classified",
                                               TRUE ~ molecular_subtype),
-                CNS_region = case_when(CNS_region == "" ~ "Unknown",
+                CNS_region = case_when(CNS_region == "" ~ NA_character_,
                                     TRUE ~ CNS_region),
                 tmb_status = case_when(is.na(tmb_status) ~ "Unknown",
                                        TRUE ~ tmb_status)) 
 
 # get clk1 high/low
-quantiles_clk1 <- quantile(histologies_df_sorted$PSI, probs=c(.25, .75), na.rm = TRUE)
+quantiles_clk1 <- quantile(histologies_df_sorted$CLK1_PSI, probs=c(.25, .75), na.rm = TRUE)
 lower_sbi <- quantiles_clk1[1]
 upper_sbi <- quantiles_clk1[2]
 
 histologies_df_sorted <- histologies_df_sorted %>%
-  mutate(clk1_status = case_when(PSI > upper_sbi ~ "High",
-                                 PSI < lower_sbi ~ "Low",
+  mutate(clk1_status = case_when(CLK1_PSI > upper_sbi ~ "High",
+                                 CLK1_PSI < lower_sbi ~ "Low",
                                  TRUE ~ "Middle")) %>%
-  select(reported_gender, cancer_group, molecular_subtype, CNS_region, tmb_status, clk1_status, PSI) %>%
+  select(reported_gender, cancer_group, cancer_predisposition, molecular_subtype, CNS_region, tmb_status, clk1_status, 
+         CLK1_PSI, `CLK1-201`, `Total NF1`, `NF1-215_PSI`, `NF1-208_PSI`,  `NF1-Exon23a_PSI`) %>%
   dplyr::rename("Gender"=reported_gender,
                 "Cancer Group" = cancer_group,
+                "Predisposition" = cancer_predisposition,
                 "Molecular Subtype"=molecular_subtype,
                 "CNS Region"=CNS_region, 
                 "Mutation Status"=tmb_status,
                 "CLK1 status" = clk1_status,
-                "CLK1 Ex4 PSI"=PSI) 
+                "CLK1 Ex4 PSI"= CLK1_PSI,
+                "CLK1-201" =`CLK1-201`,
+                "NF1-215 PSI" = `NF1-215_PSI`, 
+                "NF1-208 PSI" = `NF1-208_PSI`,
+                "NF1 Exon23a PSI" = `NF1-Exon23a_PSI`,
+                "Total NF1" = `Total NF1`) 
 
 # write out metadata
 histologies_df_sorted %>%
@@ -216,9 +232,10 @@ histologies_df_sorted %>%
   left_join(unique(histologies_df[,c("match_id", "Kids_First_Participant_ID")])) %>%
   write_tsv(file.path(results_dir, "oncoprint_sample_metadata.tsv"))
 
-loc_cols <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
-              "#44AA99", "#882255", "#6699CC")
-names(loc_cols) <- c(sort(unique(histologies_df_sorted$`CNS Region`)))
+loc_cols <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", "#44AA99", "#882255", "#6699CC")
+
+names(loc_cols) <- c("Hemispheric", "Midline", "Mixed", "Optic pathway", "Other", "Posterior fossa", "Spine", "Suprasellar", "Ventricles")
+
 
 ha = HeatmapAnnotation(name = "annotation", 
                        df = histologies_df_sorted,
@@ -231,6 +248,9 @@ ha = HeatmapAnnotation(name = "annotation",
                                             "High-grade glioma" = "#ffccf5",
                                             "Infant-type hemispheric glioma" = "lightblue2",
                                             "Pleomorphic xanthoastrocytoma" = "navy"),
+                         "Predisposition" = c("LFS" = "red",
+                                              "NF-1" = "black",
+                                              "Other" = "grey"),
                          "Molecular Subtype" = c("DHG, H3 G35" = "springgreen4",
                                                  "DMG, H3 K28" = "#ff40d9",
                                                  "HGG, H3 wildtype" = "lightpink",
@@ -244,11 +264,17 @@ ha = HeatmapAnnotation(name = "annotation",
                                                "Hypermutant" = "orange",
                                                "Ultra-hypermutant" = "red",
                                                "Unknown" = "whitesmoke"),
-                         "CLK1 status" = c("High" = "navy", "Low" = "#CAE1FF",  "Middle" = "grey80"),
-                         "CLK1 Ex4 PSI" = colorRamp2(c(0, 0.25, 0.75, 1.0), c("whitesmoke", "#CAE1FF","cornflowerblue", "navy")),
+                         "CLK1 status" = c("High" = "navy", "Low" = "whitesmoke",  "Middle" = "#CAE1FF"),
+                         "CLK1 Ex4 PSI" = colorRamp2(c(0, 0.5, 1.0), c("whitesmoke","#CAE1FF", "navy")),
+                         "CLK1-201" = colorRamp2(c(0, 30), c("whitesmoke", "navy")),
+                         "Total NF1" = colorRamp2(c(0, 50, 100), c("whitesmoke", "orange", "darkorchid4")),
+                         "NF1-208 PSI" = colorRamp2(c(0, 0.5, 1.0), c("whitesmoke", "orange",  "darkorchid4")),
+                         "NF1-215 PSI" = colorRamp2(c(0, 0.10, 0.20), c("whitesmoke", "orange",  "darkorchid4")),
+                         "NF1 Exon23a PSI" = colorRamp2(c(0, 0.5, 1.0), c("whitesmoke", "orange",  "darkorchid4"))
+                         ),
                          annotation_name_side = "right", 
                          annotation_name_gp = gpar(fontsize = 9),
-                         na_col = "whitesmoke"))
+                         na_col = "whitesmoke")
                        
 
 col = colors
@@ -260,7 +286,7 @@ gene_matrix_sorted <- gene_matrix %>%
 # global option to increase space between heatmap and annotations
 ht_opt$ROW_ANNO_PADDING = unit(1.25, "cm")
 
-plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:50,], get_type = function(x) strsplit(x, ",")[[1]],
+plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:20,], get_type = function(x) strsplit(x, ",")[[1]],
           column_names_gp = gpar(fontsize = 9), show_column_names = F,
           alter_fun = list(
             background = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "whitesmoke",col="whitesmoke")),
