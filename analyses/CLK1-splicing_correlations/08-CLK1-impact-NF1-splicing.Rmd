@@ -137,7 +137,7 @@ dev.off()
 ```
 
 ## Generate boxplots of CLK1 Exon 4 and NF1 PSIs (RI and SE NMD and Exon 23a) 
-We want to assess NF1 splicing across all brain tumor types, to give us a sense of how the splicing is behaving across brain tumor histologies -- for the SE splicing type we see it as very high, similar to exon 23a case, but for the RI it is much lower but also a lot more variable, which will allow us to perform correlative analyses below.
+We want to assess NF1 splicing across all brain tumor types, to give us a sense of how the splicing is behaving across brain tumor histologies -- for the SE splicing type we see it as very high, similar to exon 23a case, but for the RI it is much lower but also a lot more variable, which will allow us to performcorrelative analyses below.
 
 ```{r}
 # Prepare the plot_df data frame
@@ -226,7 +226,7 @@ transcript_tpm_mat <- as.matrix(transcript_tpm_df)
 mat <- cor(transcript_tpm_mat, method = "spearman", use = "pairwise.complete.obs")
 
 # Perform significance testing for the correlations
-p.mat <- cor.mtest(mat)$p
+p.mat <- cor.mtest(mat, method = "spearman")$p
 
 # Create correlogram
 pdf(file.path(plots_dir, "CLK1-NF1-all-cors.pdf"), width = 12, height = 12)
@@ -294,7 +294,7 @@ for (group in plot_groups) {
   cor_matrix_clean <- gp_mat[na_rows, na_cols]
 
   # Perform significance testing for the correlations
-  p_gp <- cor.mtest(cor_matrix_clean)$p
+  p_gp <- cor.mtest(cor_matrix_clean, method = "spearman")$p
 
 # Create correlogram
 pdf(file.path(paste0(plots_dir, "/CLK1-NF1-cors-", group, ".pdf")), width = 8, height = 8)
