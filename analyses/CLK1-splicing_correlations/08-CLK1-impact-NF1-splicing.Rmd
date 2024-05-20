@@ -107,15 +107,6 @@ rmats_goi  <- fread(rmats_clk1_file) %>%
                                 ENST_id == "ENST00000321356" ~ "CLK1-Exon4_PSI", # CLK1-201
                                 TRUE ~ NA_character_)) %>%
   filter(!is.na(ENST_id))
-
-# Create a dataframe with all combinations of sample IDs and event type so we have all samples represented
-all_combinations <- expand.grid(sample_id = unique(rmats_goi$sample_id), event_type = unique(rmats_goi$event_type))
-
-# Left join with the original dataframe
-rmats_goi_full <- left_join(all_combinations, rmats_goi, by = c("sample_id", "event_type")) #%>%
-#  mutate(IncLevel1 = case_when(is.na(IncLevel1) ~ NA_integer_,
- #                             TRUE ~ IncLevel1))
-
 ```
 
 ## Generate PSI box plots across tumors for CLK1 PSI 
