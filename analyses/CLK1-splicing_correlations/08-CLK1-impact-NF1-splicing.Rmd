@@ -112,21 +112,21 @@ rmats_goi  <- fread(rmats_clk1_file) %>%
 all_combinations <- expand.grid(sample_id = unique(rmats_goi$sample_id), event_type = unique(rmats_goi$event_type))
 
 # Left join with the original dataframe
-rmats_goi_full <- left_join(all_combinations, rmats_goi, by = c("sample_id", "event_type")) %>%
-  mutate(IncLevel1 = case_when(is.na(IncLevel1) ~ 0,
-                              TRUE ~ IncLevel1))
+rmats_goi_full <- left_join(all_combinations, rmats_goi, by = c("sample_id", "event_type")) #%>%
+#  mutate(IncLevel1 = case_when(is.na(IncLevel1) ~ NA_integer_,
+ #                             TRUE ~ IncLevel1))
 
 ```
 
 ## Generate PSI box plots across tumors for CLK1 PSI 
 First, we want to visualize exon 4 inclusion across all brain tumor types, to give us a sense of how the splicing is behaving across our brain tumor histologies -- variable with HGGs to be the most heterogeneous
 ```{r}
-plot_CLK1_PSI_df <- rmats_goi_full %>% 
+plot_CLK1_PSI_df <- rmats_goi %>% 
   dplyr::rename(Kids_First_Biospecimen_ID=sample_id) %>%
   left_join(histologies_df, by='Kids_First_Biospecimen_ID') %>%
   select(Kids_First_Biospecimen_ID,IncLevel1,plot_group, plot_group_hex, geneSymbol) %>%
   filter(geneSymbol == "CLK1") %>%
-   mutate(plot_group_wrapped = stringr::str_wrap(plot_group, width = 10))
+   mutate(plot_group_wrapped = stringr::str_wrap(plot_group, width = 20))
 
 ## box plot of CLK1 exon 4, ordered by median
 plot_CLK1_PSI <- ggplot(plot_CLK1_PSI_df, aes(reorder(plot_group_wrapped, IncLevel1, FUN = median), IncLevel1, colour = plot_group_hex, fill = plot_group_hex)) +  
@@ -139,7 +139,7 @@ plot_CLK1_PSI <- ggplot(plot_CLK1_PSI_df, aes(reorder(plot_group_wrapped, IncLev
   ylim(c(-0.01, 1.0))
 
 # save plot
-pdf(file.path(plots_dir, "CLK1-psi-all-cns-boxplot.pdf"), width = 7, height = 6)
+pdf(file.path(plots_dir, "CLK1-psi-all-cns-boxplot.pdf"), width = 9, height = 6)
 print(plot_CLK1_PSI)
 dev.off()
 
@@ -150,14 +150,18 @@ We want to assess NF1 splicing across all brain tumor types, to give us a sense 
 
 ```{r}
 # Prepare the plot_df data frame
-plot_df <- rmats_goi_full %>%
+plot_df <- rmats_goi %>%
   dplyr::rename(Kids_First_Biospecimen_ID = sample_id) %>%
   left_join(histologies_df, by = 'Kids_First_Biospecimen_ID') %>%
-  select(event_type, IncLevel1, Kids_First_Biospecimen_ID, plot_group)
+  select(event_type, IncLevel1, Kids_First_Biospecimen_ID, plot_group, plot_group_hex) %>%
+  dplyr::mutate(event_type = case_when(event_type == "CLK1-Exon4_PSI" ~ "CLK1-202 (Exon 4)",
+                                       event_type == "NF1-Exon23a_PSI" ~ "NF1-202 (Exon23a)",
+                                       event_type == "NF1-215_PSI" ~ "NF1-215 (RI)",
+                                       event_type == "NF1-208_PSI" ~ "NF1-208 (NMD)"))
 
 # Calculate the median IncLevel1 for each plot_group within CLK1-Exon4_PSI
 median_data <- plot_df %>%
-  filter(event_type == "CLK1-Exon4_PSI") %>%
+  filter(event_type == "CLK1-202 (Exon 4)") %>%
   group_by(plot_group) %>%
   summarise(median_IncLevel1 = median(IncLevel1, na.rm = TRUE)) %>%
   arrange(median_IncLevel1) # Ensure the data is sorted by median_IncLevel1
@@ -165,9 +169,9 @@ median_data <- plot_df %>%
 # Reorder plot_group levels based on the sorted median IncLevel1
 plot_df$plot_group <- factor(plot_df$plot_group, levels = median_data$plot_group)
 # Reorder plot_group levels based on the sorted median IncLevel1
-plot_df$event_type <- factor(plot_df$event_type, levels = c("CLK1-Exon4_PSI", "NF1-Exon23a_PSI", "NF1-215_PSI", "NF1-208_PSI"))
+plot_df$event_type <- factor(plot_df$event_type, levels = c("CLK1-202 (Exon 4)", "NF1-202 (Exon23a)", "NF1-215 (RI)", "NF1-208 (NMD)"))
 
-# Check that we have an equal number of samples across all events
+# How many samples per event?
 table(plot_df$plot_group, plot_df$event_type)
 
 # Create the plot
@@ -192,14 +196,15 @@ dev.off()
 Let's explore whether the NF1 RI transcript is correlated with lower NF1 expression, or if high CLK1 Exon 4 PSI is correlated with lower NF1 expression
 ```{r}
 # reformat the psi table
-rmats_goi_mat <- rmats_goi_full %>%
+rmats_goi_mat <- rmats_goi %>%
   select(sample_id, IncLevel1, event_type) %>%
   pivot_wider(names_from = event_type, values_from = IncLevel1) %>%
-  column_to_rownames(var = "sample_id")
+  column_to_rownames(var = "sample_id") %>%
+  select(-`NF1-208_PSI`)
 
 ## tpm table 
 gene_tpm <- readRDS(rsem_tpm_counts) %>%
-  dplyr::select(any_of(rmats_goi_full$sample_id)) %>%
+  dplyr::select(any_of(rmats_goi$sample_id)) %>%
   rownames_to_column(var = "gene_symbol") %>%
   filter(gene_symbol %in% c("NF1", "CLK1")) %>%
   mutate(gene_symbol = paste0("Total ", gene_symbol)) %>%
@@ -214,7 +219,7 @@ nf1_transcripts <- nf1_gtf %>%
 
 transcript_tpm_df <- readRDS(rsem_transc_counts) %>% 
   filter(grepl("^NF1-|^CLK1-201", gene_symbol)) %>% 
-  select(gene_symbol, any_of(rmats_goi_full$sample_id)) %>%
+  select(gene_symbol, any_of(rmats_goi$sample_id)) %>%
   left_join(nf1_transcripts) %>%
   mutate(gene_symbol = coalesce(transcript_name_meta, gene_symbol)) %>%
   select(-transcript_name_meta) %>%
@@ -224,8 +229,10 @@ transcript_tpm_df <- readRDS(rsem_transc_counts) %>%
   bind_cols(gene_tpm, rmats_goi_mat) %>%
   write_rds(file.path(results_dir, "clk1-nf1-psi-exp-df.rds"))
 
+transcript_tpm_mat <- as.matrix(transcript_tpm_df)
+
 # Compute the correlation matrix
-mat <- cor(as.matrix(transcript_tpm_df))
+mat <- cor(transcript_tpm_mat, method = "spearman", use = "pairwise.complete.obs")
 
 # Perform significance testing for the correlations
 p.mat <- cor.mtest(mat)$p
@@ -240,14 +247,14 @@ dev.off()
 # subset for transcripts of interest
 subset_tpm_df <- transcript_tpm_df %>%
   as.data.frame() %>%
-  select(`Total CLK1`, `CLK1-201`, `CLK1-Exon4_PSI`, `Total NF1`, `NF1-202_PC`, `NF1-208_PSI`, `NF1-208_NMD`, `NF1-215_PSI`, `NF1-215_RI`,
+  select(`Total CLK1`, `CLK1-201`, `CLK1-Exon4_PSI`, `Total NF1`, `NF1-202_PC`, `NF1-215_PSI`, `NF1-215_RI`,
          `NF1-Exon23a_PSI`) %>%
   as.matrix()
 
 # Compute the correlation matrix
-mat_subset <- cor(as.matrix(subset_tpm_df))
+mat_subset <- cor(as.matrix(subset_tpm_df), method = "spearman", use = "pairwise.complete.obs")
 
-items_of_interest <- c("Total CLK1", "CLK1-201", "CLK1-Exon4_PSI", "Total NF1", "NF1-202_PC", "NF1-208_PSI", "NF1-208_NMD", "NF1-215_PSI", "NF1-215_RI",
+items_of_interest <- c("Total CLK1", "CLK1-201", "CLK1-Exon4_PSI", "Total NF1", "NF1-202_PC", "NF1-215_PSI", "NF1-215_RI",
          "NF1-Exon23a_PSI")
 
 mat_subset <- mat[items_of_interest,items_of_interest]
@@ -286,7 +293,7 @@ for (group in plot_groups) {
   subset_group <- subset_tpm_df[bs_ids,]
 
   # Compute the correlation matrix
-  gp_mat <- cor(as.matrix(subset_group, use = "pairwise.complete.obs"))
+  gp_mat <- cor(as.matrix(subset_group, use = "pairwise.complete.obs", method = "spearman"))
   
   # Identify rows and columns that do not contain any NAs
   na_cols  <- colSums( !is.na(gp_mat) ) != 1
