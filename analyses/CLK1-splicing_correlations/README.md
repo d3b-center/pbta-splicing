@@ -48,6 +48,8 @@ Input files:
 ├── 05-CLK-SRSF-expr-correlations.R
 ├── 06-CLK1-psi-expr-SRSF-expr-prot-phospho-heatmap.R
 ├── 07-plot-clk1ex4-hgg-normals.R
+├── 08-CLK1-impact-NF1-splicing.Rmd
+├── 08-CLK1-impact-NF1-splicing.html
 ├── README.md
 ├── input
 │   └── CPTAC3-pbt.xls
@@ -55,6 +57,28 @@ Input files:
 │   ├── CLK1-201_exp_vs_SRSF_SRPK_exp_all_hgg.pdf
 │   ├── CLK1-201_exp_vs_SRSF_SRPK_exp_midline_hgg.pdf
 │   ├── CLK1-201_exp_vs_SRSF_SRPK_exp_other_hgg.pdf
+│   ├── CLK1-NF1-all-cors.pdf
+│   ├── CLK1-NF1-cors-Atypical Teratoid Rhabdoid Tumor.pdf
+│   ├── CLK1-NF1-cors-Choroid plexus tumor.pdf
+│   ├── CLK1-NF1-cors-Craniopharyngioma.pdf
+│   ├── CLK1-NF1-cors-DIPG or DMG.pdf
+│   ├── CLK1-NF1-cors-Ependymoma.pdf
+│   ├── CLK1-NF1-cors-Germ cell tumor.pdf
+│   ├── CLK1-NF1-cors-High-grade glioma.pdf
+│   ├── CLK1-NF1-cors-Low-grade glioma.pdf
+│   ├── CLK1-NF1-cors-Medulloblastoma.pdf
+│   ├── CLK1-NF1-cors-Meningioma.pdf
+│   ├── CLK1-NF1-cors-Mesenchymal tumor.pdf
+│   ├── CLK1-NF1-cors-Mixed neuronal-glial tumor.pdf
+│   ├── CLK1-NF1-cors-Neurofibroma plexiform.pdf
+│   ├── CLK1-NF1-cors-Non-neoplastic tumor.pdf
+│   ├── CLK1-NF1-cors-Other CNS embryonal tumor.pdf
+│   ├── CLK1-NF1-cors-Other high-grade glioma.pdf
+│   ├── CLK1-NF1-cors-Other tumor.pdf
+│   ├── CLK1-NF1-cors-Schwannoma.pdf
+│   ├── CLK1-NF1-subset-cors.pdf
+│   ├── CLK1-exon4-NF1-psi-all-cns-boxplot.pdf
+│   ├── CLK1-psi-all-cns-boxplot.pdf
 │   ├── CLK1-psi-expr-correlation-heatmap.pdf
 │   ├── CLK1_SRSF_phospho_vs_CLK1_201_exp_DMG.pdf
 │   ├── CLK1_SRSF_phospho_vs_CLK1_201_exp_HGG.pdf
@@ -72,6 +96,7 @@ Input files:
 │   ├── CLK1_exp_vs_SRSF_exp_all_hgg.pdf
 │   ├── CLK1_exp_vs_SRSF_exp_midline_hgg.pdf
 │   ├── CLK1_exp_vs_SRSF_exp_other_hgg.pdf
+│   ├── CLK1ex4-hgg-normals.pdf
 │   ├── CLK2_exp_vs_SRSF_SRPK_exp_all_hgg.pdf
 │   ├── CLK2_exp_vs_SRSF_SRPK_exp_midline_hgg.pdf
 │   ├── CLK2_exp_vs_SRSF_SRPK_exp_other_hgg.pdf
@@ -84,7 +109,6 @@ Input files:
 │   ├── CLK_exp_vs_CLK1_psi_all_hgg.pdf
 │   ├── CLK_exp_vs_CLK1_psi_midline_hgg.pdf
 │   ├── CLK_exp_vs_CLK1_psi_other_hgg.pdf
-│   ├── CLK1ex4-hgg-normals.pdf
 │   ├── SRPK_exp_vs_CLK1_psi_all_hgg.pdf
 │   ├── SRPK_exp_vs_CLK1_psi_midline_hgg.pdf
 │   ├── SRPK_exp_vs_CLK1_psi_other_hgg.pdf
@@ -116,10 +140,12 @@ Input files:
 ├── results
 │   ├── all_hgg-mean_clk1_psi.txt
 │   ├── clk1-exon4-psi-hgg.tsv
+│   ├── clk1-nf1-psi-exp-df.rds
 │   ├── clk1-splice-events-rmats.tsv
 │   ├── dmg-mean_clk1_psi.txt
 │   ├── hgg-dmg-clk-srsf-expression-phosphorylation.tsv
 │   ├── mean_clk1_psi.txt
+│   ├── nf1-splice-events-rmats.tsv
 │   └── other_hgg-mean_clk1_psi.txt
 ├── run_module.sh
 └── util
