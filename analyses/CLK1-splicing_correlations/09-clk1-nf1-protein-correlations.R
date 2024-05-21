@@ -23,7 +23,6 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, "analyses", "CLK1-splicing_correlations")
-input_dir <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir <- file.path(analysis_dir, "plots")
 figures_dir <- file.path(root_dir, "figures")
@@ -52,6 +51,16 @@ indep_rna_df <- read_tsv(indep_rna_file)
 
 data_df <- readRDS(data_file)
 
+
+# define lists of nf1 and clk genes
+goi <- c("CLK1", "NF1")
+clk1_trans_list <- c("CLK1-201", "Total CLK1")
+clk1_splice_list <- "CLK1-Exon4_PSI"
+nf1_trans_list <- c("Total NF1", "NF1-202_PC", "NF1-215_RI",  "NF1-208_NMD")
+nf1_splice_list <- c("NF1-Exon23a_PSI", "NF1-215_PSI")
+
+all_lists <- c(clk1_trans_list, clk1_splice_list, nf1_trans_list, nf1_splice_list)
+
 # extract HGG samples, retain stranded libraries, and filter for independent specimens
 hist_rna <- cohort_df %>% 
   filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma"),
@@ -65,7 +74,7 @@ data_df <- readRDS(data_file) %>%
   rownames_to_column("Kids_First_Biospecimen_ID") %>%
   filter(Kids_First_Biospecimen_ID %in% hist_rna$Kids_First_Biospecimen_ID) %>%
   left_join(hist_rna[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
-  select(-Kids_First_Biospecimen_ID)
+  select(match_id, any_of(all_lists))
 
 # define proteomics and phosphoproteomics-specific histologies files
 hist_proteo <- cohort_df %>%
@@ -98,15 +107,10 @@ hist_proteo <- hist_proteo %>%
 hist_phospho <- hist_phospho %>%
   dplyr::filter(Kids_First_Biospecimen_ID_phospho %in% colnames(hope_phospho))
 
-# define lists of nf1 and clk genes
-clk_list <- c("CLK1", "CLK2", "CLK3", "CLK4")
-nf1_list <- "NF1"
-
-
-# filter cptac proteo and phosphoproteo dfs for clk and srsf genes
+# filter cptac proteo and phosphoproteo dfs for clk and NF1 genes
 cptac_proteo_df <- cptac_proteo %>%
   dplyr::select(-NP_id) %>%
-  dplyr::filter(GeneSymbol %in% c(clk_list, nf1_list)) %>%
+  dplyr::filter(GeneSymbol %in% goi) %>%
   gather(key = "Kids_First_Biospecimen_ID_proteo",
          value = "abundance",
          -GeneSymbol) %>%
@@ -115,7 +119,7 @@ cptac_proteo_df <- cptac_proteo %>%
 # Merge proteomics data frames and calculate z-scores
 proteo_df <- hope_proteo %>%
   dplyr::select(-NP_id) %>%
-  dplyr::filter(GeneSymbol %in% c(clk_list, nf1_list)) %>%
+  dplyr::filter(GeneSymbol %in% goi) %>%
   gather(key = "Kids_First_Biospecimen_ID_proteo",
          value = "abundance",
          -GeneSymbol) %>%
@@ -154,16 +158,17 @@ clk_nf1_phospho_df <- clk_nf1_phospho_df %>%
 # repeat for proteomics 
 clk_nf1_proteo_df <- proteo_df %>%
   ungroup() %>%
-  dplyr::mutate(GeneSymbol = glue::glue("{GeneSymbol} ")) %>%
+  dplyr::mutate(GeneSymbol = glue::glue("{GeneSymbol}")) %>%
   dplyr::select(GeneSymbol, match_id, proteo_zscore)
 
 clk_nf1_proteo_df <- clk_nf1_proteo_df %>%
   spread(GeneSymbol, proteo_zscore)
 
-# merge CLK1 PSI and CLK and SRSF RNA, protein, and phosphoprotein expression
+# merge CLK1 PSI and CLK and NF1 RNA, protein, and phosphoprotein expression
 mol_df <- data_df %>%
-  left_join(clk_srsf_proteo_mat) %>%
-  left_join(clk_srsf_phospho_mat)
+  left_join(clk_nf1_proteo_df) %>%
+  left_join(clk_nf1_phospho_df) %>%
+  select(match_id, everything(.))
 
 # save df
 write_tsv(mol_df, 
@@ -182,7 +187,7 @@ hgg_ids <- hist_rna %>%
 features <- names(mol_df)[!names(mol_df) %in% c("match_id", "Kids_First_Biospecimen_ID",
                                                 "IncLevel1")]
 # put CLK-201 expr first
-features <- features[c(length(features), 1:(length(features)-1))]
+#features <- features[c(length(features), 1:(length(features)-1))]
 
 # create empty df to store correlation coefficients between PSI and feature values
 incl_cor_mat <- data.frame(row.names = features,
@@ -190,11 +195,12 @@ incl_cor_mat <- data.frame(row.names = features,
                            HGG = rep(0, length(features)),
                            DMG_p = rep(0, length(features)),
                            HGG_p = rep(0, length(features)))  %>%
-  dplyr::mutate(Feature = case_when(
-    grepl("-", rownames(.)) ~ "Phospho-Protein z-score",
-    grepl(" ", rownames(.)) ~ "Total Protein z-score",
-    TRUE ~ "RNA log2Exp"
+  dplyr::mutate(Feature = case_when(rownames(.) %in% names(clk_nf1_phospho_df) ~ "Phospho-Protein z-score",
+                                    rownames(.) %in% names(clk_nf1_proteo_df) ~ "Total Protein z-score",
+                                    rownames(.) %in% c(clk1_splice_list, nf1_splice_list) ~ "PSI",
+                                    TRUE ~ "RNA log2Exp"
   ))
+
 
 # create same empty df for CLK1 expression cor values
 expr_cor_mat <- incl_cor_mat
@@ -211,32 +217,32 @@ for (subtype in c("DMG", "HGG")) {
     
     feature <- rownames(incl_cor_mat)[i]
     
-    incl_cor_mat[feature, subtype] <- cor.test(mol_df$IncLevel1[mol_df$match_id %in% ids],
+    incl_cor_mat[feature, subtype] <- cor.test(mol_df$`CLK1-Exon4_PSI`[mol_df$match_id %in% ids],
                                                unlist(mol_df[mol_df$match_id %in% ids, feature]),
                                                method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
                                                                "pearson", "spearman"))$estimate
     
-    incl_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(mol_df$IncLevel1[mol_df$match_id %in% ids],
+    incl_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(mol_df$`CLK1-Exon4_PSI`[mol_df$match_id %in% ids],
                                                                  unlist(mol_df[mol_df$match_id %in% ids, feature]),
                                                                  method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
                                                                                  "pearson", "spearman"))$p.value
     
-    expr_cor_mat[feature, subtype] <- cor.test(mol_df$CLK1[mol_df$match_id %in% ids],
+    expr_cor_mat[feature, subtype] <- cor.test(mol_df$`Total CLK1`[mol_df$match_id %in% ids],
                                                unlist(mol_df[mol_df$match_id %in% ids, feature]),
                                                method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
                                                                "pearson", "spearman"))$estimate
     
-    expr_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(mol_df$CLK1[mol_df$match_id %in% ids],
+    expr_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(mol_df$`Total CLK1`[mol_df$match_id %in% ids],
                                                                  unlist(mol_df[mol_df$match_id %in% ids, feature]),
                                                                  method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
                                                                                  "pearson", "spearman"))$p.value
     
-    ex4_expr_cor_mat[feature, subtype] <- cor.test(unlist(mol_df$CLK1_201[mol_df$match_id %in% ids]),
+    ex4_expr_cor_mat[feature, subtype] <- cor.test(unlist(mol_df$`CLK1-201`[mol_df$match_id %in% ids]),
                                                    unlist(mol_df[mol_df$match_id %in% ids, feature]),
                                                    method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
                                                                    "pearson", "spearman"))$estimate
     
-    ex4_expr_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(mol_df$CLK1_201[mol_df$match_id %in% ids],
+    ex4_expr_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(mol_df$`CLK1-201`[mol_df$match_id %in% ids],
                                                                      unlist(mol_df[mol_df$match_id %in% ids, feature]),
                                                                      method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
                                                                                      "pearson", "spearman"))$p.value
@@ -249,7 +255,7 @@ for (subtype in c("DMG", "HGG")) {
 row_annot <- expr_cor_mat %>%
   dplyr::select(Feature) %>%
   dplyr::mutate(Feature = factor(Feature,
-                                 levels = c("RNA log2Exp", "Total Protein z-score", "Phospho-Protein z-score")))
+                                 levels = c("RNA log2Exp", "PSI", "Total Protein z-score", "Phospho-Protein z-score")))
 
 
 # add rownames
@@ -261,7 +267,7 @@ colnames(expr_cor_mat)[1:2]  <- c("DIPG or DMG", "Other HGG")
 colnames(ex4_expr_cor_mat)[1:2]  <- c("DIPG or DMG", "Other HGG")
 
 # create Heatmap row annotation for feature type
-anno_col <- list(Feature = c("RNA log2Exp" = "#DC3220", "Total Protein z-score" = "#005AB5", "Phospho-Protein z-score" = "#40B0A6"))
+anno_col <- list(Feature = c("RNA log2Exp" = "#DC3220", "PSI" = "purple", "Total Protein z-score" = "#005AB5", "Phospho-Protein z-score" = "#40B0A6"))
 
 row_anno = rowAnnotation(df = row_annot,
                          col = anno_col, show_legend = TRUE)
@@ -272,7 +278,7 @@ expr_pval_mat <- ifelse(expr_cor_mat[,3:4] < 0.05, "*", "")
 ex4_expr_pval_mat <- ifelse(ex4_expr_cor_mat[,3:4] < 0.05, "*", "")
 
 # create CLK1 ex4 psi correlation heatmap
-incl_ht <- Heatmap(incl_cor_mat[,1:2],
+incl_ht <- Heatmap(as.matrix(incl_cor_mat[,1:2]),
                    width = unit(13, "mm"),
                    name = "Correlation Coefficient",
                    col = colorRamp2(c(-1, 0, 1), c("#E66100", "white", "#5D3A9B")),
@@ -292,7 +298,7 @@ incl_ht <- Heatmap(incl_cor_mat[,1:2],
                    })
 
 # create CLK1 expression correlation heatmap
-expr_ht <- Heatmap(expr_cor_mat[,1:2],
+expr_ht <- Heatmap(as.matrix(expr_cor_mat[,1:2]),
                    width = unit(13, "mm"),
                    name = "Correlation Coefficient",
                    col = colorRamp2(c(-1, 0, 1), c("#E66100", "white", "#5D3A9B")),
@@ -304,7 +310,7 @@ expr_ht <- Heatmap(expr_cor_mat[,1:2],
                    cluster_columns = FALSE,
                    right_annotation = row_anno,
                    row_title = NULL,
-                   column_title = "CLK1 Expr",
+                   column_title = "CLK1 Exp",
                    column_title_side = "top",
                    column_title_rot = 30,
                    cell_fun = function(j, i, x, y, width, height, fill) {
@@ -312,7 +318,7 @@ expr_ht <- Heatmap(expr_cor_mat[,1:2],
                    })
 
 # create CLK1 expression correlation heatmap
-ex4_expr_ht <- Heatmap(ex4_expr_cor_mat[,1:2],
+ex4_expr_ht <- Heatmap(as.matrix(ex4_expr_cor_mat[,1:2]),
                        width = unit(13, "mm"),
                        name = "Correlation Coefficient",
                        col = colorRamp2(c(-1, 0, 1), c("#E66100", "white", "#5D3A9B")),
@@ -334,46 +340,46 @@ ex4_expr_ht <- Heatmap(ex4_expr_cor_mat[,1:2],
                        })
 
 # save merged plot
-pdf(file.path(plots_dir, "CLK1-psi-expr-correlation-heatmap.pdf"), width = 7, height = 13)
+pdf(file.path(plots_dir, "CLK1-NF1-psi-expr-correlation-heatmap.pdf"), width = 7, height = 13)
 print(incl_ht + ex4_expr_ht + expr_ht)
 dev.off()
 
-# create dfs for generating expr-prot and expr-phospho scatter plots
-proteo_scatter_df <- clk_srsf_proteo_df %>%
-  left_join(mol_df %>% dplyr::select(match_id, CLK1, CLK1_201))
+# create dfs for generating expr-prot and expr-prot scatter plots
+proteo_scatter_df <- clk_nf1_proteo_df %>%
+  left_join(mol_df %>% dplyr::select(match_id, `CLK1-Exon4_PSI`, `Total CLK1`, `CLK1-201`, `Total NF1`, `NF1-202_PC`, `NF1-Exon23a_PSI`, `NF1-215_RI`, `NF1-208_NMD`))
 
-phospho_scatter_df <- clk_srsf_phospho_df %>%
-  left_join(mol_df %>% dplyr::select(match_id, CLK1, CLK1_201))
 
-# generate CLK1 expr-CLK/SRSF prot and expr-phosphorylation scatterplots
-for (subtype in c("DMG", "HGG")) {
+# generate CLK1 expr-CLK/NF1 prot and expr-protein scatterplots
+for (each in all_lists) {
   
-  ids <- id_list[[subtype]]
-  
-  p_prot <- proteo_scatter_df %>%
-    dplyr::filter(match_id %in% ids) %>%
-    ggplot(aes(x = CLK1, y = proteo_zscore)) +
-    geom_point(colour = "black") +
-    stat_smooth(method = "lm", 
-                formula = y ~ x, 
-                geom = "smooth", 
-                colour = "red",
-                fill = "pink",
-                linetype="dashed") +
-    labs(x = glue::glue("CLK1 RSEM TPM (log2)"),
-         y = "Total protein abundance z-score") + 
-    stat_cor(method = "spearman", cor.coef.name = "rho",
-             label.x = 0, label.y = 3, size = 3) +
-    facet_wrap(~GeneSymbol, nrow = 4) + 
-    theme_Publication()
-  
-  pdf(file.path(paste(plots_dir, "/", "CLK1_SRSF_prot_vs_CLK1_exp_", subtype, ".pdf", sep = "")), width = 8, height = 10)
+  for (subtype in c("DMG", "HGG")) {
+
+    ids <- id_list[[subtype]]
+    
+    p_prot <- proteo_scatter_df %>%
+      dplyr::filter(match_id %in% ids) %>%
+      ggplot(aes(x = `NF1-215_RI`, y = each)) +
+      geom_point(colour = "black") +
+      stat_smooth(method = "lm", 
+                  formula = y ~ x, 
+                  geom = "smooth", 
+                  colour = "red",
+                  fill = "pink",
+                  linetype="dashed") +
+      labs(x = glue::glue(each),
+           y = "NF1 Total protein abundance z-score") + 
+      stat_cor(method = "spearman", cor.coef.name = "rho",  na.rm = F,
+              size = 3) +
+      theme_Publication()
+  # label.x = 0, label.y = 3, 
+    
+  pdf(file.path(paste(plots_dir, "/", "NF1-215-cor-", each, "-", subtype, ".pdf", sep = "")), width = 8, height = 10)
   print(p_prot)
   dev.off()
   
   p_201_prot <- proteo_scatter_df %>%
     dplyr::filter(match_id %in% ids) %>%
-    ggplot(aes(x = CLK1_201, y = proteo_zscore)) +
+    ggplot(aes(x = `NF1-208_NMD`, y = each)) +
     geom_point(colour = "black") +
     stat_smooth(method = "lm", 
                 formula = y ~ x, 
@@ -381,58 +387,15 @@ for (subtype in c("DMG", "HGG")) {
                 colour = "red",
                 fill = "pink",
                 linetype="dashed") +
-    labs(x = glue::glue("CLK1-201 RSEM TPM (log2)"),
-         y = "Total protein abundance z-score") + 
-    stat_cor(method = "spearman", cor.coef.name = "rho",
-             label.x = 0, label.y = 4, size = 3) +
-    facet_wrap(~GeneSymbol, nrow = 4) + 
+    labs(x = glue::glue(each),
+         y = "NF1 Total protein abundance z-score") + 
+    stat_cor(method = "spearman", cor.coef.name = "rho", na.rm = F,
+            size = 3) +
     theme_Publication()
-  
-  pdf(file.path(paste(plots_dir, "/", "CLK1_SRSF_prot_vs_CLK1_201_exp_", subtype, ".pdf", sep = "")), width = 8, height = 10)
+  # label.x = 0, label.y = 4, 
+  pdf(file.path(paste(plots_dir, "/", "NF1-208-cor-", each, "-", subtype, ".pdf", sep = "")), width = 8, height = 10)
   print(p_201_prot)
   dev.off()
-  
-  p_phospho <- phospho_scatter_df %>%
-    dplyr::filter(match_id %in% ids) %>%
-    ggplot(aes(x = CLK1, y = phospho_zscore)) +
-    geom_point(colour = "black") +
-    stat_smooth(method = "lm", 
-                formula = y ~ x, 
-                geom = "smooth", 
-                colour = "red",
-                fill = "pink",
-                linetype="dashed") +
-    labs(x = glue::glue("CLK1 RSEM TPM (log2)"),
-         y = "Phospho-protein abundance z-score") + 
-    stat_cor(method = "spearman", cor.coef.name = "rho",
-             label.x = 0, label.y = 3, size = 3) +
-    facet_wrap(~gene_site, nrow = 6) + 
-    theme_Publication()
-  
-  pdf(file.path(paste(plots_dir, "/", "CLK1_SRSF_phospho_vs_CLK1_exp_", subtype, ".pdf", sep = "")), width = 14, height = 14)
-  print(p_phospho)
-  dev.off()
-  
-  p_201_phospho <- phospho_scatter_df %>%
-    dplyr::filter(match_id %in% ids) %>%
-    ggplot(aes(x = CLK1_201, y = phospho_zscore)) +
-    geom_point(colour = "black") +
-    stat_smooth(method = "lm", 
-                formula = y ~ x, 
-                geom = "smooth", 
-                colour = "red",
-                fill = "pink",
-                linetype="dashed") +
-    labs(x = glue::glue("CLK1-201 RSEM TPM (log2)"),
-         y = "Phospho-protein abundance z-score") + 
-    stat_cor(method = "spearman", cor.coef.name = "rho",
-             label.x = 0, label.y = 4, size = 3) +
-    facet_wrap(~gene_site, nrow = 6) + 
-    theme_Publication()
-  
-  pdf(file.path(paste(plots_dir, "/", "CLK1_SRSF_phospho_vs_CLK1_201_exp_", subtype, ".pdf", sep = "")), width = 14, height = 14)
-  print(p_201_phospho)
-  dev.off()
-  
+  }
 }
 
