@@ -68,6 +68,7 @@ RUN R -e 'BiocManager::install(c( \
   "ggVennDiagram", \
   "gridExtra", \
   "GSVA", \
+  "Hmisc" \
   "hrbrthemes", \
   "limma", \
   "lspline", \
@@ -84,7 +85,7 @@ RUN R -e 'BiocManager::install(c( \
   "survival", \
   "survminer", \
   "UpSetR" \
-))' 
+))'
 
 
 ## install GitHub packages
