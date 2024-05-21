@@ -3,6 +3,9 @@
 set -e
 set -o pipefail
 
+## Identify the transcripts of interest per splice variants of interest
+Rscript --vanilla 00-get-splice-transcripts.R
+
 ## perform diff expression on ctrl vs clk1-morph
 Rscript --vanilla 01-diffExpr-ctrl_vs_morph.R
 echo -e "gene\tlog2FoldChange\tpadj" > results/ctrl_vs_treated.de.formatted.tsv
