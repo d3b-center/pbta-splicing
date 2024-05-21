@@ -39,17 +39,18 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 cohort_file <- file.path(root_dir, "analyses", "cohort_summary",
                          "results", "histologies-plot-group.tsv")
-rsem_tpm <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
-clk1_psi_file <- file.path(results_dir, "clk1-exon4-psi-hgg.tsv")
-isoform_file <- file.path(data_dir, "rna-isoform-expression-rsem-tpm.rds")
 
 cptac_proteo_file <- file.path(data_dir, "cptac-protein-imputed-prot-expression-abundance.tsv.gz")
 hope_proteo_file <- file.path(data_dir, "hope-protein-imputed-prot-expression-abundance.tsv.gz")
 hope_phospho_file <- file.path(data_dir, "hope-protein-imputed-phospho-expression-abundance.tsv.gz")
 
+data_file <- file.path(results_dir, "clk1-nf1-psi-exp-df.rds")
+
 ## read in histology, cohort, and independent specimens file
 cohort_df <- read_tsv(cohort_file)
 indep_rna_df <- read_tsv(indep_rna_file)
+
+data_df <- readRDS(data_file)
 
 # extract HGG samples, retain stranded libraries, and filter for independent specimens
 hist_rna <- cohort_df %>% 
@@ -59,24 +60,12 @@ hist_rna <- cohort_df %>%
          Kids_First_Biospecimen_ID %in% indep_rna_df$Kids_First_Biospecimen_ID) %>%
   select(Kids_First_Biospecimen_ID, RNA_library, CNS_region, match_id, molecular_subtype, plot_group)
 
-# filter expr df for hgg samples
-rsem_df <- readRDS(rsem_tpm) %>%
-  select(hist_rna$Kids_First_Biospecimen_ID)
-
-CLK1_ex4_rsem <- readRDS(isoform_file) %>%
-  filter(transcript_id == "ENST00000321356.9")  %>%
-  dplyr::select(-transcript_id) %>%
-  gather(key = "Kids_First_Biospecimen_ID", value = "Expr", -gene_symbol) %>%
-  dplyr::mutate(CLK1_201 = log(Expr, 2)) %>%
-  dplyr::filter(Kids_First_Biospecimen_ID %in% hist_rna$Kids_First_Biospecimen_ID,
-                !is.infinite(CLK1_201)) %>%
-  left_join(hist_rna %>% dplyr::select(Kids_First_Biospecimen_ID, match_id)) %>%
-  dplyr::select(-gene_symbol, -Expr)
-
-## load CLK1 psi file
-clk1_rmats <- read_tsv(clk1_psi_file) %>%
-  dplyr::rename(Kids_First_Biospecimen_ID = sample_id) %>%
-  left_join(hist_rna %>% dplyr::select(Kids_First_Biospecimen_ID, match_id))
+# select only HGG/DIPG/DMG
+data_df <- readRDS(data_file) %>%
+  rownames_to_column("Kids_First_Biospecimen_ID") %>%
+  filter(Kids_First_Biospecimen_ID %in% hist_rna$Kids_First_Biospecimen_ID) %>%
+  left_join(hist_rna[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
+  select(-Kids_First_Biospecimen_ID)
 
 # define proteomics and phosphoproteomics-specific histologies files
 hist_proteo <- cohort_df %>%
@@ -109,10 +98,7 @@ hist_proteo <- hist_proteo %>%
 hist_phospho <- hist_phospho %>%
   dplyr::filter(Kids_First_Biospecimen_ID_phospho %in% colnames(hope_phospho))
 
-# define lists of srsf and clk genes
-srsf_list <- c("SRSF1", "SRSF2", "SRSF3", "SRSF4",
-               "SRSF5", "SRSF6", "SRSF7", "SRSF8", "SRSF9",
-               "SRSF10", "SRSF11")
+# define lists of nf1 and clk genes
 clk_list <- c("CLK1", "CLK2", "CLK3", "CLK4")
 nf1_list <- "NF1"
 
@@ -120,7 +106,7 @@ nf1_list <- "NF1"
 # filter cptac proteo and phosphoproteo dfs for clk and srsf genes
 cptac_proteo_df <- cptac_proteo %>%
   dplyr::select(-NP_id) %>%
-  dplyr::filter(GeneSymbol %in% c(srsf_list, srpk_list)) %>%
+  dplyr::filter(GeneSymbol %in% c(clk_list, nf1_list)) %>%
   gather(key = "Kids_First_Biospecimen_ID_proteo",
          value = "abundance",
          -GeneSymbol) %>%
@@ -129,7 +115,7 @@ cptac_proteo_df <- cptac_proteo %>%
 # Merge proteomics data frames and calculate z-scores
 proteo_df <- hope_proteo %>%
   dplyr::select(-NP_id) %>%
-  dplyr::filter(GeneSymbol %in% c(srsf_list, srpk_list)) %>%
+  dplyr::filter(GeneSymbol %in% c(clk_list, nf1_list)) %>%
   gather(key = "Kids_First_Biospecimen_ID_proteo",
          value = "abundance",
          -GeneSymbol) %>%
@@ -143,7 +129,7 @@ proteo_df <- hope_proteo %>%
 phospho_df <- hope_phospho %>%
   dplyr::select(-NP_id, -Peptide_res_num,
                 -Peptide_sequence) %>%
-  dplyr::filter(GeneSymbol %in% c(srsf_list, srpk_list)) %>%
+  dplyr::filter(GeneSymbol %in% c(clk_list, nf1_list)) %>%
   gather(key = "Kids_First_Biospecimen_ID_phospho",
          value = "abundance",
          -GeneSymbol, -Site) %>%
@@ -155,43 +141,33 @@ phospho_df <- hope_phospho %>%
   dplyr::mutate(gene_site = glue::glue("{GeneSymbol}-{Site}"))
 
 # create matrix of phosphorylation site z-scores with rownames as match ID
-clk_srsf_phospho_df <- phospho_df %>%
+clk_nf1_phospho_df <- phospho_df %>%
   ungroup() %>%
   dplyr::filter(!grepl("NA", gene_site)) %>%
   dplyr::select(-abundance,
                 -GeneSymbol,
                 -Site, -Kids_First_Biospecimen_ID_phospho)
 
-clk_srsf_phospho_mat <- clk_srsf_phospho_df %>%
+clk_nf1_phospho_df <- clk_nf1_phospho_df %>%
   spread(gene_site, phospho_zscore)
 
 # repeat for proteomics 
-clk_srsf_proteo_df <- proteo_df %>%
+clk_nf1_proteo_df <- proteo_df %>%
   ungroup() %>%
   dplyr::mutate(GeneSymbol = glue::glue("{GeneSymbol} ")) %>%
   dplyr::select(GeneSymbol, match_id, proteo_zscore)
 
-clk_srsf_proteo_mat <- clk_srsf_proteo_df%>%
+clk_nf1_proteo_df <- clk_nf1_proteo_df %>%
   spread(GeneSymbol, proteo_zscore)
 
 # merge CLK1 PSI and CLK and SRSF RNA, protein, and phosphoprotein expression
-mol_df <- rsem_df %>%
-  filter(rownames(.) %in% c(clk_list, srsf_list, srpk_list))  %>%
-  rownames_to_column("GeneSymbol") %>%
-  gather(key = "Kids_First_Biospecimen_ID", value = "Expr", -GeneSymbol) %>%
-  # if exp value is 0, make NA since it will give Inf log value
-  dplyr::mutate(logExp = ifelse(Expr != 0, log(Expr, 2), NA)) %>%
-  left_join(hist_rna %>% dplyr::select(Kids_First_Biospecimen_ID, match_id)) %>%
-  dplyr::select(-Expr, -Kids_First_Biospecimen_ID) %>%
-  spread(GeneSymbol, logExp) %>%
+mol_df <- data_df %>%
   left_join(clk_srsf_proteo_mat) %>%
-  left_join(clk_srsf_phospho_mat) %>%
-  left_join(clk1_rmats) %>%
-  left_join(CLK1_ex4_rsem)
+  left_join(clk_srsf_phospho_mat)
 
 # save df
 write_tsv(mol_df, 
-          file.path(results_dir, "hgg-dmg-clk-srsf-expression-phosphorylation.tsv"))
+          file.path(results_dir, "hgg-dmg-clk-nf1-expression-phosphorylation.tsv"))
 
 # Define DIPG/DMG and other HGG ids
 dmg_ids <- hist_rna %>%
@@ -306,12 +282,12 @@ incl_ht <- Heatmap(incl_cor_mat[,1:2],
                    show_row_names = TRUE,
                    show_heatmap_legend=TRUE,
                    cluster_columns = FALSE,
-                  # right_annotation = row_anno,
+                   # right_annotation = row_anno,
                    row_title = NULL,
                    column_title = "CLK1 Exon4 PSI",
                    column_title_side = "top",
-                  column_title_rot = 30,
-                  cell_fun = function(j, i, x, y, width, height, fill) {
+                   column_title_rot = 30,
+                   cell_fun = function(j, i, x, y, width, height, fill) {
                      grid.text(sprintf("%s", incl_pval_mat[i, j]), x, y, gp = gpar(fontsize = 12))
                    })
 
@@ -375,21 +351,21 @@ for (subtype in c("DMG", "HGG")) {
   ids <- id_list[[subtype]]
   
   p_prot <- proteo_scatter_df %>%
-          dplyr::filter(match_id %in% ids) %>%
-          ggplot(aes(x = CLK1, y = proteo_zscore)) +
-          geom_point(colour = "black") +
-          stat_smooth(method = "lm", 
-                      formula = y ~ x, 
-                      geom = "smooth", 
-                      colour = "red",
-                      fill = "pink",
-                      linetype="dashed") +
-          labs(x = glue::glue("CLK1 RSEM TPM (log2)"),
-               y = "Total protein abundance z-score") + 
-          stat_cor(method = "spearman", cor.coef.name = "rho",
-                   label.x = 0, label.y = 3, size = 3) +
-          facet_wrap(~GeneSymbol, nrow = 4) + 
-          theme_Publication()
+    dplyr::filter(match_id %in% ids) %>%
+    ggplot(aes(x = CLK1, y = proteo_zscore)) +
+    geom_point(colour = "black") +
+    stat_smooth(method = "lm", 
+                formula = y ~ x, 
+                geom = "smooth", 
+                colour = "red",
+                fill = "pink",
+                linetype="dashed") +
+    labs(x = glue::glue("CLK1 RSEM TPM (log2)"),
+         y = "Total protein abundance z-score") + 
+    stat_cor(method = "spearman", cor.coef.name = "rho",
+             label.x = 0, label.y = 3, size = 3) +
+    facet_wrap(~GeneSymbol, nrow = 4) + 
+    theme_Publication()
   
   pdf(file.path(paste(plots_dir, "/", "CLK1_SRSF_prot_vs_CLK1_exp_", subtype, ".pdf", sep = "")), width = 8, height = 10)
   print(p_prot)
