@@ -27,7 +27,7 @@ RUN apt install -y  \
 	libssl-dev \
 	libv8-dev \
 	libxt-dev \
-	libudunits2-dev\
+	libudunits2-dev \
 	zlib1g-dev
 
 # Install java
@@ -68,7 +68,7 @@ RUN R -e 'BiocManager::install(c( \
   "ggVennDiagram", \
   "gridExtra", \
   "GSVA", \
-  "Hmisc" \
+  "Hmisc", \
   "hrbrthemes", \
   "limma", \
   "lspline", \
