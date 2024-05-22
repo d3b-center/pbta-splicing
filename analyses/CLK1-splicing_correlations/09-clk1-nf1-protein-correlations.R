@@ -1,8 +1,8 @@
 ################################################################################
-# 06-CLK1-psi-expr-SRSF-expr-prot-phospho-heatmap.R
-# Generate heatmap of correlation coefficients between CLK1 features (PSI, Expr) and CLK1 and SRSF RNA, protein, and phosphoprotein expression
-# written by Ryan Corbett
-# Usage: Rscript 06-CLK1-psi-expr-SRSF-expr-prot-phospho-heatmap.R
+# 09-clk1-nf1-protein-correlations.R
+# Generate heatmap of correlation coefficients between CLK1 features (PSI, Expr) and CLK1 and NF1 RNA, protein, and phosphoprotein expression
+# written by Ryan Corbett, Jo Lynne Rokita
+# Usage: Rscript 09-clk1-nf1-protein-correlations.R
 ################################################################################
 
 ## load libraries
@@ -463,5 +463,3 @@ for (phos_sites in c("NF1 pS2796", "NF1 pS864")) {
     }
   }
 }
-  
-  
