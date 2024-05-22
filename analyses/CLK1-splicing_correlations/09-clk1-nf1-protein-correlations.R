@@ -348,6 +348,15 @@ proteo_scatter_df <- clk_nf1_proteo_df %>%
                                      `NF1-215_PSI`, `NF1-Exon23a_PSI`, 
                                      `NF1-215_RI`, `NF1-208_NMD`))
 
+# create dfs for generating expr-prot and expr-prot scatter plots
+phos_scatter_df <- clk_nf1_phospho_df %>%
+  # select only significant
+  select(match_id, `NF1-S2796`, `NF1-S864`) %>%
+  left_join(mol_df %>% dplyr::select(match_id, `CLK1-Exon4_PSI`, `Total CLK1`, `CLK1-201`, 
+                                     `Total NF1`, `NF1-202_PC`, 
+                                     `NF1-215_PSI`, `NF1-Exon23a_PSI`, 
+                                     `NF1-215_RI`, `NF1-208_NMD`))
+
 
 # generate CLK1 expr-CLK/NF1 prot and expr-protein scatterplots
 for (each in all_lists) {
@@ -371,10 +380,9 @@ for (each in all_lists) {
       labs(x = each,
            y = "NF1 protein abundance z-score") + 
       stat_cor(method = "spearman", cor.coef.name = "rho",  na.rm = F,
-              size = 3) +
+               label.y = 2.1, size = 3) +
       theme_Publication()
-  # label.x = 0, label.y = 3, 
-    
+
   pdf(file.path(paste(plots_dir, "/", "NF1-protein-cor-", each, "-", subtype, ".pdf", sep = "")), width = 4, height = 4)
   print(p_prot)
   dev.off()
@@ -382,3 +390,41 @@ for (each in all_lists) {
   }
 }
 
+# for phos:
+
+# generate CLK1 expr-CLK/NF1 prot and expr-protein scatterplots
+for (phos_sites in c("NF1-S2796", "NF1-S864")) {
+    
+  for (each in all_lists) {
+    
+    for (subtype in c("DMG", "HGG")) {
+      
+      ids <- id_list[[subtype]]
+      
+      p_prot <- phos_scatter_df %>%
+        dplyr::filter(match_id %in% ids,
+                      !is.na(each)) %>%
+        ggplot(aes(x = .data[[each]], y = .data[[phos_sites]])) +
+        geom_point(colour = "black") +
+        stat_smooth(method = "lm", 
+                    formula = y ~ x, 
+                    geom = "smooth", 
+                    colour = "red",
+                    fill = "pink",
+                    linetype="dashed",
+                    na.rm = TRUE) +
+        labs(x = each,
+             y = paste0(phos_sites, " abundance z-score")) + 
+        stat_cor(method = "spearman", cor.coef.name = "rho",  na.rm = F,
+                 label.y = 2.1, size = 3) +
+        theme_Publication()
+
+      pdf(file.path(paste(plots_dir, "/", phos_sites, "-phos-cor-", each, "-", subtype, ".pdf", sep = "")), width = 4, height = 4)
+      print(p_prot)
+      dev.off()
+      
+    }
+  }
+}
+  
+  
