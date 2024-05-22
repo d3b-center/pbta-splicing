@@ -261,8 +261,8 @@ rownames(expr_cor_mat) <- case_when(rownames(expr_cor_mat) == "CLK1-201" ~ "CLK1
                                     rownames(expr_cor_mat) == "Total CLK1" ~ "Total CLK1 Exp",
                                     rownames(expr_cor_mat) == "CLK1-Exon4_PSI" ~ "CLK1-201 (Exon4 Incl) PSI",
                                     rownames(expr_cor_mat) == "Total NF1" ~ "Total NF1 Exp",
-                                    rownames(expr_cor_mat) == "NF1-202_PC" ~ "NF1-202 (PC) Exp",
-                                    rownames(expr_cor_mat) == "NF1-215_RI" ~ "NF1-215 (RI) Exp",
+                                    rownames(expr_cor_mat) == "NF1-202_PC" ~ "NF1-202 Exp",
+                                    rownames(expr_cor_mat) == "NF1-215_RI" ~ "NF1-215 Exp",
                                     rownames(expr_cor_mat) == "NF1-Exon23a_PSI" ~ "NF1-202 (Exon23a Incl) PSI",
                                     rownames(expr_cor_mat) == "NF1-215_PSI" ~ "NF1-215 PSI",
                                     rownames(expr_cor_mat) == "NF1" ~ "Total NF1 protein",
@@ -361,7 +361,15 @@ dev.off()
 proteo_scatter_df <- clk_nf1_proteo_df %>%
   left_join(mol_df %>% dplyr::select(match_id, `CLK1-Exon4_PSI`, `Total CLK1`, `CLK1-201`, 
                                      `Total NF1`, `NF1-202_PC`, `NF1-Exon23a_PSI`,
-                                     `NF1-215_PSI`, `NF1-215_RI`))
+                                     `NF1-215_PSI`, `NF1-215_RI`)) %>%
+  dplyr::rename(`CLK1-201 Exon4 PSI` = `CLK1-Exon4_PSI`,
+                `NF1-202 Log2 TPM` = `NF1-202_PC`,
+                `NF1-215 PSI` = `NF1-215_PSI`,
+                `NF1-202 Exon23a PSI` = `NF1-Exon23a_PSI`,
+                `NF1-215 Log2 TPM` = `NF1-215_RI`,
+                `CLK1-201 Log2 TPM` = `CLK1-201`,
+                `Total CLK1 Log2 TPM` = `Total CLK1`,
+                `Total NF1 Log2 TPM` = `Total NF1`)
 
 # create dfs for generating expr-prot and expr-prot scatter plots
 phos_scatter_df <- clk_nf1_phospho_df %>%
@@ -369,11 +377,23 @@ phos_scatter_df <- clk_nf1_phospho_df %>%
   select(match_id, `NF1-S2796`, `NF1-S864`) %>%
   left_join(mol_df %>% dplyr::select(match_id, `CLK1-Exon4_PSI`, `Total CLK1`, `CLK1-201`, 
                                      `Total NF1`, `NF1-202_PC`, `NF1-Exon23a_PSI`,
-                                     `NF1-215_PSI`, `NF1-215_RI`))
+                                     `NF1-215_PSI`, `NF1-215_RI`)) %>%
+  dplyr::rename(`NF1 pS2796` = `NF1-S2796`,
+                `NF1 pS864` = `NF1-S864`,
+                `CLK1-201 Exon4 PSI` = `CLK1-Exon4_PSI`,
+                `NF1-202 Log2 TPM` = `NF1-202_PC`,
+                `NF1-215 PSI` = `NF1-215_PSI`,
+                `NF1-202 Exon23a PSI` = `NF1-Exon23a_PSI`,
+                `NF1-215 Log2 TPM` = `NF1-215_RI`,
+                `CLK1-201 Log2 TPM` = `CLK1-201`,
+                `Total CLK1 Log2 TPM` = `Total CLK1`,
+                `Total NF1 Log2 TPM` = `Total NF1`)
 
+
+new_list <- names(proteo_scatter_df[,2:ncol(proteo_scatter_df)])
 
 # generate CLK1 expr-CLK/NF1 prot and expr-protein scatterplots
-for (each in all_lists) {
+for (each in new_list) {
   
   for (subtype in c("DMG", "HGG")) {
 
@@ -404,12 +424,15 @@ for (each in all_lists) {
   }
 }
 
+
 # for phos:
+phos_list <- names(proteo_scatter_df[,3:ncol(proteo_scatter_df)])
+
 
 # generate CLK1 expr-CLK/NF1 prot and expr-protein scatterplots
-for (phos_sites in c("NF1-S2796", "NF1-S864")) {
+for (phos_sites in c("NF1 pS2796", "NF1 pS864")) {
     
-  for (each in all_lists) {
+  for (each in phos_list) {
     
     for (subtype in c("DMG", "HGG")) {
       
