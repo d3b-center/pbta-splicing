@@ -114,7 +114,6 @@ srsf_list <- c("SRSF1", "SRSF2", "SRSF3", "SRSF4",
                "SRSF5", "SRSF6", "SRSF7", "SRSF8", "SRSF9",
                "SRSF10", "SRSF11")
 clk_list <- c("CLK1", "CLK2", "CLK3", "CLK4")
-nf1_list <- "NF1"
 
 
 # filter cptac proteo and phosphoproteo dfs for clk and srsf genes
