@@ -59,10 +59,12 @@ trans_lists <- c(clk1_trans_list, nf1_trans_list)
 # read in data file, zscored protein and psi values, but only keep all protein samples
 data_df <- read_tsv(data_file) %>%
   filter(!is.na(NF1)) %>%
-  select(match_id, all_of(nf1_splice_list), NF1, `NF1-S864`, `NF1-S2796`) %>%
+  select(match_id, all_of(nf1_splice_list), all_of(clk1_splice_list), NF1, `NF1-S864`, `NF1-S2796`) %>%
   # zscore psi values
-  mutate(`NF1-Exon23a_PSI` = scale(`NF1-Exon23a_PSI`),
-         `NF1-215_PSI` = scale(`NF1-215_PSI`))
+  mutate(`NF1 Exon23a_PSI` = scale(`NF1-Exon23a_PSI`),
+         `NF1-215_PSI` = scale(`NF1-215_PSI`),
+         `CLK1 Exon4 PSI` = scale(`CLK1-Exon4_PSI`)) %>%
+  select(-c(`CLK1-Exon4_PSI`, `NF1-215_PSI`, `NF1-Exon23a_PSI`))
 
 samples_oi <- cohort_df %>%
   filter(experimental_strategy == "RNA-Seq",
@@ -136,7 +138,7 @@ ha = HeatmapAnnotation(
 heat_plot <- Heatmap(mat,
                      name = "Value",
                      col = colorRamp2(c(-2, 0, 2), c("#E66100", "white", "#5D3A9B")),
-                     cluster_rows = FALSE,
+                     cluster_rows = TRUE,
                      #row_split = row_annot$Assay,
                      column_gap = 0.5,
                      show_row_names = TRUE,
