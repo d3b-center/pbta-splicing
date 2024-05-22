@@ -10,7 +10,6 @@ suppressPackageStartupMessages({
   library("ggplot2")
   library("tidyverse")
   library("ggpubr")
-  library("vroom")
   library("ComplexHeatmap")
   library("circlize")
   library("stringr")
@@ -55,7 +54,7 @@ data_df <- readRDS(data_file)
 goi <- c("CLK1", "NF1")
 clk1_trans_list <- c("CLK1-201", "Total CLK1")
 clk1_splice_list <- "CLK1-Exon4_PSI"
-nf1_trans_list <- c("Total NF1", "NF1-202_PC", "NF1-215_RI",  "NF1-208_NMD")
+nf1_trans_list <- c("Total NF1", "NF1-202_PC", "NF1-215_RI")
 nf1_splice_list <- c("NF1-Exon23a_PSI", "NF1-215_PSI")
 
 all_lists <- c(clk1_trans_list, clk1_splice_list, nf1_trans_list, nf1_splice_list)
@@ -152,7 +151,9 @@ clk_nf1_phospho_df <- phospho_df %>%
                 -Site, -Kids_First_Biospecimen_ID_phospho)
 
 clk_nf1_phospho_df <- clk_nf1_phospho_df %>%
-  spread(gene_site, phospho_zscore)
+  spread(gene_site, phospho_zscore) %>%
+  # select only sites of interest
+  select(match_id, `NF1-S864`, `NF1-S2796`)
 
 # repeat for proteomics 
 clk_nf1_proteo_df <- proteo_df %>%
@@ -192,10 +193,10 @@ incl_cor_mat <- data.frame(row.names = features,
                            HGG = rep(0, length(features)),
                            DMG_p = rep(0, length(features)),
                            HGG_p = rep(0, length(features)))  %>%
-  dplyr::mutate(Feature = case_when(rownames(.) %in% names(clk_nf1_phospho_df) ~ "Phospho-Protein z-score",
-                                    rownames(.) %in% names(clk_nf1_proteo_df) ~ "Total Protein z-score",
+  dplyr::mutate(Feature = case_when(rownames(.) %in% names(clk_nf1_phospho_df) ~ "Phosphosite z-score",
+                                    rownames(.) %in% names(clk_nf1_proteo_df) ~ "Total protein z-score",
                                     rownames(.) %in% c(clk1_splice_list, nf1_splice_list) ~ "PSI",
-                                    TRUE ~ "RNA log2Exp"
+                                    TRUE ~ "RNA log2TPM"
   ))
 
 
@@ -252,11 +253,26 @@ for (subtype in c("DMG", "HGG")) {
 row_annot <- expr_cor_mat %>%
   dplyr::select(Feature) %>%
   dplyr::mutate(Feature = factor(Feature,
-                                 levels = c("RNA log2Exp", "PSI", "Total Protein z-score", "Phospho-Protein z-score")))
+                                 levels = c("PSI", "RNA log2TPM", "Phosphosite z-score", "Total protein z-score")))
 
 
 # add rownames
+rownames(expr_cor_mat) <- case_when(rownames(expr_cor_mat) == "CLK1-201" ~ "CLK1-201 Exp",
+                                    rownames(expr_cor_mat) == "Total CLK1" ~ "Total CLK1 Exp",
+                                    rownames(expr_cor_mat) == "CLK1-Exon4_PSI" ~ "CLK1-201 (Exon4 Incl) PSI",
+                                    rownames(expr_cor_mat) == "Total NF1" ~ "Total NF1 Exp",
+                                    rownames(expr_cor_mat) == "NF1-202_PC" ~ "NF1-202 (PC) Exp",
+                                    rownames(expr_cor_mat) == "NF1-215_RI" ~ "NF1-215 (RI) Exp",
+                                    rownames(expr_cor_mat) == "NF1-Exon23a_PSI" ~ "NF1-202 (Exon23a Incl) PSI",
+                                    rownames(expr_cor_mat) == "NF1-215_PSI" ~ "NF1-215 PSI",
+                                    rownames(expr_cor_mat) == "NF1" ~ "Total NF1 protein",
+                                    rownames(expr_cor_mat) == "NF1-S864" ~ "NF1 pS864",
+                                    rownames(expr_cor_mat) == "NF1-S2796" ~ "NF1 pS2796",
+                                    TRUE ~ rownames(expr_cor_mat))
+
 rownames(row_annot) <- rownames(expr_cor_mat)
+
+
 
 # rename cor mat colnames for plotting
 colnames(incl_cor_mat)[1:2] <- c("DIPG or DMG", "Other HGG")
@@ -264,7 +280,7 @@ colnames(expr_cor_mat)[1:2]  <- c("DIPG or DMG", "Other HGG")
 colnames(ex4_expr_cor_mat)[1:2]  <- c("DIPG or DMG", "Other HGG")
 
 # create Heatmap row annotation for feature type
-anno_col <- list(Feature = c("RNA log2Exp" = "#DC3220", "PSI" = "purple", "Total Protein z-score" = "#005AB5", "Phospho-Protein z-score" = "#40B0A6"))
+anno_col <- list(Feature = c( "PSI" = "purple", "RNA log2TPM" = "#DC3220", "Phosphosite z-score" = "#40B0A6",  "Total protein z-score" = "#005AB5"))
 
 row_anno = rowAnnotation(df = row_annot,
                          col = anno_col, show_legend = TRUE)
@@ -337,25 +353,23 @@ ex4_expr_ht <- Heatmap(as.matrix(ex4_expr_cor_mat[,1:2]),
                        })
 
 # save merged plot
-pdf(file.path(plots_dir, "CLK1-NF1-psi-expr-correlation-heatmap.pdf"), width = 6, height = 7)
+pdf(file.path(plots_dir, "CLK1-NF1-psi-expr-correlation-heatmap.pdf"), width = 6, height = 5)
 print(incl_ht + ex4_expr_ht + expr_ht)
 dev.off()
 
 # create dfs for generating expr-prot and expr-prot scatter plots
 proteo_scatter_df <- clk_nf1_proteo_df %>%
   left_join(mol_df %>% dplyr::select(match_id, `CLK1-Exon4_PSI`, `Total CLK1`, `CLK1-201`, 
-                                     `Total NF1`, `NF1-202_PC`, 
-                                     `NF1-215_PSI`, `NF1-Exon23a_PSI`, 
-                                     `NF1-215_RI`, `NF1-208_NMD`))
+                                     `Total NF1`, `NF1-202_PC`, `NF1-Exon23a_PSI`,
+                                     `NF1-215_PSI`, `NF1-215_RI`))
 
 # create dfs for generating expr-prot and expr-prot scatter plots
 phos_scatter_df <- clk_nf1_phospho_df %>%
   # select only significant
   select(match_id, `NF1-S2796`, `NF1-S864`) %>%
   left_join(mol_df %>% dplyr::select(match_id, `CLK1-Exon4_PSI`, `Total CLK1`, `CLK1-201`, 
-                                     `Total NF1`, `NF1-202_PC`, 
-                                     `NF1-215_PSI`, `NF1-Exon23a_PSI`, 
-                                     `NF1-215_RI`, `NF1-208_NMD`))
+                                     `Total NF1`, `NF1-202_PC`, `NF1-Exon23a_PSI`,
+                                     `NF1-215_PSI`, `NF1-215_RI`))
 
 
 # generate CLK1 expr-CLK/NF1 prot and expr-protein scatterplots
