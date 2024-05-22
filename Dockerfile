@@ -72,6 +72,7 @@ RUN R -e 'BiocManager::install(c( \
   "hrbrthemes", \
   "limma", \
   "lspline", \
+  "maftools",\
   "msigdbr", \
   "optparse", \
   "org.Hs.eg.db", \
