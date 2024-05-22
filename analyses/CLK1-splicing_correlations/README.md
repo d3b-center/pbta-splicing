@@ -36,6 +36,8 @@ Input files:
 * `05-CLK-SRSF-expr-correlations.R` generates scatter plots of CLK and SRSF transcript abundance vs. CLK1 exon 4 PSI and transcript abundance
 * `06-CLK1-psi-expr-SRSF-expr-prot-phospho-heatmap.R` generates summary heatmap of spearman correlation coefficients between CLK1 PSI and transcript abundance against CLK and SRSF RNA, total protein, and phosphoprotein expression
 * `07-plot-clk1ex4-hgg-normals.R` plots CLK1 exon 4 transcript expression for HGGs, GTEX normals, fetal brain, and TGEN pediatric normals.
+* `08-CLK1-impact-NF1-splicing.Rmd` plots CLK1 and NF1 psi, transcript expression, and gene expression correlations for each cancer group and as a whole.
+* `09-clk1-nf1-protein-correlations.R` plots NF1 total protein correlations and NF1 phosphosite correlations to all data from 08.
 
 ## Directory structure
 ```
@@ -50,6 +52,7 @@ Input files:
 ├── 07-plot-clk1ex4-hgg-normals.R
 ├── 08-CLK1-impact-NF1-splicing.Rmd
 ├── 08-CLK1-impact-NF1-splicing.html
+├── 09-clk1-nf1-protein-correlations.R
 ├── README.md
 ├── input
 │   └── CPTAC3-pbt.xls
@@ -76,6 +79,7 @@ Input files:
 │   ├── CLK1-NF1-cors-Other high-grade glioma.pdf
 │   ├── CLK1-NF1-cors-Other tumor.pdf
 │   ├── CLK1-NF1-cors-Schwannoma.pdf
+│   ├── CLK1-NF1-psi-expr-correlation-heatmap.pdf
 │   ├── CLK1-NF1-subset-cors.pdf
 │   ├── CLK1-exon4-NF1-psi-all-cns-boxplot.pdf
 │   ├── CLK1-psi-all-cns-boxplot.pdf
@@ -109,6 +113,60 @@ Input files:
 │   ├── CLK_exp_vs_CLK1_psi_all_hgg.pdf
 │   ├── CLK_exp_vs_CLK1_psi_midline_hgg.pdf
 │   ├── CLK_exp_vs_CLK1_psi_other_hgg.pdf
+│   ├── NF1-S2796-phos-cor-CLK1-201-DMG.pdf
+│   ├── NF1-S2796-phos-cor-CLK1-201-HGG.pdf
+│   ├── NF1-S2796-phos-cor-CLK1-Exon4_PSI-DMG.pdf
+│   ├── NF1-S2796-phos-cor-CLK1-Exon4_PSI-HGG.pdf
+│   ├── NF1-S2796-phos-cor-NF1-202_PC-DMG.pdf
+│   ├── NF1-S2796-phos-cor-NF1-202_PC-HGG.pdf
+│   ├── NF1-S2796-phos-cor-NF1-208_NMD-DMG.pdf
+│   ├── NF1-S2796-phos-cor-NF1-208_NMD-HGG.pdf
+│   ├── NF1-S2796-phos-cor-NF1-215_PSI-DMG.pdf
+│   ├── NF1-S2796-phos-cor-NF1-215_PSI-HGG.pdf
+│   ├── NF1-S2796-phos-cor-NF1-215_RI-DMG.pdf
+│   ├── NF1-S2796-phos-cor-NF1-215_RI-HGG.pdf
+│   ├── NF1-S2796-phos-cor-NF1-Exon23a_PSI-DMG.pdf
+│   ├── NF1-S2796-phos-cor-NF1-Exon23a_PSI-HGG.pdf
+│   ├── NF1-S2796-phos-cor-Total CLK1-DMG.pdf
+│   ├── NF1-S2796-phos-cor-Total CLK1-HGG.pdf
+│   ├── NF1-S2796-phos-cor-Total NF1-DMG.pdf
+│   ├── NF1-S2796-phos-cor-Total NF1-HGG.pdf
+│   ├── NF1-S864-phos-cor-CLK1-201-DMG.pdf
+│   ├── NF1-S864-phos-cor-CLK1-201-HGG.pdf
+│   ├── NF1-S864-phos-cor-CLK1-Exon4_PSI-DMG.pdf
+│   ├── NF1-S864-phos-cor-CLK1-Exon4_PSI-HGG.pdf
+│   ├── NF1-S864-phos-cor-NF1-202_PC-DMG.pdf
+│   ├── NF1-S864-phos-cor-NF1-202_PC-HGG.pdf
+│   ├── NF1-S864-phos-cor-NF1-208_NMD-DMG.pdf
+│   ├── NF1-S864-phos-cor-NF1-208_NMD-HGG.pdf
+│   ├── NF1-S864-phos-cor-NF1-215_PSI-DMG.pdf
+│   ├── NF1-S864-phos-cor-NF1-215_PSI-HGG.pdf
+│   ├── NF1-S864-phos-cor-NF1-215_RI-DMG.pdf
+│   ├── NF1-S864-phos-cor-NF1-215_RI-HGG.pdf
+│   ├── NF1-S864-phos-cor-NF1-Exon23a_PSI-DMG.pdf
+│   ├── NF1-S864-phos-cor-NF1-Exon23a_PSI-HGG.pdf
+│   ├── NF1-S864-phos-cor-Total CLK1-DMG.pdf
+│   ├── NF1-S864-phos-cor-Total CLK1-HGG.pdf
+│   ├── NF1-S864-phos-cor-Total NF1-DMG.pdf
+│   ├── NF1-S864-phos-cor-Total NF1-HGG.pdf
+│   ├── NF1-protein-cor-CLK1-201-DMG.pdf
+│   ├── NF1-protein-cor-CLK1-201-HGG.pdf
+│   ├── NF1-protein-cor-CLK1-Exon4_PSI-DMG.pdf
+│   ├── NF1-protein-cor-CLK1-Exon4_PSI-HGG.pdf
+│   ├── NF1-protein-cor-NF1-202_PC-DMG.pdf
+│   ├── NF1-protein-cor-NF1-202_PC-HGG.pdf
+│   ├── NF1-protein-cor-NF1-208_NMD-DMG.pdf
+│   ├── NF1-protein-cor-NF1-208_NMD-HGG.pdf
+│   ├── NF1-protein-cor-NF1-215_PSI-DMG.pdf
+│   ├── NF1-protein-cor-NF1-215_PSI-HGG.pdf
+│   ├── NF1-protein-cor-NF1-215_RI-DMG.pdf
+│   ├── NF1-protein-cor-NF1-215_RI-HGG.pdf
+│   ├── NF1-protein-cor-NF1-Exon23a_PSI-DMG.pdf
+│   ├── NF1-protein-cor-NF1-Exon23a_PSI-HGG.pdf
+│   ├── NF1-protein-cor-Total CLK1-DMG.pdf
+│   ├── NF1-protein-cor-Total CLK1-HGG.pdf
+│   ├── NF1-protein-cor-Total NF1-DMG.pdf
+│   ├── NF1-protein-cor-Total NF1-HGG.pdf
 │   ├── SRPK_exp_vs_CLK1_psi_all_hgg.pdf
 │   ├── SRPK_exp_vs_CLK1_psi_midline_hgg.pdf
 │   ├── SRPK_exp_vs_CLK1_psi_other_hgg.pdf
@@ -143,6 +201,7 @@ Input files:
 │   ├── clk1-nf1-psi-exp-df.rds
 │   ├── clk1-splice-events-rmats.tsv
 │   ├── dmg-mean_clk1_psi.txt
+│   ├── hgg-dmg-clk-nf1-expression-phosphorylation.tsv
 │   ├── hgg-dmg-clk-srsf-expression-phosphorylation.tsv
 │   ├── mean_clk1_psi.txt
 │   ├── nf1-splice-events-rmats.tsv
