@@ -51,7 +51,6 @@ indep_rna_df <- read_tsv(indep_rna_file)
 
 data_df <- readRDS(data_file)
 
-
 # define lists of nf1 and clk genes
 goi <- c("CLK1", "NF1")
 clk1_trans_list <- c("CLK1-201", "Total CLK1")
@@ -133,7 +132,7 @@ proteo_df <- hope_proteo %>%
 phospho_df <- hope_phospho %>%
   dplyr::select(-NP_id, -Peptide_res_num,
                 -Peptide_sequence) %>%
-  dplyr::filter(GeneSymbol %in% c(clk_list, nf1_list)) %>%
+  dplyr::filter(GeneSymbol %in% goi) %>%
   gather(key = "Kids_First_Biospecimen_ID_phospho",
          value = "abundance",
          -GeneSymbol, -Site) %>%
@@ -186,8 +185,6 @@ hgg_ids <- hist_rna %>%
 # extract molecular features from mol_df
 features <- names(mol_df)[!names(mol_df) %in% c("match_id", "Kids_First_Biospecimen_ID",
                                                 "IncLevel1")]
-# put CLK-201 expr first
-#features <- features[c(length(features), 1:(length(features)-1))]
 
 # create empty df to store correlation coefficients between PSI and feature values
 incl_cor_mat <- data.frame(row.names = features,
@@ -310,7 +307,7 @@ expr_ht <- Heatmap(as.matrix(expr_cor_mat[,1:2]),
                    cluster_columns = FALSE,
                    right_annotation = row_anno,
                    row_title = NULL,
-                   column_title = "CLK1 Exp",
+                   column_title = "Total CLK1 Exp",
                    column_title_side = "top",
                    column_title_rot = 30,
                    cell_fun = function(j, i, x, y, width, height, fill) {
@@ -340,13 +337,16 @@ ex4_expr_ht <- Heatmap(as.matrix(ex4_expr_cor_mat[,1:2]),
                        })
 
 # save merged plot
-pdf(file.path(plots_dir, "CLK1-NF1-psi-expr-correlation-heatmap.pdf"), width = 7, height = 13)
+pdf(file.path(plots_dir, "CLK1-NF1-psi-expr-correlation-heatmap.pdf"), width = 6, height = 7)
 print(incl_ht + ex4_expr_ht + expr_ht)
 dev.off()
 
 # create dfs for generating expr-prot and expr-prot scatter plots
 proteo_scatter_df <- clk_nf1_proteo_df %>%
-  left_join(mol_df %>% dplyr::select(match_id, `CLK1-Exon4_PSI`, `Total CLK1`, `CLK1-201`, `Total NF1`, `NF1-202_PC`, `NF1-Exon23a_PSI`, `NF1-215_RI`, `NF1-208_NMD`))
+  left_join(mol_df %>% dplyr::select(match_id, `CLK1-Exon4_PSI`, `Total CLK1`, `CLK1-201`, 
+                                     `Total NF1`, `NF1-202_PC`, 
+                                     `NF1-215_PSI`, `NF1-Exon23a_PSI`, 
+                                     `NF1-215_RI`, `NF1-208_NMD`))
 
 
 # generate CLK1 expr-CLK/NF1 prot and expr-protein scatterplots
@@ -357,45 +357,28 @@ for (each in all_lists) {
     ids <- id_list[[subtype]]
     
     p_prot <- proteo_scatter_df %>%
-      dplyr::filter(match_id %in% ids) %>%
-      ggplot(aes(x = `NF1-215_RI`, y = each)) +
+      dplyr::filter(match_id %in% ids,
+                    !is.na(each)) %>%
+      ggplot(aes(x = .data[[each]], y = NF1)) +
       geom_point(colour = "black") +
       stat_smooth(method = "lm", 
                   formula = y ~ x, 
                   geom = "smooth", 
                   colour = "red",
                   fill = "pink",
-                  linetype="dashed") +
-      labs(x = glue::glue(each),
-           y = "NF1 Total protein abundance z-score") + 
+                  linetype="dashed",
+                  na.rm = TRUE) +
+      labs(x = each,
+           y = "NF1 protein abundance z-score") + 
       stat_cor(method = "spearman", cor.coef.name = "rho",  na.rm = F,
               size = 3) +
       theme_Publication()
   # label.x = 0, label.y = 3, 
     
-  pdf(file.path(paste(plots_dir, "/", "NF1-215-cor-", each, "-", subtype, ".pdf", sep = "")), width = 8, height = 10)
+  pdf(file.path(paste(plots_dir, "/", "NF1-protein-cor-", each, "-", subtype, ".pdf", sep = "")), width = 4, height = 4)
   print(p_prot)
   dev.off()
-  
-  p_201_prot <- proteo_scatter_df %>%
-    dplyr::filter(match_id %in% ids) %>%
-    ggplot(aes(x = `NF1-208_NMD`, y = each)) +
-    geom_point(colour = "black") +
-    stat_smooth(method = "lm", 
-                formula = y ~ x, 
-                geom = "smooth", 
-                colour = "red",
-                fill = "pink",
-                linetype="dashed") +
-    labs(x = glue::glue(each),
-         y = "NF1 Total protein abundance z-score") + 
-    stat_cor(method = "spearman", cor.coef.name = "rho", na.rm = F,
-            size = 3) +
-    theme_Publication()
-  # label.x = 0, label.y = 4, 
-  pdf(file.path(paste(plots_dir, "/", "NF1-208-cor-", each, "-", subtype, ".pdf", sep = "")), width = 8, height = 10)
-  print(p_201_prot)
-  dev.off()
+
   }
 }
 

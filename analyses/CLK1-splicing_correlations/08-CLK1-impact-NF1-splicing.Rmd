@@ -201,7 +201,9 @@ gene_tpm <- readRDS(rsem_tpm_counts) %>%
   mutate(gene_symbol = paste0("Total ", gene_symbol)) %>%
   column_to_rownames(var = "gene_symbol") %>%
   t() %>%
-  as.data.frame()
+  as.data.frame() #%>%
+#  mutate(across(everything(), ~ ifelse(. == 0, NA, .))) %>%
+ # mutate(across(everything(), log2))
 
 # we want to convert these transcript names to indicate the type of transcript from the GTF
 nf1_transcripts <- nf1_gtf %>%
@@ -218,6 +220,8 @@ transcript_tpm_df <- readRDS(rsem_transc_counts) %>%
   t() %>%
   as.data.frame() %>%
   bind_cols(gene_tpm, rmats_goi_mat) %>%
+  mutate(across(everything(), ~ ifelse(. == 0, NA, .))) %>%
+  mutate(across(everything(), log2)) %>%
   write_rds(file.path(results_dir, "clk1-nf1-psi-exp-df.rds"))
 
 transcript_tpm_mat <- as.matrix(transcript_tpm_df)
