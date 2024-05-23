@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Script to run all analysis modules
-# Author: Your Name
+# Author: Ammar S Naqvi
 # Date: 2024/05/10
 #
 
