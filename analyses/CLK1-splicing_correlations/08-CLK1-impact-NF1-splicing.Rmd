@@ -337,6 +337,7 @@ for (group in plot_groups) {
 
   # Create the correlation plot with blank for non-significant correlations
   pdf(file.path(paste0(plots_dir, "/CLK1-NF1-cors-", group, ".pdf")), width = 8, height = 8)
+  par(mar = c(5, 4, 4, 6) + 0.1)  # Adjust the right margin to bring the text closer
   corrplot(cor_matrix_clean, method="color", col=col(200),  
            type="upper", order="hclust", 
            addCoef.col = "black", # Add coefficient of correlation
@@ -348,9 +349,10 @@ for (group in plot_groups) {
            outline = TRUE,
            addgrid.col = "black"
            )
-    # Add x-axis title
-    #mtext(expression(bold("Spearman Correlation Rho")), side = 1, line = 2)
-    dev.off()
+  # Create a new plot overlay to add the y-axis title
+  mtext("Spearman's Rho", side = 4, line = 1, cex = 1.2, font = 2, las = 0, padj = -3)
+
+  dev.off()
 }
 
 ```
