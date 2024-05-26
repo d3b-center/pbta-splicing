@@ -369,7 +369,8 @@ proteo_scatter_df <- clk_nf1_proteo_df %>%
                 `NF1-215 Log2 TPM` = `NF1-215_RI`,
                 `CLK1-201 Log2 TPM` = `CLK1-201`,
                 `Total CLK1 Log2 TPM` = `Total CLK1`,
-                `Total NF1 Log2 TPM` = `Total NF1`)
+                `Total NF1 Log2 TPM` = `Total NF1`,
+                `NF1 protein abundance z-score` = NF1)
 
 # create dfs for generating expr-prot and expr-prot scatter plots
 phos_scatter_df <- clk_nf1_phospho_df %>%
@@ -377,7 +378,7 @@ phos_scatter_df <- clk_nf1_phospho_df %>%
   select(match_id, `NF1-S2796`, `NF1-S864`) %>%
   left_join(mol_df %>% dplyr::select(match_id, `CLK1-Exon4_PSI`, `Total CLK1`, `CLK1-201`, 
                                      `Total NF1`, `NF1-202_PC`, `NF1-Exon23a_PSI`,
-                                     `NF1-215_PSI`, `NF1-215_RI`)) %>%
+                                     `NF1-215_PSI`, `NF1-215_RI`, NF1)) %>%
   dplyr::rename(`NF1 pS2796` = `NF1-S2796`,
                 `NF1 pS864` = `NF1-S864`,
                 `CLK1-201 Exon4 PSI` = `CLK1-Exon4_PSI`,
@@ -387,7 +388,8 @@ phos_scatter_df <- clk_nf1_phospho_df %>%
                 `NF1-215 Log2 TPM` = `NF1-215_RI`,
                 `CLK1-201 Log2 TPM` = `CLK1-201`,
                 `Total CLK1 Log2 TPM` = `Total CLK1`,
-                `Total NF1 Log2 TPM` = `Total NF1`)
+                `Total NF1 Log2 TPM` = `Total NF1`,
+                `NF1 protein abundance z-score` = NF1)
 
 
 new_list <- names(proteo_scatter_df[,2:ncol(proteo_scatter_df)])
@@ -402,7 +404,7 @@ for (each in new_list) {
     p_prot <- proteo_scatter_df %>%
       dplyr::filter(match_id %in% ids,
                     !is.na(each)) %>%
-      ggplot(aes(x = .data[[each]], y = NF1)) +
+      ggplot(aes(x = .data[[each]], y = `NF1 protein abundance z-score`)) +
       geom_point(colour = "black") +
       stat_smooth(method = "lm", 
                   formula = y ~ x, 
@@ -426,7 +428,7 @@ for (each in new_list) {
 
 
 # for phos:
-phos_list <- names(proteo_scatter_df[,3:ncol(proteo_scatter_df)])
+phos_list <- names(proteo_scatter_df[,2:ncol(proteo_scatter_df)])
 
 
 # generate CLK1 expr-CLK/NF1 prot and expr-protein scatterplots
@@ -463,3 +465,4 @@ for (phos_sites in c("NF1 pS2796", "NF1 pS864")) {
     }
   }
 }
+
