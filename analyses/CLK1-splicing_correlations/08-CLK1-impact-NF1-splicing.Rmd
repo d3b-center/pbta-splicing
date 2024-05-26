@@ -51,12 +51,20 @@ rsem_tpm_counts <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
 rmats_clk1_file <- file.path(data_dir, "clk1-splice-events-rmats.tsv")
 rmats_nf1_file <- file.path(results_dir, "nf1-splice-events-rmats.tsv")
 gtf_file <- file.path(data_dir, "gencode.v39.primary_assembly.annotation.gtf.gz")
+phos_file <- file.path(results_dir, "hgg-dmg-clk-nf1-expression-phosphorylation.tsv")
 
 ```
 
 ## Retrieve and store splicing/expression info
 We want to retrieve CLK1 exon 4 splicing and the two NF1 splice events that came up as differential/targets in the morpholino module
 ```{r  echo='false'}
+# phos data
+phos_df <- read_tsv(phos_file) %>%
+  select(match_id, `NF1-S864`, `NF1-S2796`, NF1) %>%
+  dplyr::rename(`Total NF1 Protein` = NF1,
+                `NF1 pS864` = `NF1-S864`,
+                `NF1 pS2796` = `NF1-S2796`)
+
 ## get CLK1 psi values 
 indep_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 indep_df <- read_tsv(indep_file)
@@ -221,13 +229,25 @@ transcript_tpm_df <- readRDS(rsem_transc_counts) %>%
   as.data.frame() %>%
   mutate(across(everything(), ~ ifelse(. == 0, NA, .))) %>%
   mutate(across(everything(), log2)) %>%
-  bind_cols(gene_tpm, rmats_goi_mat) %>%
-  write_rds(file.path(results_dir, "clk1-nf1-psi-exp-df.rds"))
+  bind_cols(gene_tpm, rmats_goi_mat) 
 
-transcript_tpm_mat <- as.matrix(transcript_tpm_df)
+reformat <- transcript_tpm_df %>%
+  rownames_to_column("Kids_First_Biospecimen_ID") %>%
+  left_join(histologies_df[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
+  select(-Kids_First_Biospecimen_ID) %>%
+  left_join(phos_df) %>%
+  column_to_rownames(var = "match_id") %>%
+  dplyr::rename(`CLK1-201 (Exon4 Incl) PSI` = `CLK1-Exon4_PSI`,
+                `NF1-202` = `NF1-202_PC`,
+                `NF1-215 PSI` = `NF1-215_PSI`,
+                `NF1-215` = `NF1-215_RI`,
+                `NF1-202 (Exon23a Incl) PSI` =  `NF1-Exon23a_PSI`) %>%
+  write_rds(file.path(results_dir, "clk1-nf1-psi-exp-phos-df.rds")) 
+
+all_mat <- as.matrix(reformat)
 
 # Compute the correlation matrix
-mat <- cor(transcript_tpm_mat, method = "spearman", use = "pairwise.complete.obs")
+mat <- cor(all_mat, method = "spearman", use = "pairwise.complete.obs")
 
 # Perform significance testing for the correlations
 p.mat <- cor.mtest(mat, method = "spearman")$p
@@ -240,22 +260,26 @@ corrplot(mat, type = 'lower', order = 'hclust', tl.col = 'black', diag = FALSE,
 dev.off()
 
 # subset for transcripts of interest
-subset_tpm_df <- transcript_tpm_df %>%
+# for HGG
+items_of_interest_hgg <- c("Total CLK1", "CLK1-201", "CLK1-201 (Exon4 Incl) PSI", "Total NF1", "NF1-202", "NF1-215 PSI", "NF1-215",
+         "NF1-202 (Exon23a Incl) PSI", "NF1 pS864", "NF1 pS2796", "Total NF1 Protein")
+
+# for other 
+items_of_interest_other <- c("Total CLK1", "CLK1-201", "CLK1-201 (Exon4 Incl) PSI", "Total NF1", "NF1-202", "NF1-215 PSI", "NF1-215",
+         "NF1-202 (Exon23a Incl) PSI")
+
+
+subset_tpm_df <- reformat %>%
   as.data.frame() %>%
-  select(`Total CLK1`, `CLK1-201`, `CLK1-Exon4_PSI`, `Total NF1`, `NF1-202_PC`, `NF1-215_PSI`, `NF1-215_RI`,
-         `NF1-Exon23a_PSI`) %>%
+  select(all_of(items_of_interest_hgg)) %>%
   as.matrix()
 
 # Compute the correlation matrix
 mat_subset <- cor(as.matrix(subset_tpm_df), method = "spearman", use = "pairwise.complete.obs")
-
-items_of_interest <- c("Total CLK1", "CLK1-201", "CLK1-Exon4_PSI", "Total NF1", "NF1-202_PC", "NF1-215_PSI", "NF1-215_RI",
-         "NF1-Exon23a_PSI")
-
-mat_subset <- mat[items_of_interest,items_of_interest]
+mat_subset <- mat[items_of_interest_other,items_of_interest_other]
 
 # Perform significance testing for the correlations
-p.mat_subset <- p.mat[items_of_interest,items_of_interest]
+p.mat_subset <- p.mat[items_of_interest_other,items_of_interest_other]
 
 # Create correlogram
 pdf(file.path(plots_dir, "CLK1-NF1-subset-cors.pdf"), width = 8, height = 8)
@@ -279,16 +303,24 @@ table(histologies_df_plus$plot_group)
 
 for (group in plot_groups) {
   
+  if (group %in% c("DIPG or DMG", "Other high-grade glioma", "High-grade glioma")) {
+    to_subset <- items_of_interest_hgg
+  }
+    
+  else if (!group %in% c("DIPG or DMG", "Other high-grade glioma", "High-grade glioma")) {
+    to_subset <- items_of_interest_other
+  }
+  
   # subset samples in plot group
   bs_ids <- histologies_df_plus %>%
     filter(plot_group %in% group) %>%
-    pull(Kids_First_Biospecimen_ID)
+    pull(match_id)
   
   # subset tpm / psi matrix
-  subset_group <- subset_tpm_df[bs_ids,]
+  subset_group <- subset_tpm_df[bs_ids,to_subset]
 
   # Compute the correlation matrix
-  gp_mat <- cor(as.matrix(subset_group, use = "pairwise.complete.obs", method = "spearman"))
+  gp_mat <- cor(as.matrix(subset_group), use = "pairwise.complete.obs", method = "spearman")
   
   # Identify rows and columns that do not contain any NAs
   na_cols  <- colSums( !is.na(gp_mat) ) != 1
@@ -300,12 +332,25 @@ for (group in plot_groups) {
   # Perform significance testing for the correlations
   p_gp <- cor.mtest(cor_matrix_clean, method = "spearman")$p
 
-# Create correlogram
-pdf(file.path(paste0(plots_dir, "/CLK1-NF1-cors-", group, ".pdf")), width = 8, height = 8)
-corrplot(cor_matrix_clean, type = 'lower', order = 'hclust', tl.col = 'black', diag = TRUE,
-         cl.ratio = 0.2, tl.srt = 45, col = COL2('RdYlBu', 10),
-         p.mat = p_gp, sig.level = 0.05, pch = '*', insig = "label_sig", pch.col = "black") 
-dev.off()
+  # Create correlogram RdYlBu
+  col <- colorRampPalette(c("#4477AA","#77AADD","#FFFFFF", "#EE9988", "#BB4444"))
+
+  # Create the correlation plot with blank for non-significant correlations
+  pdf(file.path(paste0(plots_dir, "/CLK1-NF1-cors-", group, ".pdf")), width = 8, height = 8)
+  corrplot(cor_matrix_clean, method="color", col=col(200),  
+           type="upper", order="hclust", 
+           addCoef.col = "black", # Add coefficient of correlation
+           tl.col="black", tl.srt=45, #Text label color and rotation
+           # Combine with significance
+           p.mat = p_gp, sig.level = 0.05, insig = "blank", number.cex = 0.8, number.font = 1,
+           # hide correlation coefficient on the principal diagonal
+           diag=FALSE,
+           outline = TRUE,
+           addgrid.col = "black"
+           )
+    # Add x-axis title
+    #mtext(expression(bold("Spearman Correlation Rho")), side = 1, line = 2)
+    dev.off()
 }
 
 ```
