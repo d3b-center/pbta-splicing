@@ -55,11 +55,6 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
   
   gsva_eset <- gsva(gsea_scores_param, verbose = TRUE)
   
-  #gsva_eset <- GSVA::gsva(expr = eset,
-  #                        gset.idx.list = gene_set, 
-  #                        method = "ssgsea", 
-  #                        kcdf = "Gaussian") 
-  
   # convert to long format
   gsva_scores <- gsva_eset@assayData$exprs %>%
     as.data.frame() %>%
@@ -167,5 +162,5 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
                      color = heat_colors,
                      name = "GSVA score",
                      filename = file.path(output_dir, paste0(prefix, "_top", n, "_pathways.pdf")), 
-                     width = 12, height = 6)
+                     width = 12, height = 5.5)
 }
