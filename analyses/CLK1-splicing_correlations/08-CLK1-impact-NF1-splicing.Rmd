@@ -237,11 +237,11 @@ reformat <- transcript_tpm_df %>%
   select(-Kids_First_Biospecimen_ID) %>%
   left_join(phos_df) %>%
   column_to_rownames(var = "match_id") %>%
-  dplyr::rename(`CLK1-201 (Exon4 Incl) PSI` = `CLK1-Exon4_PSI`,
+  dplyr::rename(`CLK1-201 (Exon4) PSI` = `CLK1-Exon4_PSI`,
                 `NF1-202` = `NF1-202_PC`,
                 `NF1-215 PSI` = `NF1-215_PSI`,
                 `NF1-215` = `NF1-215_RI`,
-                `NF1-202 (Exon23a Incl) PSI` =  `NF1-Exon23a_PSI`) %>%
+                `NF1-202 (Exon23a) PSI` =  `NF1-Exon23a_PSI`) %>%
   write_rds(file.path(results_dir, "clk1-nf1-psi-exp-phos-df.rds")) 
 
 all_mat <- as.matrix(reformat)
@@ -261,12 +261,12 @@ dev.off()
 
 # subset for transcripts of interest
 # for HGG
-items_of_interest_hgg <- c("Total CLK1", "CLK1-201", "CLK1-201 (Exon4 Incl) PSI", "Total NF1", "NF1-202", "NF1-215 PSI", "NF1-215",
-         "NF1-202 (Exon23a Incl) PSI", "NF1 pS864", "NF1 pS2796", "Total NF1 Protein")
+items_of_interest_hgg <- c("Total CLK1", "CLK1-201", "CLK1-201 (Exon4) PSI", "Total NF1", "NF1-202", "NF1-215 PSI", "NF1-215",
+         "NF1-202 (Exon23a) PSI", "NF1 pS864", "NF1 pS2796", "Total NF1 Protein")
 
 # for other 
-items_of_interest_other <- c("Total CLK1", "CLK1-201", "CLK1-201 (Exon4 Incl) PSI", "Total NF1", "NF1-202", "NF1-215 PSI", "NF1-215",
-         "NF1-202 (Exon23a Incl) PSI")
+items_of_interest_other <- c("Total CLK1", "CLK1-201", "CLK1-201 (Exon4) PSI", "Total NF1", "NF1-202", "NF1-215 PSI", "NF1-215",
+         "NF1-202 (Exon23a) PSI")
 
 
 subset_tpm_df <- reformat %>%
