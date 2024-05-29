@@ -96,3 +96,12 @@ pdf(file_dpsi_plot,
 plot_dsp
 dev.off()
 
+psi_comb_select <- psi_comb %>% dplyr::select(splicing_case, geneSymbol, PValue, FDR, IncLevelDifference, exonStart_0base, exonEnd, 
+                           "1stExonStart_0base",'1stExonEnd',
+                           '2ndExonStart_0base','2ndExonEnd','riExonStart_0base', 'riExonEnd',"upstreamES", 
+                           "upstreamEE","downstreamES","downstreamEE",
+                           "longExonStart_0base","longExonEnd",
+                           "shortES","shortEE",
+                           "flankingES","flankingEE")
+
+write_tsv(psi_comb_select, file=file.path(results_dir,"splice-events-signficant.tsv"))
