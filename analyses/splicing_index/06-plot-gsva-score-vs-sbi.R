@@ -65,17 +65,20 @@ gsva_scores_df <- vroom(file.path(root_dir,"analyses/clustering_analysis/output/
 ## create plot
 scatterplot_score_sbi <- ggscatter(gsva_scores_df, 
                          x="SI", 
-                         y="score", 
+                         y="score",
                          add = "reg.line", 
+                         color = "blue",
                          conf.int = TRUE, 
                          cor.coef = TRUE, 
                          cor.method = "spearman",
                          add.params = list(color = "red",
                                            fill = "pink"),
-                         ticks = TRUE) + 
+                         ticks = TRUE,
+                         size = 2.5, alpha = 0.6) + 
   xlab("Splicing Burden Index") +
   ylab("Splicosome GSVA Score") +
-  theme_Publication()    
+  theme_Publication() 
+  
 
 # save plot
 pdf(file.path(plots_dir,"corplot-CLK1-high-low-vs-gsva-spliceosome.pdf"),width = 4.5, height = 6)
