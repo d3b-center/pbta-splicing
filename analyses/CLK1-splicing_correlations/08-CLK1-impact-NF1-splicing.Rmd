@@ -350,7 +350,7 @@ for (group in plot_groups) {
            addgrid.col = "black"
            )
   # Create a new plot overlay to add the y-axis title
-  mtext("Spearman's Rho", side = 4, line = 1, cex = 1.2, font = 2, las = 0, padj = -3)
+  mtext("Spearman's Rho", side = 4, line = 2, cex = 1.2, font = 2, las = 0, padj = -3)
 
   dev.off()
 }
