@@ -60,11 +60,12 @@ sbi_df <-  vroom(sbi_file) %>%
 gsva_scores_df <- vroom(file.path(root_dir,"analyses/clustering_analysis/output/diff_pathways/non_expr_pan_cancer_splice_subset_pam_canberra_0_gsva_output.tsv")) %>%
   dplyr::rename('Kids_First_Biospecimen_ID'='sample_id') %>%
   inner_join(sbi_df ,by='Kids_First_Biospecimen_ID') %>% filter(geneset == 'KEGG_SPLICEOSOME') %>%
-  select(Kids_First_Biospecimen_ID,SI,score) 
+  select(Kids_First_Biospecimen_ID,SI,score) %>%
+  dplyr::mutate(log2_sbi = log2(SI)  )
 
 ## create plot
 scatterplot_score_sbi <- ggscatter(gsva_scores_df, 
-                         x="SI", 
+                         x="log2_sbi", 
                          y="score",
                          add = "reg.line", 
                          color = "blue",
