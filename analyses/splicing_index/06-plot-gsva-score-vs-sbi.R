@@ -90,6 +90,6 @@ scatterplot_score_sbi <- ggscatter(gsva_scores_df,
   
 
 # save plot
-pdf(file.path(plots_dir,"corplot-CLK1-high-low-vs-gsva-spliceosome.pdf"),width = 4.5, height = 6)
+pdf(file.path(plots_dir,"corplot-sbi-vs-gsva-spliceosome.pdf"),width = 4.5, height = 6)
 print(scatterplot_score_sbi)
 dev.off()
