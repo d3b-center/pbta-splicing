@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ## histology and rmats file
-hist_file="../cohort_summary/results/histologies-plot-group.tsv"
+hist_file="../../data/results/histologies-plot-group.tsv"
 rmats_file="../../data/splice-events-rmats.tsv.gz"
 indep_samples="../../data/independent-specimens.rnaseqpanel.primary.tsv"
 
@@ -28,5 +28,5 @@ Rscript --vanilla 04-plot_total-splicing-cases.R
 echo "plotting SBI vs TMB"
 Rscript --vanilla 05-plot-tmb-vs-sbi.R
 
-## plot gsea score and sbi
-Rscript --vanilla 06-plot-gsea-score-vs-sbi.R
+## plot gsva score and sbi
+Rscript --vanilla 06-plot-gsva-score-vs-sbi.R
