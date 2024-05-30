@@ -1,8 +1,8 @@
 ################################################################################
-# 06-plot-gsea-score-vs-sbi.R
+# 06-plot-gsva-score-vs-sbi.R
 # written by Ammar Naqvi 
 #
-# usage: Rscript 06-plot-gsea-score-vs-sbi.R
+# usage: Rscript 06-plot-gsva-score-vs-sbi.R
 ################################################################################
 
 suppressPackageStartupMessages({
