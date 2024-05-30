@@ -27,6 +27,10 @@ input_dir <- file.path(analysis_dir, "input")
 clin_file <- read_tsv(file.path(hist_dir, "histologies-plot-group.tsv")) %>% 
   filter(experimental_strategy == "RNA-Seq")
 
+# read in genesets to keep
+genesets_to_keep <- read_tsv(file.path(input_dir, "genesets.tsv")) %>%
+  filter(Keep == "Yes")
+
 # read splice dataset
 splice_mat <- readRDS(file.path(input_dir, "pan_cancer_splicing_SE.gene.rds"))
 
@@ -52,7 +56,9 @@ kegg_splice <- msigdbr::msigdbr(species = "Homo sapiens", category = "C2", subca
 
 hallmark_splice <- hallmark_db %>%
   rbind(kegg_splice) %>%
+  filter(gs_name %in% genesets_to_keep$Geneset) %>%
   unstack()
 
 hallmark_splice_rds_output <- file.path(input_dir,"hallmark_splice_geneset_mrna.rds")
+
 saveRDS(hallmark_splice, file = hallmark_splice_rds_output)
