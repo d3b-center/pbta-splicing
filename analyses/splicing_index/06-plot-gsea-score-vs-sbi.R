@@ -36,7 +36,7 @@ if(!dir.exists(results_dir)){
 }
 
 clin_file  <- file.path(data_dir,"histologies-plot-group.tsv")
-rmats_file <- file.path(data_dir, "clk1-splice-events-rmats.tsv")
+sbi_file <- file.path(root_dir,"analyses/splicing_index/results/splicing_index.SE.txt")
 
 ## output files for final plots
 
@@ -51,24 +51,20 @@ histologies_df  <-  read_tsv(clin_file) %>%
          Kids_First_Biospecimen_ID %in% indep_df$Kids_First_Biospecimen_ID)
 
 ## Load rmats file
-rmats_df <-  vroom(rmats_file) %>%
-  # Select CLK1 gene
-  filter(geneSymbol=="CLK1") %>%
-  # Select exon 4
-  filter(exonStart_0base=="200860124", exonEnd=="200860215") %>%
-  # Select "sample", "geneSymbol", and "IncLevel1" columns
-  select(sample_id, geneSymbol, IncLevel1) %>%
+sbi_df <-  vroom(sbi_file) %>%
   # Join rmats data with clinical data
-  inner_join(histologies_df, by=c('sample_id'='Kids_First_Biospecimen_ID')) 
+  inner_join(histologies_df, by=c('Sample'='Kids_First_Biospecimen_ID')) %>%
+  dplyr::rename('Kids_First_Biospecimen_ID'='Sample')
 
 ## Load gsea score file
 gsva_scores_df <- vroom(file.path(root_dir,"analyses/clustering_analysis/output/diff_pathways/non_expr_pan_cancer_splice_subset_pam_canberra_0_gsva_output.tsv")) %>%
-  inner_join(rmats_df, by='sample_id') %>% filter(geneset == 'KEGG_SPLICEOSOME') %>%
-  select(sample_id,IncLevel1,score) 
+  dplyr::rename('Kids_First_Biospecimen_ID'='sample_id') %>%
+  inner_join(sbi_df ,by='Kids_First_Biospecimen_ID') %>% filter(geneset == 'KEGG_SPLICEOSOME') %>%
+  select(Kids_First_Biospecimen_ID,SI,score) 
 
 ## create plot
 scatterplot_score_sbi <- ggscatter(gsva_scores_df, 
-                         x="IncLevel1", 
+                         x="SI", 
                          y="score", 
                          add = "reg.line", 
                          conf.int = TRUE, 
@@ -78,43 +74,10 @@ scatterplot_score_sbi <- ggscatter(gsva_scores_df,
                                            fill = "pink"),
                          ticks = TRUE) + 
   xlab("Splicing Burden Index") +
-  ylab("Splicosome GSEA Score") +
+  ylab("Splicosome GSVA Score") +
   theme_Publication()    
 
 # save plot
-pdf(file.path(plots_dir,"sbi-score.pdf"), width = 4, height = 4)
+pdf(file.path(plots_dir,"corplot-CLK1-high-low-vs-gsva-spliceosome.pdf"),width = 4.5, height = 6)
 print(scatterplot_score_sbi)
-dev.off()
-
-## Compute quantiles to define high vs low Exon 4 PSI groups
-quartiles_sbi <- quantile(gsva_scores_df$IncLevel1, probs=c(.25, .75), na.rm = FALSE)
-
-# Get lower quantile (25%)
-lower_sbi <- quartiles_sbi[1] 
-
-# Get upper quantile (75%)
-upper_sbi <- quartiles_sbi[2]
-
-# Create df with high/low PSI
-gsva_scores_sbi_highlow_df <- gsva_scores_df %>%
-  mutate(level = case_when(gsva_scores_df$IncLevel1 > upper_sbi ~ "high",
-                         gsva_scores_df$IncLevel1 < lower_sbi ~ "low",
-                         TRUE ~ NA_character_)
-  ) %>%
-  filter(!is.na(level)) %>%
-  select(sample_id,score,level)
-
-## Make box plot with stats
-boxplot_sbi_vs_score <- ggboxplot(gsva_scores_sbi_highlow_df,x = "level", y = "score") +
-  ylab(expression(bold("Splicosome GSEA Score"))) +
-  xlab(expression(bold("Splicing Burden Index Level"))) +
-   lims(y = c(0,.37)) +
-  ggforce::geom_sina(aes(color = level), size = 2, shape = 21, fill = NA, stroke = 1) +
-  scale_color_manual(name = "level", values = c(high = "#FFC20A", low = "#0C7BDC")) +
-  stat_compare_means(position = "identity", label.x = 1) +
-  theme_Publication()
-
-# save plot
-pdf(file.path(plots_dir,"highlow-sbi-score.pdf"), width = 4.5, height = 6)
-print(boxplot_sbi_vs_score)
 dev.off()
