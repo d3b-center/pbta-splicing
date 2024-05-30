@@ -98,7 +98,7 @@ splice_df <-  readRDS(psi_exp_file) %>%
   rownames_to_column("match_id") %>%
   filter(match_id %in% indep_rna_df$match_id) %>%
   # z-score
-  dplyr::mutate(`CLK1-201 (Exon4 Incl) PSI` = as.numeric(scale(`CLK1-201 (Exon4 Incl) PSI`)),
+  dplyr::mutate(`CLK1-201 (Exon4) PSI` = as.numeric(scale(`CLK1-201 (Exon4) PSI`)),
                 `NF1-215 PSI` = as.numeric(scale(`NF1-215 PSI`)),
                 `CLK1-201` = as.numeric(scale(`CLK1-201`)),
                 `Total CLK1` = as.numeric(scale(`Total CLK1`)),
@@ -203,13 +203,13 @@ gene_matrix <- gene_matrix %>%
 # mutate the hgg dataframe for plotting
 histologies_df_sorted <- splice_df %>%
   left_join(histologies_df, by = "match_id", relationship = "many-to-many") %>%
-  select(match_id, plot_group, cancer_predisposition, reported_gender, molecular_subtype, CNS_region, `CLK1-201 (Exon4 Incl) PSI`,
+  select(match_id, plot_group, cancer_predisposition, reported_gender, molecular_subtype, CNS_region, `CLK1-201 (Exon4) PSI`,
          `NF1-215 PSI`, `CLK1-201`, `Total CLK1`, `Total NF1`, `NF1 pS864`, `NF1 pS2796`, `Total NF1 Protein`) %>%
   unique() %>%
-  group_by(match_id, plot_group, cancer_predisposition, reported_gender, molecular_subtype, `CLK1-201 (Exon4 Incl) PSI`,
+  group_by(match_id, plot_group, cancer_predisposition, reported_gender, molecular_subtype, `CLK1-201 (Exon4) PSI`,
            `NF1-215 PSI`, `CLK1-201`, `Total CLK1`, `Total NF1`, `NF1 pS864`, `NF1 pS2796`, `Total NF1 Protein`) %>%
   summarise(CNS_region = str_c(unique(na.omit(CNS_region)), collapse = ","),
-            CLK1_PSI = mean(`CLK1-201 (Exon4 Incl) PSI`),
+            CLK1_PSI = mean(`CLK1-201 (Exon4) PSI`),
             .groups = "drop") %>%
   left_join(unique(tmb_df[,c("tmb_status", "match_id")])) %>%
   filter(match_id %in% names(gene_matrix)) %>%
