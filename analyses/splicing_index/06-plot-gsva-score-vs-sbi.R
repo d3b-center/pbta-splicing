@@ -76,7 +76,7 @@ scatterplot_score_sbi <- ggscatter(gsva_scores_df,
                                            fill = "pink"),
                          ticks = TRUE,
                          size = 2.5, alpha = 0.6) + 
-  xlab("Splicing Burden Index") +
+  xlab("Log2 Splicing Burden Index") +
   ylab("Splicosome GSVA Score") +
   theme_Publication() 
   
