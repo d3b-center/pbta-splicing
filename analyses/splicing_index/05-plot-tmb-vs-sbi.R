@@ -81,21 +81,23 @@ sbi_vs_tmb_innerjoin_df <- tmb_coding_df %>%
   inner_join(sbi_coding_df, by=c("Kids_First_Participant_ID", "match_id")) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
   # add histology
-  left_join(hist_pal) 
+  left_join(hist_pal) %>%
+  dplyr::mutate(log10_SI = log10(SI)) %>%
+  dplyr::mutate(log10_TMB = log10(tmb)) 
 
 sbi_tmb_no_hyper <- sbi_vs_tmb_innerjoin_df %>%
   filter(mutation_status == "Normal")
 
 # generate corplot
 ## create plot
-df_list <- list(sbi_vs_tmb_innerjoin_df, sbi_tmb_no_hyper)
+df_list <- list(sbi_vs_tmb_innerjoin_df, sbi_tmb_no_hyper) 
   
 pdf(file.path(corplot_sbi_vs_tmb_file), width = 4.5, height = 4.5)
 
 for (each_df in df_list) {
   p <- ggscatter(each_df, 
                          y= "SI", 
-                         x= "tmb", 
+                         x= "log10_TMB", 
                          add = "reg.line", 
                          conf.int = TRUE, 
                          cor.coef = TRUE, 
@@ -202,7 +204,7 @@ sbi_tmb_no_hyper_subset <- sbi_tmb_no_hyper %>%
 pdf(corplot_sbi_vs_tmb_by_cg_file, width = 16, height = 8)
 ggscatter(sbi_tmb_no_hyper, 
           y= "SI", 
-          x= "tmb", 
+          x= "log10_TMB", 
           add = "reg.line", 
           conf.int = TRUE, 
           cor.coef = TRUE, 
