@@ -100,13 +100,19 @@ heat_plot <- Heatmap(mat,
                      show_heatmap_legend=TRUE,
                      cluster_columns = TRUE, 
                      right_annotation = row_anno,
+                     heatmap_legend_param = list(direction = "horizontal"),
                      #na_col = "lightgrey",
                      #rect_gp = gpar(col = "white"),
                      row_title = NULL, 
                      column_title = NULL, 
                      row_names_gp = grid::gpar(fontsize = 12),
-                     column_title_side = "top")
+                     column_title_side = "top") 
 
-pdf(heatmap_output_file, width = 14, height = 6)
-print(heat_plot)
+# Draw the heatmap with legends on top
+heat_plot_leg <- draw(heat_plot, 
+                     annotation_legend_side = "top", 
+                     heatmap_legend_side = "top")
+
+pdf(heatmap_output_file, width = 8, height = 6)
+print(heat_plot_leg)
 dev.off()
