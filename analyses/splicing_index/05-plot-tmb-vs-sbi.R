@@ -19,7 +19,6 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses", "splicing_index")
 map_dir <- file.path(root_dir, "analyses", "cohort_summary", "results")
-input_dir <- file.path(analysis_dir, "input")
 data_dir <- file.path(root_dir, "data")
 tmb_dir <- file.path(root_dir, "analyses", "oncoprint", "input")
 results_dir <- file.path(analysis_dir, "results")
@@ -37,7 +36,7 @@ corplot_sbi_vs_tmb_by_cg_file <- file.path(plots_dir, "corplot_sbi-tmb-by-cg.pdf
 ## input files
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 indep_wgs_file <- file.path(data_dir, "independent-specimens.wgswxspanel.primary.prefer.wgs.tsv")
-tmb_coding_file  <- file.path(tmb_dir,"snv-mutation-tmb-coding.tsv") # OPC v13 TMB file
+tmb_coding_file  <- file.path(data_dir,"snv-mutation-tmb-coding.tsv") # OPC v15 TMB file
 sbi_coding_file  <- file.path(results_dir,"splicing_index.SE.txt")
 palette_file <- file.path(map_dir,"histologies-plot-group.tsv") 
 
@@ -56,7 +55,7 @@ indep_wgs_df <- read_tsv(indep_wgs_file) %>%
   #dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID) %>%
   dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID)
 
-## get tmb file (source: OpenPedCan v13)
+## get tmb file (source: OpenPedCan v15)
 tmb_coding_df  <-  read_tsv(tmb_coding_file)  %>% 
   mutate(mutation_status = case_when(tmb <10 ~ "Normal",
                                      tmb >=10 & tmb < 100 ~ "Hypermutant",
@@ -81,21 +80,23 @@ sbi_vs_tmb_innerjoin_df <- tmb_coding_df %>%
   inner_join(sbi_coding_df, by=c("Kids_First_Participant_ID", "match_id")) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
   # add histology
-  left_join(hist_pal) 
+  left_join(hist_pal) %>%
+  dplyr::mutate(log10_SI = log10(SI)) %>%
+  dplyr::mutate(log10_TMB = log10(tmb)) 
 
 sbi_tmb_no_hyper <- sbi_vs_tmb_innerjoin_df %>%
   filter(mutation_status == "Normal")
 
 # generate corplot
 ## create plot
-df_list <- list(sbi_vs_tmb_innerjoin_df, sbi_tmb_no_hyper)
+df_list <- list(sbi_vs_tmb_innerjoin_df, sbi_tmb_no_hyper) 
   
 pdf(file.path(corplot_sbi_vs_tmb_file), width = 4.5, height = 4.5)
 
 for (each_df in df_list) {
   p <- ggscatter(each_df, 
-                         y= "SI", 
-                         x= "tmb", 
+                         y= "log10_TMB", 
+                         x= "log10_SI", 
                          add = "reg.line", 
                          conf.int = TRUE, 
                          cor.coef = TRUE, 
@@ -104,8 +105,8 @@ for (each_df in df_list) {
                                            fill = NA),
                          ticks = TRUE,
                  alpha = 0.6) + 
-  ylab("Splicing Burden Index") +
-  xlab("Tumor Mutation Burden") +
+    labs(x = expression(bold(Log[10] ~ "Splicing Burden Index")),
+         y = expression(bold(Log[10] ~ "Tumor Mutation Burden"))) + 
   theme_Publication()
   print(p)
 }
@@ -136,7 +137,8 @@ sbi_tmb_plot <- ggplot(high_vs_low_df, aes(SBI_level, log10(tmb))) +
   facet_wrap("mutation_status") +
   scale_color_manual(name = "SBI_level", values = c(High = "#0C7BDC", Low = "#FFC20A")) + 
   theme_Publication() + 
-  labs(y="log10 (TMB)", x="Splicing Burden Level") + 
+  labs(y = expression(bold(Log[10] ~ "Tumor Mutation Burden")),
+       x="Splicing Burden Level") + 
   ylim(c(-3,3)) +
   theme(legend.position="none")
 
@@ -189,7 +191,8 @@ ggplot(by_hist, aes(SBI_level, log10(tmb))) +
   facet_wrap("plot_group", labeller = labeller(plot_group = label_wrap_gen(width = 18)), nrow  = 2) +
   scale_color_manual(name = "SBI_level", values = c(High = "#0C7BDC", Low = "#FFC20A")) + 
   theme_Publication() + 
-  labs(y="log10 (TMB)", x="Splicing Burden Level") + 
+  labs(y = expression(bold(Log[10] ~ "Tumor Mutation Burden")),
+         x="Splicing Burden Level") + 
   ylim(c(-2,2.5)) +
   theme(legend.position = "none", strip.text = element_text(size = 10))  # Adjust the size here
 dev.off()
@@ -201,8 +204,8 @@ sbi_tmb_no_hyper_subset <- sbi_tmb_no_hyper %>%
 
 pdf(corplot_sbi_vs_tmb_by_cg_file, width = 16, height = 8)
 ggscatter(sbi_tmb_no_hyper, 
-          y= "SI", 
-          x= "tmb", 
+          x= "log10_SI", 
+          y= "log10_TMB", 
           add = "reg.line", 
           conf.int = TRUE, 
           cor.coef = TRUE, 
@@ -215,7 +218,8 @@ ggscatter(sbi_tmb_no_hyper,
              nrow  = 3,
              scales = "free") +
   theme_Publication() + 
-  labs(x="Tumor Mutation Burden", y="Splicing Burden Index") + 
+  labs(x = expression(bold(Log[10] ~ "Splicing Burden Index")),
+       y = expression(bold(Log[10] ~ "Tumor Mutation Burden"))) + 
   theme(legend.position = "none", strip.text = element_text(size = 13))  # Adjust the size here
 dev.off()
 
