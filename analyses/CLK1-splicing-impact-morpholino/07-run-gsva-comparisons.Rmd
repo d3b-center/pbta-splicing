@@ -166,9 +166,8 @@ for (i in 1:length(score_sources)) {
   score_df_summarized <- score_df %>%
     mutate(Treatment = ifelse(grepl("CTRL", sample_id), "Non-targeting Morpholino", "CLK1 Exon 4 Morpholino")) %>%
     group_by(geneset, Treatment) %>%
-    summarise(Mean_GSVA_Score = mean(gsva_score, na.rm = TRUE)) %>%
-    ungroup() 
-  
+    summarise(Mean_GSVA_Score = mean(gsva_score, na.rm = TRUE), .groups = 'drop')
+
 # Re-order
 ordering_metric <- score_df_summarized %>%
   filter(Treatment == "CLK1 Exon 4 Morpholino") %>%
@@ -189,7 +188,7 @@ score_df_summarized$geneset <- factor(score_df_summarized$geneset, levels = orde
     
   score_name <- score_names[i]
   gsva_scores_mat <- score_df %>%
-  spread(sample_id, gsva_score) %>%
+  spread(., sample_id, gsva_score) %>%
   tibble::column_to_rownames("geneset") %>%
   as.matrix()
   
@@ -202,13 +201,11 @@ score_df_summarized$geneset <- factor(score_df_summarized$geneset, levels = orde
     height <- 15
     width <- 8
     cell_width <- 3
-
   }
   else if (i %in% c(3,6)){
     height <- 3.5
     width <- 5.5
     cell_width <- 3
-
   }
   
 heatmap_obj <- Heatmap(
