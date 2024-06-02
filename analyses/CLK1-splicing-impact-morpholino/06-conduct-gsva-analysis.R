@@ -158,15 +158,11 @@ for(i in names(mat_list)) {
     dplyr::select(sample_id, geneset, gsva_score) %>%
     unique()
   
-  gsea_scores_df_tidy <-  bind_rows(gsea_scores_df_tidy,
-                                    gsea_scores_each_df) %>%
-    unique()
-  }
+  #### Export GSEA scores to TSV --------------------------------------------------------------------
+  write_tsv(gsea_scores_each_df, out_file)
+    }
 }
 
-
-#### Export GSEA scores to TSV --------------------------------------------------------------------
-write_tsv(gsea_scores_df_tidy, out_file)
 
 #### Session info
 sessionInfo()
