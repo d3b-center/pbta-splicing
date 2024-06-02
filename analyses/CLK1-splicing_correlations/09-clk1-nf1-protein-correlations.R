@@ -13,6 +13,7 @@ suppressPackageStartupMessages({
   library("ComplexHeatmap")
   library("circlize")
   library("stringr")
+  library("corrplot")
 })
 
 # Get `magrittr` pipe
@@ -169,7 +170,7 @@ mol_df <- data_df %>%
   left_join(clk_nf1_proteo_df) %>%
   left_join(clk_nf1_phospho_df) %>%
   select(match_id, everything(.))
-
+  
 # save df
 write_tsv(mol_df, 
           file.path(results_dir, "hgg-dmg-clk-nf1-expression-phosphorylation.tsv"))
@@ -183,179 +184,156 @@ hgg_ids <- hist_rna %>%
   dplyr::filter(plot_group == "Other high-grade glioma") %>%
   pull(match_id)
 
-# extract molecular features from mol_df
-features <- names(mol_df)[!names(mol_df) %in% c("match_id", "Kids_First_Biospecimen_ID",
-                                                "IncLevel1")]
-
-# create empty df to store correlation coefficients between PSI and feature values
-incl_cor_mat <- data.frame(row.names = features,
-                           DMG = rep(0, length(features)),
-                           HGG = rep(0, length(features)),
-                           DMG_p = rep(0, length(features)),
-                           HGG_p = rep(0, length(features)))  %>%
-  dplyr::mutate(Feature = case_when(rownames(.) %in% names(clk_nf1_phospho_df) ~ "Phosphosite z-score",
-                                    rownames(.) %in% names(clk_nf1_proteo_df) ~ "Total protein z-score",
-                                    rownames(.) %in% c(clk1_splice_list, nf1_splice_list) ~ "PSI",
-                                    TRUE ~ "RNA log2TPM"
-  ))
-
-
-# create same empty df for CLK1 expression cor values
-expr_cor_mat <- incl_cor_mat
-ex4_expr_cor_mat <- incl_cor_mat
+# create matrix for cor
+full_mat <- mol_df %>%
+  column_to_rownames("match_id") %>%
+  as.matrix()
 
 # loop through subtypes and features to calculate pearson correlation coefficients
 id_list <- list("DMG" = dmg_ids, "HGG" = hgg_ids)
 
+# Initialize lists to store matrices for each subtype
+cor_matrices <- list()
+pval_matrices <- list()
+
+meas_of_int <- c("CLK1-Exon4_PSI", "CLK1-201", "Total CLK1")
+
+# Loop over each subtype and compute correlation and p-value matrices
 for (subtype in c("DMG", "HGG")) {
   
   ids <- id_list[[subtype]]
+  mat <- full_mat[ids,]
   
-  for (i in 1:nrow(incl_cor_mat)) {
-    
-    feature <- rownames(incl_cor_mat)[i]
-    
-    incl_cor_mat[feature, subtype] <- cor.test(mol_df$`CLK1-Exon4_PSI`[mol_df$match_id %in% ids],
-                                               unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                               method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
-                                                               "pearson", "spearman"))$estimate
-    
-    incl_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(mol_df$`CLK1-Exon4_PSI`[mol_df$match_id %in% ids],
-                                                                 unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                                                 method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
-                                                                                 "pearson", "spearman"))$p.value
-    
-    expr_cor_mat[feature, subtype] <- cor.test(mol_df$`Total CLK1`[mol_df$match_id %in% ids],
-                                               unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                               method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
-                                                               "pearson", "spearman"))$estimate
-    
-    expr_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(mol_df$`Total CLK1`[mol_df$match_id %in% ids],
-                                                                 unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                                                 method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
-                                                                                 "pearson", "spearman"))$p.value
-    
-    ex4_expr_cor_mat[feature, subtype] <- cor.test(unlist(mol_df$`CLK1-201`[mol_df$match_id %in% ids]),
-                                                   unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                                   method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
-                                                                   "pearson", "spearman"))$estimate
-    
-    ex4_expr_cor_mat[feature, glue::glue("{subtype}_p")] <- cor.test(mol_df$`CLK1-201`[mol_df$match_id %in% ids],
-                                                                     unlist(mol_df[mol_df$match_id %in% ids, feature]),
-                                                                     method = ifelse(incl_cor_mat$Feature[i] == "RNA log2Exp", 
-                                                                                     "pearson", "spearman"))$p.value
-    
-  }
+  # Compute the correlation matrix
+  cor_mat <- cor(mat, method = "spearman", use = "pairwise.complete.obs")
   
+  # Perform significance testing for the correlations
+  p_mat <- cor.mtest(cor_mat, use = "pairwise.complete.obs", method = "spearman")$p
+
+  # Define matrix indicating if correlation p < 0.05
+  pval_mat <- ifelse(p_mat < 0.05, "*", "")
+  
+  # subset for only CLK1 cols
+  cor_mat <- cor_mat[,meas_of_int]
+  pval_mat <- pval_mat[,meas_of_int]
+  
+  # Append suffix to column names to avoid conflicts
+  colnames(cor_mat) <- paste(colnames(cor_mat), subtype, sep = "_")
+  colnames(pval_mat) <- paste(colnames(pval_mat), subtype, sep = "_")
+  
+  # Append matrices to the list
+  cor_matrices[[subtype]] <- cor_mat
+  pval_matrices[[subtype]] <- pval_mat
 }
 
-# define row_annot df to store feature type
-row_annot <- expr_cor_mat %>%
-  dplyr::select(Feature) %>%
-  dplyr::mutate(Feature = factor(Feature,
-                                 levels = c("PSI", "RNA log2TPM", "Phosphosite z-score", "Total protein z-score")))
+# Combine the matrices for all subtypes
+combined_cor_mat <- do.call(cbind, cor_matrices)
+combined_pval_mat <- do.call(cbind, pval_matrices)
 
+# Print the combined matrices to check
+print(combined_cor_mat)
+print(combined_pval_mat)
 
 # add rownames
-rownames(expr_cor_mat) <- case_when(rownames(expr_cor_mat) == "CLK1-201" ~ "CLK1-201 Exp",
-                                    rownames(expr_cor_mat) == "Total CLK1" ~ "Total CLK1 Exp",
-                                    rownames(expr_cor_mat) == "CLK1-Exon4_PSI" ~ "CLK1-201 (Exon4 Incl) PSI",
-                                    rownames(expr_cor_mat) == "Total NF1" ~ "Total NF1 Exp",
-                                    rownames(expr_cor_mat) == "NF1-202_PC" ~ "NF1-202 Exp",
-                                    rownames(expr_cor_mat) == "NF1-215_RI" ~ "NF1-215 Exp",
-                                    rownames(expr_cor_mat) == "NF1-Exon23a_PSI" ~ "NF1-202 (Exon23a Incl) PSI",
-                                    rownames(expr_cor_mat) == "NF1-215_PSI" ~ "NF1-215 PSI",
-                                    rownames(expr_cor_mat) == "NF1" ~ "Total NF1 protein",
-                                    rownames(expr_cor_mat) == "NF1-S864" ~ "NF1 pS864",
-                                    rownames(expr_cor_mat) == "NF1-S2796" ~ "NF1 pS2796",
-                                    TRUE ~ rownames(expr_cor_mat))
+rownames(combined_cor_mat) <- case_when(rownames(combined_cor_mat) == "CLK1-Exon4_PSI" ~ "CLK1-201 Exon4 PSI",
+                                    rownames(combined_cor_mat) == "NF1-202_PC" ~ "NF1-202",
+                                    rownames(combined_cor_mat) == "NF1-215_RI" ~ "NF1-215",
+                                    rownames(combined_cor_mat) == "NF1-Exon23a_PSI" ~ "NF1-202 Exon23a PSI",
+                                    rownames(combined_cor_mat) == "NF1-215_PSI" ~ "NF1-215 PSI",
+                                    rownames(combined_cor_mat) == "NF1" ~ "Total NF1 protein",
+                                    rownames(combined_cor_mat) == "NF1-S864" ~ "NF1 pS864",
+                                    rownames(combined_cor_mat) == "NF1-S2796" ~ "NF1 pS2796",
+                                    TRUE ~ rownames(combined_cor_mat))
 
-rownames(row_annot) <- rownames(expr_cor_mat)
+# add rownames
+rownames(combined_pval_mat) <- case_when(rownames(combined_pval_mat) == "CLK1-Exon4_PSI" ~ "CLK1-201 Exon4 PSI",
+                                        rownames(combined_pval_mat) == "NF1-202_PC" ~ "NF1-202",
+                                        rownames(combined_pval_mat) == "NF1-215_RI" ~ "NF1-215",
+                                        rownames(combined_pval_mat) == "NF1-Exon23a_PSI" ~ "NF1-202 Exon23a PSI",
+                                        rownames(combined_pval_mat) == "NF1-215_PSI" ~ "NF1-215 PSI",
+                                        rownames(combined_pval_mat) == "NF1" ~ "Total NF1 protein",
+                                        rownames(combined_pval_mat) == "NF1-S864" ~ "NF1 pS864",
+                                        rownames(combined_pval_mat) == "NF1-S2796" ~ "NF1 pS2796",
+                                        TRUE ~ rownames(combined_pval_mat))
 
+# reorder rownames
+ordered_rows <- c("CLK1-201 Exon4 PSI", "NF1-202 Exon23a PSI", "NF1-215 PSI",
+                  "CLK1-201", "Total CLK1", "NF1-202", "NF1-215", "Total NF1",
+                  "NF1 pS864", "NF1 pS2796", "Total NF1 protein")
+combined_cor_mat <- combined_cor_mat[ordered_rows,]
+combined_pval_mat <- combined_pval_mat[ordered_rows,]
 
+# Heatmap annotation
+row_annot <- as.data.frame(rownames(combined_cor_mat)) %>%
+  dplyr::rename(ID = `rownames(combined_cor_mat)`) %>%
+  mutate(Feature = case_when(ID == "Total NF1 protein" ~ "Whole Cell Protein",
+                               ID %in% c("NF1 pS864", "NF1 pS2796") ~ "Phosphoprotein",
+                               ID %in% c("NF1-202", "CLK1-201", "NF1-215",
+                                         "Total NF1", "Total CLK1") ~ "RNA Expression",
+                               ID %in% c("CLK1-201 Exon4 PSI", "NF1-202 Exon23a PSI", "NF1-215 PSI") ~ "mRNA splicing"))
 
-# rename cor mat colnames for plotting
-colnames(incl_cor_mat)[1:2] <- c("DIPG or DMG", "Other HGG")
-colnames(expr_cor_mat)[1:2]  <- c("DIPG or DMG", "Other HGG")
-colnames(ex4_expr_cor_mat)[1:2]  <- c("DIPG or DMG", "Other HGG")
+row_anno_col <- list(Feature = c("RNA Expression" = "#DC3220",
+                                   "mRNA splicing" = "orange",
+                                   "Phosphoprotein" = "#005AB5", 
+                                   "Whole Cell Protein" = "#40B0A6"))
+  
 
-# create Heatmap row annotation for feature type
-anno_col <- list(Feature = c( "PSI" = "purple", "RNA log2TPM" = "#DC3220", "Phosphosite z-score" = "#40B0A6",  "Total protein z-score" = "#005AB5"))
+row_anno <- rowAnnotation(df = row_annot["Feature"], col = row_anno_col, show_legend = TRUE,
+                          show_annotation_name = FALSE)
 
-row_anno = rowAnnotation(df = row_annot,
-                         col = anno_col, show_legend = TRUE)
+# column annotation
+# create single sample heatmap
+col_annot <- cohort_df %>%
+  dplyr::filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma")) %>%
+  select(plot_group, plot_group_hex) %>%
+  unique()
 
-# define matrix indicating if correlation p < 0.05
-incl_pval_mat <- ifelse(incl_cor_mat[,3:4] < 0.05, "*", "") 
-expr_pval_mat <- ifelse(expr_cor_mat[,3:4] < 0.05, "*", "")
-ex4_expr_pval_mat <- ifelse(ex4_expr_cor_mat[,3:4] < 0.05, "*", "")
+col_annot_df <- as.data.frame(colnames(combined_cor_mat)) %>%
+  dplyr::rename(ID = `colnames(combined_cor_mat)`) %>%
+  dplyr::mutate(Histology = case_when(grepl("DMG", ID) ~ "DIPG or DMG",
+                                      grepl("HGG", ID) ~ "Other high-grade glioma")
+                )
+
+plot_colors <- setNames(col_annot$plot_group_hex, col_annot$plot_group)
+plot_colors <- list(Histology = plot_colors)
+
+ha <- HeatmapAnnotation(
+  Histology = col_annot_df$Histology,
+  col = plot_colors,
+  annotation_name_side = "right")
+
+column_labels_manual = rep(c("CLK1-201 Exon4 PSI", "CLK1 201", "Total CLK1"),2)
 
 # create CLK1 ex4 psi correlation heatmap
-incl_ht <- Heatmap(as.matrix(incl_cor_mat[,1:2]),
-                   width = unit(13, "mm"),
-                   name = "Correlation Coefficient",
-                   col = colorRamp2(c(-1, 0, 1), c("#E66100", "white", "#5D3A9B")),
+heat_plot <- Heatmap(combined_cor_mat,
+                   name = "Spearman's Rho",
+                   col = colorRamp2(c(-1, 0, 1), c("darkblue", "white", "red")),
                    cluster_rows = FALSE,
                    row_split = row_annot$Feature,
-                   column_gap = 0.5,
+                   column_split = col_annot_df$Histology,
+                   show_parent_dend_line = FALSE,
+                   column_labels = column_labels_manual,
+                   column_gap = unit(2, "mm"), # Adjust the gap between columns
                    show_row_names = TRUE,
-                   show_heatmap_legend=TRUE,
-                   cluster_columns = FALSE,
-                   # right_annotation = row_anno,
-                   row_title = NULL,
-                   column_title = "CLK1 Exon4 PSI",
-                   column_title_side = "top",
-                   column_title_rot = 30,
-                   cell_fun = function(j, i, x, y, width, height, fill) {
-                     grid.text(sprintf("%s", incl_pval_mat[i, j]), x, y, gp = gpar(fontsize = 12))
-                   })
-
-# create CLK1 expression correlation heatmap
-expr_ht <- Heatmap(as.matrix(expr_cor_mat[,1:2]),
-                   width = unit(13, "mm"),
-                   name = "Correlation Coefficient",
-                   col = colorRamp2(c(-1, 0, 1), c("#E66100", "white", "#5D3A9B")),
-                   cluster_rows = FALSE,
-                   row_split = row_annot$Feature,
-                   column_gap = 0.5,
-                   show_row_names = TRUE,
-                   show_heatmap_legend=TRUE,
+                   column_names_rot = 70, 
+                   column_names_side = "top",
+                   show_column_names = TRUE,
+                   show_heatmap_legend = TRUE,
                    cluster_columns = FALSE,
                    right_annotation = row_anno,
+                   top_annotation = ha,
                    row_title = NULL,
-                   column_title = "Total CLK1 Exp",
-                   column_title_side = "top",
-                   column_title_rot = 30,
                    cell_fun = function(j, i, x, y, width, height, fill) {
-                     grid.text(sprintf("%s", expr_pval_mat[i, j]), x, y, gp = gpar(fontsize = 12))
+                     grid.text(sprintf("%s", combined_pval_mat[i, j]), x, y, gp = gpar(fontsize = 14))
                    })
 
-# create CLK1 expression correlation heatmap
-ex4_expr_ht <- Heatmap(as.matrix(ex4_expr_cor_mat[,1:2]),
-                       width = unit(13, "mm"),
-                       name = "Correlation Coefficient",
-                       col = colorRamp2(c(-1, 0, 1), c("#E66100", "white", "#5D3A9B")),
-                       cluster_rows = FALSE,
-                       row_split = row_annot$Feature,
-                       column_gap = 0.5,
-                       show_row_names = TRUE,
-                       #  show_column_names = TRUE,
-                       show_heatmap_legend=TRUE, 
-                       cluster_columns = FALSE,
-                       # right_annotation = row_anno,
-                       row_title = NULL,
-                       column_title = "CLK1-201 Exp",
-                       column_title_side = "top",
-                       column_title_rot = 30,
-                       na_col = "gray",
-                       cell_fun = function(j, i, x, y, width, height, fill) {
-                         grid.text(sprintf("%s", ex4_expr_pval_mat[i, j]), x, y, gp = gpar(fontsize = 12))
-                       })
-
 # save merged plot
-pdf(file.path(plots_dir, "CLK1-NF1-psi-expr-correlation-heatmap.pdf"), width = 6, height = 5)
-print(incl_ht + ex4_expr_ht + expr_ht)
+pdf(file.path(plots_dir, "CLK1-NF1-psi-expr-correlation-heatmap.pdf"), width = 8, height = 5)
+print(heat_plot)
 dev.off()
+
+
+
 
 # create dfs for generating expr-prot and expr-prot scatter plots
 proteo_scatter_df <- clk_nf1_proteo_df %>%
@@ -369,7 +347,8 @@ proteo_scatter_df <- clk_nf1_proteo_df %>%
                 `NF1-215 Log2 TPM` = `NF1-215_RI`,
                 `CLK1-201 Log2 TPM` = `CLK1-201`,
                 `Total CLK1 Log2 TPM` = `Total CLK1`,
-                `Total NF1 Log2 TPM` = `Total NF1`)
+                `Total NF1 Log2 TPM` = `Total NF1`,
+                `NF1 protein abundance z-score` = NF1)
 
 # create dfs for generating expr-prot and expr-prot scatter plots
 phos_scatter_df <- clk_nf1_phospho_df %>%
@@ -377,7 +356,7 @@ phos_scatter_df <- clk_nf1_phospho_df %>%
   select(match_id, `NF1-S2796`, `NF1-S864`) %>%
   left_join(mol_df %>% dplyr::select(match_id, `CLK1-Exon4_PSI`, `Total CLK1`, `CLK1-201`, 
                                      `Total NF1`, `NF1-202_PC`, `NF1-Exon23a_PSI`,
-                                     `NF1-215_PSI`, `NF1-215_RI`)) %>%
+                                     `NF1-215_PSI`, `NF1-215_RI`, NF1)) %>%
   dplyr::rename(`NF1 pS2796` = `NF1-S2796`,
                 `NF1 pS864` = `NF1-S864`,
                 `CLK1-201 Exon4 PSI` = `CLK1-Exon4_PSI`,
@@ -387,7 +366,8 @@ phos_scatter_df <- clk_nf1_phospho_df %>%
                 `NF1-215 Log2 TPM` = `NF1-215_RI`,
                 `CLK1-201 Log2 TPM` = `CLK1-201`,
                 `Total CLK1 Log2 TPM` = `Total CLK1`,
-                `Total NF1 Log2 TPM` = `Total NF1`)
+                `Total NF1 Log2 TPM` = `Total NF1`,
+                `NF1 protein abundance z-score` = NF1)
 
 
 new_list <- names(proteo_scatter_df[,2:ncol(proteo_scatter_df)])
@@ -402,7 +382,7 @@ for (each in new_list) {
     p_prot <- proteo_scatter_df %>%
       dplyr::filter(match_id %in% ids,
                     !is.na(each)) %>%
-      ggplot(aes(x = .data[[each]], y = NF1)) +
+      ggplot(aes(x = .data[[each]], y = `NF1 protein abundance z-score`)) +
       geom_point(colour = "black") +
       stat_smooth(method = "lm", 
                   formula = y ~ x, 
@@ -426,7 +406,7 @@ for (each in new_list) {
 
 
 # for phos:
-phos_list <- names(proteo_scatter_df[,3:ncol(proteo_scatter_df)])
+phos_list <- names(proteo_scatter_df[,2:ncol(proteo_scatter_df)])
 
 
 # generate CLK1 expr-CLK/NF1 prot and expr-protein scatterplots
@@ -463,3 +443,4 @@ for (phos_sites in c("NF1 pS2796", "NF1 pS864")) {
     }
   }
 }
+
