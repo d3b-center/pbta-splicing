@@ -29,6 +29,7 @@ plots_dir   <- file.path(analysis_dir, "plots")
 expression_data_file <- file.path(data_dir, "ctrl_vs_morpho.rsem.genes.results.tsv")
 expression_collapsed_file <- file.path(results_dir, "ctrl_vs_morpho.rsem.genes.collapsed.rds")
 de_results_file <- file.path(results_dir, "ctrl_vs_treated.de.tsv")
+splice_onc_file <- file.path(results_dir, "splice-events-significant.tsv")
 
 # dna repair gene lists
 dna_all_file <- file.path(input_dir, "dna_repair_all.txt")
@@ -55,6 +56,17 @@ expression_data <- read_tsv(expression_data_file) %>%
 de_results<- read_tsv(de_results_file) %>%
   filter(padj <0.05)
 
+# read in sig splice events
+splice_res <- read_tsv(splice_onc_file) %>%
+  dplyr::rename(Gene_Symbol = geneSymbol) %>%
+  select(Gene_Symbol, annotation) %>%
+  unique()
+
+# filter for onco/tsg
+splice_res_onco <- splice_res %>%
+  # filter for onc/tsg
+  filter(annotation == "Onco_TSG")
+
 # remove all genes with no expression
 expr <- expression_data[which(rowSums(expression_data[,2:ncol(expression_data)]) > 0),] 
 
@@ -70,6 +82,14 @@ expr_collapsed <- expr %>%
 
 # create a second matrix - only DE genes
 expr_collapsed_de <- expr_collapsed[de_results$Gene_Symbol,] %>%
+  na.omit()
+
+# create a third matrix - only sig splice genes
+expr_splice <- expr_collapsed[splice_res$Gene_Symbol,] %>%
+  na.omit()
+
+# create a fourth matrix - only sig spliced onco or tsgs
+expr_splice_onco <- expr_collapsed[splice_res_onco$Gene_Symbol,] %>%
   na.omit()
 
 # load gene lists
@@ -110,7 +130,10 @@ dna_repair_list <- list(
 ### Rownames are genes and column names are samples
 
 # list the matrices
-mat_list <- list(expr_collapsed = expr_collapsed, expr_collapsed_de = expr_collapsed_de)
+mat_list <- list(expr_collapsed = expr_collapsed, 
+                 expr_collapsed_de = expr_collapsed_de, 
+                 expr_splice = expr_splice, 
+                 expr_splice_onco = expr_splice_onco)
 gsea_scores_df_tidy <- data.frame()
 
 for(i in names(mat_list)) {
