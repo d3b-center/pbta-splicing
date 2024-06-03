@@ -172,6 +172,7 @@ Subset `metadata` for LGG, and only include clusters with >= 10 samples
 ```{r}
 lgg <- metadata %>%
   dplyr::filter(Histology == "Low-grade glioma") %>%
+  dplyr::mutate(cluster_assigned = factor(cluster_assigned)) %>%
   dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("Wildtype", "BRAF V600E", "BRAF fusion",
                                                                 "Other alteration", "SEGA"
                                                                 )))
@@ -182,7 +183,8 @@ retain_clusters_lgg <- lgg %>%
   pull(cluster_assigned)
 
 lgg <- lgg %>%
-  filter(cluster_assigned %in% retain_clusters_lgg)
+  filter(cluster_assigned %in% retain_clusters_lgg) %>%
+    dplyr::mutate(cluster_assigned = factor(cluster_assigned))
 ```
 
 Generate log rank OS and EFS models with cluster assignment as predictor
@@ -280,6 +282,7 @@ Subset `metadata` for HGG and retain cluster with n >= 10
 ```{r}
 hgg <- metadata %>%
   dplyr::filter(Histology == "Other high-grade glioma") %>%
+  dplyr::mutate(cluster_assigned = factor(cluster_assigned)) %>%
   dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("HGG, H3 wildtype", "HGG, H3 wildtype, TP53",
                                                                 "DHG, H3 G35", "DHG, H3 G35, TP53",
                                                                 "HGG, IDH, TP53", "HGG, PXA", "HGG, PXA, TP53", 
@@ -293,7 +296,8 @@ retain_clusters_hgg <- hgg %>%
   pull(cluster_assigned)
 
 hgg <- hgg %>%
-  filter(cluster_assigned %in% retain_clusters_hgg)
+  filter(cluster_assigned %in% retain_clusters_hgg) %>%
+  dplyr::mutate(cluster_assigned = factor(cluster_assigned))
 ```
 
 Generate HGG OS and EFS log rank models with cluster as predictor

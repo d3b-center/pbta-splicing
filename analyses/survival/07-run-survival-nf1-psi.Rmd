@@ -191,7 +191,7 @@ for (group in groups){
       `NF1-215_PSI` < summary(`NF1-215_PSI`)["1st Qu."] ~ "Low NF1-215 PSI",
       TRUE ~ NA_character_
     )) %>%
-      dplyr::mutate(`NF1-215_PSI` = factor(`NF1-215_PSI`,
+      dplyr::mutate(NF1_psi_group = factor(NF1_psi_group,
                                       c("Low NF1-215 PSI", "High NF1-215 PSI")))
     
   } else {
