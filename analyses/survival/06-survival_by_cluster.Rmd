@@ -1,0 +1,371 @@
+---
+title: "Run LGG and HGG survival by splicing cluster assignment"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Ryan Corbett
+date: 2024
+params:
+  plot_ci: TRUE
+---
+
+**Purpose:** 
+
+Runs survival analysis models using splicing cluster assignment as a predictor
+
+## Usage 
+
+Uses a wrapper function (`survival_analysis`) from utils folder. 
+
+## Setup
+
+#### Packages and functions
+
+Load packages, set directory paths and call setup script
+
+```{r}
+library(tidyverse)
+library(survival)
+library(ggpubr)
+library(ggplot2)
+library(patchwork)
+
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses", "survival")
+input_dir <- file.path(analysis_dir, "results")
+results_dir <- file.path(analysis_dir, "results")
+plot_dir <- file.path(analysis_dir, "plots")
+
+# If the input and results directories do not exist, create it
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir, recursive = TRUE)
+}
+
+source(file.path(analysis_dir, "util", "survival_models.R"))
+```
+
+Set metadata and cluster assignment file paths
+
+```{r set paths}
+metadata_file <- file.path(input_dir, "splicing_indices_with_survival.tsv")
+
+cluster_file <- file.path(root_dir, "analyses",
+                          "clustering_analysis", "output",
+                          "cluster_members_by_cancer_group_subtype.tsv")
+```
+
+Wrangle data 
+Add cluster assignment to `metadata` and define column `lgg_group` (LGG or non_LGG)
+
+```{r}
+metadata <- read_tsv(metadata_file)
+
+clusters <- read_tsv(cluster_file)
+
+metadata <- metadata %>%
+  left_join(clusters %>% dplyr::select(Kids_First_Biospecimen_ID,
+                                       cluster_assigned)) %>%
+  dplyr::mutate(cluster_assigned = glue::glue("cluster{cluster_assigned}")) %>%
+  dplyr::mutate(cluster_assigned = fct_relevel(cluster_assigned,
+                                               paste0("cluster", 1:12))) %>%
+  dplyr::mutate(lgg_group = case_when(
+    Histology == "Low-grade glioma" ~ "LGG",
+    TRUE ~ "non-LGG"
+  ))
+```
+
+Generate log rank OS and EFS models with cluster assignment as predictor
+
+```{r}
+# Generate kaplan meier survival models for OS and EFS, and save outputs
+kap_os <- survival_analysis(
+  metadata  = metadata,
+  ind_var = "cluster_assigned",
+  test = "kap.meier",
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  days_col = "OS_days",
+  status_col = "OS_status"
+)
+
+readr::write_rds(kap_os,
+                 file.path(results_dir, "logrank_OS_cluster_assignment.RDS"))
+
+kap_efs <- survival_analysis(
+  metadata  = metadata,
+  ind_var = "cluster_assigned",
+  test = "kap.meier",
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  days_col = "EFS_days",
+  status_col = "EFS_status"
+)
+
+readr::write_rds(kap_efs,
+                 file.path(results_dir, "logrankEFS_cluster_assignment.RDS"))
+```
+
+Generate KM plots
+
+```{r}
+km_os_plot <- plotKM(model = kap_os,
+                    variable = "cluster_assigned",
+                    combined = F, 
+                    title = "cluster")
+
+ggsave(file.path(plot_dir, "km_OS_cluster_assignment.pdf"),
+       km_os_plot,
+       width = 10, height = 6, units = "in",
+       device = "pdf")
+
+km_efs_plot <- plotKM(model = kap_efs,
+                    variable = "cluster_assigned",
+                    combined = F, 
+                    title = "cluster")
+
+ggsave(file.path(plot_dir, "km_EFS_cluster_assignment.pdf"),
+       width = 10, height = 6, units = "in",
+       device = "pdf")
+
+```
+
+Generate coxph models including extent of tumor resection, lgg group, and cluster assignment as covariates
+
+```{r}
+add_model_os <- fit_save_model(metadata[!metadata$extent_of_tumor_resection %in% c("Not Reported", "Unavailable"),],
+                              terms = "extent_of_tumor_resection+lgg_group+cluster_assigned",
+                               file.path(results_dir, "cox_OS_additive_terms_resection_lgg_group_cluster.RDS"),
+                               "multivariate",
+                               years_col = "OS_years",
+                               status_col = "OS_status")
+
+forest_os <- plotForest(readRDS(file.path(results_dir, "cox_OS_additive_terms_resection_lgg_group_cluster.RDS")))
+
+add_model_efs <- fit_save_model(metadata[!metadata$extent_of_tumor_resection %in% c("Not Reported", "Unavailable"),],
+                              terms = "extent_of_tumor_resection+lgg_group+cluster_assigned",
+                               file.path(results_dir, "cox_EFS_additive_terms_resection_lgg_group_cluster.RDS"),
+                               "multivariate",
+                               years_col = "EFS_years",
+                               status_col = "EFS_status")
+
+forest_efs <- plotForest(readRDS(file.path(results_dir, "cox_EFS_additive_terms_resection_lgg_group_cluster.RDS")))
+
+ggsave(file.path(plot_dir, "forest_add_EFS_resection_lgg_group_cluster_assignment.pdf"),
+       width = 10, height = 6, units = "in",
+       device = "pdf")
+```
+
+Subset `metadata` for LGG, and only include clusters with >= 10 samples
+
+```{r}
+lgg <- metadata %>%
+  dplyr::filter(Histology == "Low-grade glioma") %>%
+  dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("Wildtype", "BRAF V600E", "BRAF fusion",
+                                                                "Other alteration", "SEGA"
+                                                                )))
+
+retain_clusters_lgg <- lgg %>%
+  count(cluster_assigned) %>%
+  filter(n >= 10) %>%
+  pull(cluster_assigned)
+
+lgg <- lgg %>%
+  filter(cluster_assigned %in% retain_clusters_lgg)
+```
+
+Generate log rank OS and EFS models with cluster assignment as predictor
+
+```{r}
+# Generate kaplan meier survival models for OS and EFS, and save outputs
+lgg_kap_os <- survival_analysis(
+  metadata  = lgg,
+  ind_var = "cluster_assigned",
+  test = "kap.meier",
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  days_col = "OS_days",
+  status_col = "OS_status"
+)
+
+readr::write_rds(lgg_kap_os,
+                 file.path(results_dir, "logrank_lgg_OS_cluster_assignment.RDS"))
+
+lgg_kap_efs <- survival_analysis(
+  metadata  = lgg,
+  ind_var = "cluster_assigned",
+  test = "kap.meier",
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  days_col = "EFS_days",
+  status_col = "EFS_status"
+)
+
+readr::write_rds(lgg_kap_efs,
+                 file.path(results_dir, "logrank_lgg_EFS_cluster_assignment.RDS"))
+```
+
+Generate LGG KM plots
+
+```{r}
+km_os_plot <- plotKM(model = lgg_kap_os,
+                    variable = "cluster_assigned",
+                    combined = F, 
+                    title = "cluster")
+
+ggsave(file.path(plot_dir, "km_lgg_OS_cluster_assignment.pdf"),
+       km_os_plot,
+       width = 10, height = 6, units = "in",
+       device = "pdf")
+
+km_efs_plot <- plotKM(model = lgg_kap_efs,
+                    variable = "cluster_assigned",
+                    combined = F, 
+                    title = "cluster")
+
+ggsave(file.path(plot_dir, "km_OS_LGG_cluster_assignment.pdf"),
+       width = 10, height = 6, units = "in",
+       device = "pdf")
+
+```
+
+Generate coxph models including covariates `extent_of_tumor_resection`, `mol_sub_group`, and `cluster_assigned`, and plot
+
+```{r}
+add_model_lgg_os <- fit_save_model(lgg,
+                              terms = "extent_of_tumor_resection+mol_sub_group+cluster_assigned",
+                               file.path(results_dir, "cox_lgg_OS_additive_terms_resection_subtype_cluster.RDS"),
+                               "multivariate",
+                               years_col = "OS_years",
+                               status_col = "OS_status")
+
+forest_lgg_os <- plotForest(readRDS(file.path(results_dir, "cox_lgg_OS_additive_terms_resection_subtype_cluster.RDS")))
+
+ggsave(file.path(plot_dir, "forest_add_OS_LGG_resection_subtype_cluster_assignment.pdf"),
+       width = 10, height = 6, units = "in",
+       device = "pdf")
+
+add_model_lgg_efs <- fit_save_model(lgg[!lgg$cluster_assigned %in% c(2,5,8,11),],
+                              terms = "extent_of_tumor_resection+mol_sub_group+cluster_assigned",
+                               file.path(results_dir, "cox_lgg_EFS_additive_terms_resection_subtype_cluster.RDS"),
+                               "multivariate",
+                               years_col = "EFS_years",
+                               status_col = "EFS_status")
+
+forest_lgg_efs <- plotForest(readRDS(file.path(results_dir, "cox_lgg_EFS_additive_terms_resection_subtype_cluster.RDS")))
+
+ggsave(file.path(plot_dir, "forest_add_EFS_LGG_resection_subtype_cluster_assignment.pdf"),
+       width = 10, height = 6, units = "in",
+       device = "pdf")
+```
+
+Subset `metadata` for HGG and retain cluster with n >= 10
+
+```{r}
+hgg <- metadata %>%
+  dplyr::filter(Histology == "Other high-grade glioma") %>%
+  dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("HGG, H3 wildtype", "HGG, H3 wildtype, TP53",
+                                                                "DHG, H3 G35", "DHG, H3 G35, TP53",
+                                                                "HGG, IDH, TP53", "HGG, PXA", "HGG, PXA, TP53", 
+                                                                "IHG, ALK-altered", "IHG, NTRK-altered",
+                                                                "IHG, ROS1-altered"
+                                                                )))
+
+retain_clusters_hgg <- hgg %>%
+  count(cluster_assigned) %>%
+  filter(n >= 10) %>%
+  pull(cluster_assigned)
+
+hgg <- hgg %>%
+  filter(cluster_assigned %in% retain_clusters_hgg)
+```
+
+Generate HGG OS and EFS log rank models with cluster as predictor
+
+```{r}
+
+# Generate kaplan meier survival models for OS and EFS, and save outputs
+hgg_kap_os <- survival_analysis(
+  metadata  = hgg,
+  ind_var = "cluster_assigned",
+  test = "kap.meier",
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  days_col = "OS_days",
+  status_col = "OS_status"
+)
+
+readr::write_rds(hgg_kap_os,
+                 file.path(results_dir, "logrank_hgg_OS_cluster_assignment.RDS"))
+
+hgg_kap_efs <- survival_analysis(
+  metadata  = hgg,
+  ind_var = "cluster_assigned",
+  test = "kap.meier",
+  metadata_sample_col = "Kids_First_Biospecimen_ID",
+  days_col = "EFS_days",
+  status_col = "EFS_status"
+)
+
+readr::write_rds(hgg_kap_efs,
+                 file.path(results_dir, "logrank_hgg_EFS_cluster_assignment.RDS"))
+```
+
+Generate HGG KM plots
+
+```{r}
+
+km_hgg_os_plot <- plotKM(model = hgg_kap_os,
+                    variable = "cluster_assigned",
+                    combined = F, 
+                    title = "cluster")
+
+ggsave(file.path(plot_dir, "km_hgg_OS_cluster_assignment.pdf"),
+       km_hgg_os_plot,
+       width = 10, height = 6, units = "in",
+       device = "pdf")
+
+km_hgg_efs_plot <- plotKM(model = hgg_kap_efs,
+                    variable = "cluster_assigned",
+                    combined = F, 
+                    title = "cluster")
+
+ggsave(file.path(plot_dir, "km_hgg_EFS_cluster_assignment.pdf"), 
+       km_hgg_efs_plot,
+       width = 10, height = 6, units = "in",
+       device = "pdf")
+
+```
+
+Generate coxph models for HGG including covariates `mol_sub_group` and `cluster_assigned`, and plot
+
+```{r}
+add_model_hgg_os <- fit_save_model(hgg,
+                              terms = "mol_sub_group+cluster_assigned",
+                               file.path(results_dir, "cox_hgg_OS_additive_terms_subtype_cluster.RDS"),
+                               "multivariate",
+                               years_col = "OS_years",
+                               status_col = "OS_status")
+
+forest_hgg_os <- plotForest(readRDS(file.path(results_dir, "cox_hgg_OS_additive_terms_subtype_cluster.RDS")))
+
+ggsave(file.path(plot_dir, "forest_add_OS_HGG_subtype_cluster_assignment.pdf"),
+       width = 10, height = 6, units = "in",
+       device = "pdf")
+
+add_model_hgg_efs <- fit_save_model(hgg,
+                              terms = "mol_sub_group+cluster_assigned",
+                               file.path(results_dir, "cox_hgg_EFS_additive_terms_subtype_cluster.RDS"),
+                               "multivariate",
+                               years_col = "EFS_years",
+                               status_col = "EFS_status")
+
+forest_hgg_efs <- plotForest(readRDS(file.path(results_dir, "cox_hgg_EFS_additive_terms_subtype_cluster.RDS")))
+
+ggsave(file.path(plot_dir, "forest_add_EFS_HGG_subtype_cluster_assignment.pdf"),
+       width = 10, height = 6, units = "in",
+       device = "pdf")
+```
+
+Print session info
+
+```{r}
+sessionInfo()
+```

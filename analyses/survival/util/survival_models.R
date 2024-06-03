@@ -14,8 +14,9 @@ Sys.setlocale("LC_ALL","en_US.UTF-8")
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-efs_palette <- c("#E69F01", "#56B4E8", "#009E74",
-                 "#0072B3", "#D55E01", "#CC79A6", "#999998")
+efs_palette <- c("#E69F01", "#56B4E8", "#009E74", "#F0E442",
+                 "#0072B3", "#D55E01", "#CC79A6", "#999998",
+                 "black", "#b08ccf", "#a340ff", "#685815")
 
 survival_analysis <- function(metadata,
                               ind_var,
@@ -371,8 +372,8 @@ plotKM <- function(model,
       
     }
     
-    colors <- colorblindr::palette_OkabeIto[1:(length(levels)+1)]
-    colors <- colors[-4]
+    colors <- c(colorblindr::palette_OkabeIto,
+                "black", "#b08ccf", "#a340ff", "#685815")[1:(length(levels)+1)]
     lines <- c(rep("solid", length(levels)), 
                rep("dashed", length(levels)))
     labels <- glue::glue("{event_type}:{levels}")
@@ -427,9 +428,9 @@ plotKM <- function(model,
     levels_os <- unique(variable_os[!is.na(data_os$OS_days)][order(variable_os[!is.na(data_os$OS_days)])])
     levels_os <- levels_os[!is.na(levels_os)]
     
-    os_palette <- colorblindr::palette_OkabeIto[1:(length(levels_os)+1)]
-    os_palette <- os_palette[-4]
-    
+    os_palette <- c(colorblindr::palette_OkabeIto,
+                    "black", "#b08ccf", "#a340ff", "#685815")[1:(length(levels)+1)]
+
     variable_efs <- data_efs %>%
       pull(variable)
     
