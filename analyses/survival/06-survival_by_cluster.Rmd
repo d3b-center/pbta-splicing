@@ -116,7 +116,7 @@ km_os_plot <- plotKM(model = kap_os,
 
 ggsave(file.path(plot_dir, "km_OS_cluster_assignment.pdf"),
        km_os_plot,
-       width = 10, height = 6, units = "in",
+       width = 10, height = 8, units = "in",
        device = "pdf")
 
 km_efs_plot <- plotKM(model = kap_efs,
@@ -126,7 +126,7 @@ km_efs_plot <- plotKM(model = kap_efs,
 
 ggsave(file.path(plot_dir, "km_EFS_cluster_assignment.pdf"),
        km_efs_plot,
-       width = 10, height = 6, units = "in",
+       width = 10, height = 8, units = "in",
        device = "pdf")
 
 ```
