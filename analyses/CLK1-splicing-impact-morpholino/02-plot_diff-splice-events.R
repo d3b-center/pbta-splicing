@@ -96,3 +96,26 @@ pdf(file_dpsi_plot,
 plot_dsp
 dev.off()
 
+# annotate significant splice events for TSG/Oncogene
+annots <- read_tsv(system.file("extdata", "genelistreference.txt", package = "annoFuseData")) %>%
+  dplyr::rename(geneSymbol = Gene_Symbol) %>%
+  mutate(annotation = case_when(grepl("Oncogene|TumorSuppressorGene", type) ~ "Onco_TSG",
+                              type %in% c("Kinase", "Kinase, CosmicCensus", "Kinase, TranscriptionFactor", "CosmicCensus, Kinase CosmicCensus, TranscriptionFactor") ~ "Kinase",
+                              TRUE ~ NA_character_)) %>%
+  filter(!is.na(annotation)) %>% 
+  select(geneSymbol, annotation) %>%
+  unique()
+
+# export significant splice events
+psi_comb_select <- psi_comb %>% 
+  dplyr::select(splicing_case, geneSymbol, PValue, FDR, IncLevelDifference, exonStart_0base, exonEnd, 
+                           "1stExonStart_0base",'1stExonEnd',
+                           '2ndExonStart_0base','2ndExonEnd','riExonStart_0base', 'riExonEnd',"upstreamES", 
+                           "upstreamEE","downstreamES","downstreamEE",
+                           "longExonStart_0base","longExonEnd",
+                           "shortES","shortEE",
+                           "flankingES","flankingEE") %>%
+  left_join(annots)
+
+write_tsv(psi_comb_select, 
+          file=file.path(results_dir,"splice-events-signficant.tsv"))
