@@ -128,7 +128,6 @@ ggsave(file.path(plot_dir, "km_EFS_cluster_assignment.pdf"),
        km_efs_plot,
        width = 10, height = 8, units = "in",
        device = "pdf")
-
 ```
 
 Generate coxph models including extent of tumor resection, lgg group, and cluster assignment as covariates
@@ -281,9 +280,10 @@ Subset `metadata` for HGG and retain cluster with n >= 10
 
 ```{r}
 hgg <- metadata %>%
-  dplyr::filter(Histology == "Other high-grade glioma") %>%
+  dplyr::filter(Histology %in% c("Other high-grade glioma", "DIPG or DMG")) %>%
   dplyr::mutate(cluster_assigned = factor(cluster_assigned)) %>%
   dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("HGG, H3 wildtype", "HGG, H3 wildtype, TP53",
+                                                             "DMG, H3 K28", "DMG, H3 K28, TP53",
                                                                 "DHG, H3 G35", "DHG, H3 G35, TP53",
                                                                 "HGG, IDH, TP53", "HGG, PXA", "HGG, PXA, TP53", 
                                                                 "IHG, ALK-altered", "IHG, NTRK-altered",
