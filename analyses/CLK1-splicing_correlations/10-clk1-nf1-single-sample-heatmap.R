@@ -50,9 +50,9 @@ cohort_df <- read_tsv(cohort_file)
 # define lists of nf1 and clk genes
 goi <- c("CLK1", "NF1")
 clk1_trans_list <- c("CLK1-201", "Total CLK1")
-clk1_splice_list <- "CLK1-Exon4_PSI"
+clk1_splice_list <- "CLK1-201 (Exon4) PSI"
 nf1_trans_list <- c("Total NF1", "NF1-202", "NF1-215")
-nf1_splice_list <- c("NF1-Exon23a_PSI", "NF1-215_PSI")
+nf1_splice_list <- c("NF1-202 (Exon23a) PSI", "NF1-215 PSI")
 
 trans_lists <- c(clk1_trans_list, nf1_trans_list)
 
@@ -67,10 +67,10 @@ data_df <- read_tsv(data_file) %>%
   filter(!is.na(NF1)) %>%
   select(match_id, all_of(nf1_splice_list), all_of(clk1_splice_list), NF1, `NF1-S864`, `NF1-S2796`) %>%
   # zscore psi values
-  mutate(`NF1-202 Exon23a PSI` = scale(`NF1-Exon23a_PSI`),
-         `NF1-215 PSI` = scale(`NF1-215_PSI`),
-         `CLK1-201 Exon4 PSI` = scale(`CLK1-Exon4_PSI`)) %>%
-  select(-c(`CLK1-Exon4_PSI`, `NF1-Exon23a_PSI`, `NF1-215_PSI`)) %>%
+  mutate(`NF1-202 Exon23a PSI` = scale(`NF1-202 (Exon23a) PSI`),
+         `NF1-215 PSI` = scale(`NF1-215 PSI`),
+         `CLK1-201 Exon4 PSI` = scale(`CLK1-201 (Exon4) PSI`)) %>%
+  select(-c(`CLK1-201 (Exon4) PSI`, `NF1-202 (Exon23a) PSI`)) %>%
   filter(match_id %in% samples_oi$match_id)
 
 ## tpm table 

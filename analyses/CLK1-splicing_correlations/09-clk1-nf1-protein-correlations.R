@@ -40,16 +40,32 @@ cohort_file <- file.path(root_dir, "analyses", "cohort_summary",
                          "results", "histologies-plot-group.tsv")
 
 cptac_proteo_file <- file.path(data_dir, "cptac-protein-imputed-prot-expression-abundance.tsv.gz")
+cptac_phospho_file <- file.path(data_dir, "cptac-protein-imputed-phospho-expression-log2-ratio.tsv.gz")
 hope_proteo_file <- file.path(data_dir, "hope-protein-imputed-prot-expression-abundance.tsv.gz")
 hope_phospho_file <- file.path(data_dir, "hope-protein-imputed-phospho-expression-abundance.tsv.gz")
 
-data_file <- file.path(results_dir, "clk1-nf1-psi-exp-df.rds")
+data_file <- file.path(results_dir, "clk1-nf1-psi-exp-phos-df.rds")
 
 ## read in histology, cohort, and independent specimens file
-cohort_df <- read_tsv(cohort_file)
+cohort_df <- read_tsv(cohort_file) %>%
+  dplyr::mutate(plot_group_zscoring = case_when(plot_group %in% c("DIPG or DMG", "Other high-grade glioma") ~ "High-grade glioma",
+                                                TRUE ~ plot_group))
+
+map_file_proteo <- cohort_df %>%
+  filter(experimental_strategy == "Whole Cell Proteomics") %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_proteo = Kids_First_Biospecimen_ID) %>%
+  select(Kids_First_Biospecimen_ID_proteo, match_id, plot_group_zscoring)
+
+map_file_phospho <- cohort_df %>%
+  filter(experimental_strategy == "Phospho-Proteomics") %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_phospho = Kids_First_Biospecimen_ID) %>%
+  select(Kids_First_Biospecimen_ID_phospho, match_id, plot_group_zscoring)
+
 indep_rna_df <- read_tsv(indep_rna_file)
 
-data_df <- readRDS(data_file)
+data_df <- readRDS(data_file) %>%
+  rownames_to_column("match_id") %>%
+  left_join(hist_rna[,c("Kids_First_Biospecimen_ID", "match_id")])
 
 # define lists of nf1 and clk genes
 goi <- c("CLK1", "NF1")
@@ -62,36 +78,37 @@ all_lists <- c(clk1_trans_list, clk1_splice_list, nf1_trans_list, nf1_splice_lis
 
 # extract HGG samples, retain stranded libraries, and filter for independent specimens
 hist_rna <- cohort_df %>% 
-  filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma"),
-         RNA_library == "stranded",
+  filter(#plot_group %in% c("DIPG or DMG", "Other high-grade glioma"),
+         #RNA_library == "stranded",
          cohort == "PBTA",
          Kids_First_Biospecimen_ID %in% indep_rna_df$Kids_First_Biospecimen_ID) %>%
   select(Kids_First_Biospecimen_ID, RNA_library, CNS_region, match_id, molecular_subtype, plot_group)
 
 # select only HGG/DIPG/DMG
-data_df <- readRDS(data_file) %>%
-  rownames_to_column("Kids_First_Biospecimen_ID") %>%
-  filter(Kids_First_Biospecimen_ID %in% hist_rna$Kids_First_Biospecimen_ID) %>%
-  left_join(hist_rna[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
-  select(match_id, any_of(all_lists))
+#data_df <- readRDS(data_file) %>%
+#  rownames_to_column("Kids_First_Biospecimen_ID") %>%
+#  filter(Kids_First_Biospecimen_ID %in% hist_rna$Kids_First_Biospecimen_ID) %>%
+#  left_join(hist_rna[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
+#  select(match_id, any_of(all_lists))
 
 # define proteomics and phosphoproteomics-specific histologies files
 hist_proteo <- cohort_df %>%
-  dplyr::filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma"),
+  dplyr::filter(#plot_group %in% c("DIPG or DMG", "Other high-grade glioma"),
                 experimental_strategy %in% c("Whole Cell Proteomics")) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, match_id) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, match_id, plot_group_zscoring) %>%
   dplyr::rename(Kids_First_Biospecimen_ID_proteo = Kids_First_Biospecimen_ID)
 
 hist_phospho <- cohort_df %>%
-  dplyr::filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma"),
+  dplyr::filter(#plot_group %in% c("DIPG or DMG", "Other high-grade glioma"),
                 experimental_strategy %in% c("Phospho-Proteomics")) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, match_id) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, match_id, plot_group_zscoring) %>%
   dplyr::rename(Kids_First_Biospecimen_ID_phospho = Kids_First_Biospecimen_ID)
 
 # load proteomics and phosphoproteomics data
 cptac_proteo <- read_tsv(cptac_proteo_file)
 hope_proteo <- read_tsv(hope_proteo_file)
 hope_phospho <- read_tsv(hope_phospho_file)
+cptac_phospho <- read_tsv(cptac_phospho_file)
 
 # prioritize HOPE samples over CPTAC
 hist_proteo <- hist_proteo %>% 
@@ -113,20 +130,22 @@ cptac_proteo_df <- cptac_proteo %>%
   gather(key = "Kids_First_Biospecimen_ID_proteo",
          value = "abundance",
          -GeneSymbol) %>%
-  dplyr::filter(Kids_First_Biospecimen_ID_proteo %in% hist_proteo$Kids_First_Biospecimen_ID_proteo)
+  dplyr::filter(Kids_First_Biospecimen_ID_proteo %in% hist_proteo$Kids_First_Biospecimen_ID_proteo) %>%
+  left_join(unique(map_file_proteo[,c("Kids_First_Biospecimen_ID_proteo", "match_id", "plot_group_zscoring")]))
 
-# Merge proteomics data frames and calculate z-scores
+# Merge proteomics data frames and calculate z-scores by plot group, merging all HGGs 
 proteo_df <- hope_proteo %>%
   dplyr::select(-NP_id) %>%
   dplyr::filter(GeneSymbol %in% goi) %>%
   gather(key = "Kids_First_Biospecimen_ID_proteo",
          value = "abundance",
          -GeneSymbol) %>%
+  left_join(unique(map_file_proteo[,c("Kids_First_Biospecimen_ID_proteo", "match_id", "plot_group_zscoring")])) %>%
   dplyr::filter(Kids_First_Biospecimen_ID_proteo %in% hist_proteo$Kids_First_Biospecimen_ID_proteo) %>%
   bind_rows(cptac_proteo_df) %>%
-  group_by(GeneSymbol) %>%
+  group_by(plot_group_zscoring, GeneSymbol) %>%
   dplyr::mutate(proteo_zscore = scale(abundance)) %>%
-  left_join(hist_proteo)
+  ungroup()
 
 # calculate phosphoproteomics z-scores
 phospho_df <- hope_phospho %>%
@@ -136,16 +155,17 @@ phospho_df <- hope_phospho %>%
   gather(key = "Kids_First_Biospecimen_ID_phospho",
          value = "abundance",
          -GeneSymbol, -Site) %>%
+  left_join(map_file_phospho[,c("Kids_First_Biospecimen_ID_phospho", "match_id", "plot_group_zscoring")]) %>%
   dplyr::filter(Kids_First_Biospecimen_ID_phospho %in% hist_phospho$Kids_First_Biospecimen_ID_phospho)  %>%
   distinct(Kids_First_Biospecimen_ID_phospho, GeneSymbol, Site, .keep_all = TRUE) %>%
-  group_by(GeneSymbol, Site) %>%
+  group_by(plot_group_zscoring, GeneSymbol, Site) %>%
   dplyr::mutate(phospho_zscore = scale(abundance)) %>%
+  ungroup() %>%
   left_join(hist_phospho) %>%
   dplyr::mutate(gene_site = glue::glue("{GeneSymbol}-{Site}"))
 
 # create matrix of phosphorylation site z-scores with rownames as match ID
 clk_nf1_phospho_df <- phospho_df %>%
-  ungroup() %>%
   dplyr::filter(!grepl("NA", gene_site)) %>%
   dplyr::select(-abundance,
                 -GeneSymbol,
@@ -158,7 +178,6 @@ clk_nf1_phospho_df <- clk_nf1_phospho_df %>%
 
 # repeat for proteomics 
 clk_nf1_proteo_df <- proteo_df %>%
-  ungroup() %>%
   dplyr::mutate(GeneSymbol = glue::glue("{GeneSymbol}")) %>%
   dplyr::select(GeneSymbol, match_id, proteo_zscore)
 
@@ -169,25 +188,29 @@ clk_nf1_proteo_df <- clk_nf1_proteo_df %>%
 mol_df <- data_df %>%
   left_join(clk_nf1_proteo_df) %>%
   left_join(clk_nf1_phospho_df) %>%
+  select(-Kids_First_Biospecimen_ID) %>%
   select(match_id, everything(.))
   
 # save df
 write_tsv(mol_df, 
           file.path(results_dir, "hgg-dmg-clk-nf1-expression-phosphorylation.tsv"))
 
-# Define DIPG/DMG and other HGG ids
-dmg_ids <- hist_rna %>%
-  dplyr::filter(plot_group == "DIPG or DMG") %>%
-  pull(match_id)
-
-hgg_ids <- hist_rna %>%
-  dplyr::filter(plot_group == "Other high-grade glioma") %>%
-  pull(match_id)
-
 # create matrix for cor
 full_mat <- mol_df %>%
   column_to_rownames("match_id") %>%
   as.matrix()
+
+# Define DIPG/DMG and other HGG ids
+dmg_ids <- hist_rna %>%
+  dplyr::filter(plot_group == "DIPG or DMG",
+              match_id %in% rownames(full_mat)) %>%
+  pull(match_id)
+
+hgg_ids <- hist_rna %>%
+  dplyr::filter(plot_group == "Other high-grade glioma",
+                match_id %in% rownames(full_mat)) %>%
+  pull(match_id)
+
 
 # loop through subtypes and features to calculate pearson correlation coefficients
 id_list <- list("DMG" = dmg_ids, "HGG" = hgg_ids)
@@ -196,7 +219,7 @@ id_list <- list("DMG" = dmg_ids, "HGG" = hgg_ids)
 cor_matrices <- list()
 pval_matrices <- list()
 
-meas_of_int <- c("CLK1-Exon4_PSI", "CLK1-201", "Total CLK1")
+meas_of_int <- c("CLK1-201 (Exon4) PSI", "CLK1-201", "Total CLK1")
 
 # Loop over each subtype and compute correlation and p-value matrices
 for (subtype in c("DMG", "HGG")) {
@@ -235,10 +258,10 @@ print(combined_cor_mat)
 print(combined_pval_mat)
 
 # add rownames
-rownames(combined_cor_mat) <- case_when(rownames(combined_cor_mat) == "CLK1-Exon4_PSI" ~ "CLK1-201 Exon4 PSI",
+rownames(combined_cor_mat) <- case_when(rownames(combined_cor_mat) == "CLK1-201 (Exon4) PSI" ~ "CLK1-201 Exon4 PSI",
                                     rownames(combined_cor_mat) == "NF1-202_PC" ~ "NF1-202",
                                     rownames(combined_cor_mat) == "NF1-215_RI" ~ "NF1-215",
-                                    rownames(combined_cor_mat) == "NF1-Exon23a_PSI" ~ "NF1-202 Exon23a PSI",
+                                    rownames(combined_cor_mat) == "NF1-202 (Exon23a) PSI" ~ "NF1-202 Exon23a PSI",
                                     rownames(combined_cor_mat) == "NF1-215_PSI" ~ "NF1-215 PSI",
                                     rownames(combined_cor_mat) == "NF1" ~ "Total NF1 protein",
                                     rownames(combined_cor_mat) == "NF1-S864" ~ "NF1 pS864",
@@ -246,10 +269,10 @@ rownames(combined_cor_mat) <- case_when(rownames(combined_cor_mat) == "CLK1-Exon
                                     TRUE ~ rownames(combined_cor_mat))
 
 # add rownames
-rownames(combined_pval_mat) <- case_when(rownames(combined_pval_mat) == "CLK1-Exon4_PSI" ~ "CLK1-201 Exon4 PSI",
+rownames(combined_pval_mat) <- case_when(rownames(combined_pval_mat) == "CLK1-201 (Exon4) PSI" ~ "CLK1-201 Exon4 PSI",
                                         rownames(combined_pval_mat) == "NF1-202_PC" ~ "NF1-202",
                                         rownames(combined_pval_mat) == "NF1-215_RI" ~ "NF1-215",
-                                        rownames(combined_pval_mat) == "NF1-Exon23a_PSI" ~ "NF1-202 Exon23a PSI",
+                                        rownames(combined_pval_mat) == "NF1-202 (Exon23a) PSI" ~ "NF1-202 Exon23a PSI",
                                         rownames(combined_pval_mat) == "NF1-215_PSI" ~ "NF1-215 PSI",
                                         rownames(combined_pval_mat) == "NF1" ~ "Total NF1 protein",
                                         rownames(combined_pval_mat) == "NF1-S864" ~ "NF1 pS864",
@@ -337,14 +360,14 @@ dev.off()
 
 # create dfs for generating expr-prot and expr-prot scatter plots
 proteo_scatter_df <- clk_nf1_proteo_df %>%
-  left_join(mol_df %>% dplyr::select(match_id, `CLK1-Exon4_PSI`, `Total CLK1`, `CLK1-201`, 
-                                     `Total NF1`, `NF1-202_PC`, `NF1-Exon23a_PSI`,
-                                     `NF1-215_PSI`, `NF1-215_RI`)) %>%
-  dplyr::rename(`CLK1-201 Exon4 PSI` = `CLK1-Exon4_PSI`,
-                `NF1-202 Log2 TPM` = `NF1-202_PC`,
-                `NF1-215 PSI` = `NF1-215_PSI`,
-                `NF1-202 Exon23a PSI` = `NF1-Exon23a_PSI`,
-                `NF1-215 Log2 TPM` = `NF1-215_RI`,
+  left_join(mol_df %>% dplyr::select(match_id, `CLK1-201 (Exon4) PSI`, `Total CLK1`, `CLK1-201`, 
+                                     `Total NF1`, `NF1-202`, `NF1-202 (Exon23a) PSI`,
+                                     `NF1-215 PSI`, `NF1-215`)) %>%
+  dplyr::rename(`CLK1-201 Exon4 PSI` = `CLK1-201 (Exon4) PSI`,
+                `NF1-202 Log2 TPM` = `NF1-202`,
+                `NF1-215 PSI` = `NF1-215 PSI`,
+                `NF1-202 Exon23a PSI` = `NF1-202 (Exon23a) PSI`,
+                `NF1-215 Log2 TPM` = `NF1-215`,
                 `CLK1-201 Log2 TPM` = `CLK1-201`,
                 `Total CLK1 Log2 TPM` = `Total CLK1`,
                 `Total NF1 Log2 TPM` = `Total NF1`,
@@ -354,16 +377,16 @@ proteo_scatter_df <- clk_nf1_proteo_df %>%
 phos_scatter_df <- clk_nf1_phospho_df %>%
   # select only significant
   select(match_id, `NF1-S2796`, `NF1-S864`) %>%
-  left_join(mol_df %>% dplyr::select(match_id, `CLK1-Exon4_PSI`, `Total CLK1`, `CLK1-201`, 
-                                     `Total NF1`, `NF1-202_PC`, `NF1-Exon23a_PSI`,
-                                     `NF1-215_PSI`, `NF1-215_RI`, NF1)) %>%
+  left_join(mol_df %>% dplyr::select(match_id, `CLK1-201 (Exon4) PSI`, `Total CLK1`, `CLK1-201`, 
+                                     `Total NF1`, `NF1-202`, `NF1-202 (Exon23a) PSI`,
+                                     `NF1-215 PSI`, `NF1-215`, NF1)) %>%
   dplyr::rename(`NF1 pS2796` = `NF1-S2796`,
                 `NF1 pS864` = `NF1-S864`,
-                `CLK1-201 Exon4 PSI` = `CLK1-Exon4_PSI`,
-                `NF1-202 Log2 TPM` = `NF1-202_PC`,
-                `NF1-215 PSI` = `NF1-215_PSI`,
-                `NF1-202 Exon23a PSI` = `NF1-Exon23a_PSI`,
-                `NF1-215 Log2 TPM` = `NF1-215_RI`,
+                `CLK1-201 Exon4 PSI` = `CLK1-201 (Exon4) PSI`,
+                `NF1-202 Log2 TPM` = `NF1-202`,
+                `NF1-215 PSI` = `NF1-215 PSI`,
+                `NF1-202 Exon23a PSI` = `NF1-202 (Exon23a) PSI`,
+                `NF1-215 Log2 TPM` = `NF1-215`,
                 `CLK1-201 Log2 TPM` = `CLK1-201`,
                 `Total CLK1 Log2 TPM` = `Total CLK1`,
                 `Total NF1 Log2 TPM` = `Total NF1`,
