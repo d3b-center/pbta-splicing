@@ -41,22 +41,23 @@ file_dpsi_plot <- file.path(plots_dir,"dPSI-distr-func.pdf")
 file_dpsi_goi_plot <- file.path(plots_dir,"dPSI-distr-func-goi.pdf")
 
 ## get and setup input
-
 ## retrieve psi values from tables
-file_psi_func <- file.path(results_dir,"splicing_events.morpho.intersectUnip.ggplot.txt")
+file_psi_SE_func <- file.path(results_dir,"splicing_events.morpho.SE.intersectUnip.ggplot.txt")
+file_psi_RI_func <- file.path(results_dir,"splicing_events.morpho.RI.intersectUnip.ggplot.txt")
+file_psi_A5SS_func <- file.path(results_dir,"splicing_events.morpho.A5SS.intersectUnip.ggplot.txt")
+file_psi_A3SS_func <- file.path(results_dir,"splicing_events.morpho.A3SS.intersectUnip.ggplot.txt")
 
-## read table of recurrent functional splicing (skipping)
-dpsi_unip_incl <- vroom(file_psi_func) %>% 
+## combine all splice types together
+dpsi_unip_incl <- vroom(c(file_psi_SE_func, file_psi_RI_func, file_psi_A5SS_func, file_psi_A3SS_func)) %>%
   mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) %>%
   filter(dPSI<0) %>% 
   mutate(Preference='Inclusion',
-         dPSI=abs(dPSI))
+         dPSI=abs(dPSI)) 
 
-dpsi_unip_skp <- vroom(file_psi_func) %>% 
+dpsi_unip_skp <- vroom(c(file_psi_SE_func, file_psi_RI_func, file_psi_A5SS_func, file_psi_A3SS_func)) %>% 
   mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) %>%
   filter(dPSI>0) %>% 
   mutate(Preference='Skipping')
-
 
 psi_comb <- rbind(dpsi_unip_incl,dpsi_unip_skp) %>% 
   mutate(Uniprot = case_when(Uniprot == 'DisulfBond' ~ "Disulfide Bond",
@@ -65,11 +66,11 @@ psi_comb <- rbind(dpsi_unip_incl,dpsi_unip_skp) %>%
          Uniprot_wrapped = stringr::str_wrap(Uniprot, width = 10)
   )
 
-
 ## ggstatplot across functional sites
 set.seed(123)
 counts_psi_comb <- psi_comb %>% 
   count(Preference, Uniprot_wrapped)
+
 plot_dsp <-  ggplot(psi_comb, aes(Uniprot_wrapped, dPSI*100) ) +  
   ylab(expression(bold("dPSI"))) +
   ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 5, method="density") +
@@ -96,7 +97,8 @@ pdf(file_dpsi_plot,
 print (plot_dsp)
 dev.off()
 
-##subset by GOI
+
+## subset by GOI
 # gene list files
 known_rbp_file <- file.path(input_dir,'RBP_known.txt')
 known_epi_file <- file.path(input_dir,'epi_known.txt')
