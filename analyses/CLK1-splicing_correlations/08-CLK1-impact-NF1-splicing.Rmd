@@ -48,7 +48,7 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 clin_file <- file.path(data_dir,"histologies-plot-group.tsv")
 rsem_transc_counts <- file.path(data_dir,"rna-isoform-expression-rsem-tpm.rds")
 rsem_tpm_counts <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
-rmats_clk1_file <- file.path(data_dir, "clk1-splice-events-rmats.tsv")
+rmats_clk1_file <- file.path(results_dir, "clk1-splice-events-rmats.tsv")
 rmats_nf1_file <- file.path(results_dir, "nf1-splice-events-rmats.tsv")
 gtf_file <- file.path(data_dir, "gencode.v39.primary_assembly.annotation.gtf.gz")
 phos_file <- file.path(results_dir, "hgg-dmg-clk-nf1-expression-phosphorylation.tsv")
@@ -75,11 +75,10 @@ histologies_df  <-  read_tsv(clin_file, show_col_types = FALSE) %>%
   filter(cohort == "PBTA",
          experimental_strategy == "RNA-Seq",
          Kids_First_Biospecimen_ID %in% indep_df$Kids_First_Biospecimen_ID,
-         RNA_library == 'stranded'
   ) 
 
-hgg_samples <- histologies_df %>%
-  filter(plot_group %in% c("DIPG or DMG", "Other high-grade glioma"))
+stranded <- histologies_df %>%
+  filter(RNA_library == "stranded")
 
 # Import GTF file, get NF1 transcript types
 # nf1 transcripts from GTF
@@ -97,11 +96,9 @@ nf1_gtf <- gtf %>%
 
 
 # read in rmats file once with genes of interest
-rmats_nf1  <- fread(rmats_nf1_file) %>%
-  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID)
+rmats_nf1  <- fread(rmats_nf1_file)
 
 rmats_goi  <- fread(rmats_clk1_file) %>%
-  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID) %>%
   bind_rows(rmats_nf1) %>%
   # annotated the NF1 and CLK1 transcripts of interest
   mutate(ENST_id = case_when(geneSymbol == "NF1" & splicing_case == "SE" & exonStart_0base == "31252937" & exonEnd == "31253000" & downstreamES == "31258343" & downstreamEE == "31258502" ~ "ENST00000358273",
@@ -115,6 +112,7 @@ rmats_goi  <- fread(rmats_clk1_file) %>%
                                 ENST_id == "ENST00000321356" ~ "CLK1-Exon4_PSI", # CLK1-201
                                 TRUE ~ NA_character_)) %>%
   filter(!is.na(ENST_id))
+
 ```
 
 ## Generate PSI box plots across tumors for CLK1 PSI 
@@ -122,7 +120,7 @@ First, we want to visualize exon 4 inclusion across all brain tumor types, to gi
 ```{r}
 plot_CLK1_PSI_df <- rmats_goi %>% 
   dplyr::rename(Kids_First_Biospecimen_ID=sample_id) %>%
-  left_join(histologies_df, by='Kids_First_Biospecimen_ID') %>%
+  left_join(stranded, by='Kids_First_Biospecimen_ID') %>%
   select(Kids_First_Biospecimen_ID,IncLevel1,plot_group, plot_group_hex, geneSymbol) %>%
   filter(geneSymbol == "CLK1") %>%
    mutate(plot_group_wrapped = stringr::str_wrap(plot_group, width = 20))
@@ -151,7 +149,7 @@ We want to assess NF1 splicing across all brain tumor types, to give us a sense 
 # Prepare the plot_df data frame
 plot_df <- rmats_goi %>%
   dplyr::rename(Kids_First_Biospecimen_ID = sample_id) %>%
-  left_join(histologies_df, by = 'Kids_First_Biospecimen_ID') %>%
+  left_join(stranded, by = 'Kids_First_Biospecimen_ID') %>%
   select(event_type, IncLevel1, Kids_First_Biospecimen_ID, plot_group, plot_group_hex) %>%
   dplyr::mutate(event_type = case_when(event_type == "CLK1-Exon4_PSI" ~ "CLK1-202 (Exon 4)",
                                        event_type == "NF1-Exon23a_PSI" ~ "NF1-202 (Exon23a)",
@@ -233,7 +231,7 @@ transcript_tpm_df <- readRDS(rsem_transc_counts) %>%
 
 reformat <- transcript_tpm_df %>%
   rownames_to_column("Kids_First_Biospecimen_ID") %>%
-  left_join(histologies_df[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
+  right_join(histologies_df[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
   select(-Kids_First_Biospecimen_ID) %>%
   left_join(phos_df) %>%
   column_to_rownames(var = "match_id") %>%
@@ -242,9 +240,14 @@ reformat <- transcript_tpm_df %>%
                 `NF1-215 PSI` = `NF1-215_PSI`,
                 `NF1-215` = `NF1-215_RI`,
                 `NF1-202 (Exon23a) PSI` =  `NF1-Exon23a_PSI`) %>%
+  mutate(`CLK1-201 (Exon4) PSI` = as.numeric(as.character(`CLK1-201 (Exon4) PSI`)),
+         `NF1-215 PSI` = as.numeric(as.character(`NF1-215 PSI`)),
+         `NF1-202 (Exon23a) PSI` = as.numeric(as.character(`NF1-202 (Exon23a) PSI`))) %>%
   write_rds(file.path(results_dir, "clk1-nf1-psi-exp-phos-df.rds")) 
 
-all_mat <- as.matrix(reformat)
+reformat_stranded <- reformat[stranded$match_id, ]
+  
+all_mat <- as.matrix(reformat_stranded)
 
 # Compute the correlation matrix
 mat <- cor(all_mat, method = "spearman", use = "pairwise.complete.obs")
@@ -269,7 +272,7 @@ items_of_interest_other <- c("Total CLK1", "CLK1-201", "CLK1-201 (Exon4) PSI", "
          "NF1-202 (Exon23a) PSI")
 
 
-subset_tpm_df <- reformat %>%
+subset_tpm_df <- reformat_stranded %>%
   as.data.frame() %>%
   select(all_of(items_of_interest_hgg)) %>%
   as.matrix()
