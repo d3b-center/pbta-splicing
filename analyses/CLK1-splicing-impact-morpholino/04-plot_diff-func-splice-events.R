@@ -69,31 +69,25 @@ psi_comb <- rbind(dpsi_unip_incl,dpsi_unip_skp) %>%
 ## ggstatplot across functional sites
 set.seed(123)
 counts_psi_comb <- psi_comb %>% 
-  count(Preference, Uniprot_wrapped)
+  count(Type, Preference, Uniprot_wrapped)
 
 plot_dsp <-  ggplot(psi_comb, aes(Uniprot_wrapped, dPSI*100) ) +  
   ylab(expression(bold("dPSI"))) +
-  ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 5, method="density") +
+  ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 5, method="density", position = position_dodge(0.9)) +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
-  facet_wrap("Preference") +
-  stat_compare_means(method = "wilcox.test", comparisons = list(c("Disulfide\nBond", "Localization\nSignal"),
-                                                                c("Disulfide\nBond", "Modifications"),
-                                                                c("Disulfide\nBond", "Other"),
-                                                                c("Localization\nSignal", "Modifications"),
-                                                                c("Localization\nSignal", "Other"),
-                                                                c("Modifications", "Other"))) + 
+  facet_wrap("Type~Preference",ncol = 2) +
   scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A"))  + 
   theme_Publication() + 
   
   labs(y="Percent Spliced In (PSI)", x= "Uniprot-defined Functional Site") + 
-  geom_text(data = counts_psi_comb, aes(label = paste("n =",n), x = Uniprot_wrapped, y = 0), vjust = 3, size = 4, hjust=.5) +
+  geom_text(data = counts_psi_comb, aes(label = paste("n =",n), x = Uniprot_wrapped, y = 0), vjust = 3, size = 3, hjust=.5) +
   theme(legend.position="none", 
         axis.text.x = element_text(angle = 45, hjust = 1)) +  # Angles x-axis text
-  ylim(c(-20,170))
+  ylim(c(-20,100))
 
 # Save plot as PDF
 pdf(file_dpsi_plot, 
-    width = 8, height = 5)
+    width = 8, height = 14)
 print (plot_dsp)
 dev.off()
 
