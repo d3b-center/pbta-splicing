@@ -56,7 +56,8 @@ Load histologies and subset for HGG and DMG
 
 ```{r}
 hgg_hist <- read_tsv(histologies_file) %>%
-  dplyr::filter(Histology %in% c("DIPG or DMG", "Other high-grade glioma")) %>%
+  dplyr::filter(Histology %in% c("DIPG or DMG", "Other high-grade glioma"),
+                !is.na(OS_days) | !is.na(EFS_days)) %>%
   dplyr::select(Kids_First_Biospecimen_ID, mol_sub_group,
                 OS_days, OS_years, OS_status,
                 EFS_days, EFS_years, EFS_status)
