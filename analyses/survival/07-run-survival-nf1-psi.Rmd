@@ -48,33 +48,36 @@ source(file.path(analysis_dir, "util", "survival_models.R"))
 Set metadata path
 
 ```{r set paths}
+histologies_file <- file.path(data_dir, "histologies.tsv")
+
 metadata_file <- file.path(input_dir, "splicing_indices_with_survival.tsv")
 
 nf1_psi_file <- file.path(root_dir, "analyses",
                           "CLK1-splicing_correlations", "results",
-                          "clk1-nf1-psi-exp-df.rds")
+                          "clk1-nf1-psi-exp-phos-df.rds")
 ```
 
 Wrangle data
 Append `NF1-215-PSI` to `metadata`
 
 ```{r}
-metadata <- read_tsv(metadata_file)
+histologies <- read_tsv(histologies_file, guess_max = 10000)
+
+metadata <- read_tsv(metadata_file) %>%
+  left_join(histologies %>% dplyr::select(Kids_First_Biospecimen_ID,
+                                          match_id))
 
 nf1_psi <- readRDS(nf1_psi_file) %>%
-  rownames_to_column("Kids_First_Biospecimen_ID")
+  rownames_to_column("match_id")
 
 metadata <- metadata %>%
-  left_join(nf1_psi %>% dplyr::select(Kids_First_Biospecimen_ID,
-                                      `NF1-215_PSI`))
-  
-
+  left_join(nf1_psi %>% dplyr::select(match_id,
+                                      `NF1-215 PSI`))
 ```
 
 Define histology groups to run survival analyses on 
 
 ```{r}
-
 subtype_df <- read_tsv(file.path(analysis_dir, "results", "subtypes-for-survival.tsv"))
 
 groups <- unique(subtype_df$hist)
@@ -86,7 +89,6 @@ names(folder) <- groups
 # create names vector for output files
 plot_names <- unique(subtype_df$names)
 names(plot_names) <- groups
-
 ```
 
 Loop through histology groups and perform the following: 
@@ -136,8 +138,7 @@ for (group in groups){
   if (group == "DIPG or DMG"){
     group_hist <- group_hist %>%
      dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
-     dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("HGG, H3 wildtype", "HGG, H3 wildtype, TP53",
-                                                                "DMG, H3 K28", "DMG, H3 K28, TP53"
+     dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("DMG, H3 K28", "DMG, H3 K28, TP53"
                                                                 )))
   }  
   
@@ -147,7 +148,6 @@ for (group in groups){
      dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
      dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("HGG, H3 wildtype", "HGG, H3 wildtype, TP53",
                                                                 "DHG, H3 G35", "DHG, H3 G35, TP53",
-                                                                "DMG, H3 K28", "DMG, H3 K28, TP53",
                                                                 "HGG, IDH, TP53", "HGG, PXA", "HGG, PXA, TP53", 
                                                                 "IHG, ALK-altered", "IHG, NTRK-altered",
                                                                 "IHG, NTRK-altered, TP53", "IHG, ROS1-altered"
@@ -178,17 +178,25 @@ for (group in groups){
      dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("Wildtype", "BRAF V600E", "BRAF fusion",
                                                                 "Other alteration"
                                                                 )))
+    }
+  
+    if (group == "Medulloblastoma"){
+      group_hist <- group_hist %>%
+       dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
+       dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("MB, WNT", "MB, Group3", "MB, Group4",
+                                                                  "MB, SHH"
+                                                                  )))
   }
   
-  #Define high and low NF1-215 PSI samples using quartiles
+  #Define high and low NF1-215 PSI samples using quartiles in ONLY samples with survival data and resection (LGG/GNT only)
   
   if (group %in% c("Low-grade glioma", "Mixed neuronal-glial tumor")){
     
     group_hist <- group_hist %>%
-      filter(!is.na(mol_sub_group) & !is.na(OS_days) & !is.na(EFS_days) & !is.na(extent_of_tumor_resection) & !extent_of_tumor_resection %in% c("Unavailable", "Not Applicable")) %>%
+      filter(!is.na(mol_sub_group) & (!is.na(OS_days) | !is.na(EFS_days)) & !is.na(extent_of_tumor_resection) & !extent_of_tumor_resection %in% c("Unavailable", "Not Applicable")) %>%
       dplyr::mutate(NF1_psi_group = case_when(
-      `NF1-215_PSI` > summary(`NF1-215_PSI`)["3rd Qu."] ~ "High NF1-215 PSI",
-      `NF1-215_PSI` < summary(`NF1-215_PSI`)["1st Qu."] ~ "Low NF1-215 PSI",
+      `NF1-215 PSI` > summary(`NF1-215 PSI`)["3rd Qu."] ~ "High NF1-215 PSI",
+      `NF1-215 PSI` <= summary(`NF1-215 PSI`)["1st Qu."] ~ "Low NF1-215 PSI",
       TRUE ~ NA_character_
     )) %>%
       dplyr::mutate(NF1_psi_group = factor(NF1_psi_group,
@@ -196,10 +204,10 @@ for (group in groups){
     
   } else {
     group_hist <- group_hist %>%
-      filter(!is.na(mol_sub_group) & !is.na(OS_days) & !is.na(EFS_days)) %>%
+      filter(!is.na(mol_sub_group) & (!is.na(OS_days) | !is.na(EFS_days))) %>%
       dplyr::mutate(NF1_psi_group = case_when(
-      `NF1-215_PSI` > summary(`NF1-215_PSI`)["3rd Qu."] ~ "High NF1-215 PSI",
-      `NF1-215_PSI` < summary(`NF1-215_PSI`)["1st Qu."] ~ "Low NF1-215 PSI",
+      `NF1-215 PSI` > summary(`NF1-215 PSI`)["3rd Qu."] ~ "High NF1-215 PSI",
+      `NF1-215 PSI` <= summary(`NF1-215 PSI`)["1st Qu."] ~ "Low NF1-215 PSI",
       TRUE ~ NA_character_
     )) %>%
       dplyr::mutate(NF1_psi_group = factor(NF1_psi_group,
@@ -301,14 +309,15 @@ for (i in 1:nrow(subtype_df)) {
     subtype_hist <- metadata %>%
       filter(Histology == subtype_df$hist[i] & grepl(subtype_df$subtype[i], mol_sub_group))
     
+    #Define high and low NF1-215 PSI samples using quartiles in ONLY samples with survival data and resection known (LGG/GNT only)
     
     if(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma")){
       
       subtype_hist <- subtype_hist %>%
-        dplyr::filter(!is.na(extent_of_tumor_resection) & !extent_of_tumor_resection %in% c("Not Applicable", "Unavailable")) %>%
+        dplyr::filter(!is.na(extent_of_tumor_resection) & !extent_of_tumor_resection %in% c("Not Applicable", "Unavailable") & (!is.na(OS_days) | !is.na(EFS_days))) %>%
         dplyr::mutate(NF1_psi_group = case_when(
-        `NF1-215_PSI` > summary(`NF1-215_PSI`)["3rd Qu."] ~ "High NF1-215 PSI",
-        `NF1-215_PSI` < summary(`NF1-215_PSI`)["1st Qu."] ~ "Low NF1-215 PSI",
+        `NF1-215 PSI` > summary(`NF1-215 PSI`)["3rd Qu."] ~ "High NF1-215 PSI",
+        `NF1-215 PSI` <= summary(`NF1-215 PSI`)["1st Qu."] ~ "Low NF1-215 PSI",
         TRUE ~ NA_character_
       )) %>%
         dplyr::mutate(NF1_psi_group = factor(NF1_psi_group,
@@ -317,13 +326,14 @@ for (i in 1:nrow(subtype_df)) {
     } else {
       
       subtype_hist <- subtype_hist %>%
-      dplyr::mutate(NF1_psi_group = case_when(
-        `NF1-215_PSI` > summary(`NF1-215_PSI`)["3rd Qu."] ~ "High NF1-215 PSI",
-        `NF1-215_PSI` < summary(`NF1-215_PSI`)["1st Qu."] ~ "Low NF1-215 PSI",
-        TRUE ~ NA_character_
-      )) %>%
-      dplyr::mutate(NF1_psi_group = factor(NF1_psi_group,
-                                      c("Low NF1-215 PSI", "High NF1-215 PSI")))
+        dplyr::filter((!is.na(OS_days) | !is.na(EFS_days))) %>%
+        dplyr::mutate(NF1_psi_group = case_when(
+          `NF1-215 PSI` > summary(`NF1-215 PSI`)["3rd Qu."] ~ "High NF1-215 PSI",
+          `NF1-215 PSI` <= summary(`NF1-215 PSI`)["1st Qu."] ~ "Low NF1-215 PSI",
+          TRUE ~ NA_character_
+        )) %>%
+        dplyr::mutate(NF1_psi_group = factor(NF1_psi_group,
+                                        c("Low NF1-215 PSI", "High NF1-215 PSI")))
       
     }
     
