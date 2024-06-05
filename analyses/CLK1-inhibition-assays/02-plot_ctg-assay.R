@@ -99,7 +99,7 @@ barplot <- ggplot(mean_se_df, aes(x = Elapsed, y = Mean, fill = Treatment)) +
   geom_text(data = stat_results, aes(x = Elapsed, y = 97, label = p_sig), vjust = -0.5, size = 4) +
   
   scale_x_continuous(breaks = unique(mean_se_df$Elapsed), labels = unique(mean_se_df$Elapsed)) +
-  labs(x = "Time", y = "Confluence (%)") +
+  labs(x = "Time", y = "KNS-42 Confluence (%)") +
   scale_fill_manual(values = c("lightgrey", "#0C7BDC", "darkblue","lightblue")) +
   theme_Publication()
 
