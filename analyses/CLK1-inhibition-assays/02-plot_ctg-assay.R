@@ -54,10 +54,10 @@ ctg_data_long <- ctg_data %>%
 
 # Subset the data to ctg_data_long only the two treatments of interest for stats
 filtered_df <- ctg_data_long %>%
-  filter(Treatment %in% c("DMSO Vehicle 2%", "CIrtuvivint 10 µM", "CIrtuvivint 1 µM")) %>%
+  filter(Treatment %in% c("DMSO Vehicle 2%", "CIrtuvivint 10 µM", "CIrtuvivint 1 µM","CIrtuvivint 0.1 µM")) %>%
   mutate(Treatment = as.factor(Treatment),
-         Treatment = fct_relevel(Treatment, "DMSO Vehicle 2%", "CIrtuvivint 10 µM", "CIrtuvivint 1 µM")) %>%
-  filter(Elapsed %in% c("0", "48", "92")) 
+         Treatment = fct_relevel(Treatment, "DMSO Vehicle 2%", "CIrtuvivint 10 µM", "CIrtuvivint 1 µM", "CIrtuvivint 0.1 µM" )) %>%
+  filter(Elapsed %in% c("0","24","48","72","92")) 
   
 
 # Define mean_se function if not already defined
@@ -80,16 +80,27 @@ mean_se_df <- filtered_df %>%
   ) %>%
   distinct(Elapsed, Treatment, .keep_all = TRUE)
 
+# Perform statistical tests using rstatix
+stat_results <- filtered_df %>%
+  group_by(Elapsed) %>%
+  t_test(Measurement ~ Treatment, paired = TRUE) %>%  # Adjust for your study design
+  mutate(p_sig = case_when(p < 0.05 ~ paste0("*", "p=", round(p, 4)),
+                           TRUE ~ ""),
+         #y_pos = c(25,78,80),
+         Treatment = "CIrtuvivint 0.1 µM")
+
 
 # Plot the bar plot with error bars
 barplot <- ggplot(mean_se_df, aes(x = Elapsed, y = Mean, fill = Treatment)) +
-  geom_bar(stat = "identity", position = position_dodge(width = 41)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 18)) +
   geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), 
-                position = position_dodge(width = 41), 
-                width = 0.25) +
+                position = position_dodge(width = 18), 
+                width = 1) +
+  geom_text(data = stat_results, aes(x = Elapsed, y = 97, label = p_sig), vjust = -0.5, size = 4) +
+  
   scale_x_continuous(breaks = unique(mean_se_df$Elapsed), labels = unique(mean_se_df$Elapsed)) +
   labs(x = "Time", y = "Confluence (%)") +
-  scale_fill_manual(values = c("lightgrey", "#0C7BDC", "lightblue")) +
+  scale_fill_manual(values = c("lightgrey", "#0C7BDC", "darkblue","lightblue")) +
   theme_Publication()
 
 
