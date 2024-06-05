@@ -58,7 +58,7 @@ filtered_df <- ctg_data_long %>%
   mutate(Treatment = as.factor(Treatment),
          Treatment = fct_relevel(Treatment, "DMSO Vehicle 2%", "CIrtuvivint 10 µM", "CIrtuvivint 1 µM", "CIrtuvivint 0.1 µM" )) %>%
   filter(Elapsed %in% c("0","24","48","72","92")) 
-  
+
 
 # Define mean_se function if not already defined
 mean_se <- function(x) {
