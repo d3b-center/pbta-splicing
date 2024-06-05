@@ -56,7 +56,9 @@ ctg_data_long <- ctg_data %>%
 filtered_df <- ctg_data_long %>%
   filter(Treatment %in% c("DMSO Vehicle 2%", "CIrtuvivint 10 µM", "CIrtuvivint 1 µM")) %>%
   mutate(Treatment = as.factor(Treatment),
-         Treatment = fct_relevel(Treatment, "DMSO Vehicle 2%", "CIrtuvivint 10 µM", "CIrtuvivint 1 µM"))
+         Treatment = fct_relevel(Treatment, "DMSO Vehicle 2%", "CIrtuvivint 10 µM", "CIrtuvivint 1 µM")) %>%
+  filter(Elapsed %in% c("0", "48", "92")) 
+  
 
 # Define mean_se function if not already defined
 mean_se <- function(x) {
@@ -69,26 +71,28 @@ mean_se <- function(x) {
   return(c(y = mean, ymin = ymin, ymax = ymax))
 }
 
-# Perform statistical tests using rstatix
-stat_results <- filtered_df %>%
-  group_by(Elapsed) %>%
-  t_test(Measurement ~ Treatment, paired = TRUE) %>%  # Adjust for your study design
-  mutate(p_sig = case_when(p < 0.05 ~ paste0("*", "p=", round(p, 2)),
-                           TRUE ~ "")
-  )
-
-barplot <- ggplot(filtered_df, aes(x = Elapsed, y = Measurement, fill = Treatment)) +
-  stat_summary(fun = mean, geom = "bar", position = position_dodge(width = 0.8), width = 0.7, color = "black") +
-  stat_summary(fun.data = mean_se, geom = "errorbar", position = position_dodge(width = 0.8), width = 0.25) +
-  #geom_text(data = stat_results, aes(x = Elapsed, label = p_sig), vjust = -0.5, size = 4) +
-  xlab("Time (hours)") + 
-  #ylab("Luminescence (RLU)") +
-  #scale_y_continuous(labels = scales::scientific) +
-  #scale_fill_manual(values = c("lightgrey", "#0C7BDC")) +
-  #ylim(c(0, 6e4))+
-  theme_Publication() 
+# Compute mean and standard error for each Treatment and Time combination
+mean_se_df <- filtered_df %>%
+  group_by(Elapsed, Treatment) %>%
+  mutate(
+    Mean = mean(Measurement),
+    SE = sd(Measurement) / sqrt(n())
+  ) %>%
+  distinct(Elapsed, Treatment, .keep_all = TRUE)
 
 
-pdf(file_plot, width = 8, height = 4)
+# Plot the bar plot with error bars
+barplot <- ggplot(mean_se_df, aes(x = Elapsed, y = Mean, fill = Treatment)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 41)) +
+  geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), 
+                position = position_dodge(width = 41), 
+                width = 0.25) +
+  scale_x_continuous(breaks = unique(mean_se_df$Elapsed), labels = unique(mean_se_df$Elapsed)) +
+  labs(x = "Time", y = "Confluence (%)") +
+  scale_fill_manual(values = c("lightgrey", "#0C7BDC", "lightblue")) +
+  theme_Publication()
+
+
+pdf(file_plot, width = 6, height = 4)
 print(barplot)
 dev.off()
