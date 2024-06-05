@@ -31,8 +31,7 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 file_line_plot = file.path(plots_dir,"cell-prolif.pdf")
 
 ## input file
-cell_prolif_res_file <- file.path(input_dir,"2024.05.30_KNS-42_3D_cirtuvivint.txt")
-cell_prolif_res_file <- file.path(input_dir,"2024.05.30_KNS-42_3D_cirtuvivint_nogroups.txt")
+cell_prolif_res_file <- file.path(input_dir,"2024.05.30_KNS-42_6D_cirtuvivint_nogroups.txt")
 
 incucyte_data <- read_tsv(cell_prolif_res_file, skip=10, col_names = TRUE) 
 
