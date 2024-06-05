@@ -48,9 +48,10 @@ incucyte_data_long <- incucyte_data %>%
   
   mutate(Treatment = sub(".*(?=CIrtuvivint)", "", Treatment, perl = TRUE),
          Treatment = sub("\\s*\\([^\\)]+\\)", "", Treatment),
-         Treatment = str_replace(Treatment, "KNS-42 12K / well ", ""),
+         Treatment = str_replace(Treatment, "KNS-42\\s*\\d+K / well ", ""),
          Treatment = sub("\\s*\\([^\\)]+\\)", "", Treatment) 
-         )
+         ) 
+  
 
 
 means <- incucyte_data_long %>%
@@ -63,17 +64,17 @@ means <- incucyte_data_long %>%
 # Perform statistical tests
 
 
-# plot
+# 
 # Plot the means with error bars as a line graph
-plot <- ggplot(means, aes(x = Elapsed, y = mean_measurement, group = Treatment, color = Treatment)) +
+plot_prolif <- ggplot(means, aes(x = Elapsed, y = mean_measurement, group = Treatment, color = Treatment)) +
   geom_line() +
   geom_errorbar(aes(ymin = mean_measurement - sd_measurement/sqrt(n),
                     ymax = mean_measurement + sd_measurement/sqrt(n)),
                 width = 0.2) +
-  labs(x = "Elapsed Time", y = "KNS42 Confluence %") +
+  labs(x = "Elapsed Time", y = "KNS-42 Confluence %") +
   theme_Publication()
 
 
 pdf(file_line_plot, width = 8, height = 4)
-print(plot)
+print(plot_prolif)
 dev.off()
