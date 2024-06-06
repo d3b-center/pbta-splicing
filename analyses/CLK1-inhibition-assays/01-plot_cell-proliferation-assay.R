@@ -71,15 +71,16 @@ max_mean_df <- mean_se_df %>%
   group_by(Elapsed) %>%
   summarise(MaxMean = max(Mean, na.rm = TRUE))
 
+
 # Perform statistical tests using rstatix
 stat_results <- filtered_df %>%
   group_by(Elapsed) %>%
-  t_test(Measurement ~ Treatment, paired = TRUE) %>%
-  adjust_pvalue(method = "bonferroni") %>%
-  add_significance("p") %>%
-  add_xy_position(x = "Elapsed") %>%
-  left_join(max_mean_df, by = "Elapsed") %>%
-  mutate(y.position = MaxMean + 5) # Adjust the position of p-values
+  t_test(Measurement ~ Treatment, paired = TRUE) %>%  # Adjust for your study design
+  mutate(p_sig = case_when(p < 0.05 ~ paste0("*", "p=", round(p, 2)),
+                           TRUE ~ ""),
+         #y_pos = c(25,78,80),
+         Treatment = "DMSO vehicle 2%")
+
 
 # Plot the means with error bars as a line graph
 plot_prolif <- ggplot(mean_se_df, aes(x = as.numeric(Elapsed), y = Mean, group = Treatment, color = Treatment)) +
@@ -89,7 +90,9 @@ plot_prolif <- ggplot(mean_se_df, aes(x = as.numeric(Elapsed), y = Mean, group =
   labs(x = "Elapsed Time (hours)", y = "KNS-42 Confluence (%)") +
   scale_x_continuous(breaks = unique(mean_se_df$Elapsed), labels = unique(mean_se_df$Elapsed)) +
   scale_fill_manual(values = c("lightgrey", "#0C7BDC", "darkblue","lightblue")) +
-  theme_Publication()
+  geom_text(data = stat_results, aes(x = Elapsed, y = 75, label = p_sig), vjust = -0.5, size = 4, color = "black") +
+  theme_Publication() 
+  
 
 pdf(file_line_plot, width = 8, height = 4)
 print(plot_prolif)
