@@ -90,7 +90,7 @@ plot_prolif <- ggplot(mean_se_df, aes(x = as.numeric(Elapsed), y = Mean, group =
   labs(x = "Elapsed Time (hours)", y = "KNS-42 Confluence (%)") +
   scale_x_continuous(breaks = unique(mean_se_df$Elapsed), labels = unique(mean_se_df$Elapsed)) +
   scale_fill_manual(values = c("lightgrey", "#0C7BDC", "darkblue","lightblue")) +
-  geom_text(data = stat_results, aes(x = Elapsed, y = 75, label = p_sig), vjust = -0.5, size = 4, color = "black") +
+  geom_text(data = stat_results, aes(x = Elapsed, y = 65, label = p_sig), vjust = -0.5, size = 4, color = "black") +
   theme_Publication() 
   
 
