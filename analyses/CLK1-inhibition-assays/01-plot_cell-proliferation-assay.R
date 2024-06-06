@@ -110,7 +110,7 @@ plot_prolif <- ggplot(mean_se_df, aes(x = as.numeric(Elapsed), y = Mean, group =
   theme_Publication() 
   
 
-pdf(file_line_plot, width = 18, height = 5)
+pdf(file_line_plot, width = 12, height = 5)
 print(plot_prolif)
 dev.off()
 
