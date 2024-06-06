@@ -87,7 +87,7 @@ stat_results <- filtered_df %>%
   mutate(p_sig = case_when(p < 0.05 ~ paste0("*", "p=", round(p, 4)),
                            TRUE ~ ""),
          #y_pos = c(25,78,80),
-         Treatment = "CIrtuvivint 0.1 µM")
+         Treatment = "DMSO Vehicle 2%")
 
 # Filter to get only the lowest p-value within each time group
 stat_results <- stat_results %>%
