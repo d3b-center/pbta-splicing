@@ -62,14 +62,14 @@ p_values <- ctg_tidy_df %>%
   
 
 barplot <- ggplot(df_summary, aes(x = Treatment, y = mean_measurement)) +
-  geom_bar(stat = "identity", fill = "#0C7BDC") +
+  #geom_bar(stat = "identity", fill = "#0C7BDC") +
+  stat_summary(fun = mean, geom = "bar", position = position_dodge(width = 0.8), width = 0.7, color = "black", fill="#0C7BDC") +
+  stat_summary(fun.data = mean_se, geom = "errorbar", position = position_dodge(width = 0.8), width = 0.25) +
   geom_errorbar(aes(ymin = mean_measurement - se_measurement,
                     ymax = mean_measurement + se_measurement),
                 position = position_dodge(width = 18),
                 width = 1, color = "black") +
   geom_text(data = p_values, aes(x = Treatment, y = max(ctg_tidy_df$Measurement+1000), label = p_value), vjust = -0.5, size = 3, color = "black") +
-  
- 
   labs(x = "Concentration", y = "Luminescence (RLU)") +
   theme_Publication()
 
