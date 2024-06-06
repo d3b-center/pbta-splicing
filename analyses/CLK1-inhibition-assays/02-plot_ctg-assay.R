@@ -89,6 +89,11 @@ stat_results <- filtered_df %>%
          #y_pos = c(25,78,80),
          Treatment = "CIrtuvivint 0.1 µM")
 
+# Filter to get only the lowest p-value within each time group
+stat_results <- stat_results %>%
+  group_by(Elapsed) %>%
+  filter(p == min(p)) %>%
+  ungroup()
 
 # Plot the bar plot with error bars
 barplot <- ggplot(mean_se_df, aes(x = Elapsed, y = Mean, fill = Treatment)) +
