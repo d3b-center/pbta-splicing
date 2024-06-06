@@ -104,6 +104,6 @@ barplot <- ggplot(mean_se_df, aes(x = Elapsed, y = Mean, fill = Treatment)) +
   theme_Publication()
 
 
-pdf(file_plot, width = 6, height = 4)
+pdf(file_plot, width = 8, height = 6)
 print(barplot)
 dev.off()
