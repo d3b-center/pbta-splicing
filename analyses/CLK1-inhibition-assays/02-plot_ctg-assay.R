@@ -31,81 +31,46 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 file_plot = file.path(plots_dir,"cell_viability-barplot.pdf")
 
 ## input file
-ctg_res_file <- file.path(input_dir,"2024.05.30_KNS-42_3D_cirtuvivint_nogroups.txt")
+ctg_res_file <- file.path(input_dir,"kns42-ctg-3day.txt")
 
-ctg_data <- read_tsv(ctg_res_file, skip=10, col_names = TRUE) 
+# Read the input file
+ctg_data <- read.delim(ctg_res_file, header = TRUE, stringsAsFactors = FALSE)
 
-# Convert Date Time column to datetime
-ctg_data <- ctg_data %>%
-  mutate(`Date Time` = as.POSIXct(`Date Time`, format = "%m/%d/%Y %I:%M:%S %p"))
-
-# Reshape data into long format for plotting
-ctg_data_long <- ctg_data %>%
-  pivot_longer(cols = -c(`Date Time`, Elapsed), names_to = "Treatment", values_to = "Measurement") %>%
-  mutate(`Date Time` = format(`Date Time`, "%H:%M:%S")) %>%
-  dplyr::rename("Time"=`Date Time`) %>%
-  filter(!grepl("Std", Treatment)) %>%
-  
-  mutate(Treatment = sub(".*(?=CIrtuvivint)", "", Treatment, perl = TRUE),
-         Treatment = sub("\\s*\\([^\\)]+\\)", "", Treatment),
-         Treatment = str_replace(Treatment, "KNS-42 12K / well ", ""),
-         Treatment = sub("\\s*\\([^\\)]+\\)", "", Treatment) 
-  )
-
-# Subset the data to ctg_data_long only the two treatments of interest for stats
-filtered_df <- ctg_data_long %>%
-  filter(Treatment %in% c("DMSO Vehicle 2%", "CIrtuvivint 10 µM", "CIrtuvivint 1 µM","CIrtuvivint 0.1 µM")) %>%
-  mutate(Treatment = as.factor(Treatment),
-         Treatment = fct_relevel(Treatment, "DMSO Vehicle 2%", "CIrtuvivint 10 µM", "CIrtuvivint 1 µM", "CIrtuvivint 0.1 µM" )) %>%
-  filter(Elapsed %in% c("0","24","48","72","92")) 
-
-
-# Define mean_se function if not already defined
-mean_se <- function(x) {
-  n <- length(x)
-  mean <- mean(x)
-  sd <- sd(x)
-  ymin <- mean - sd
-  ymax <- mean + sd
-  
-  return(c(y = mean, ymin = ymin, ymax = ymax))
-}
-
-# Compute mean and standard error for each Treatment and Time combination
-mean_se_df <- filtered_df %>%
-  group_by(Elapsed, Treatment) %>%
-  mutate(
-    Mean = mean(Measurement),
-    SE = sd(Measurement) / sqrt(n())
+ctg_tidy_df <- ctg_data %>%
+  pivot_longer(cols = -1, names_to = "Treatment", values_to = "Measurement") %>%
+  rename(Replicates = X) %>%
+  mutate(Treatment = str_replace(Treatment, "X", ""), 
+         Treatment = sub("\\.u", "u", Treatment) 
   ) %>%
-  distinct(Elapsed, Treatment, .keep_all = TRUE)
+  filter(!grepl("Free", Treatment)) 
 
-# Perform statistical tests using rstatix
-stat_results <- filtered_df %>%
-  group_by(Elapsed) %>%
-  t_test(Measurement ~ Treatment, paired = TRUE) %>%  # Adjust for your study design
-  mutate(p_sig = case_when(p < 0.05 ~ paste0("*", "p=", round(p, 4)),
-                           TRUE ~ ""),
-         #y_pos = c(25,78,80),
-         Treatment = "DMSO Vehicle 2%")
 
-# Filter to get only the lowest p-value within each time group
-stat_results <- stat_results %>%
-  group_by(Elapsed) %>%
-  filter(p == min(p)) %>%
-  ungroup()
+# Calculate standard error for each Treatment
+df_summary <- ctg_tidy_df %>%
+  group_by(Treatment) %>%
+  summarise(mean_measurement = mean(Measurement),
+            se_measurement = sd(Measurement) / sqrt(n()))
 
-# Plot the bar plot with error bars
-barplot <- ggplot(mean_se_df, aes(x = Elapsed, y = Mean, fill = Treatment)) +
-  geom_bar(stat = "identity", position = position_dodge(width = 18)) +
-  geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), 
-                position = position_dodge(width = 18), 
-                width = 1) +
-  geom_text(data = stat_results, aes(x = Elapsed, y = 97, label = p_sig), vjust = -0.5, size = 4) +
+# Perform t-tests to compare each treatment to the control (DMSO)
+control_group <- ctg_tidy_df %>% filter(Treatment == "DMSO")
+
+p_values <- ctg_tidy_df %>%
+  group_by(Treatment) %>%
+  summarise(p_value = t.test(Measurement, control_group$Measurement)$p.value) %>%
+  mutate(p_value = case_when(p_value < 0.05 ~ paste0("*", "p=", format(p_value, scientific = TRUE, digits = 2)),
+                           TRUE ~ "")) 
   
-  scale_x_continuous(breaks = unique(mean_se_df$Elapsed), labels = unique(mean_se_df$Elapsed)) +
-  labs(x = "Time", y = "KNS-42 Confluence (%)") +
-  scale_fill_manual(values = c("lightgrey", "#0C7BDC", "darkblue","lightblue")) +
+
+barplot <- ggplot(df_summary, aes(x = Treatment, y = mean_measurement)) +
+  geom_bar(stat = "identity", fill = "#0C7BDC") +
+  geom_errorbar(aes(ymin = mean_measurement - se_measurement,
+                    ymax = mean_measurement + se_measurement),
+                position = position_dodge(width = 18),
+                width = 1, color = "black") +
+  geom_text(data = p_values, aes(x = Treatment, y = max(ctg_tidy_df$Measurement+1000), label = p_value), vjust = -0.5, size = 3, color = "black") +
+  
+ 
+  labs(x = "Concentration", y = "Measurement") +
   theme_Publication()
 
 
