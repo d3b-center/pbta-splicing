@@ -70,7 +70,7 @@ barplot <- ggplot(df_summary, aes(x = Treatment, y = mean_measurement)) +
   geom_text(data = p_values, aes(x = Treatment, y = max(ctg_tidy_df$Measurement+1000), label = p_value), vjust = -0.5, size = 3, color = "black") +
   
  
-  labs(x = "Concentration", y = "Measurement") +
+  labs(x = "Concentration", y = "Luminescence (RLU)") +
   theme_Publication()
 
 
