@@ -153,14 +153,14 @@ plot_df <- rmats_goi %>%
   dplyr::rename(Kids_First_Biospecimen_ID = sample_id) %>%
   left_join(histologies_df, by = 'Kids_First_Biospecimen_ID') %>%
   select(event_type, IncLevel1, Kids_First_Biospecimen_ID, plot_group, plot_group_hex) %>%
-  dplyr::mutate(event_type = case_when(event_type == "CLK1-Exon4_PSI" ~ "CLK1-202 (Exon 4)",
+  dplyr::mutate(event_type = case_when(event_type == "CLK1-Exon4_PSI" ~ "CLK1-201 (Exon 4)",
                                        event_type == "NF1-Exon23a_PSI" ~ "NF1-202 (Exon23a)",
                                        event_type == "NF1-215_PSI" ~ "NF1-215 (RI)",
                                        event_type == "NF1-208_PSI" ~ "NF1-208 (NMD)"))
 
 # Calculate the median IncLevel1 for each plot_group within CLK1-Exon4_PSI
 median_data <- plot_df %>%
-  filter(event_type == "CLK1-202 (Exon 4)") %>%
+  filter(event_type == "CLK1-201 (Exon 4)") %>%
   group_by(plot_group) %>%
   summarise(median_IncLevel1 = median(IncLevel1, na.rm = TRUE)) %>%
   arrange(median_IncLevel1) # Ensure the data is sorted by median_IncLevel1
@@ -168,7 +168,7 @@ median_data <- plot_df %>%
 # Reorder plot_group levels based on the sorted median IncLevel1
 plot_df$plot_group <- factor(plot_df$plot_group, levels = median_data$plot_group)
 # Reorder plot_group levels based on the sorted median IncLevel1
-plot_df$event_type <- factor(plot_df$event_type, levels = c("CLK1-202 (Exon 4)", "NF1-202 (Exon23a)", "NF1-215 (RI)", "NF1-208 (NMD)"))
+plot_df$event_type <- factor(plot_df$event_type, levels = c("CLK1-201 (Exon 4)", "NF1-202 (Exon23a)", "NF1-215 (RI)", "NF1-208 (NMD)"))
 
 # How many samples per event?
 table(plot_df$plot_group, plot_df$event_type)
