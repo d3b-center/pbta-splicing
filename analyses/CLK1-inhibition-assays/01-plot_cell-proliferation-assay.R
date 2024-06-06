@@ -86,7 +86,7 @@ plot_prolif <- ggplot(mean_se_df, aes(x = as.numeric(Elapsed), y = Mean, group =
   geom_line() +
   geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), width = 0.5) +
   geom_point() +
-  labs(x = "Elapsed Time (hours)", y = "KNS-42 Confluence %") +
+  labs(x = "Elapsed Time (hours)", y = "KNS-42 Confluence (%)") +
   scale_x_continuous(breaks = unique(mean_se_df$Elapsed), labels = unique(mean_se_df$Elapsed)) +
   scale_fill_manual(values = c("lightgrey", "#0C7BDC", "darkblue","lightblue")) +
   theme_Publication()
