@@ -45,36 +45,55 @@ incucyte_data_long <- incucyte_data %>%
   mutate(`Date Time` = format(`Date Time`, "%H:%M:%S")) %>%
   dplyr::rename("Time"=`Date Time`) %>%
   filter(!grepl("Std", Treatment)) %>%
-  
   mutate(Treatment = sub(".*(?=CIrtuvivint)", "", Treatment, perl = TRUE),
          Treatment = sub("\\s*\\([^\\)]+\\)", "", Treatment),
          Treatment = str_replace(Treatment, "KNS-42\\s*\\d+K / well ", ""),
-         Treatment = sub("\\s*\\([^\\)]+\\)", "", Treatment) 
-         ) 
-  
+         Treatment = sub("\\s*\\([^\\)]+\\)", "", Treatment))
 
+# Subset the data to only the treatments of interest for stats
+filtered_df <- incucyte_data_long %>%
+  filter(Treatment %in% c("DMSO vehicle 2%", "Cirtuvivint 10 µM", "Cirtuvivint 1 µM", "Cirtuvivint 0.1 µM")) %>%
+  mutate(Treatment = as.factor(Treatment),
+         Treatment = fct_relevel(Treatment, "DMSO vehicle 2%", "Cirtuvivint 10 µM", "Cirtuvivint 1 µM", "Cirtuvivint 0.1 µM")) %>%
+  filter(Elapsed %in% c("0", "24", "48", "72", "92"))
 
-means <- incucyte_data_long %>%
+# Compute mean and standard error for each Treatment and Time combination
+mean_se_df <- filtered_df %>%
   group_by(Elapsed, Treatment) %>%
-  summarise(mean_measurement = mean(Measurement),
-            sd_measurement = sd(Elapsed),
-            n = n())
+  summarise(
+    Mean = mean(Measurement, na.rm = TRUE),
+    SE = sd(Measurement, na.rm = TRUE) / sqrt(n()),
+    .groups = 'drop'
+  )
 
+# Find the maximum mean value for each elapsed time
+max_mean_df <- mean_se_df %>%
+  group_by(Elapsed) %>%
+  summarise(MaxMean = max(Mean, na.rm = TRUE))
 
-# Perform statistical tests
+# Perform statistical tests using rstatix
+stat_results <- filtered_df %>%
+  group_by(Elapsed) %>%
+  t_test(Measurement ~ Treatment, paired = TRUE) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p") %>%
+  add_xy_position(x = "Elapsed") %>%
+  left_join(max_mean_df, by = "Elapsed") %>%
+  mutate(y.position = MaxMean + 5) # Adjust the position of p-values
 
-
-# 
 # Plot the means with error bars as a line graph
-plot_prolif <- ggplot(means, aes(x = Elapsed, y = mean_measurement, group = Treatment, color = Treatment)) +
+plot_prolif <- ggplot(mean_se_df, aes(x = as.numeric(Elapsed), y = Mean, group = Treatment, color = Treatment)) +
   geom_line() +
-  geom_errorbar(aes(ymin = mean_measurement - sd_measurement/sqrt(n),
-                    ymax = mean_measurement + sd_measurement/sqrt(n)),
-                width = 0.2) +
-  labs(x = "Elapsed Time", y = "KNS-42 Confluence %") +
+  geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), width = 0.5) +
+  geom_point() +
+  labs(x = "Elapsed Time (hours)", y = "KNS-42 Confluence %") +
+  scale_x_continuous(breaks = unique(mean_se_df$Elapsed), labels = unique(mean_se_df$Elapsed)) +
+  scale_fill_manual(values = c("lightgrey", "#0C7BDC", "darkblue","lightblue")) +
   theme_Publication()
-
 
 pdf(file_line_plot, width = 8, height = 4)
 print(plot_prolif)
 dev.off()
+
+
+
