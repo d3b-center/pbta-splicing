@@ -1,14 +1,20 @@
 ################################################################################
 # 02-plot_ctg-assay.R
 # script that generates line graph and compares Treatment absorbance levels
-# written by Ammar Naqvi
+# written by Ammar Naqvi, Jo Lynne Rokita
 #
 # usage: Rscript 02-plot_ctg-assay.R
+################################################################################
+################################################################################
+# 02-plot_cell-viability-assay-res.R
+# script that generates line graph and compares Treatment absorbance levels
+# written by Ammar Naqvi, Jo Lynne Rokita
+#
+# usage: Rscript 02-plot_cell-viability-res.R 
 ################################################################################
 
 ## libraries used 
 suppressPackageStartupMessages({
-  library("vroom")
   library("tidyverse")
   library("ggpubr")
   library("rstatix")
@@ -31,49 +37,61 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 file_plot = file.path(plots_dir,"cell_viability-barplot.pdf")
 
 ## input file
-ctg_res_file <- file.path(input_dir,"kns42-ctg-3day.txt")
+res_file <- file.path(input_dir,"kns42-ctg-3day.tsv")
 
-# Read the input file
-ctg_data <- read.delim(ctg_res_file, header = TRUE, stringsAsFactors = FALSE)
+via_df <- read_tsv(res_file) %>%
+  dplyr::rename(Rep = `...1`) %>%
+  dplyr::mutate(Rep = row_number()) %>%
+  pivot_longer(cols = -1, names_to = "Dose", values_to = "Absorbance") %>%
+  # Subset the data to include treatments of interest for stats
+  filter(!grepl("Free", Dose)) %>%
+  #separate(Rep, into = c("group", "rep"), sep = "-") %>%
+  mutate(Dose = as.factor(gsub(" ", "", Dose))) %>%
+  mutate(Dose = fct_relevel(Dose, c("DMSO", "0.01uM", "0.05uM", "0.1uM", "0.5uM", "1uM", "5uM", "10uM")))
 
-ctg_tidy_df <- ctg_data %>%
-  pivot_longer(cols = -1, names_to = "Treatment", values_to = "Measurement") %>%
-  rename(Replicates = X) %>%
-  mutate(Treatment = str_replace(Treatment, "X", ""), 
-         Treatment = sub("\\.u", "u", Treatment) 
-  ) %>%
-  filter(!grepl("Free", Treatment)) 
+# create DMSO reps per dose 
 
-
-# Calculate standard error for each Treatment
-df_summary <- ctg_tidy_df %>%
-  group_by(Treatment) %>%
-  summarise(mean_measurement = mean(Measurement),
-            se_measurement = sd(Measurement) / sqrt(n()))
-
-# Perform t-tests to compare each treatment to the control (DMSO)
-control_group <- ctg_tidy_df %>% filter(Treatment == "DMSO")
-
-p_values <- ctg_tidy_df %>%
-  group_by(Treatment) %>%
-  summarise(p_value = t.test(Measurement, control_group$Measurement)$p.value) %>%
-  mutate(p_value = case_when(p_value < 0.05 ~ paste0("*", "p=", format(p_value, scientific = TRUE, digits = 2)),
-                           TRUE ~ "")) 
+# Define mean_se function if not already defined
+mean_se <- function(x) {
+  n <- length(x)
+  mean <- mean(x)
+  sd <- sd(x)
+  ymin <- mean - sd
+  ymax <- mean + sd
   
+  return(c(y = mean, ymin = ymin, ymax = ymax))
+}
 
-barplot <- ggplot(df_summary, aes(x = Treatment, y = mean_measurement)) +
-  #geom_bar(stat = "identity", fill = "#0C7BDC") +
-  stat_summary(fun = mean, geom = "bar", position = position_dodge(width = 0.8), width = 0.7, color = "black", fill="#0C7BDC") +
+
+# Perform statistical tests using rstatix
+stat_results <- via_df %>%
+  filter(Dose != "DMSO") %>%
+  group_by(Dose) %>%
+  do(tidy(t.test(Absorbance ~ Dose, data = bind_rows(via_df %>% filter(Dose == "DMSO"), .)))) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  mutate(p_sig = case_when(p.value.adj < 0.05 ~ paste0("*", "p=",
+                                                       format(p.value.adj, scientific = TRUE, digits = 2)),
+                           TRUE ~ ""),
+         star = case_when(p.value.adj < 0.05 ~ paste0("*"),
+                           TRUE ~ ""),
+         y_pos = seq(max(via_df$Absorbance, na.rm = TRUE) + 500000, by = -500000, length.out = n())) # Stagger the p-values
+
+# Generate the bar plot
+barplot <- ggplot(via_df, aes(x = Dose, y = Absorbance, fill = Dose)) +
+  stat_summary(fun = mean, geom = "bar", position = position_dodge(width = 0.8), width = 0.7, color = "black") +
   stat_summary(fun.data = mean_se, geom = "errorbar", position = position_dodge(width = 0.8), width = 0.25) +
-  geom_errorbar(aes(ymin = mean_measurement - se_measurement,
-                    ymax = mean_measurement + se_measurement),
-                position = position_dodge(width = 18),
-                width = 1, color = "black") +
-  geom_text(data = p_values, aes(x = Treatment, y = max(ctg_tidy_df$Measurement+1000), label = p_value), vjust = -0.5, size = 3, color = "black") +
-  labs(x = "Concentration", y = "Luminescence (RLU)") +
-  theme_Publication()
+  geom_text(data = stat_results, aes(x = Dose, y = y_pos, label = star), vjust = -0.5, size = 7) +
+  xlab("Treatment and Dose") + 
+  ylab("Luminescence (RLU)") +
+  scale_y_continuous(labels = scales::scientific) +
+  scale_fill_manual(values = c("lightgrey", "#0C7BDC", "#0C7BDC", "#0C7BDC", "#0C7BDC", "#0C7BDC", "#0C7BDC", "#0C7BDC")) +
+  ylim(c(0, 10e6))+
+  theme_Publication() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1)) # Remove the legend
 
-
-pdf(file_plot, width = 8, height = 6)
+pdf(file_plot, width = 4.5, height = 4)
 print(barplot)
 dev.off()
+
+
