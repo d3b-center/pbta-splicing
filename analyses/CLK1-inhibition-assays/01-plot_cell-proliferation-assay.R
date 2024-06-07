@@ -52,22 +52,17 @@ incucyte_data_long <- incucyte_data %>%
 
 # Subset the data to only the treatments of interest for stats
 filtered_df <- incucyte_data_long %>%
-  #filter(Treatment %in% c("DMSO vehicle 2%", 
-   #                       "Cirtuvivint 10 µM", 
-   #                        "Cirtuvivint 1 µM", 
-   #                      "Cirtuvivint 0.1 µM",
-   #                     "Cirtuvivint 0.05 µM", 
-   #                    "Cirtuvivint 0.01 µM")) %>%
   mutate(Treatment = as.factor(Treatment),
          Treatment = fct_relevel(Treatment, 
                                  "Fresh DMEM 100%",
                                  "DMSO vehicle 2%", 
-                                 "Cirtuvivint 10 µM", 
-                                 "Cirtuvivint 1 µM", 
-                                 "Cirtuvivint 0.1 µM",
+                                 "Cirtuvivint 0.01 µM",
                                  "Cirtuvivint 0.05 µM", 
-                                 "Cirtuvivint 0.01 µM")) # %>%
-  #filter(Elapsed %in% c("0", "24", "48", "72", "92"))
+                                 "Cirtuvivint 0.5 µM", 
+                                 "Cirtuvivint 0.1 µM",
+                                 "Cirtuvivint 1 µM",
+                                 "Cirtuvivint 5 µM",
+                                 "Cirtuvivint 10 µM"))
 
 # Compute mean and standard error for each Treatment and Time combination
 mean_se_df <- filtered_df %>%
@@ -110,7 +105,7 @@ plot_prolif <- ggplot(mean_se_df, aes(x = as.numeric(Elapsed), y = Mean, group =
   theme_Publication() 
   
 
-pdf(file_line_plot, width = 12, height = 5)
+pdf(file_line_plot, width = 7, height = 4)
 print(plot_prolif)
 dev.off()
 
