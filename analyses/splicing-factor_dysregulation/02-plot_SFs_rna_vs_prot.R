@@ -27,6 +27,7 @@ data_dir   <- file.path(root_dir, "data")
 
 input_dir   <- file.path(analysis_dir, "input")
 plots_dir   <- file.path(analysis_dir, "plots")
+results_dir   <- file.path(analysis_dir, "results")
 
 ## check and create plots dir
 if(!dir.exists(plots_dir)){
@@ -37,9 +38,13 @@ if(!dir.exists(plots_dir)){
 heatmap_output_file <- file.path(plots_dir,"SF_RNA_vs_protein_levels_heatmap.pdf") 
 
 ## get CPTAC output table 
-cptac_output_file <- file.path(input_dir,"CPTAC3-pbt_SF_family.xls") 
+cptac_output_file <- file.path(input_dir,"CPTAC3-pbt_SFs.xls") 
+de_file <- file.path(results_dir, "all_hgg-diffSFs_sig_genes.txt")
 
 # Load dataset
+de_genes <- read_tsv(de_file) %>%
+  pull(gene)
+
 cptac_data <- readxl::read_excel(cptac_output_file) %>%
   # select only rows with CLK1 or SRFs, remove muts
   filter(grepl("\\srna|\\spro", idx), 
@@ -47,6 +52,7 @@ cptac_data <- readxl::read_excel(cptac_output_file) %>%
   # remove extra info from cols
   rename_with(~ gsub("X7316.", "7316-", .), everything()) %>%
   dplyr::rename(Assay = `Data type`) %>%
+  filter(`Gene symbol` %in% de_genes) %>%
   # clean up naming for plotting
   mutate(Assay = case_when(Assay == "proteo" ~ "Whole Cell Proteomics",
                            Assay == "rna" ~ "RNA-Seq"),
@@ -107,6 +113,6 @@ heat_plot <- Heatmap(mat,
                      row_names_gp = grid::gpar(fontsize = 12),
                      column_title_side = "top")
 
-pdf(heatmap_output_file, width = 14, height = 6)
+pdf(heatmap_output_file, width = 8, height = 6)
 print(heat_plot)
 dev.off()
