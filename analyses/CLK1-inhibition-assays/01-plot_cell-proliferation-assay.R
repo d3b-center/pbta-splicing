@@ -78,30 +78,12 @@ max_mean_df <- mean_se_df %>%
   group_by(Elapsed) %>%
   summarise(MaxMean = max(Mean, na.rm = TRUE))
 
-# Perform statistical tests using rstatix
-# stat_results <- filtered_df %>%
-#   group_by(Elapsed) %>%
-#   t_test(Measurement ~ Treatment, paired = TRUE) %>%  # Adjust for your study design
-#   mutate(p_sig = case_when(p < 0.05 ~ paste0("*", "p=", round(p, 4)),
-#                            TRUE ~ ""),
-#          #y_pos = c(25,78,80),
-#          Treatment = "DMSO vehicle 2%")
-# 
-# # Filter to get only the lowest p-value within each time group
-# stat_results <- stat_results %>%
-#   group_by(Elapsed) %>%
-#   filter(p == min(p)) %>%
-#   ungroup()
-
 # Plot the means with error bars as a line graph
 plot_prolif <- ggplot(mean_se_df, aes(x = as.numeric(Elapsed), y = Mean, group = Treatment, color = Treatment)) +
   geom_line() +
   geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), width = 0.5) +
   geom_point() +
   labs(x = "Elapsed Time (hours)", y = "KNS-42 Confluence (%)") +
-  #scale_x_continuous(breaks = unique(mean_se_df$Elapsed), labels = unique(mean_se_df$Elapsed)) +
-  #scale_fill_manual(values = c("lightgrey", "#0C7BDC", "darkblue","lightblue")) +
-  #geom_text(data = stat_results, aes(x = Elapsed, y = 90, label = p_sig), vjust = -0.5, size = 4, color = "black") +
   theme_Publication() 
   
 
