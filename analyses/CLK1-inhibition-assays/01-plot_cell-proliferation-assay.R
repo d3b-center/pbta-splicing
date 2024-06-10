@@ -82,7 +82,7 @@ max_mean_df <- mean_se_df %>%
 plot_prolif <- ggplot(mean_se_df, aes(x = as.numeric(Elapsed), y = Mean, group = Treatment, color = Treatment)) +
   geom_line() +
   geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), width = 0.5) +
-  geom_point() +
+  geom_point(size = 0.3) +
   labs(x = "Elapsed Time (hours)", y = "KNS-42 Confluence (%)") +
   theme_Publication() 
   
