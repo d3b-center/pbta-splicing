@@ -70,24 +70,32 @@ psi_comb <- rbind(dpsi_unip_incl,dpsi_unip_skp) %>%
 ## ggstatplot across functional sites
 set.seed(123)
 counts_psi_comb <- psi_comb %>% 
-  count(Type, Uniprot_wrapped)
+  count(Type, Uniprot_wrapped, Preference) %>%
+  # add n = for first n
+  mutate(n = as.character(n),
+         n = case_when(Type == "A3SS" & Uniprot_wrapped == "Disulfide\nBond" & Preference == "Inclusion" ~ paste0("n = ",n),
+                       TRUE ~ as.character(n)))
 
-plot_dsp <-  ggplot(psi_comb, aes(Uniprot_wrapped, dPSI*100) ) +  
-  ylab(expression(bold("dPSI"))) +
-  ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 5, method="density", position = position_dodge(0.9)) +
-  geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
-  facet_wrap("Type",ncol = 2) +
-  scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A"))  + 
-  theme_Publication() + 
-  labs(y="Percent Spliced In (PSI)", x= "Uniprot-defined Functional Site") + 
-  geom_text(data = counts_psi_comb, aes(label = paste("n =",n), x = Uniprot_wrapped, y = 0), vjust = 3, size = 3, hjust=.5) +
-  theme(legend.position="none", 
-        axis.text.x = element_text(angle = 45, hjust = 1)) +  # Angles x-axis text
-  ylim(c(-20,100))
+# Your ggplot code with adjustments
+plot_dsp <- ggplot(psi_comb, aes(x = Uniprot_wrapped, y = dPSI * 100, fill = Preference)) +
+  geom_boxplot(aes(color = Preference), position = position_dodge(width = 0.9), outlier.shape = NA, size = 0.5, alpha = 0.4) +
+  ggforce::geom_sina(aes(color = Preference), pch = 16, size = 3, position = position_dodge(width = 0.9), alpha = 0.4) +
+  facet_wrap(~Type, nrow = 1) +
+  scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) +
+  scale_fill_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) +
+  theme_Publication() +
+  labs(y = "Percent Spliced In (PSI)", x = "Uniprot-defined Functional Site") +
+  geom_text(data = counts_psi_comb, aes(label = paste(n), x = Uniprot_wrapped, y = 10), vjust = 3, size = 3, position = position_dodge(width = 0.9)) +
+  theme(
+    legend.position = "top",  # Move legend to the top
+    legend.direction = "horizontal",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  ylim(c(-15, 100))
 
 # Save plot as PDF
 pdf(file_dpsi_plot, 
-    width = 14, height = 6)
+    width = 12, height = 4)
 print (plot_dsp)
 dev.off()
 
@@ -194,7 +202,7 @@ plot_barplot_family <- ggplot(psi_comb_goi, aes(x = fct_rev(fct_infreq(plot_subt
             hjust = -0.5, size = 3.5) +
   theme_Publication() +
   coord_flip() +
-  ylim(0,115)
+  ylim(0,150)
 
 # Save plot as PDF
 pdf(file_dpsi_goi_plot, height = 8, width = 8, useDingbats = FALSE) 
