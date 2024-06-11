@@ -86,13 +86,15 @@ row_annot <- cptac_data %>%
   dplyr::select(Assay) %>%
   as.data.frame()
 
+
 # create anno colors
 anno_col <- list(Assay = c("RNA-Seq" = "#DC3220", "Whole Cell Proteomics" = "#40B0A6"))
 
 # Heatmap annotation
 row_anno = rowAnnotation(df = row_annot,
-                         col = anno_col, show_legend = TRUE)
-
+                         col = anno_col, 
+                         show_legend = TRUE, 
+                         show_annotation_name = FALSE)
 
 # Make heatmap without legends
 heat_plot <- Heatmap(mat,
@@ -103,16 +105,16 @@ heat_plot <- Heatmap(mat,
                      column_gap = 0.5,
                      show_row_names = TRUE,
                      show_column_names = FALSE,
-                     show_heatmap_legend=TRUE,
+                     show_heatmap_legend = TRUE,
                      cluster_columns = TRUE, 
                      right_annotation = row_anno,
-                     #na_col = "lightgrey",
-                     #rect_gp = gpar(col = "white"),
                      row_title = NULL, 
                      column_title = NULL, 
-                     row_names_gp = grid::gpar(fontsize = 12),
-                     column_title_side = "top")
+                     row_names_gp = grid::gpar(fontsize = 9),
+                     column_title_side = "top",
+                     heatmap_legend_param = list(legend_direction = "horizontal", 
+                                                 legend_position = "top"))
 
-pdf(heatmap_output_file, width = 8, height = 6)
-print(heat_plot)
+pdf(heatmap_output_file, width = 7, height = 5)
+draw(heat_plot, heatmap_legend_side = "top")
 dev.off()
