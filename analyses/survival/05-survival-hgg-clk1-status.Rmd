@@ -47,7 +47,9 @@ Set file paths
 ```{r}
 histologies_file <- file.path(results_dir, "splicing_indices_with_survival.tsv")
 
-diff_psi_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
+diff_psi_file <- file.path(root_dir, "analyses",
+                           "CLK1-splicing_correlations", "results",
+                           "clk1-splice-events-rmats.tsv")
 ```
 
 Load histologies and subset for HGG and DMG
