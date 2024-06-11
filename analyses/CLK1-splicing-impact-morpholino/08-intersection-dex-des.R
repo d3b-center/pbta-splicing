@@ -3,12 +3,12 @@
 # Over-represenative analysis of mis-spliced genes that have splicing variants
 # impacting functional sitesmediated by CLK1
 #
-# authors: Ammar Naqvi 
+# authors: Ammar Naqvi, Jo Lynne Rokita
 ################################################################################
 
 ## load libraries
 suppressPackageStartupMessages({
-  library("clusterProfiler")
+  #library("clusterProfiler")
   library("msigdbr")
   library("org.Hs.eg.db")
   library("ggplot2")
@@ -36,21 +36,25 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 
 ##input files
 de_file <- file.path(results_dir,"ctrl_vs_treated.de.tsv")
+categories_file <- file.path(results_dir, "gene_categories.tsv")
 rmats_merged_file  <- file.path(data_dir,"morpholno.merged.rmats.tsv")
-file_psi_func <- file.path(results_dir,"splicing_events.morpho.intersectUnip.ggplot.txt")
+file_psi_func <- file.path(results_dir,"differential_splice_by_goi_category.tsv")
 
-
-
-## outplut file for plot
+## output file for plot
 ora_dotplot_path <- file.path(plots_dir, "CLK1_ds-dex-targets_ora_dotplot.pdf")
 ora_dotplot_func_path <- file.path(plots_dir, "CLK1_ds-dex-targets_ora_dotplot-func.pdf")
 
 venn_output_file <- file.path(plots_dir, "des-dex-venn.pdf")
 venn_output_func_file <- file.path(plots_dir, "des-dex-venn-func.pdf")
 
+# read in categories file
+categories_df <- read_tsv(categories_file)
+
 ## extract strong splicing changes
 splicing_df  <-  vroom(rmats_merged_file, comment = "#", delim="\t") %>%
   filter(FDR < 0.05 & PValue < 0.05)
+
+splice_func_df <- read_tsv(file_psi_func)
 
 ## extract strong differential splicing cases (dPSI >= |.10|)
 psi_comb <- splicing_df %>% 
@@ -80,7 +84,7 @@ total_events <- psi_comb %>%
   unique()
 
 ## plot venn diagram
-venn_diag<- ggVennDiagram(x=list(dex_comb$geneSymbol, psi_comb$geneSymbol), 
+venn_diag<- ggVennDiagram(x=list(unique(dex_comb$geneSymbol), unique(psi_comb$geneSymbol)), 
                           edge_lty = "dashed", 
                           edge_size = 1,
                           label_size = 6,
@@ -132,20 +136,29 @@ ggplot2::ggsave(ora_dotplot_path,
 
 ## venn for functional splice sites
 ## read table of recurrent functional splicing (skipping)
-splice_func_df <- vroom(file_psi_func) %>% 
-  mutate(geneSymbol=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) 
+splice_func_df <- splice_func_df %>%
+  dplyr::rename(geneSymbol = gene) %>%
+  # subset for goi
+  filter(geneSymbol %in% categories_df$gene)
+
+# subset DEX
+dex_comb_subset <- dex_comb %>%
+  filter(geneSymbol %in% categories_df$gene)
 
 intersect_func <- splice_func_df %>%
-  inner_join(dex_comb, by='geneSymbol', relationship = "many-to-many") %>%
-  unique
+  inner_join(dex_comb_subset, by='geneSymbol', relationship = "many-to-many") %>%
+  pull(geneSymbol) %>%
+  unique()
 
 total_events_func <- splice_func_df %>%
-  full_join(dex_comb, by='geneSymbol', relationship = "many-to-many") %>%
+  full_join(dex_comb_subset, by='geneSymbol', relationship = "many-to-many") %>%
   dplyr::select(geneSymbol) %>% 
   unique()
 
+
+
 ## plot venn diagram
-venn_diag_func <- ggVennDiagram(x=list(dex_comb$geneSymbol, splice_func_df$geneSymbol), 
+venn_diag_func <- ggVennDiagram(x=list(unique(dex_comb_subset$geneSymbol), unique(splice_func_df$geneSymbol)), 
                           edge_lty = "dashed", 
                           edge_size = 1,
                           label_size = 6,
@@ -154,6 +167,10 @@ venn_diag_func <- ggVennDiagram(x=list(dex_comb$geneSymbol, splice_func_df$geneS
                           label_percent_digit = 1) +  
   scale_fill_distiller(palette = "Blues", direction = 1, name = expression(bold("Gene count"))) + 
   labs(title = expression(bold("Genes dysregulated by splicing (functional) and expression")))
+
+common <- intersect(unique(dex_comb_subset$geneSymbol), unique(splice_func_df$geneSymbol)) %>%
+  sort() %>%
+  write_lines(file.path(results_dir, "common_genes_de_ds_functional.txt"))
 
 ggplot2::ggsave(venn_output_func_file,
                 plot=venn_diag_func,
@@ -164,7 +181,7 @@ ggplot2::ggsave(venn_output_func_file,
 
 ## run enrichR to compute and identify significant over-repr pathways
 ora_results <- enricher(
-  gene = unique(intersect_func$geneSymbol), # A vector of your genes of interest
+  gene = intersect_func, # A vector of your genes of interest
   pvalueCutoff = 1, 
   pAdjustMethod = "BH", 
   TERM2GENE = dplyr::select(
