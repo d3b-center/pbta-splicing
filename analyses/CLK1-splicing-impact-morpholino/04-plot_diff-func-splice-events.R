@@ -62,6 +62,7 @@ dpsi_unip_skp <- vroom(c(file_psi_SE_func, file_psi_RI_func, file_psi_A5SS_func,
 psi_comb <- rbind(dpsi_unip_incl,dpsi_unip_skp) %>% 
   mutate(Uniprot = case_when(Uniprot == 'DisulfBond' ~ "Disulfide Bond",
                              Uniprot == 'LocSignal' ~ "Localization Signal",
+                             Uniprot == 'Mod' ~ 'Modification',
                              .default = Uniprot),
          Uniprot_wrapped = stringr::str_wrap(Uniprot, width = 10)
   )
@@ -69,16 +70,15 @@ psi_comb <- rbind(dpsi_unip_incl,dpsi_unip_skp) %>%
 ## ggstatplot across functional sites
 set.seed(123)
 counts_psi_comb <- psi_comb %>% 
-  count(Type, Preference, Uniprot_wrapped)
+  count(Type, Uniprot_wrapped)
 
 plot_dsp <-  ggplot(psi_comb, aes(Uniprot_wrapped, dPSI*100) ) +  
   ylab(expression(bold("dPSI"))) +
   ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 5, method="density", position = position_dodge(0.9)) +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
-  facet_wrap("Type~Preference",ncol = 2) +
+  facet_wrap("Type",ncol = 2) +
   scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A"))  + 
   theme_Publication() + 
-  
   labs(y="Percent Spliced In (PSI)", x= "Uniprot-defined Functional Site") + 
   geom_text(data = counts_psi_comb, aes(label = paste("n =",n), x = Uniprot_wrapped, y = 0), vjust = 3, size = 3, hjust=.5) +
   theme(legend.position="none", 
@@ -87,10 +87,9 @@ plot_dsp <-  ggplot(psi_comb, aes(Uniprot_wrapped, dPSI*100) ) +
 
 # Save plot as PDF
 pdf(file_dpsi_plot, 
-    width = 8, height = 14)
+    width = 14, height = 6)
 print (plot_dsp)
 dev.off()
-
 
 ## subset by GOI
 # gene list files
