@@ -1541,7 +1541,7 @@ phos_df &lt;- read_tsv(phos_file) %&gt;%
                 `NF1 pS864` = `NF1-S864`,
                 `NF1 pS2796` = `NF1-S2796`)</code></pre>
 <pre><code>## Rows: 144 Columns: 12
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
 ## chr  (1): match_id
 ## dbl (11): CLK1-201, Total CLK1, CLK1-Exon4_PSI, Total NF1, NF1-202_PC, NF1-2...
@@ -1552,7 +1552,7 @@ phos_df &lt;- read_tsv(phos_file) %&gt;%
 indep_file &lt;- file.path(data_dir, &quot;independent-specimens.rnaseqpanel.primary.tsv&quot;)
 indep_df &lt;- read_tsv(indep_file)</code></pre>
 <pre><code>## Rows: 12772 Columns: 6
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
 ## chr (6): Kids_First_Participant_ID, Kids_First_Biospecimen_ID, cohort, cance...
 ## 
@@ -1648,14 +1648,14 @@ plot_df &lt;- rmats_goi %&gt;%
   dplyr::rename(Kids_First_Biospecimen_ID = sample_id) %&gt;%
   left_join(histologies_df, by = &#39;Kids_First_Biospecimen_ID&#39;) %&gt;%
   select(event_type, IncLevel1, Kids_First_Biospecimen_ID, plot_group, plot_group_hex) %&gt;%
-  dplyr::mutate(event_type = case_when(event_type == &quot;CLK1-Exon4_PSI&quot; ~ &quot;CLK1-202 (Exon 4)&quot;,
+  dplyr::mutate(event_type = case_when(event_type == &quot;CLK1-Exon4_PSI&quot; ~ &quot;CLK1-201 (Exon 4)&quot;,
                                        event_type == &quot;NF1-Exon23a_PSI&quot; ~ &quot;NF1-202 (Exon23a)&quot;,
                                        event_type == &quot;NF1-215_PSI&quot; ~ &quot;NF1-215 (RI)&quot;,
                                        event_type == &quot;NF1-208_PSI&quot; ~ &quot;NF1-208 (NMD)&quot;))
 
 # Calculate the median IncLevel1 for each plot_group within CLK1-Exon4_PSI
 median_data &lt;- plot_df %&gt;%
-  filter(event_type == &quot;CLK1-202 (Exon 4)&quot;) %&gt;%
+  filter(event_type == &quot;CLK1-201 (Exon 4)&quot;) %&gt;%
   group_by(plot_group) %&gt;%
   summarise(median_IncLevel1 = median(IncLevel1, na.rm = TRUE)) %&gt;%
   arrange(median_IncLevel1) # Ensure the data is sorted by median_IncLevel1
@@ -1663,12 +1663,12 @@ median_data &lt;- plot_df %&gt;%
 # Reorder plot_group levels based on the sorted median IncLevel1
 plot_df$plot_group &lt;- factor(plot_df$plot_group, levels = median_data$plot_group)
 # Reorder plot_group levels based on the sorted median IncLevel1
-plot_df$event_type &lt;- factor(plot_df$event_type, levels = c(&quot;CLK1-202 (Exon 4)&quot;, &quot;NF1-202 (Exon23a)&quot;, &quot;NF1-215 (RI)&quot;, &quot;NF1-208 (NMD)&quot;))
+plot_df$event_type &lt;- factor(plot_df$event_type, levels = c(&quot;CLK1-201 (Exon 4)&quot;, &quot;NF1-202 (Exon23a)&quot;, &quot;NF1-215 (RI)&quot;, &quot;NF1-208 (NMD)&quot;))
 
 # How many samples per event?
 table(plot_df$plot_group, plot_df$event_type)</code></pre>
 <pre><code>##                                   
-##                                    CLK1-202 (Exon 4) NF1-202 (Exon23a)
+##                                    CLK1-201 (Exon 4) NF1-202 (Exon23a)
 ##   Schwannoma                                      13                13
 ##   Neurofibroma plexiform                          10                10
 ##   Other high-grade glioma                        113               113
@@ -1985,7 +1985,7 @@ table(histologies_df_plus$plot_group)</code></pre>
            addgrid.col = &quot;black&quot;
            )
   # Create a new plot overlay to add the y-axis title
-  mtext(&quot;Spearman&#39;s Rho&quot;, side = 4, line = 1, cex = 1.2, font = 2, las = 0, padj = -3)
+  mtext(&quot;Spearman&#39;s Rho&quot;, side = 4, line = 2, cex = 1.2, font = 2, las = 0, padj = -3)
 
   dev.off()
 }</code></pre>
