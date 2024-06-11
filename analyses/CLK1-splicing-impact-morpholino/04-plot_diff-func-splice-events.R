@@ -175,7 +175,8 @@ genelist_cat <- genelist_ref_df %>%
   dplyr::select(Gene_Symbol, plot_type, plot_subtype) %>%
   # add other RBP, Epi not already in the list
   bind_rows(known_rbp_not_inlist, known_epi_not_inlist) %>% 
-  dplyr::rename('gene'=Gene_Symbol)
+  dplyr::rename('gene'=Gene_Symbol) %>%
+  write_tsv(file.path(results_dir, "gene_categories.tsv"))
 
 # check that all of the subgroups look right
 table(genelist_cat$plot_subtype, genelist_cat$plot_type)
@@ -189,6 +190,10 @@ psi_comb_goi$plot_subtype <- factor(psi_comb_goi$plot_subtype, levels = c("Kinas
                                                                           "Transcription Factor", "RNA Binding Protein",
                                                                           "Epigenetic", "Other Oncogene", "Other Tumor Suppressor"))
 unique(psi_comb_goi$plot_subtype)
+
+# write for supplemental 
+write_tsv(psi_comb_goi, file.path(results_dir, "differential_splice_by_goi_category.tsv"))
+
 ## plot num of hits per gene fam
 plot_barplot_family <- ggplot(psi_comb_goi, aes(x = fct_rev(fct_infreq(plot_subtype)), fill= Preference)) +
   geom_bar(stat="count", position='dodge', color="black") + 
