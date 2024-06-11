@@ -8,7 +8,7 @@
 
 ## load libraries
 suppressPackageStartupMessages({
-  #library("clusterProfiler")
+  library("clusterProfiler")
   library("msigdbr")
   library("org.Hs.eg.db")
   library("ggplot2")
@@ -129,8 +129,8 @@ enrich_plot_func<- enrichplot::dotplot(ora_results) +
 
 ggplot2::ggsave(ora_dotplot_path,
                 plot=enrich_plot_func,
-                width=9,
-                height=5,
+                width=8.5,
+                height=7,
                 device="pdf",
                 dpi=300)
 
@@ -200,8 +200,8 @@ enrich_plot_func<- enrichplot::dotplot(ora_results) +
 
 ggplot2::ggsave(ora_dotplot_func_path,
                 plot=enrich_plot_func,
-                width=9,
-                height=5,
+                width=8.5,
+                height=7,
                 device="pdf",
                 dpi=300)
 
