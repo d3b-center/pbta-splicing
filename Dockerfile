@@ -18,6 +18,7 @@ RUN apt-get -y update && apt-get install -y \
 	libgmp-dev \
 	libglpk40 \ 
 	libglpk-dev \
+	libhdf5-dev \	
 	liblzma-dev \
 	libmpfr-dev \
 	libncurses5-dev \
@@ -40,6 +41,12 @@ RUN R -e "options(repos = BiocManager::repositories())"
 # Install BiocManager and the desired version of Bioconductor
 RUN R -e "install.packages('BiocManager', dependencies=TRUE)"
 RUN R -e "BiocManager::install(version = '3.19')"
+
+## install GitHub packages
+RUN R -e "remotes::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
+RUN R -e "remotes::install_github('d3b-center/annoFuseData', ref = '321bc4f6db6e9a21358f0d09297142f6029ac7aa', dependencies = TRUE)"
+RUN R -e "remotes::install_github('thomasp85/patchwork', ref = '1cb732b129ed6a65774796dc1f618558c7498b66', dependencies = TRUE)"
+RUN R -e "remotes::install_github('rcastelo/GSVA', ref = 'df9001cfd07017001dfba07a3099e6b7dc5ce324', dependencies = TRUE)"
 
 # Install packages
 RUN R -e 'BiocManager::install(c( \
@@ -65,7 +72,6 @@ RUN R -e 'BiocManager::install(c( \
   "ggstatsplot", \
   "ggthemes", \
   "ggVennDiagram", \
-  "GSVA", \
   "gridExtra", \
   "Hmisc", \
   "hrbrthemes", \
@@ -90,9 +96,10 @@ RUN R -e 'BiocManager::install(c( \
 
 
 ## install GitHub packages
-RUN R -e "remotes::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
-RUN R -e "remotes::install_github('d3b-center/annoFuseData', ref = '321bc4f6db6e9a21358f0d09297142f6029ac7aa', dependencies = TRUE)"
-RUN R -e "remotes::install_github('thomasp85/patchwork', ref = '1cb732b129ed6a65774796dc1f618558c7498b66', dependencies = TRUE)"
+#RUN R -e "remotes::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
+#RUN R -e "remotes::install_github('d3b-center/annoFuseData', ref = '321bc4f6db6e9a21358f0d09297142f6029ac7aa', dependencies = TRUE)"
+#RUN R -e "remotes::install_github('thomasp85/patchwork', ref = '1cb732b129ed6a65774796dc1f618558c7498b66', dependencies = TRUE)"
+#RUN R -e "remotes::install_github('rcastelo/GSVA', ref = 'df9001cfd07017001dfba07a3099e6b7dc5ce324', dependencies = TRUE)"
 
 # install perl packages
 RUN cpanm install Statistics::Lite
