@@ -87,7 +87,7 @@ RUN R -e 'BiocManager::install(c( \
   "sva", \
   "survival", \
   "survminer", \
-  "UpSetR" \
+  "UpSetR", \
   "VennDiagram" \
 ))'
 
