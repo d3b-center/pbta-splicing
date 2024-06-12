@@ -18,9 +18,9 @@ RUN apt install -y  \
 	libbz2-dev \
 	libcurl4-openssl-dev \
 	libgdal-dev \
-  ibglpk40 \
-  libglpk-dev \
 	libgmp-dev \
+	libgl \ 
+	libglpk-dev \
 	liblzma-dev \
 	libmpfr-dev \
 	libncurses5-dev \
