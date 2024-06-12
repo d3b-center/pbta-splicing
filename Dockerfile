@@ -19,7 +19,7 @@ RUN apt install -y  \
 	libcurl4-openssl-dev \
 	libgdal-dev \
 	libgmp-dev \
-	libgl \ 
+	libglpk40 \ 
 	libglpk-dev \
 	liblzma-dev \
 	libmpfr-dev \
