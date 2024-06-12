@@ -5,10 +5,7 @@ WORKDIR /rocker-build/
 
 ### Install apt-getable packages to start
 #########################################
-RUN apt-get -y update && apt-get install -y --no-install-recommends
-
-# Install dev libraries and curl
-RUN apt install -y  \
+RUN apt-get -y update && apt-get install -y \
   bedtools \
 	build-essential \
 	bzip2 \
@@ -19,7 +16,7 @@ RUN apt install -y  \
 	libcurl4-openssl-dev \
 	libgdal-dev \
 	libgmp-dev \
-	libgl \ 
+	libglpk40 \ 
 	libglpk-dev \
 	liblzma-dev \
 	libmpfr-dev \
