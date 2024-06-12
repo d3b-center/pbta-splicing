@@ -15,7 +15,7 @@ suppressPackageStartupMessages({
   library("DOSE")
   library("vroom")
   library("tidyverse")
-  library('ggVennDiagram')
+  library('VennDiagram')
 })
 
 # Get `magrittr` pipe
