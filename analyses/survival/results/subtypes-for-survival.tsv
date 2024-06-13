@@ -4,8 +4,8 @@ Craniopharyngioma	ADAM	28	cpg	CPG	ADAM
 DIPG or DMG	K28	100	dmg	DMG	K28
 Ependymoma	PF A	31	epn	EPN	PF-A
 Ependymoma	ST ZFTA	21	epn	EPN	ST-ZFTA
-Low-grade glioma	BRAF fusion	134	lgg	LGG	BRAF-fusion
 Low-grade glioma	BRAF V600E	30	lgg	LGG	BRAF-V600E
+Low-grade glioma	BRAF fusion	134	lgg	LGG	BRAF-fusion
 Low-grade glioma	Other	54	lgg	LGG	Other
 Low-grade glioma	Wildtype	29	lgg	LGG	Wildtype
 Medulloblastoma	Group3	42	mb	MB	Group3
