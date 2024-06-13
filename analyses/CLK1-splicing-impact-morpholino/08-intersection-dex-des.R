@@ -15,7 +15,7 @@ suppressPackageStartupMessages({
   library("DOSE")
   library("vroom")
   library("tidyverse")
-  library('VennDiagram')
+  library('ggVennDiagram')
 
 })
 
@@ -87,52 +87,24 @@ total_events <- psi_comb %>%
   dplyr::select(geneSymbol, Preference_psi, Preference_de) %>% 
   unique()
 
-# construct a Venn object
-# Define the lists of gene symbols
-list_dex <- unique(dex_comb$geneSymbol)
-list_spl <- unique(psi_comb$geneSymbol)
+## plot venn diagram
+venn_diag<- ggVennDiagram(x=list(dex_comb$geneSymbol, psi_comb$geneSymbol), 
+                          edge_lty = "dashed", 
+                          edge_size = 1,
+                          label_size = 6,
+                          set_size = 5,
+                          category.names = c("DE" , "DS"),
+                          label_percent_digit = 1) +  
+  scale_fill_distiller(palette = "Blues", direction = 1, name = expression(bold("Gene count"))) + 
+  labs(title = expression(bold("Differentially expressed and spliced genes"))) +
+  coord_flip()
 
-# Create the Venn diagram
-venn.plot <- venn.diagram(
-  x = list(
-    DE = list_dex,
-    DS = list_spl
-  ),
-  filename = NULL,  # Save to file as PDF
-  height = 3, 
-  width = 3,
-  resolution = 300,
-  
-  # Customize the appearance
-  col = "black",
-  fill = c("lightblue", "blue"),
-  alpha = c(0.1, 0.1),  # Increased transparency for each circle
-  lty = "dashed",
-  lwd = 2,
-  cex = 2,
-  fontface = "bold",
-  cat.cex = 2,
-  cat.fontface = "bold",
-  cat.col = c("black", "black"),
-
-  
-  # Category label positions
-  cat.pos = c(-20, 20),  # Adjust positions for horizontal layout
-  cat.dist = c(0.05, 0.05),
-  
-  # Customize title and legend
-  #main = expression(bold("Genes dysregulated by splicing and expression")),
-  main.cex = 1.5,
-  main.fontface = "bold",
-  main.col = "black",
-  label.cex = 1.5,
-  label.percent.digits = 1
-)
-
-# Draw the Venn diagram
-pdf(venn_output_file, height = 3.5, width = 3.5)
-grid.draw(venn.plot)
-dev.off()
+ggplot2::ggsave(venn_output_file,
+                plot=venn_diag,
+                width=6,
+                height=4,
+                device="pdf",
+                dpi=300)
 
 ## get gene sets relevant to H. sapiens
 hs_msigdb_df <- msigdbr(species = "Homo sapiens")
@@ -188,52 +160,24 @@ total_events_func <- splice_func_df %>%
   unique()
 
 
-# construct a Venn object
-# Define the lists of gene symbols
-list_dex_sub <- unique(dex_comb_subset$geneSymbol)
-list_spl_sub <- unique(splice_func_df$geneSymbol)
+## plot venn diagram
+venn_diag<- ggVennDiagram(x=list(dex_comb_subset$geneSymbol, splice_func_df$geneSymbol), 
+                          edge_lty = "dashed", 
+                          edge_size = 1,
+                          label_size = 6,
+                          set_size = 5,
+                          category.names = c("DE" , "DS"),
+                          label_percent_digit = 1) +  
+  scale_fill_distiller(palette = "Blues", direction = 1, name = expression(bold("Gene count"))) + 
+  labs(title = expression(bold("Differentially expressed and spliced genes"))) +
+  coord_flip()
 
-# Create the Venn diagram
-venn.plot <- venn.diagram(
-  x = list(
-    DE = list_dex_sub,
-    DS = list_spl_sub
-  ),
-  filename = NULL,  # Save to file as PDF
-  height = 3, 
-  width = 3,
-  resolution = 300,
-  
-  # Customize the appearance
-  col = "black",
-  fill = c("lightblue", "blue"),
-  alpha = c(0.1, 0.1),  # Increased transparency for each circle
-  lty = "dashed",
-  lwd = 2,
-  cex = 2,
-  fontface = "bold",
-  cat.cex = 2,
-  cat.fontface = "bold",
-  cat.col = c("black", "black"),
-
-  
-  # Category label positions
-  cat.pos = c(-20, 20),  # Adjust positions for horizontal layout
-  cat.dist = c(0.05, 0.05),
-  
-  # Customize title and legend
-  #main = expression(bold("Genes dysregulated by splicing and expression")),
-  main.cex = 1.5,
-  main.fontface = "bold",
-  main.col = "black",
-  label.cex = 1.5,
-  label.percent.digits = 1
-)
-
-# Draw the Venn diagram
-pdf(venn_output_func_file, height = 3.5, width = 3.5)
-grid.draw(venn.plot)
-dev.off()
+ggplot2::ggsave(venn_output_func_file,
+                plot=venn_diag,
+                width=6,
+                height=4,
+                device="pdf",
+                dpi=300)
 
 
 common <- intersect(unique(dex_comb_subset$geneSymbol), unique(splice_func_df$geneSymbol)) %>%
