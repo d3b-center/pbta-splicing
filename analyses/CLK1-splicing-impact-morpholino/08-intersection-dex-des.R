@@ -16,10 +16,14 @@ suppressPackageStartupMessages({
   library("vroom")
   library("tidyverse")
   library('VennDiagram')
+
 })
+
 
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
+
+
 
 ## set up directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -95,8 +99,8 @@ venn.plot <- venn.diagram(
     DS = list_spl
   ),
   filename = NULL,  # Save to file as PDF
-  height = 4, 
-  width = 4,
+  height = 3, 
+  width = 3,
   resolution = 300,
   
   # Customize the appearance
@@ -110,6 +114,7 @@ venn.plot <- venn.diagram(
   cat.cex = 2,
   cat.fontface = "bold",
   cat.col = c("black", "black"),
+
   
   # Category label positions
   cat.pos = c(-20, 20),  # Adjust positions for horizontal layout
@@ -125,7 +130,7 @@ venn.plot <- venn.diagram(
 )
 
 # Draw the Venn diagram
-pdf(venn_output_file, height = 4, width = 4)
+pdf(venn_output_file, height = 3, width = 3)
 grid.draw(venn.plot)
 dev.off()
 
@@ -151,7 +156,7 @@ ora_result_df <- data.frame(ora_results@result)
 enrich_plot_func<- enrichplot::dotplot(ora_results) +   
   theme_Publication() +
   scale_color_gradient(name = "Adjusted p-value", 
-                       low = "orange", high = "#0C7BDC") +  # Modify color range
+                       low = "#0C7BDC", high = "red") +  # Modify color range
   labs(color = "B-H adj p-value")  # Modify legend title 
 
 ggplot2::ggsave(ora_dotplot_path,
@@ -195,8 +200,8 @@ venn.plot <- venn.diagram(
     DS = list_spl_sub
   ),
   filename = NULL,  # Save to file as PDF
-  height = 4, 
-  width = 4,
+  height = 3, 
+  width = 3,
   resolution = 300,
   
   # Customize the appearance
@@ -210,13 +215,14 @@ venn.plot <- venn.diagram(
   cat.cex = 2,
   cat.fontface = "bold",
   cat.col = c("black", "black"),
+
   
   # Category label positions
   cat.pos = c(-20, 20),  # Adjust positions for horizontal layout
   cat.dist = c(0.05, 0.05),
   
   # Customize title and legend
-  #main = expression(bold("Genes dysregulated by splicing (functional) and expression")),
+  #main = expression(bold("Genes dysregulated by splicing and expression")),
   main.cex = 1.5,
   main.fontface = "bold",
   main.col = "black",
@@ -225,7 +231,7 @@ venn.plot <- venn.diagram(
 )
 
 # Draw the Venn diagram
-pdf(venn_output_func_file, height = 4, width = 4)
+pdf(venn_output_func_file, height = 3, width = 3)
 grid.draw(venn.plot)
 dev.off()
 
@@ -250,7 +256,7 @@ ora_result_df <- data.frame(ora_results@result)
 enrich_plot_func<- enrichplot::dotplot(ora_results) +   
   theme_Publication() +
   scale_color_gradient(name = "Adjusted p-value", 
-                       low = "orange", high = "#0C7BDC") +  # Modify color range
+                       low = "#0C7BDC", high = "red") +  # Modify color range
   labs(color = "B-H adj p-value")  # Modify legend title 
 
 ggplot2::ggsave(ora_dotplot_func_path,
