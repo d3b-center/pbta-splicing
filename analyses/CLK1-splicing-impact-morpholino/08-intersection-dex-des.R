@@ -130,7 +130,7 @@ venn.plot <- venn.diagram(
 )
 
 # Draw the Venn diagram
-pdf(venn_output_file, height = 3, width = 3)
+pdf(venn_output_file, height = 3.5, width = 3.5)
 grid.draw(venn.plot)
 dev.off()
 
@@ -231,7 +231,7 @@ venn.plot <- venn.diagram(
 )
 
 # Draw the Venn diagram
-pdf(venn_output_func_file, height = 3, width = 3)
+pdf(venn_output_func_file, height = 3.5, width = 3.5)
 grid.draw(venn.plot)
 dev.off()
 
