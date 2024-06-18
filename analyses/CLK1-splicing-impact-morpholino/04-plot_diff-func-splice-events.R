@@ -41,62 +41,65 @@ file_dpsi_plot <- file.path(plots_dir,"dPSI-distr-func.pdf")
 file_dpsi_goi_plot <- file.path(plots_dir,"dPSI-distr-func-goi.pdf")
 
 ## get and setup input
-
 ## retrieve psi values from tables
-file_psi_func <- file.path(results_dir,"splicing_events.morpho.intersectUnip.ggplot.txt")
+file_psi_SE_func <- file.path(results_dir,"splicing_events.morpho.SE.intersectUnip.ggplot.txt")
+file_psi_RI_func <- file.path(results_dir,"splicing_events.morpho.RI.intersectUnip.ggplot.txt")
+file_psi_A5SS_func <- file.path(results_dir,"splicing_events.morpho.A5SS.intersectUnip.ggplot.txt")
+file_psi_A3SS_func <- file.path(results_dir,"splicing_events.morpho.A3SS.intersectUnip.ggplot.txt")
 
-## read table of recurrent functional splicing (skipping)
-dpsi_unip_incl <- vroom(file_psi_func) %>% 
+## combine all splice types together
+dpsi_unip_incl <- vroom(c(file_psi_SE_func, file_psi_RI_func, file_psi_A5SS_func, file_psi_A3SS_func)) %>%
   mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) %>%
   filter(dPSI<0) %>% 
   mutate(Preference='Inclusion',
-         dPSI=abs(dPSI))
+         dPSI=abs(dPSI)) 
 
-dpsi_unip_skp <- vroom(file_psi_func) %>% 
+dpsi_unip_skp <- vroom(c(file_psi_SE_func, file_psi_RI_func, file_psi_A5SS_func, file_psi_A3SS_func)) %>% 
   mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) %>%
   filter(dPSI>0) %>% 
   mutate(Preference='Skipping')
 
-
 psi_comb <- rbind(dpsi_unip_incl,dpsi_unip_skp) %>% 
   mutate(Uniprot = case_when(Uniprot == 'DisulfBond' ~ "Disulfide Bond",
                              Uniprot == 'LocSignal' ~ "Localization Signal",
+                             Uniprot == 'Mod' ~ 'Modification',
                              .default = Uniprot),
          Uniprot_wrapped = stringr::str_wrap(Uniprot, width = 10)
   )
 
-
 ## ggstatplot across functional sites
 set.seed(123)
 counts_psi_comb <- psi_comb %>% 
-  count(Preference, Uniprot_wrapped)
-plot_dsp <-  ggplot(psi_comb, aes(Uniprot_wrapped, dPSI*100) ) +  
-  ylab(expression(bold("dPSI"))) +
-  ggforce::geom_sina(aes(color = Preference, alpha = 0.4), pch = 16, size = 5, method="density") +
-  geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
-  facet_wrap("Preference") +
-  stat_compare_means(method = "wilcox.test", comparisons = list(c("Disulfide\nBond", "Localization\nSignal"),
-                                                                c("Disulfide\nBond", "Modifications"),
-                                                                c("Disulfide\nBond", "Other"),
-                                                                c("Localization\nSignal", "Modifications"),
-                                                                c("Localization\nSignal", "Other"),
-                                                                c("Modifications", "Other"))) + 
-  scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A"))  + 
-  theme_Publication() + 
-  
-  labs(y="Percent Spliced In (PSI)", x= "Uniprot-defined Functional Site") + 
-  geom_text(data = counts_psi_comb, aes(label = paste("n =",n), x = Uniprot_wrapped, y = 0), vjust = 3, size = 4, hjust=.5) +
-  theme(legend.position="none", 
-        axis.text.x = element_text(angle = 45, hjust = 1)) +  # Angles x-axis text
-  ylim(c(-20,170))
+  count(Type, Uniprot_wrapped, Preference) %>%
+  # add n = for first n
+  mutate(n = as.character(n),
+         n = case_when(Type == "A3SS" & Uniprot_wrapped == "Disulfide\nBond" & Preference == "Inclusion" ~ paste0("n = ",n),
+                       TRUE ~ as.character(n)))
+
+# Your ggplot code with adjustments
+plot_dsp <- ggplot(psi_comb, aes(x = Uniprot_wrapped, y = dPSI * 100, fill = Preference)) +
+  geom_boxplot(aes(color = Preference), position = position_dodge(width = 0.9), outlier.shape = NA, size = 0.5, alpha = 0.4) +
+  ggforce::geom_sina(aes(color = Preference), pch = 16, size = 3, position = position_dodge(width = 0.9), alpha = 0.4) +
+  facet_wrap(~Type, nrow = 1) +
+  scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) +
+  scale_fill_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) +
+  theme_Publication() +
+  labs(y = "Percent Spliced In (PSI)", x = "Uniprot-defined Functional Site") +
+  geom_text(data = counts_psi_comb, aes(label = paste(n), x = Uniprot_wrapped, y = 10), vjust = 3, size = 3, position = position_dodge(width = 0.9)) +
+  theme(
+    legend.position = "top",  # Move legend to the top
+    legend.direction = "horizontal",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  ylim(c(-15, 100))
 
 # Save plot as PDF
 pdf(file_dpsi_plot, 
-    width = 8, height = 5)
+    width = 12, height = 4)
 print (plot_dsp)
 dev.off()
 
-##subset by GOI
+## subset by GOI
 # gene list files
 known_rbp_file <- file.path(input_dir,'RBP_known.txt')
 known_epi_file <- file.path(input_dir,'epi_known.txt')
@@ -172,7 +175,8 @@ genelist_cat <- genelist_ref_df %>%
   dplyr::select(Gene_Symbol, plot_type, plot_subtype) %>%
   # add other RBP, Epi not already in the list
   bind_rows(known_rbp_not_inlist, known_epi_not_inlist) %>% 
-  dplyr::rename('gene'=Gene_Symbol)
+  dplyr::rename('gene'=Gene_Symbol) %>%
+  write_tsv(file.path(results_dir, "gene_categories.tsv"))
 
 # check that all of the subgroups look right
 table(genelist_cat$plot_subtype, genelist_cat$plot_type)
@@ -186,6 +190,10 @@ psi_comb_goi$plot_subtype <- factor(psi_comb_goi$plot_subtype, levels = c("Kinas
                                                                           "Transcription Factor", "RNA Binding Protein",
                                                                           "Epigenetic", "Other Oncogene", "Other Tumor Suppressor"))
 unique(psi_comb_goi$plot_subtype)
+
+# write for supplemental 
+write_tsv(psi_comb_goi, file.path(results_dir, "differential_splice_by_goi_category.tsv"))
+
 ## plot num of hits per gene fam
 plot_barplot_family <- ggplot(psi_comb_goi, aes(x = fct_rev(fct_infreq(plot_subtype)), fill= Preference)) +
   geom_bar(stat="count", position='dodge', color="black") + 
@@ -199,7 +207,7 @@ plot_barplot_family <- ggplot(psi_comb_goi, aes(x = fct_rev(fct_infreq(plot_subt
             hjust = -0.5, size = 3.5) +
   theme_Publication() +
   coord_flip() +
-  ylim(0,115)
+  ylim(0,150)
 
 # Save plot as PDF
 pdf(file_dpsi_goi_plot, height = 8, width = 8, useDingbats = FALSE) 
