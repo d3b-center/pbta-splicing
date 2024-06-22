@@ -29,7 +29,7 @@ plots_dir   <- file.path(analysis_dir, "plots")
 expression_data_file <- file.path(data_dir, "ctrl_vs_morpho.rsem.genes.results.tsv")
 expression_collapsed_file <- file.path(results_dir, "ctrl_vs_morpho.rsem.genes.collapsed.rds")
 de_results_file <- file.path(results_dir, "ctrl_vs_treated.de.tsv")
-splice_onc_file <- file.path(results_dir, "splice-events-significant.tsv")
+splice_func_file <- file.path(results_dir,"differential_splice_by_goi_category.tsv")
 
 # dna repair gene lists
 dna_all_file <- file.path(input_dir, "dna_repair_all.txt")
@@ -57,15 +57,15 @@ de_results<- read_tsv(de_results_file) %>%
   filter(padj <0.05)
 
 # read in sig splice events
-splice_res <- read_tsv(splice_onc_file) %>%
-  dplyr::rename(Gene_Symbol = geneSymbol) %>%
-  select(Gene_Symbol, annotation) %>%
+splice_res_func <- read_tsv(splice_func_file) %>%
+  dplyr::rename(Gene_Symbol = gene) %>%
+  select(Gene_Symbol, Uniprot, plot_type) %>%
   unique()
 
 # filter for onco/tsg
-splice_res_onco <- splice_res %>%
+splice_res_onco <- splice_res_func %>%
   # filter for onc/tsg
-  filter(annotation == "Onco_TSG")
+  filter(plot_type %in% c("Oncogene", "Oncogene or Tumor Suppressor", "Tumor Suppressor"))
 
 # remove all genes with no expression
 expr <- expression_data[which(rowSums(expression_data[,2:ncol(expression_data)]) > 0),] 
@@ -85,7 +85,7 @@ expr_collapsed_de <- expr_collapsed[de_results$Gene_Symbol,] %>%
   na.omit()
 
 # create a third matrix - only sig splice genes
-expr_splice <- expr_collapsed[splice_res$Gene_Symbol,] %>%
+expr_splice <- expr_collapsed[splice_res_func$Gene_Symbol,] %>%
   na.omit()
 
 # create a fourth matrix - only sig spliced onco or tsgs
