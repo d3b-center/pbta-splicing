@@ -15,7 +15,7 @@ cat results/ctrl_vs_treated.de.tsv | awk -F "\t" '{print $9"\t"$2"\t"$6}' | grep
 echo "DE analysis"
 Rscript --vanilla 02-plot_diff-splice-events.R
 
-## find functional sites 
+## find functional sites
 echo "analyze functional sites"
 bash 03-run_bedtools_intersect-morpho.sh
 Rscript --vanilla 04-plot_diff-func-splice-events.R
@@ -34,6 +34,7 @@ Rscript -e "rmarkdown::render('07-run-gsva-comparisons.Rmd', clean = TRUE)"
 
 ## intersect DE and DS
 Rscript --vanilla 08-intersection-dex-des.R
+rm Venn*.log
 
 ## lolliplot of splicing cases
-Rscript --vanilla 08-plot_total-splicing-cases.R
+Rscript --vanilla 09-plot_total-splicing-cases.R
