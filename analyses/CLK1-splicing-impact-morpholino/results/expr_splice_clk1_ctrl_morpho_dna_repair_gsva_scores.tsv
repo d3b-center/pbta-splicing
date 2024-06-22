@@ -1,0 +1,37 @@
+sample_id	geneset	gsva_score
+CTRL1	DNA Repair all genes	0.20399633738095757
+CTRL2	DNA Repair all genes	0.326940119231997
+CTRL3	DNA Repair all genes	-0.09471831156466955
+Treated1	DNA Repair all genes	-0.3811717709790981
+Treated2	DNA Repair all genes	-0.01673437456210436
+Treated3	DNA Repair all genes	-0.2952131962039279
+CTRL1	Homologous Recombination	0.2976931958187721
+CTRL2	Homologous Recombination	0.39761570827488524
+CTRL3	Homologous Recombination	-0.07241940602573682
+Treated1	Homologous Recombination	-0.5742256274059483
+Treated2	Homologous Recombination	0.08189141097579819
+Treated3	Homologous Recombination	-0.16133594264505285
+CTRL1	Mismatch Repair	-0.7232806912455336
+CTRL2	Mismatch Repair	-0.5510107304265773
+CTRL3	Mismatch Repair	0.04539623491648859
+Treated1	Mismatch Repair	0.32695743672287225
+Treated2	Mismatch Repair	0.5111327626258495
+Treated3	Mismatch Repair	0.714290924652539
+CTRL1	Base Excision Repair	-0.33021551092214174
+CTRL2	Base Excision Repair	0.312205165166589
+CTRL3	Base Excision Repair	-0.11281337047353784
+Treated1	Base Excision Repair	-0.7444895240401935
+Treated2	Base Excision Repair	-0.03692488070078376
+Treated3	Base Excision Repair	0.1649090525611464
+CTRL1	Nucleotide Excision Repair	0.5586539548554851
+CTRL2	Nucleotide Excision Repair	0.5166806272348199
+CTRL3	Nucleotide Excision Repair	0.11719488135101325
+Treated1	Nucleotide Excision Repair	-0.5054127931365731
+Treated2	Nucleotide Excision Repair	-0.233775385154057
+Treated3	Nucleotide Excision Repair	-0.3556164980962386
+CTRL1	Non-homologous End Joining	0.5200023928096078
+CTRL2	Non-homologous End Joining	0.2633428893114973
+CTRL3	Non-homologous End Joining	0.5130282015130353
+Treated1	Non-homologous End Joining	-0.3090790232904027
+Treated2	Non-homologous End Joining	-0.6555187047537442
+Treated3	Non-homologous End Joining	-0.3880389429763491
