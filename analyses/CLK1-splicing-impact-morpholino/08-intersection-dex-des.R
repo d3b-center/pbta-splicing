@@ -101,7 +101,7 @@ venn_diag<- ggVennDiagram(x=list(dex_comb$geneSymbol, psi_comb$geneSymbol),
 
 ggplot2::ggsave(venn_output_file,
                 plot=venn_diag,
-                width=6,
+                width=5.5,
                 height=4,
                 device="pdf",
                 dpi=300)
@@ -115,7 +115,8 @@ pathway_df <- hs_msigdb_df %>%
 ## run enrichR to compute and identify significant over-repr pathways
 ora_results <- enricher(
   gene = unique(intersect$geneSymbol), # A vector of your genes of interest
-  pvalueCutoff = 1, 
+  pvalueCutoff = 0.05,
+  qvalueCutoff = 0.1,
   pAdjustMethod = "BH", 
   TERM2GENE = dplyr::select(
     pathway_df,
@@ -125,16 +126,26 @@ ora_results <- enricher(
 )
 
 ora_result_df <- data.frame(ora_results@result)
-enrich_plot_func<- enrichplot::dotplot(ora_results) +   
+options(enrichplot.colours = c("darkorange","blue"))
+enrich_plot <- enrichplot::dotplot(ora_results,
+                                        x = "geneRatio",
+                                        size = "Count",
+                                        color = "p.adjust",
+                                        label_format = 30,
+                                        showCategory = 20) +   
+  labs(y = "Pathway",
+       x = "Gene Ratio") +
   theme_Publication() +
-  scale_color_gradient(name = "Adjusted p-value", 
-                       low = "#0C7BDC", high = "red") +  # Modify color range
-  labs(color = "B-H adj p-value")  # Modify legend title 
+  scale_size(name = "Gene Count") +  
+  scale_fill_gradient(low = "darkorange", high = "blue", name = "B-H p-value") +
+  guides(
+    fill = guide_colorbar(title = "B-H p-value", label.position = "right", barwidth = 1, barheight = 4)
+  )
 
 ggplot2::ggsave(ora_dotplot_path,
-                plot=enrich_plot_func,
-                width=8.5,
-                height=7,
+                plot=enrich_plot,
+                width=7,
+                height=3,
                 device="pdf",
                 dpi=300)
 
@@ -174,7 +185,7 @@ venn_diag<- ggVennDiagram(x=list(dex_comb_subset$geneSymbol, splice_func_df$gene
 
 ggplot2::ggsave(venn_output_func_file,
                 plot=venn_diag,
-                width=6,
+                width=5.5,
                 height=4,
                 device="pdf",
                 dpi=300)
@@ -187,7 +198,8 @@ common <- intersect(unique(dex_comb_subset$geneSymbol), unique(splice_func_df$ge
 ## run enrichR to compute and identify significant over-repr pathways
 ora_results <- enricher(
   gene = intersect_func, # A vector of your genes of interest
-  pvalueCutoff = 1, 
+  pvalueCutoff = 0.05, 
+  qvalueCutoff = 0.1,
   pAdjustMethod = "BH", 
   TERM2GENE = dplyr::select(
     pathway_df,
@@ -196,17 +208,31 @@ ora_results <- enricher(
   )
 )
 
+ora_results@result$`B-H Adj p-value` <- ora_results@result$p.adjust
+
 ora_result_df <- data.frame(ora_results@result)
-enrich_plot_func<- enrichplot::dotplot(ora_results) +   
+
+options(enrichplot.colours = c("darkorange","blue"))
+enrich_plot_func <- enrichplot::dotplot(ora_results,
+                                       x = "geneRatio",
+                                       size = "Count",
+                                       color = "p.adjust",
+                                       label_format = 30,
+                                       showCategory = 20) +   
+  labs(y = "Pathway",
+       x = "Gene Ratio") +
   theme_Publication() +
-  scale_color_gradient(name = "Adjusted p-value", 
-                       low = "#0C7BDC", high = "red") +  # Modify color range
-  labs(color = "B-H adj p-value")  # Modify legend title 
+  scale_size(name = "Gene Count") +  
+  scale_fill_gradient(low = "darkorange", high = "blue", name = "B-H p-value") +
+  guides(
+    fill = guide_colorbar(title = "B-H p-value", label.position = "right", barwidth = 1, barheight = 4)
+  )+
+  xlim(0,0.20)
 
 ggplot2::ggsave(ora_dotplot_func_path,
                 plot=enrich_plot_func,
-                width=8.5,
-                height=7,
+                width=8,
+                height=4,
                 device="pdf",
                 dpi=300)
 
