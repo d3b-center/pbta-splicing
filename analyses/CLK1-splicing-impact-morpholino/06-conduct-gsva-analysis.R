@@ -29,6 +29,7 @@ plots_dir   <- file.path(analysis_dir, "plots")
 expression_data_file <- file.path(data_dir, "ctrl_vs_morpho.rsem.genes.results.tsv")
 expression_collapsed_file <- file.path(results_dir, "ctrl_vs_morpho.rsem.genes.collapsed.rds")
 de_results_file <- file.path(results_dir, "ctrl_vs_treated.de.tsv")
+splice_func_file <- file.path(results_dir,"differential_splice_by_goi_category.tsv")
 
 # dna repair gene lists
 dna_all_file <- file.path(input_dir, "dna_repair_all.txt")
@@ -55,6 +56,17 @@ expression_data <- read_tsv(expression_data_file) %>%
 de_results<- read_tsv(de_results_file) %>%
   filter(padj <0.05)
 
+# read in sig splice events
+splice_res_func <- read_tsv(splice_func_file) %>%
+  dplyr::rename(Gene_Symbol = gene) %>%
+  select(Gene_Symbol, Uniprot, plot_type) %>%
+  unique()
+
+# filter for onco/tsg
+splice_res_onco <- splice_res_func %>%
+  # filter for onc/tsg
+  filter(plot_type %in% c("Oncogene", "Oncogene or Tumor Suppressor", "Tumor Suppressor"))
+
 # remove all genes with no expression
 expr <- expression_data[which(rowSums(expression_data[,2:ncol(expression_data)]) > 0),] 
 
@@ -70,6 +82,14 @@ expr_collapsed <- expr %>%
 
 # create a second matrix - only DE genes
 expr_collapsed_de <- expr_collapsed[de_results$Gene_Symbol,] %>%
+  na.omit()
+
+# create a third matrix - only sig splice genes
+expr_splice <- expr_collapsed[splice_res_func$Gene_Symbol,] %>%
+  na.omit()
+
+# create a fourth matrix - only sig spliced onco or tsgs
+expr_splice_onco <- expr_collapsed[splice_res_onco$Gene_Symbol,] %>%
   na.omit()
 
 # load gene lists
@@ -110,7 +130,11 @@ dna_repair_list <- list(
 ### Rownames are genes and column names are samples
 
 # list the matrices
-mat_list <- list(expr_collapsed = expr_collapsed, expr_collapsed_de = expr_collapsed_de)
+mat_list <- list(expr_collapsed = expr_collapsed, 
+                 expr_collapsed_de = expr_collapsed_de, 
+                 expr_splice = expr_splice, 
+                 expr_splice_onco = expr_splice_onco)
+gsea_scores_df_tidy <- data.frame()
 
 for(i in names(mat_list)) {
   expression_data_each_log2_matrix <- as.matrix(log2(mat_list[[i]] + 1))
@@ -137,28 +161,31 @@ for(i in names(mat_list)) {
     }
     
   #We then calculate the Gaussian-distributed scores
-  gsea_scores_each <- GSVA::gsva(expression_data_each_log2_matrix,
-                                 geneset,
-                                 method = "gsva",
-                                 min.sz=1, max.sz=1500,## Arguments from K. Rathi
-                                 parallel.sz = 8, # For the bigger dataset, this ensures this won't crash due to memory problems
-                                 mx.diff = TRUE)        ## Setting this argument to TRUE computes Gaussian-distributed scores (bimodal score distribution if FALSE)
-  
+   gsea_scores_param <- gsvaParam(expression_data_each_log2_matrix,
+                                geneSets = geneset,
+                                kcdf = "Gaussian",
+                                assay = NA_character_,
+                                annotation = NA_character_,
+                                tau = 1,
+                                minSize = 1, 
+                                maxSize = 1500, ## Arguments from K. Rathi
+                                maxDiff = TRUE) ## Setting this argument to TRUE computes Gaussian-distributed scores (bimodal score distribution if FALSE)
+  gsea_scores_each <- gsva(gsea_scores_param, verbose = TRUE)
+    
   ### Clean scoring into tidy format
   gsea_scores_each_df <- as.data.frame(gsea_scores_each) %>%
-    rownames_to_column(var = "geneset")
+    rownames_to_column(var = "geneset") %>%
+    tidyr::pivot_longer(cols = -geneset, 
+                        names_to = "sample_id", 
+                        values_to = "gsva_score") %>%
+    dplyr::select(sample_id, geneset, gsva_score) %>%
+    unique()
   
-  #first/last_sample needed for use in gather (we are not on tidyr1.0)
-  first_sample <- head(colnames(gsea_scores_each), n=1)
-  last_sample  <- tail(colnames(gsea_scores_each), n=1)
-
-  gsea_scores_df_tidy <- gsea_scores_each_df %>%
-    tidyr::pivot_longer(cols = -geneset, names_to = "sample_id", values_to = "gsva_score")
-  
-#### Export GSEA scores to TSV --------------------------------------------------------------------
-write_tsv(gsea_scores_df_tidy, out_file)
-  }
+  #### Export GSEA scores to TSV --------------------------------------------------------------------
+  write_tsv(gsea_scores_each_df, out_file)
+    }
 }
+
 
 #### Session info
 sessionInfo()
