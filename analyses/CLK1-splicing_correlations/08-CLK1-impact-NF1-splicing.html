@@ -1526,7 +1526,7 @@ clin_file &lt;- file.path(data_dir,&quot;histologies-plot-group.tsv&quot;)
 rsem_transc_counts &lt;- file.path(data_dir,&quot;rna-isoform-expression-rsem-tpm.rds&quot;)
 rsem_tpm_counts &lt;- file.path(data_dir,&quot;gene-expression-rsem-tpm-collapsed.rds&quot;)
 rmats_clk1_file &lt;- file.path(data_dir, &quot;clk1-splice-events-rmats.tsv&quot;)
-rmats_nf1_file &lt;- file.path(results_dir, &quot;nf1-splice-events-rmats.tsv&quot;)
+rmats_nf1_file &lt;- file.path(data_dir, &quot;nf1-splice-events-rmats.tsv&quot;)
 gtf_file &lt;- file.path(data_dir, &quot;gencode.v39.primary_assembly.annotation.gtf.gz&quot;)
 phos_file &lt;- file.path(results_dir, &quot;hgg-dmg-clk-nf1-expression-phosphorylation.tsv&quot;)</code></pre>
 </div>
@@ -1540,11 +1540,11 @@ phos_df &lt;- read_tsv(phos_file) %&gt;%
   dplyr::rename(`Total NF1 Protein` = NF1,
                 `NF1 pS864` = `NF1-S864`,
                 `NF1 pS2796` = `NF1-S2796`)</code></pre>
-<pre><code>## Rows: 144 Columns: 12
-## ── Column specification ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<pre><code>## Rows: 1434 Columns: 48
+## ── Column specification ───────────────────────────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
 ## chr  (1): match_id
-## dbl (11): CLK1-201, Total CLK1, CLK1-Exon4_PSI, Total NF1, NF1-202_PC, NF1-2...
+## dbl (47): CLK1-201, NF1-201_PC, NF1-202, NF1-203_NMD, NF1-204_PC, NF1-205_PC...
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
@@ -1552,7 +1552,7 @@ phos_df &lt;- read_tsv(phos_file) %&gt;%
 indep_file &lt;- file.path(data_dir, &quot;independent-specimens.rnaseqpanel.primary.tsv&quot;)
 indep_df &lt;- read_tsv(indep_file)</code></pre>
 <pre><code>## Rows: 12772 Columns: 6
-## ── Column specification ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
 ## chr (6): Kids_First_Participant_ID, Kids_First_Biospecimen_ID, cohort, cance...
 ## 
@@ -1564,11 +1564,10 @@ histologies_df  &lt;-  read_tsv(clin_file, show_col_types = FALSE) %&gt;%
   filter(cohort == &quot;PBTA&quot;,
          experimental_strategy == &quot;RNA-Seq&quot;,
          Kids_First_Biospecimen_ID %in% indep_df$Kids_First_Biospecimen_ID,
-         RNA_library == &#39;stranded&#39;
   ) 
 
-hgg_samples &lt;- histologies_df %&gt;%
-  filter(plot_group %in% c(&quot;DIPG or DMG&quot;, &quot;Other high-grade glioma&quot;))
+stranded &lt;- histologies_df %&gt;%
+  filter(RNA_library == &quot;stranded&quot;)
 
 # Import GTF file, get NF1 transcript types
 # nf1 transcripts from GTF
@@ -1586,11 +1585,9 @@ nf1_gtf &lt;- gtf %&gt;%
 
 
 # read in rmats file once with genes of interest
-rmats_nf1  &lt;- fread(rmats_nf1_file) %&gt;%
-  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID)
+rmats_nf1  &lt;- fread(rmats_nf1_file)
 
 rmats_goi  &lt;- fread(rmats_clk1_file) %&gt;%
-  dplyr::filter(sample_id %in% histologies_df$Kids_First_Biospecimen_ID) %&gt;%
   bind_rows(rmats_nf1) %&gt;%
   # annotated the NF1 and CLK1 transcripts of interest
   mutate(ENST_id = case_when(geneSymbol == &quot;NF1&quot; &amp; splicing_case == &quot;SE&quot; &amp; exonStart_0base == &quot;31252937&quot; &amp; exonEnd == &quot;31253000&quot; &amp; downstreamES == &quot;31258343&quot; &amp; downstreamEE == &quot;31258502&quot; ~ &quot;ENST00000358273&quot;,
@@ -1613,7 +1610,7 @@ brain tumor histologies – variable with HGGs to be the most
 heterogeneous</p>
 <pre class="r"><code>plot_CLK1_PSI_df &lt;- rmats_goi %&gt;% 
   dplyr::rename(Kids_First_Biospecimen_ID=sample_id) %&gt;%
-  left_join(histologies_df, by=&#39;Kids_First_Biospecimen_ID&#39;) %&gt;%
+  right_join(stranded, by=&#39;Kids_First_Biospecimen_ID&#39;) %&gt;%
   select(Kids_First_Biospecimen_ID,IncLevel1,plot_group, plot_group_hex, geneSymbol) %&gt;%
   filter(geneSymbol == &quot;CLK1&quot;) %&gt;%
    mutate(plot_group_wrapped = stringr::str_wrap(plot_group, width = 20))
@@ -1646,7 +1643,7 @@ variable, which will allow us to performcorrelative analyses below.</p>
 <pre class="r"><code># Prepare the plot_df data frame
 plot_df &lt;- rmats_goi %&gt;%
   dplyr::rename(Kids_First_Biospecimen_ID = sample_id) %&gt;%
-  left_join(histologies_df, by = &#39;Kids_First_Biospecimen_ID&#39;) %&gt;%
+  right_join(stranded, by = &#39;Kids_First_Biospecimen_ID&#39;) %&gt;%
   select(event_type, IncLevel1, Kids_First_Biospecimen_ID, plot_group, plot_group_hex) %&gt;%
   dplyr::mutate(event_type = case_when(event_type == &quot;CLK1-Exon4_PSI&quot; ~ &quot;CLK1-201 (Exon 4)&quot;,
                                        event_type == &quot;NF1-Exon23a_PSI&quot; ~ &quot;NF1-202 (Exon23a)&quot;,
@@ -1730,9 +1727,15 @@ rmats_goi_mat &lt;- rmats_goi %&gt;%
   select(sample_id, IncLevel1, event_type) %&gt;%
   pivot_wider(names_from = event_type, values_from = IncLevel1) %&gt;%
   column_to_rownames(var = &quot;sample_id&quot;) %&gt;%
-  select(-`NF1-208_PSI`)
-
-## tpm table 
+  select(-`NF1-208_PSI`)</code></pre>
+<pre><code>## Warning: Values from `IncLevel1` are not uniquely identified; output will contain list-cols.
+## • Use `values_fn = list` to suppress this warning.
+## • Use `values_fn = {summary_fun}` to summarise duplicates.
+## • Use the following dplyr code to identify duplicates.
+##   {data} |&gt;
+##   dplyr::summarise(n = dplyr::n(), .by = c(sample_id, event_type)) |&gt;
+##   dplyr::filter(n &gt; 1L)</code></pre>
+<pre class="r"><code>## tpm table 
 gene_tpm &lt;- readRDS(rsem_tpm_counts) %&gt;%
   dplyr::select(any_of(rmats_goi$sample_id)) %&gt;%
   rownames_to_column(var = &quot;gene_symbol&quot;) %&gt;%
@@ -1764,7 +1767,7 @@ transcript_tpm_df &lt;- readRDS(rsem_transc_counts) %&gt;%
 <pre><code>## Joining with `by = join_by(gene_symbol)`</code></pre>
 <pre class="r"><code>reformat &lt;- transcript_tpm_df %&gt;%
   rownames_to_column(&quot;Kids_First_Biospecimen_ID&quot;) %&gt;%
-  left_join(histologies_df[,c(&quot;Kids_First_Biospecimen_ID&quot;, &quot;match_id&quot;)]) %&gt;%
+  right_join(histologies_df[,c(&quot;Kids_First_Biospecimen_ID&quot;, &quot;match_id&quot;)]) %&gt;%
   select(-Kids_First_Biospecimen_ID) %&gt;%
   left_join(phos_df) %&gt;%
   column_to_rownames(var = &quot;match_id&quot;) %&gt;%
@@ -1773,103 +1776,29 @@ transcript_tpm_df &lt;- readRDS(rsem_transc_counts) %&gt;%
                 `NF1-215 PSI` = `NF1-215_PSI`,
                 `NF1-215` = `NF1-215_RI`,
                 `NF1-202 (Exon23a) PSI` =  `NF1-Exon23a_PSI`) %&gt;%
+  mutate(`CLK1-201 (Exon4) PSI` = as.numeric(as.character(`CLK1-201 (Exon4) PSI`)),
+         `NF1-215 PSI` = as.numeric(as.character(`NF1-215 PSI`)),
+         `NF1-202 (Exon23a) PSI` = as.numeric(as.character(`NF1-202 (Exon23a) PSI`))) %&gt;%
   write_rds(file.path(results_dir, &quot;clk1-nf1-psi-exp-phos-df.rds&quot;)) </code></pre>
 <pre><code>## Joining with `by = join_by(Kids_First_Biospecimen_ID)`
 ## Joining with `by = join_by(match_id)`</code></pre>
-<pre class="r"><code>all_mat &lt;- as.matrix(reformat)
+<pre><code>## Warning: There were 3 warnings in `mutate()`.
+## The first warning was:
+## ℹ In argument: `CLK1-201 (Exon4) PSI = as.numeric(as.character(`CLK1-201 (Exon4) PSI`))`.
+## Caused by warning:
+## ! NAs introduced by coercion
+## ℹ Run `dplyr::last_dplyr_warnings()` to see the 2 remaining warnings.</code></pre>
+<pre class="r"><code>reformat_stranded &lt;- reformat[stranded$match_id, ]
+  
+all_mat &lt;- as.matrix(reformat_stranded)
 
 # Compute the correlation matrix
 mat &lt;- cor(all_mat, method = &quot;spearman&quot;, use = &quot;pairwise.complete.obs&quot;)
 
 # Perform significance testing for the correlations
-p.mat &lt;- cor.mtest(mat, method = &quot;spearman&quot;)$p</code></pre>
-<pre><code>## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties
-## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
-## exact p-value with ties</code></pre>
-<pre class="r"><code># Create correlogram
+p.mat &lt;- cor.mtest(mat, method = &quot;spearman&quot;)$p
+
+# Create correlogram
 pdf(file.path(plots_dir, &quot;CLK1-NF1-all-cors.pdf&quot;), width = 12, height = 12)
 corrplot(mat, type = &#39;lower&#39;, order = &#39;hclust&#39;, tl.col = &#39;black&#39;, diag = FALSE,
          cl.ratio = 0.2, tl.srt = 45, col = COL2(&#39;RdYlBu&#39;, 10),
@@ -1887,7 +1816,7 @@ items_of_interest_other &lt;- c(&quot;Total CLK1&quot;, &quot;CLK1-201&quot;, &q
          &quot;NF1-202 (Exon23a) PSI&quot;)
 
 
-subset_tpm_df &lt;- reformat %&gt;%
+subset_tpm_df &lt;- reformat_stranded %&gt;%
   as.data.frame() %&gt;%
   select(all_of(items_of_interest_hgg)) %&gt;%
   as.matrix()
@@ -1911,7 +1840,7 @@ dev.off()</code></pre>
 <pre class="r"><code># add all HGG plot group
 histologies_df_plus &lt;- histologies_df %&gt;%
   mutate(plot_group = ifelse(plot_group %in% c(&quot;DIPG or DMG&quot;, &quot;Other high-grade glioma&quot;), &quot;High-grade glioma&quot;,
-                                  NA_character_)) %&gt;%
+                                  plot_group)) %&gt;%
   filter(plot_group == &quot;High-grade glioma&quot;) %&gt;%
   bind_rows(histologies_df)
 
@@ -1919,23 +1848,23 @@ plot_groups &lt;- unique(histologies_df_plus$plot_group)
 table(histologies_df_plus$plot_group)</code></pre>
 <pre><code>## 
 ## Atypical Teratoid Rhabdoid Tumor             Choroid plexus tumor 
-##                               24                               20 
+##                               56                               32 
 ##                Craniopharyngioma                      DIPG or DMG 
-##                               29                               31 
+##                               51                              131 
 ##                       Ependymoma                  Germ cell tumor 
-##                               69                                8 
+##                              110                               16 
 ##                High-grade glioma                 Low-grade glioma 
-##                              144                              200 
+##                              343                              337 
 ##                  Medulloblastoma                       Meningioma 
-##                              105                               17 
+##                              200                               29 
 ##                Mesenchymal tumor       Mixed neuronal-glial tumor 
-##                               18                               63 
+##                               27                              112 
 ##           Neurofibroma plexiform             Non-neoplastic tumor 
-##                               10                               26 
+##                               12                               45 
 ##        Other CNS embryonal tumor          Other high-grade glioma 
-##                                8                              113 
+##                               16                              212 
 ##                      Other tumor                       Schwannoma 
-##                               17                               13</code></pre>
+##                               27                               21</code></pre>
 <pre class="r"><code>for (group in plot_groups) {
   
   if (group %in% c(&quot;DIPG or DMG&quot;, &quot;Other high-grade glioma&quot;, &quot;High-grade glioma&quot;)) {
@@ -1949,10 +1878,13 @@ table(histologies_df_plus$plot_group)</code></pre>
   # subset samples in plot group
   bs_ids &lt;- histologies_df_plus %&gt;%
     filter(plot_group %in% group) %&gt;%
-    pull(match_id)
+    pull(match_id) %&gt;%
+    unique()
   
   # subset tpm / psi matrix
-  subset_group &lt;- subset_tpm_df[bs_ids,to_subset]
+  # Subset with existing bs_ids
+  valid_bs_ids &lt;- bs_ids[bs_ids %in% rownames(subset_tpm_df)]
+  subset_group &lt;- subset_tpm_df[valid_bs_ids,to_subset]
 
   # Compute the correlation matrix
   gp_mat &lt;- cor(as.matrix(subset_group), use = &quot;pairwise.complete.obs&quot;, method = &quot;spearman&quot;)
