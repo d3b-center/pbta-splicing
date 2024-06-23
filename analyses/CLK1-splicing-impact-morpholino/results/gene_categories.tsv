@@ -1,0 +1,5708 @@
+gene	plot_type	plot_subtype
+AAK1	Other	Kinase
+AATF	Oncogene	Other Oncogene
+AATK	Other	Kinase
+ABCA1	Oncogene	Other Oncogene
+ABCA3	Oncogene	Other Oncogene
+ABCB1	Oncogene	Other Oncogene
+ABCB10	Oncogene	Other Oncogene
+ABCB4	Oncogene	Other Oncogene
+ABCB5	Oncogene	Other Oncogene
+ABCB8	Oncogene	Other Oncogene
+ABCC1	Oncogene	Other Oncogene
+ABCG2	Tumor Suppressor	Other Tumor Suppressor
+ABHD2	Oncogene	Other Oncogene
+ABI1	Oncogene	Other Oncogene
+ABI2	Tumor Suppressor	Other Tumor Suppressor
+ABL1	Oncogene	Kinase
+ABL2	Oncogene	Kinase
+ABO	Oncogene	Other Oncogene
+ABR	Oncogene	Other Oncogene
+ABTB2	Oncogene	Other Oncogene
+AC008770.3	Other	Transcription Factor
+AC023509.3	Other	Transcription Factor
+AC092835.1	Other	Transcription Factor
+AC138696.1	Other	Transcription Factor
+ACADM	Oncogene	Other Oncogene
+ACAP1	Oncogene	Other Oncogene
+ACCS	Oncogene	Other Oncogene
+ACHE	Tumor Suppressor	Other Tumor Suppressor
+ACK	Other	Kinase
+ACKR3	Oncogene	Other Oncogene
+ACSL3	Oncogene	Other Oncogene
+ACSL5	Oncogene	Other Oncogene
+ACSL6	Oncogene	Other Oncogene
+ACTB	Oncogene	Epigenetic
+ACTL9	Oncogene	Other Oncogene
+ACTR2	Other	Kinase
+ACTR2B	Other	Kinase
+ACVR1	Other	Kinase
+ACVR1B	Oncogene	Kinase
+ACVR1C	Tumor Suppressor	Kinase
+ACVR2A	Oncogene	Kinase
+ACVR2B	Other	Kinase
+ACVRL1	Other	Kinase
+ACY1	Tumor Suppressor	Other Tumor Suppressor
+ADAM12	Oncogene	Other Oncogene
+ADAM23	Oncogene	Other Oncogene
+ADAM29	Oncogene	Other Oncogene
+ADAM9	Oncogene	Other Oncogene
+ADAMTS1	Oncogene	Other Oncogene
+ADAMTS15	Oncogene	Other Oncogene
+ADAMTS18	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+ADAMTS8	Tumor Suppressor	Other Tumor Suppressor
+ADAMTS9	Tumor Suppressor	Other Tumor Suppressor
+ADAMTS9-AS2	Tumor Suppressor	Other Tumor Suppressor
+ADAMTSL3	Oncogene	Other Oncogene
+ADARB1	Tumor Suppressor	Other Tumor Suppressor
+ADARB2	Oncogene	Other Oncogene
+ADCK1	Other	Kinase
+ADCK2	Other	Kinase
+ADCK3	Other	Kinase
+ADCK4	Other	Kinase
+ADCK5	Other	Kinase
+ADD3	Oncogene	Other Oncogene
+ADGRE5	Oncogene	Other Oncogene
+ADGRL2	Oncogene	Other Oncogene
+ADIPOR1	Oncogene	Other Oncogene
+ADNP	Other	Epigenetic
+ADNP2	Other	Transcription Factor
+ADPRH	Tumor Suppressor	Other Tumor Suppressor
+AEBP1	Other	Transcription Factor
+AEBP2	Other	Epigenetic
+AFAP1L2	Tumor Suppressor	Other Tumor Suppressor
+AFDN	Oncogene	Other Oncogene
+AFF1	Oncogene	Other Oncogene
+AFF3	Oncogene	Other Oncogene
+AFF4	Oncogene	Other Oncogene
+AGAP2	Oncogene	Other Oncogene
+AGER	Oncogene	Other Oncogene
+AGTR1	Tumor Suppressor	Other Tumor Suppressor
+AHCTF1	Other	Transcription Factor
+AHCYL1	Tumor Suppressor	Other Tumor Suppressor
+AHDC1	Other	Transcription Factor
+AHI1	Oncogene	Other Oncogene
+AHNAK	Tumor Suppressor	Other Tumor Suppressor
+AHR	Tumor Suppressor	Transcription Factor
+AHRR	Tumor Suppressor	Transcription Factor
+AIF1	Tumor Suppressor	Other Tumor Suppressor
+AIFM1	Oncogene	Other Oncogene
+AIFM2	Oncogene	Other Oncogene
+AIM2	Tumor Suppressor	Other Tumor Suppressor
+AIMP1	Tumor Suppressor	Other Tumor Suppressor
+AIMP2	Tumor Suppressor	Other Tumor Suppressor
+AIP	Tumor Suppressor	Other Tumor Suppressor
+AIRE	Other	Epigenetic
+AJAP1	Tumor Suppressor	Other Tumor Suppressor
+AKAP12	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+AKAP13	Oncogene	Other Oncogene
+AKAP8	Other	Transcription Factor
+AKAP8L	Other	Transcription Factor
+AKAP9	Oncogene	Other Oncogene
+AKNA	Other	Transcription Factor
+AKR1B1	Tumor Suppressor	Other Tumor Suppressor
+AKR1C3	Oncogene	Other Oncogene
+AKT1	Oncogene	Kinase
+AKT2	Oncogene	Kinase
+AKT3	Oncogene	Kinase
+ALAD	Oncogene	Other Oncogene
+ALDH18A1	Other	Kinase
+ALDH1A2	Tumor Suppressor	Other Tumor Suppressor
+ALDH2	Oncogene	Other Oncogene
+ALDOB	Oncogene	Other Oncogene
+ALG14	Oncogene	Other Oncogene
+ALK	Oncogene	Kinase
+ALK1	Other	Kinase
+ALK2	Other	Kinase
+ALK4	Other	Kinase
+ALK7	Other	Kinase
+ALOX12	Oncogene	Other Oncogene
+ALOX15	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+ALOX15B	Tumor Suppressor	Other Tumor Suppressor
+ALOX5	Oncogene	Other Oncogene
+ALPK1	Other	Kinase
+ALPK2	Other	Kinase
+ALPK3	Other	Kinase
+ALPL	Tumor Suppressor	Other Tumor Suppressor
+ALS2CL	Oncogene	Other Oncogene
+ALX1	Other	Transcription Factor
+ALX3	Other	Transcription Factor
+ALX4	Other	Transcription Factor
+AMER1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+AMFR	Oncogene	Other Oncogene
+AMH	Tumor Suppressor	Other Tumor Suppressor
+AMHR2	Other	Kinase
+AMOT	Oncogene	Other Oncogene
+AMPKa1	Other	Kinase
+AMPKa2	Other	Kinase
+ANAPC1	Tumor Suppressor	Other Tumor Suppressor
+ANG	Oncogene	Other Oncogene
+ANGPTL4	Tumor Suppressor	Other Tumor Suppressor
+ANHX	Other	Transcription Factor
+ANKK1	Other	Kinase
+ANKRD3	Other	Kinase
+ANKRD44	Oncogene	Other Oncogene
+ANKZF1	Other	Transcription Factor
+ANLN	Oncogene	Other Oncogene
+ANP32A	Oncogene or Tumor Suppressor	Epigenetic
+ANP32B	Oncogene	Epigenetic
+ANPa	Other	Kinase
+ANPb	Other	Kinase
+ANXA1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+ANXA7	Tumor Suppressor	Other Tumor Suppressor
+AP3M2	Oncogene	Other Oncogene
+APAF1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+APC	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+APC2	Oncogene	Other Oncogene
+APEH	Oncogene	Other Oncogene
+APH1A	Oncogene	Other Oncogene
+APITD1	Tumor Suppressor	Other Tumor Suppressor
+APLNR	Oncogene	Other Oncogene
+APOBEC2	Oncogene	Epigenetic
+AR	Oncogene	Transcription Factor
+ARAF	Oncogene	Kinase
+ARAFP2	Oncogene	Other Oncogene
+ARAFps	Other	Kinase
+ARAP2	Oncogene	Other Oncogene
+AREG	Oncogene	Other Oncogene
+ARF1	Tumor Suppressor	Other Tumor Suppressor
+ARF6	Oncogene	Other Oncogene
+ARG1	Tumor Suppressor	Other Tumor Suppressor
+ARGFX	Other	Transcription Factor
+ARHGAP20	Oncogene	Other Oncogene
+ARHGAP25	Oncogene	Other Oncogene
+ARHGAP26	Oncogene	Other Oncogene
+ARHGAP29	Tumor Suppressor	Other Tumor Suppressor
+ARHGAP35	Other	Transcription Factor
+ARHGAP4	Oncogene	Other Oncogene
+ARHGAP9	Oncogene	Other Oncogene
+ARHGEF12	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+ARHGEF2	Oncogene	Other Oncogene
+ARHGEF4	Oncogene	Other Oncogene
+ARID1A	Oncogene or Tumor Suppressor	Epigenetic
+ARID1B	Oncogene	Epigenetic
+ARID2	Oncogene or Tumor Suppressor	Epigenetic
+ARID3A	Other	Transcription Factor
+ARID3B	Other	Transcription Factor
+ARID3C	Other	Transcription Factor
+ARID4A	Oncogene	Epigenetic
+ARID5A	Oncogene	Transcription Factor
+ARID5B	Other	Transcription Factor
+ARL11	Tumor Suppressor	Other Tumor Suppressor
+ARL6IP5	Tumor Suppressor	Other Tumor Suppressor
+ARMC10	Tumor Suppressor	Other Tumor Suppressor
+ARMC5	Tumor Suppressor	Other Tumor Suppressor
+ARMCX1	Oncogene	Other Oncogene
+ARMCX2	Oncogene	Other Oncogene
+ARMCX3	Oncogene	Other Oncogene
+ARNT	Oncogene	Transcription Factor
+ARNT2	Other	Transcription Factor
+ARNTL	Tumor Suppressor	Epigenetic
+ARNTL2	Other	Transcription Factor
+ARX	Other	Transcription Factor
+ASCL1	Oncogene or Tumor Suppressor	Transcription Factor
+ASCL2	Other	Transcription Factor
+ASCL3	Other	Transcription Factor
+ASCL4	Other	Transcription Factor
+ASCL5	Other	Transcription Factor
+ASH1L	Other	Epigenetic
+ASL	Oncogene	Other Oncogene
+ASNS	Oncogene	Other Oncogene
+ASPM	Oncogene	Other Oncogene
+ASPSCR1	Oncogene	Other Oncogene
+ASS1	Tumor Suppressor	Other Tumor Suppressor
+ASTN2	Oncogene	Other Oncogene
+ASXL1	Oncogene or Tumor Suppressor	Epigenetic
+ATF1	Oncogene	Transcription Factor
+ATF2	Oncogene	Epigenetic
+ATF3	Oncogene or Tumor Suppressor	Transcription Factor
+ATF4	Oncogene	Transcription Factor
+ATF5	Oncogene	Transcription Factor
+ATF6	Other	Transcription Factor
+ATF6B	Other	Transcription Factor
+ATF7	Other	Transcription Factor
+ATF7IP	Oncogene	Epigenetic
+ATIC	Oncogene	Other Oncogene
+ATM	Oncogene or Tumor Suppressor	Kinase
+ATMIN	Tumor Suppressor	Transcription Factor
+ATOH1	Other	Transcription Factor
+ATOH7	Other	Transcription Factor
+ATOH8	Other	Transcription Factor
+ATP8B1	Oncogene	Other Oncogene
+ATR	Oncogene or Tumor Suppressor	Kinase
+ATRX	Oncogene	Epigenetic
+AUH	Oncogene	Other Oncogene
+AURKA	Oncogene	Kinase
+AURKB	Other	Kinase
+AURKC	Other	Kinase
+AVPI1	Oncogene	Other Oncogene
+AXIN1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+AXIN2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+AXL	Oncogene	Kinase
+AZGP1	Tumor Suppressor	Other Tumor Suppressor
+AlphaK1	Other	Kinase
+AlphaK2	Other	Kinase
+AlphaK3	Other	Kinase
+AurA	Other	Kinase
+AurAps1	Other	Kinase
+AurAps2	Other	Kinase
+AurB	Other	Kinase
+AurBps1	Other	Kinase
+AurC	Other	Kinase
+B2M	Oncogene	Other Oncogene
+B3GNT6	Oncogene	Other Oncogene
+B4GALT5	Oncogene	Other Oncogene
+B4GAT1	Oncogene	Other Oncogene
+BAALC	Oncogene	Other Oncogene
+BABAM2	Oncogene	Other Oncogene
+BACH1	Other	Transcription Factor
+BACH2	Oncogene	Transcription Factor
+BAD	Oncogene	Other Oncogene
+BAG1	Oncogene	Other Oncogene
+BAG3	Oncogene	Other Oncogene
+BAK1	Oncogene	Other Oncogene
+BANP	Tumor Suppressor	Epigenetic
+BAP1	Oncogene or Tumor Suppressor	Epigenetic
+BARD1	Oncogene or Tumor Suppressor	Epigenetic
+BARHL1	Other	Transcription Factor
+BARHL2	Other	Transcription Factor
+BARK1	Other	Kinase
+BARK2	Other	Kinase
+BARX1	Other	Transcription Factor
+BARX2	Other	Transcription Factor
+BASP1	Tumor Suppressor	Other Tumor Suppressor
+BATF	Oncogene	Transcription Factor
+BATF2	Tumor Suppressor	Transcription Factor
+BATF3	Other	Transcription Factor
+BAX	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+BAZ2A	Other	Epigenetic
+BAZ2B	Other	Epigenetic
+BBC3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+BBX	Other	Transcription Factor
+BCAS3	Oncogene	Other Oncogene
+BCAS4	Oncogene	Other Oncogene
+BCKDK	Other	Kinase
+BCL10	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+BCL11A	Oncogene	Transcription Factor
+BCL11B	Oncogene	Transcription Factor
+BCL2	Oncogene	Other Oncogene
+BCL2A1	Oncogene	Other Oncogene
+BCL2L1	Oncogene	Other Oncogene
+BCL2L11	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+BCL2L12	Oncogene	Other Oncogene
+BCL2L2	Oncogene	Other Oncogene
+BCL3	Oncogene	Other Oncogene
+BCL6	Oncogene	Transcription Factor
+BCL6B	Tumor Suppressor	Transcription Factor
+BCL7A	Oncogene	Other Oncogene
+BCL7B	Oncogene	Other Oncogene
+BCL9	Oncogene	Other Oncogene
+BCOR	Oncogene or Tumor Suppressor	Epigenetic
+BCORL1	Tumor Suppressor	Epigenetic
+BCR	Oncogene or Tumor Suppressor	Kinase
+BCRP2	Oncogene	Other Oncogene
+BCRP3	Oncogene	Other Oncogene
+BCRP4	Oncogene	Other Oncogene
+BECN1	Tumor Suppressor	Other Tumor Suppressor
+BEX2	Tumor Suppressor	Other Tumor Suppressor
+BFSP2	Oncogene	Other Oncogene
+BGN	Oncogene	Other Oncogene
+BHLHA15	Other	Transcription Factor
+BHLHA9	Other	Transcription Factor
+BHLHE22	Other	Transcription Factor
+BHLHE23	Other	Transcription Factor
+BHLHE40	Other	Transcription Factor
+BHLHE41	Oncogene or Tumor Suppressor	Transcription Factor
+BICRA	Tumor Suppressor	Other Tumor Suppressor
+BID	Oncogene	Other Oncogene
+BIK	Tumor Suppressor	Other Tumor Suppressor
+BIKE	Other	Kinase
+BIN1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+BIRC2	Oncogene	Other Oncogene
+BIRC3	Oncogene	Other Oncogene
+BIRC6	Oncogene	Other Oncogene
+BLCAP	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+BLID	Tumor Suppressor	Other Tumor Suppressor
+BLK	Other	Kinase
+BLM	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+BLNK	Tumor Suppressor	Other Tumor Suppressor
+BMAL1	Tumor Suppressor	Transcription Factor
+BMAL2	Other	Transcription Factor
+BMF	Tumor Suppressor	Other Tumor Suppressor
+BMI1	Oncogene	Epigenetic
+BMP10	Tumor Suppressor	Other Tumor Suppressor
+BMP2	Tumor Suppressor	Other Tumor Suppressor
+BMP2K	Other	Kinase
+BMP4	Tumor Suppressor	Other Tumor Suppressor
+BMPR1A	Oncogene or Tumor Suppressor	Kinase
+BMPR1Aps1	Other	Kinase
+BMPR1Aps2	Other	Kinase
+BMPR1B	Other	Kinase
+BMPR2	Tumor Suppressor	Kinase
+BMX	Other	Kinase
+BNC1	Other	Transcription Factor
+BNC2	Other	Transcription Factor
+BNIP3	Oncogene	Other Oncogene
+BNIP3L	Tumor Suppressor	Other Tumor Suppressor
+BOK	Oncogene	Other Oncogene
+BOP1	Oncogene	Other Oncogene
+BORCS8-MEF2B	Oncogene	Transcription Factor
+BPTF	Other	Epigenetic
+BRAF	Oncogene	Kinase
+BRAFps	Other	Kinase
+BRAT1	Oncogene	Other Oncogene
+BRCA1	Oncogene or Tumor Suppressor	Epigenetic
+BRCA2	Oncogene or Tumor Suppressor	Epigenetic
+BRD2	Oncogene	Kinase
+BRD3	Oncogene	Kinase
+BRD4	Oncogene	Kinase
+BRD7	Tumor Suppressor	Epigenetic
+BRDT	Other	Kinase
+BRE	Oncogene	Epigenetic
+BRF1	Tumor Suppressor	Other Tumor Suppressor
+BRF2	Other	Transcription Factor
+BRINP1	Tumor Suppressor	Other Tumor Suppressor
+BRIP1	Oncogene	Other Oncogene
+BRK	Other	Kinase
+BRMS1	Oncogene or Tumor Suppressor	Epigenetic
+BRMS1L	Oncogene or Tumor Suppressor	Epigenetic
+BRSK1	Tumor Suppressor	Kinase
+BRSK2	Other	Kinase
+BRWD3	Oncogene	Epigenetic
+BSPRY	Oncogene	Other Oncogene
+BSX	Other	Transcription Factor
+BTBD19	Oncogene	Other Oncogene
+BTG1	Oncogene	Other Oncogene
+BTG2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+BTG3	Tumor Suppressor	Other Tumor Suppressor
+BTG4	Tumor Suppressor	Other Tumor Suppressor
+BTK	Oncogene or Tumor Suppressor	Kinase
+BTRC	Oncogene	Other Oncogene
+BUB1	Oncogene	Kinase
+BUB1B	Oncogene	Other Oncogene
+BUBR1	Other	Kinase
+C11orf95	Other	Transcription Factor
+C15ORF65	Oncogene	Other Oncogene
+C1ORF64	Oncogene	Other Oncogene
+C2CD5	Oncogene	Other Oncogene
+C2orf40	Tumor Suppressor	Other Tumor Suppressor
+C3AR1	Oncogene	Other Oncogene
+CABLES1	Tumor Suppressor	Other Tumor Suppressor
+CACNA2D3	Tumor Suppressor	Other Tumor Suppressor
+CADM1	Tumor Suppressor	Other Tumor Suppressor
+CADM2	Tumor Suppressor	Other Tumor Suppressor
+CADM3	Tumor Suppressor	Other Tumor Suppressor
+CADM4	Tumor Suppressor	Other Tumor Suppressor
+CADPS2	Oncogene	Other Oncogene
+CAGE1	Oncogene	Other Oncogene
+CALCA	Oncogene	Other Oncogene
+CALCR	Oncogene	Other Oncogene
+CAMK1	Other	Kinase
+CAMK1D	Other	Kinase
+CAMK1G	Other	Kinase
+CAMK2A	Other	Kinase
+CAMK2B	Oncogene	Kinase
+CAMK2D	Oncogene	Kinase
+CAMK2G	Other	Kinase
+CAMK2N1	Tumor Suppressor	Other Tumor Suppressor
+CAMK4	Other	Kinase
+CAMKK1	Other	Kinase
+CAMKK2	Oncogene	Kinase
+CAMKV	Other	Kinase
+CAMTA1	Oncogene or Tumor Suppressor	Transcription Factor
+CAMTA2	Other	Transcription Factor
+CANT1	Oncogene	Other Oncogene
+CAPG	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CARD11	Oncogene	Other Oncogene
+CARD8	Oncogene	Other Oncogene
+CARF	Other	Transcription Factor
+CARS	Oncogene	Other Oncogene
+CARS1	Oncogene	Other Oncogene
+CASC1	Tumor Suppressor	Other Tumor Suppressor
+CASC2	Tumor Suppressor	Other Tumor Suppressor
+CASC3	Oncogene	Other Oncogene
+CASK	Other	Kinase
+CASP1	Oncogene	Other Oncogene
+CASP2	Tumor Suppressor	Other Tumor Suppressor
+CASP5	Tumor Suppressor	Other Tumor Suppressor
+CASP8	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CASP9	Oncogene	Other Oncogene
+CASZ1	Other	Transcription Factor
+CAT	Tumor Suppressor	Other Tumor Suppressor
+CAV1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CAVIN3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CBFA2T3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CBFB	Oncogene	Other Oncogene
+CBL	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CBLB	Oncogene	Other Oncogene
+CBLC	Oncogene	Other Oncogene
+CBLL2	Other	Transcription Factor
+CBX2	Other	Epigenetic
+CBX4	Oncogene	Epigenetic
+CBX5	Tumor Suppressor	Epigenetic
+CC2D1A	Other	Transcription Factor
+CCAR1	Tumor Suppressor	RNA Binding Protein
+CCAR2	Tumor Suppressor	Other Tumor Suppressor
+CCDC136	Tumor Suppressor	Other Tumor Suppressor
+CCDC154	Tumor Suppressor	Other Tumor Suppressor
+CCDC169-SOHLH2	Other	Transcription Factor
+CCDC17	Other	Transcription Factor
+CCDC6	Oncogene	Other Oncogene
+CCDC67	Tumor Suppressor	Other Tumor Suppressor
+CCK4	Other	Kinase
+CCL7	Oncogene	Other Oncogene
+CCN1	Oncogene	Other Oncogene
+CCN2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CCN3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CCN5	Oncogene	Other Oncogene
+CCN6	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CCNA2	Oncogene	Other Oncogene
+CCNB1	Oncogene	Other Oncogene
+CCNB1IP1	Oncogene	Other Oncogene
+CCNC	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CCND1	Oncogene	Other Oncogene
+CCND2	Oncogene	Other Oncogene
+CCND2-AS1	Oncogene	Other Oncogene
+CCND3	Oncogene	Other Oncogene
+CCNDBP1	Tumor Suppressor	Other Tumor Suppressor
+CCNE1	Oncogene	Other Oncogene
+CCNF	Oncogene	Other Oncogene
+CCNG1	Oncogene	Other Oncogene
+CCNH	Oncogene	Other Oncogene
+CCNT1	Oncogene	Other Oncogene
+CCR1	Oncogene	Other Oncogene
+CCR7	Oncogene	Other Oncogene
+CCR9	Oncogene	Other Oncogene
+CCRK	Other	Kinase
+CD109	Oncogene	Other Oncogene
+CD151	Oncogene	Other Oncogene
+CD200	Oncogene	Other Oncogene
+CD248	Oncogene	Other Oncogene
+CD274	Oncogene	Other Oncogene
+CD4	Tumor Suppressor	Other Tumor Suppressor
+CD44	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CD46	Oncogene	Other Oncogene
+CD52	Oncogene	Other Oncogene
+CD53	Oncogene	Other Oncogene
+CD55	Oncogene	Other Oncogene
+CD6	Oncogene	Other Oncogene
+CD69	Oncogene	Other Oncogene
+CD74	Oncogene	Other Oncogene
+CD79A	Oncogene	Other Oncogene
+CD79B	Oncogene	Other Oncogene
+CD82	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CD9	Oncogene	Other Oncogene
+CDA	Oncogene	Other Oncogene
+CDC2	Other	Kinase
+CDC20	Oncogene	Other Oncogene
+CDC25A	Oncogene	Other Oncogene
+CDC25B	Oncogene	Other Oncogene
+CDC25C	Oncogene	Other Oncogene
+CDC27	Oncogene	Other Oncogene
+CDC34	Oncogene	Other Oncogene
+CDC42	Oncogene	Other Oncogene
+CDC42BPA	Other	Kinase
+CDC42BPB	Other	Kinase
+CDC42BPG	Other	Kinase
+CDC42EP1	Oncogene	Other Oncogene
+CDC5L	Other	Transcription Factor
+CDC6	Oncogene	Epigenetic
+CDC7	Other	Kinase
+CDC73	Oncogene or Tumor Suppressor	Epigenetic
+CDCP1	Tumor Suppressor	Other Tumor Suppressor
+CDH1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CDH10	Oncogene	Other Oncogene
+CDH11	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CDH13	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CDH17	Tumor Suppressor	Other Tumor Suppressor
+CDH20	Oncogene	Other Oncogene
+CDH4	Tumor Suppressor	Other Tumor Suppressor
+CDH5	Tumor Suppressor	Other Tumor Suppressor
+CDK1	Other	Kinase
+CDK1	Oncogene	Kinase
+CDK10	Other	Kinase
+CDK11	Other	Kinase
+CDK11A	Oncogene	Kinase
+CDK11B	Oncogene	Kinase
+CDK12	Other	Kinase
+CDK13	Other	Kinase
+CDK14	Other	Kinase
+CDK15	Other	Kinase
+CDK16	Oncogene	Kinase
+CDK17	Other	Kinase
+CDK18	Oncogene	Kinase
+CDK19	Other	Kinase
+CDK19	Other	Kinase
+CDK2	Oncogene or Tumor Suppressor	Kinase
+CDK20	Other	Kinase
+CDK20	Oncogene	Kinase
+CDK2AP1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CDK3	Other	Kinase
+CDK4	Oncogene	Kinase
+CDK4ps	Other	Kinase
+CDK5	Oncogene	Kinase
+CDK5R1	Oncogene	Other Oncogene
+CDK5ps	Other	Kinase
+CDK6	Oncogene or Tumor Suppressor	Kinase
+CDK7	Oncogene	Kinase
+CDK7ps	Other	Kinase
+CDK8	Other	Kinase
+CDK8ps	Other	Kinase
+CDK9	Other	Kinase
+CDKL1	Other	Kinase
+CDKL2	Other	Kinase
+CDKL3	Other	Kinase
+CDKL4	Other	Kinase
+CDKL5	Other	Kinase
+CDKN1A	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CDKN1B	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CDKN1C	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CDKN2A	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CDKN2B	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CDKN2C	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CDKN2D	Oncogene	Other Oncogene
+CDKN3	Oncogene	Other Oncogene
+CDO1	Tumor Suppressor	Other Tumor Suppressor
+CDT1	Oncogene	Other Oncogene
+CDX1	Other	Transcription Factor
+CDX2	Oncogene or Tumor Suppressor	Transcription Factor
+CDX4	Other	Transcription Factor
+CEACAM1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CEACAM7	Oncogene	Other Oncogene
+CEBPA	Oncogene or Tumor Suppressor	Transcription Factor
+CEBPB	Oncogene	Transcription Factor
+CEBPD	Tumor Suppressor	Transcription Factor
+CEBPE	Other	Transcription Factor
+CEBPG	Other	Transcription Factor
+CEBPZ	Other	Transcription Factor
+CELA1	Oncogene	Other Oncogene
+CENPA	Other	Transcription Factor
+CENPB	Other	Transcription Factor
+CENPBD1	Other	Transcription Factor
+CENPBD1P	Other	Transcription Factor
+CENPF	Oncogene	Other Oncogene
+CENPS	Tumor Suppressor	Other Tumor Suppressor
+CENPS	Other	Transcription Factor
+CENPT	Other	Transcription Factor
+CENPX	Other	Transcription Factor
+CEP43	Oncogene	Other Oncogene
+CFAP20	Oncogene	Other Oncogene
+CFLAR	Oncogene	Other Oncogene
+CFP	Oncogene	Other Oncogene
+CFTR	Tumor Suppressor	Other Tumor Suppressor
+CGDps	Other	Kinase
+CGGBP1	Other	Transcription Factor
+CHAMP1	Other	Transcription Factor
+CHCHD3	Other	Transcription Factor
+CHCHD7	Oncogene	Other Oncogene
+CHD1	Tumor Suppressor	Epigenetic
+CHD2	Oncogene	Epigenetic
+CHD3	Oncogene	Epigenetic
+CHD5	Oncogene or Tumor Suppressor	Epigenetic
+CHD9	Oncogene	Epigenetic
+CHED	Other	Kinase
+CHEK1	Tumor Suppressor	Kinase
+CHEK2	Oncogene or Tumor Suppressor	Kinase
+CHFR	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CHGA	Oncogene	Other Oncogene
+CHIC2	Oncogene	Other Oncogene
+CHK1	Other	Kinase
+CHK2	Other	Kinase
+CHK2ps1	Other	Kinase
+CHK2ps2	Other	Kinase
+CHKA	Oncogene	Kinase
+CHKB	Other	Kinase
+CHL1	Oncogene	Other Oncogene
+CHN1	Oncogene	Other Oncogene
+CHRNB4	Oncogene	Other Oncogene
+CHST10	Tumor Suppressor	Other Tumor Suppressor
+CHUK	Tumor Suppressor	Kinase
+CIC	Oncogene or Tumor Suppressor	Transcription Factor
+CIITA	Oncogene	Other Oncogene
+CILK1	Other	Kinase
+CIP2A	Oncogene	Other Oncogene
+CIRBP	Oncogene	RNA Binding Protein
+CIT	Other	Kinase
+CITED2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CITED4	Oncogene	Other Oncogene
+CIZ1	Tumor Suppressor	Other Tumor Suppressor
+CK1a	Other	Kinase
+CK1a2	Other	Kinase
+CK1aps1	Other	Kinase
+CK1aps2	Other	Kinase
+CK1aps3	Other	Kinase
+CK1d	Other	Kinase
+CK1e	Other	Kinase
+CK1g1	Other	Kinase
+CK1g2	Other	Kinase
+CK1g2ps	Other	Kinase
+CK1g3	Other	Kinase
+CK2a1	Other	Kinase
+CK2a1-rs	Other	Kinase
+CK2a2	Other	Kinase
+CKS1B	Oncogene	Other Oncogene
+CKS1BP7	Oncogene	Other Oncogene
+CKS2	Oncogene	Other Oncogene
+CLDN1	Tumor Suppressor	Other Tumor Suppressor
+CLDN23	Tumor Suppressor	Other Tumor Suppressor
+CLDN4	Oncogene	Other Oncogene
+CLIC4	Oncogene	Other Oncogene
+CLIK1	Other	Kinase
+CLIK1L	Other	Kinase
+CLK1	Other	Kinase
+CLK2	Other	Kinase
+CLK2ps	Other	Kinase
+CLK3	Other	Kinase
+CLK3ps	Other	Kinase
+CLK4	Other	Kinase
+CLOCK	Other	Epigenetic
+CLP1	Oncogene	Other Oncogene
+CLTC	Oncogene	Other Oncogene
+CLTCL1	Oncogene	Other Oncogene
+CLU	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CMC4	Oncogene	Other Oncogene
+CMC4	Oncogene	Other Oncogene
+CMTM3	Tumor Suppressor	Other Tumor Suppressor
+CMTM5	Tumor Suppressor	Other Tumor Suppressor
+CMTM7	Oncogene	Other Oncogene
+CNBP	Oncogene	Other Oncogene
+CNDP2	Tumor Suppressor	Other Tumor Suppressor
+CNN1	Tumor Suppressor	Other Tumor Suppressor
+CNNM4	Oncogene	Other Oncogene
+CNOT3	Tumor Suppressor	Other Tumor Suppressor
+CNR2	Oncogene	Other Oncogene
+CNTN4	Oncogene	Other Oncogene
+CNTN6	Oncogene	Other Oncogene
+CNTNAP2	Tumor Suppressor	Other Tumor Suppressor
+CNTRL	Oncogene	Other Oncogene
+COL11A1	Oncogene	Other Oncogene
+COL16A1	Oncogene	Other Oncogene
+COL19A1	Oncogene	Other Oncogene
+COL1A1	Oncogene	Other Oncogene
+COL1A2	Oncogene	Other Oncogene
+COL28A1	Oncogene	Other Oncogene
+COL4A3	Oncogene	Other Oncogene
+COL7A1	Oncogene	Other Oncogene
+COP1	Tumor Suppressor	Other Tumor Suppressor
+COPS2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+COQ8A	Other	Kinase
+COQ8B	Other	Kinase
+CORO1A	Oncogene	Other Oncogene
+CORO1C	Oncogene	Other Oncogene
+CORO2A	Oncogene	Other Oncogene
+CORO2B	Oncogene	Other Oncogene
+COT	Other	Kinase
+COTL1	Oncogene	Other Oncogene
+COX19	Oncogene	Other Oncogene
+COX6C	Oncogene	Other Oncogene
+CPEB1	Other	RNA Binding Protein
+CPLX2	Oncogene	Other Oncogene
+CPNE7	Tumor Suppressor	Other Tumor Suppressor
+CPXCR1	Other	Transcription Factor
+CR1L	Oncogene	Other Oncogene
+CR2	Oncogene	Other Oncogene
+CRB2	Oncogene	Epigenetic
+CREB1	Oncogene	Transcription Factor
+CREB3	Other	Transcription Factor
+CREB3L1	Oncogene or Tumor Suppressor	Transcription Factor
+CREB3L2	Oncogene	Transcription Factor
+CREB3L3	Other	Transcription Factor
+CREB3L4	Other	Transcription Factor
+CREB5	Other	Transcription Factor
+CREBBP	Oncogene or Tumor Suppressor	Epigenetic
+CREBL2	Other	Transcription Factor
+CREBZF	Other	Transcription Factor
+CREM	Tumor Suppressor	Transcription Factor
+CRIK	Other	Kinase
+CRIP2	Oncogene	Other Oncogene
+CRK	Oncogene	Other Oncogene
+CRK7	Other	Kinase
+CRKL	Oncogene	Other Oncogene
+CRLF2	Oncogene	Other Oncogene
+CRNN	Tumor Suppressor	Other Tumor Suppressor
+CRTC1	Oncogene	Other Oncogene
+CRTC2	Oncogene	Other Oncogene
+CRTC3	Oncogene	Other Oncogene
+CRX	Other	Transcription Factor
+CRYAA	Oncogene	Other Oncogene
+CRYAB	Oncogene	Other Oncogene
+CSE1L	Oncogene	Other Oncogene
+CSF1	Oncogene	Other Oncogene
+CSF1R	Other	Kinase
+CSF1R	Oncogene	Kinase
+CSF2	Tumor Suppressor	Other Tumor Suppressor
+CSF3R	Oncogene	Other Oncogene
+CSK	Other	Kinase
+CSMD1	Tumor Suppressor	Other Tumor Suppressor
+CSMD3	Oncogene	Other Oncogene
+CSNK1A1	Oncogene or Tumor Suppressor	Kinase
+CSNK1A1L	Other	Kinase
+CSNK1D	Other	Kinase
+CSNK1E	Other	Kinase
+CSNK1G1	Other	Kinase
+CSNK1G2	Other	Kinase
+CSNK1G3	Other	Kinase
+CSNK2A1	Oncogene	Kinase
+CSNK2A2	Other	Kinase
+CSNK2A3	Other	Kinase
+CSPG4	Oncogene	Other Oncogene
+CSRNP1	Tumor Suppressor	Transcription Factor
+CSRNP2	Other	Transcription Factor
+CSRNP3	Other	Transcription Factor
+CST5	Tumor Suppressor	Other Tumor Suppressor
+CST6	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CSTA	Oncogene	Other Oncogene
+CSTB	Oncogene	Other Oncogene
+CTCF	Tumor Suppressor	Epigenetic
+CTCFL	Tumor Suppressor	Epigenetic
+CTDSPL	Tumor Suppressor	Other Tumor Suppressor
+CTGF	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CTHRC1	Oncogene	Other Oncogene
+CTIF	Oncogene	Other Oncogene
+CTK	Other	Kinase
+CTNNA1	Oncogene	Other Oncogene
+CTNNA2	Tumor Suppressor	Other Tumor Suppressor
+CTNNA3	Tumor Suppressor	Other Tumor Suppressor
+CTNNB1	Oncogene	Other Oncogene
+CTNNBIP1	Tumor Suppressor	Other Tumor Suppressor
+CTNND1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CTNND2	Oncogene	Other Oncogene
+CTSB	Oncogene	Other Oncogene
+CTSH	Oncogene	Other Oncogene
+CTSL	Oncogene	Other Oncogene
+CTTN	Oncogene	Other Oncogene
+CUBN	Oncogene	Other Oncogene
+CUEDC1	Oncogene	Other Oncogene
+CUL1	Oncogene or Tumor Suppressor	Epigenetic
+CUL2	Tumor Suppressor	Epigenetic
+CUL4B	Oncogene	Epigenetic
+CUL5	Tumor Suppressor	Epigenetic
+CUX1	Oncogene or Tumor Suppressor	Transcription Factor
+CUX2	Other	Transcription Factor
+CXCL1	Oncogene	Other Oncogene
+CXCL10	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CXCL12	Tumor Suppressor	Other Tumor Suppressor
+CXCL14	Tumor Suppressor	Other Tumor Suppressor
+CXCL2	Oncogene	Other Oncogene
+CXCL3	Oncogene	Other Oncogene
+CXCR2	Tumor Suppressor	Other Tumor Suppressor
+CXCR3	Oncogene	Other Oncogene
+CXXC1	Other	Epigenetic
+CXXC4	Tumor Suppressor	Transcription Factor
+CXXC5	Tumor Suppressor	Transcription Factor
+CYB561D2	Tumor Suppressor	Other Tumor Suppressor
+CYB5A	Tumor Suppressor	Other Tumor Suppressor
+CYB5R2	Tumor Suppressor	Other Tumor Suppressor
+CYB5R4	Oncogene	Other Oncogene
+CYGB	Tumor Suppressor	Other Tumor Suppressor
+CYGD	Other	Kinase
+CYGF	Other	Kinase
+CYLD	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+CYP19A1	Oncogene	Other Oncogene
+CYP1A1	Oncogene	Other Oncogene
+CYP2A6	Oncogene	Other Oncogene
+CYP2D6	Oncogene	Other Oncogene
+CYP2W1	Oncogene	Other Oncogene
+CYP7A1	Oncogene	Other Oncogene
+CYP7B1	Oncogene	Other Oncogene
+CYR61	Oncogene	Other Oncogene
+CYRIA	Oncogene	Other Oncogene
+CaMK1a	Other	Kinase
+CaMK1b	Other	Kinase
+CaMK1d	Other	Kinase
+CaMK1g	Other	Kinase
+CaMK2a	Other	Kinase
+CaMK2b	Other	Kinase
+CaMK2d	Other	Kinase
+CaMK2g	Other	Kinase
+CaMK4	Other	Kinase
+CaMKK1	Other	Kinase
+CaMKK2	Other	Kinase
+ChaK1	Other	Kinase
+ChaK2	Other	Kinase
+DAB2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+DAB2IP	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+DACH1	Tumor Suppressor	Transcription Factor
+DACH2	Oncogene	Transcription Factor
+DACT1	Tumor Suppressor	Other Tumor Suppressor
+DAPK1	Oncogene or Tumor Suppressor	Kinase
+DAPK2	Tumor Suppressor	Kinase
+DAPK3	Tumor Suppressor	Kinase
+DAXX	Oncogene	Epigenetic
+DBN1	Oncogene	Other Oncogene
+DBP	Other	Transcription Factor
+DBX1	Other	Transcription Factor
+DBX2	Other	Transcription Factor
+DCC	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+DCDC2	Tumor Suppressor	Other Tumor Suppressor
+DCLK1	Other	Kinase
+DCLK2	Other	Kinase
+DCLK3	Other	Kinase
+DCLRE1A	Tumor Suppressor	Other Tumor Suppressor
+DCN	Tumor Suppressor	Other Tumor Suppressor
+DCUN1D3	Tumor Suppressor	Other Tumor Suppressor
+DDB2	Oncogene or Tumor Suppressor	Epigenetic
+DDIT3	Oncogene	Transcription Factor
+DDR1	Oncogene	Kinase
+DDR2	Tumor Suppressor	Kinase
+DDX1	Oncogene	Other Oncogene
+DDX10	Oncogene	Other Oncogene
+DDX3X	Tumor Suppressor	Other Tumor Suppressor
+DDX43	Oncogene	RNA Binding Protein
+DDX5	Oncogene	Other Oncogene
+DDX58	Tumor Suppressor	Other Tumor Suppressor
+DDX6	Oncogene	Other Oncogene
+DEAF1	Other	Transcription Factor
+DEFB1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+DEK	Oncogene	Epigenetic
+DENND11	Oncogene	Other Oncogene
+DENND2B	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+DENND2D	Tumor Suppressor	Other Tumor Suppressor
+DENR	Oncogene	Other Oncogene
+DEUP1	Tumor Suppressor	Other Tumor Suppressor
+DFFA	Tumor Suppressor	Other Tumor Suppressor
+DFNA5	Tumor Suppressor	Other Tumor Suppressor
+DGKA	Other	Kinase
+DGKB	Other	Kinase
+DGKE	Oncogene	Other Oncogene
+DGKG	Other	Kinase
+DHRS3	Oncogene	Other Oncogene
+DHX9	Oncogene	Other Oncogene
+DIABLO	Tumor Suppressor	Other Tumor Suppressor
+DICER1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+DIDO1	Tumor Suppressor	Other Tumor Suppressor
+DIO2	Oncogene	Other Oncogene
+DIP2C	Oncogene	Other Oncogene
+DIRAS1	Tumor Suppressor	Other Tumor Suppressor
+DIRAS3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+DIRC1	Oncogene	Other Oncogene
+DIRC2	Oncogene	Other Oncogene
+DIRC3	Oncogene	Other Oncogene
+DKC1	Oncogene	RNA Binding Protein
+DKK1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+DKK3	Tumor Suppressor	Other Tumor Suppressor
+DLC1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+DLEC1	Tumor Suppressor	Other Tumor Suppressor
+DLEU1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+DLEU2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+DLG1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+DLGAP1	Oncogene	Other Oncogene
+DLK	Other	Kinase
+DLK1	Tumor Suppressor	Other Tumor Suppressor
+DLST	Oncogene	Other Oncogene
+DLX1	Other	Transcription Factor
+DLX2	Other	Transcription Factor
+DLX3	Other	Transcription Factor
+DLX4	Oncogene	Transcription Factor
+DLX5	Other	Transcription Factor
+DLX6	Other	Transcription Factor
+DMBT1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+DMBX1	Other	Transcription Factor
+DMD	Tumor Suppressor	Other Tumor Suppressor
+DMPK	Other	Kinase
+DMPK1	Other	Kinase
+DMPK2	Other	Kinase
+DMRT1	Other	Transcription Factor
+DMRT2	Other	Transcription Factor
+DMRT3	Other	Transcription Factor
+DMRTA1	Other	Transcription Factor
+DMRTA2	Other	Transcription Factor
+DMRTB1	Other	Transcription Factor
+DMRTC2	Other	Transcription Factor
+DMTF1	Oncogene or Tumor Suppressor	Transcription Factor
+DNAH9	Oncogene	Other Oncogene
+DNAI7	Tumor Suppressor	Other Tumor Suppressor
+DNAJA3	Tumor Suppressor	Other Tumor Suppressor
+DNAJB1	Tumor Suppressor	Other Tumor Suppressor
+DNAJB4	Tumor Suppressor	Other Tumor Suppressor
+DNAJC11	Tumor Suppressor	Other Tumor Suppressor
+DNAJC24	Oncogene	Other Oncogene
+DNAJC6	Oncogene	Other Oncogene
+DNAJC9	Oncogene	Other Oncogene
+DNAL4	Oncogene	Other Oncogene
+DNAPK	Other	Kinase
+DNASE1L3	Oncogene	Other Oncogene
+DND1	Tumor Suppressor	RNA Binding Protein
+DNMT1	Oncogene or Tumor Suppressor	Epigenetic
+DNMT3A	Oncogene or Tumor Suppressor	Epigenetic
+DNMT3B	Tumor Suppressor	Epigenetic
+DNTTIP1	Other	Transcription Factor
+DOK1	Tumor Suppressor	Other Tumor Suppressor
+DOK2	Tumor Suppressor	Other Tumor Suppressor
+DOK3	Tumor Suppressor	Other Tumor Suppressor
+DOP1B	Oncogene	Other Oncogene
+DOPEY2	Oncogene	Other Oncogene
+DOT1L	Other	Epigenetic
+DPF1	Other	Epigenetic
+DPF3	Other	Epigenetic
+DPH1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+DPP4	Tumor Suppressor	Other Tumor Suppressor
+DPRX	Other	Transcription Factor
+DPT	Oncogene	Other Oncogene
+DR1	Other	Epigenetic
+DRAK1	Other	Kinase
+DRAK2	Other	Kinase
+DRAM1	Oncogene	Other Oncogene
+DRAP1	Other	Transcription Factor
+DRGX	Other	Transcription Factor
+DSC2	Tumor Suppressor	Other Tumor Suppressor
+DSC3	Tumor Suppressor	Other Tumor Suppressor
+DSG2	Oncogene	Other Oncogene
+DSP	Tumor Suppressor	Other Tumor Suppressor
+DST	Oncogene	Other Oncogene
+DSTYK	Other	Kinase
+DTX2	Oncogene	Other Oncogene
+DTX3	Oncogene	Other Oncogene
+DUSP1	Tumor Suppressor	Other Tumor Suppressor
+DUSP10	Oncogene	Other Oncogene
+DUSP2	Oncogene	Other Oncogene
+DUSP22	Tumor Suppressor	Other Tumor Suppressor
+DUSP26	Tumor Suppressor	Other Tumor Suppressor
+DUSP5	Tumor Suppressor	Other Tumor Suppressor
+DUSP6	Tumor Suppressor	Other Tumor Suppressor
+DUSP9	Tumor Suppressor	Other Tumor Suppressor
+DUX1	Other	Transcription Factor
+DUX3	Other	Transcription Factor
+DUX4	Oncogene	Transcription Factor
+DUX4L1	Oncogene	Transcription Factor
+DUXA	Other	Transcription Factor
+DYM	Oncogene	Other Oncogene
+DYRK1A	Oncogene	Kinase
+DYRK1B	Oncogene	Kinase
+DYRK2	Other	Kinase
+DYRK3	Other	Kinase
+DYRK4	Other	Kinase
+DZIP1	Other	Transcription Factor
+Dec-01	Tumor Suppressor	Other Tumor Suppressor
+E2F1	Oncogene or Tumor Suppressor	Transcription Factor
+E2F2	Oncogene or Tumor Suppressor	Transcription Factor
+E2F3	Oncogene or Tumor Suppressor	Transcription Factor
+E2F4	Oncogene	Transcription Factor
+E2F5	Other	Transcription Factor
+E2F6	Oncogene	Epigenetic
+E2F7	Other	Transcription Factor
+E2F8	Other	Transcription Factor
+E4F1	Other	Transcription Factor
+EAF1	Tumor Suppressor	Other Tumor Suppressor
+EAF2	Tumor Suppressor	Other Tumor Suppressor
+EBAG9	Oncogene	Other Oncogene
+EBF1	Oncogene	Transcription Factor
+EBF2	Other	Transcription Factor
+EBF3	Tumor Suppressor	Transcription Factor
+EBF4	Other	Transcription Factor
+ECM1	Oncogene	Other Oncogene
+ECRG4	Tumor Suppressor	Other Tumor Suppressor
+ECT2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+EDA2R	Tumor Suppressor	Other Tumor Suppressor
+EDNRB	Tumor Suppressor	Other Tumor Suppressor
+EDRF1	Oncogene	Other Oncogene
+EEA1	Other	Transcription Factor
+EED	Tumor Suppressor	Epigenetic
+EEF1A1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+EEF1A2	Oncogene	Other Oncogene
+EEF1E1	Tumor Suppressor	Other Tumor Suppressor
+EEF2K	Other	Kinase
+EFNA5	Tumor Suppressor	Other Tumor Suppressor
+EGF	Oncogene	Other Oncogene
+EGFL6	Oncogene	Other Oncogene
+EGFR	Oncogene	Kinase
+EGLN1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+EGLN3	Tumor Suppressor	Other Tumor Suppressor
+EGR1	Oncogene or Tumor Suppressor	Transcription Factor
+EGR2	Tumor Suppressor	Transcription Factor
+EGR3	Oncogene	Transcription Factor
+EGR4	Other	Transcription Factor
+EHD3	Tumor Suppressor	Other Tumor Suppressor
+EHF	Tumor Suppressor	Transcription Factor
+EHMT1	Oncogene	Epigenetic
+EI24	Tumor Suppressor	Other Tumor Suppressor
+EIF1AX	Oncogene	Other Oncogene
+EIF1B	Oncogene	Other Oncogene
+EIF2AK1	Other	Kinase
+EIF2AK2	Oncogene	Kinase
+EIF2AK3	Other	Kinase
+EIF2AK4	Other	Kinase
+EIF3A	Oncogene	Other Oncogene
+EIF3C	Oncogene	Other Oncogene
+EIF3E	Oncogene	Other Oncogene
+EIF3F	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+EIF3I	Oncogene	Other Oncogene
+EIF4A2	Oncogene	Other Oncogene
+EIF4E	Oncogene	Other Oncogene
+EIF4EBP1	Oncogene	Other Oncogene
+EIF4G1	Oncogene	Other Oncogene
+EIF6	Oncogene	Other Oncogene
+ELAC2	Oncogene	Other Oncogene
+ELAVL1	Oncogene	RNA Binding Protein
+ELF1	Other	Transcription Factor
+ELF2	Other	Transcription Factor
+ELF3	Other	Transcription Factor
+ELF4	Oncogene	Transcription Factor
+ELF5	Other	Transcription Factor
+ELK1	Oncogene	Transcription Factor
+ELK2AP	Oncogene	Other Oncogene
+ELK3	Oncogene	Transcription Factor
+ELK4	Oncogene	Transcription Factor
+ELL	Oncogene	Other Oncogene
+ELMO1	Oncogene	Other Oncogene
+ELN	Oncogene	Other Oncogene
+ELOA	Tumor Suppressor	Other Tumor Suppressor
+ELOVL5	Oncogene	Other Oncogene
+EML4	Oncogene	Other Oncogene
+EMP1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+EMP2	Tumor Suppressor	Other Tumor Suppressor
+EMSY	Oncogene	Other Oncogene
+EMX1	Other	Transcription Factor
+EMX2	Other	Transcription Factor
+EN1	Other	Transcription Factor
+EN2	Other	Transcription Factor
+ENAH	Oncogene	Other Oncogene
+ENC1	Oncogene	Other Oncogene
+ENO1	Oncogene	Other Oncogene
+ENPP2	Oncogene	Other Oncogene
+ENPP7	Oncogene	Other Oncogene
+EOMES	Other	Transcription Factor
+EP300	Oncogene	Epigenetic
+EP400	Oncogene	Epigenetic
+EPAS1	Tumor Suppressor	Transcription Factor
+EPB41	Tumor Suppressor	Other Tumor Suppressor
+EPB41L3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+EPCAM	Oncogene	Other Oncogene
+EPG5	Oncogene	Other Oncogene
+EPHA1	Oncogene or Tumor Suppressor	Kinase
+EPHA10	Other	Kinase
+EPHA2	Oncogene or Tumor Suppressor	Kinase
+EPHA3	Oncogene or Tumor Suppressor	Kinase
+EPHA4	Other	Kinase
+EPHA5	Other	Kinase
+EPHA6	Other	Kinase
+EPHA7	Oncogene	Kinase
+EPHA8	Other	Kinase
+EPHB1	Other	Kinase
+EPHB2	Tumor Suppressor	Kinase
+EPHB3	Tumor Suppressor	Kinase
+EPHB4	Tumor Suppressor	Kinase
+EPHB6	Oncogene or Tumor Suppressor	Kinase
+EPO	Oncogene	Other Oncogene
+EPOR	Oncogene	Other Oncogene
+EPS15	Oncogene	Other Oncogene
+EPS15L1	Oncogene	Other Oncogene
+EPS8	Oncogene	Other Oncogene
+ERAS	Oncogene	Other Oncogene
+ERBB2	Oncogene	Kinase
+ERBB3	Oncogene	Kinase
+ERBB4	Oncogene or Tumor Suppressor	Kinase
+ERC1	Oncogene	Other Oncogene
+ERC2	Oncogene	Other Oncogene
+ERCC1	Oncogene	Other Oncogene
+ERCC2	Oncogene	Other Oncogene
+ERCC3	Oncogene	Other Oncogene
+ERCC4	Oncogene	Other Oncogene
+ERCC5	Oncogene	Other Oncogene
+ERCC6	Oncogene	Epigenetic
+ERCC8	Oncogene	Other Oncogene
+ERF	Tumor Suppressor	Transcription Factor
+ERG	Oncogene	Transcription Factor
+ERGIC3	Oncogene	Other Oncogene
+ERICH1	Oncogene	Other Oncogene
+ERN1	Other	Kinase
+ERRFI1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+ERVW-1	Oncogene	Other Oncogene
+ESR1	Oncogene or Tumor Suppressor	Transcription Factor
+ESR2	Oncogene or Tumor Suppressor	Transcription Factor
+ESRP1	Tumor Suppressor	RNA Binding Protein
+ESRRA	Oncogene	Transcription Factor
+ESRRB	Tumor Suppressor	Transcription Factor
+ESRRG	Oncogene	Transcription Factor
+ESX1	Other	Transcription Factor
+ETF1	Tumor Suppressor	Transcription Factor
+ETNK1	Other	Kinase
+ETNK2	Other	Kinase
+ETS1	Oncogene	Transcription Factor
+ETS2	Oncogene or Tumor Suppressor	Transcription Factor
+ETV1	Oncogene	Transcription Factor
+ETV2	Other	Transcription Factor
+ETV3	Oncogene	Transcription Factor
+ETV3L	Other	Transcription Factor
+ETV4	Oncogene	Transcription Factor
+ETV5	Oncogene	Transcription Factor
+ETV6	Oncogene or Tumor Suppressor	Transcription Factor
+ETV7	Other	Transcription Factor
+EVL	Oncogene	Other Oncogene
+EVX1	Other	Transcription Factor
+EVX2	Other	Transcription Factor
+EWSR1	Oncogene	RNA Binding Protein
+EXOC4	Oncogene	Other Oncogene
+EXT1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+EXT2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+EXTL1	Tumor Suppressor	Other Tumor Suppressor
+EXTL2	Tumor Suppressor	Other Tumor Suppressor
+EXTL3	Tumor Suppressor	Other Tumor Suppressor
+EYA4	Oncogene or Tumor Suppressor	Epigenetic
+EZH1	Tumor Suppressor	Epigenetic
+EZH2	Oncogene or Tumor Suppressor	Epigenetic
+EphA1	Other	Kinase
+EphA10	Other	Kinase
+EphA2	Other	Kinase
+EphA3	Other	Kinase
+EphA4	Other	Kinase
+EphA5	Other	Kinase
+EphA6	Other	Kinase
+EphA7	Other	Kinase
+EphA8	Other	Kinase
+EphB1	Other	Kinase
+EphB2	Other	Kinase
+EphB3	Other	Kinase
+EphB4	Other	Kinase
+EphB6	Other	Kinase
+ErbB2	Other	Kinase
+ErbB3	Other	Kinase
+ErbB4	Other	Kinase
+Erk1	Other	Kinase
+Erk2	Other	Kinase
+Erk3	Other	Kinase
+Erk3ps1	Other	Kinase
+Erk3ps2	Other	Kinase
+Erk3ps3	Other	Kinase
+Erk3ps4	Other	Kinase
+Erk4	Other	Kinase
+Erk5	Other	Kinase
+Erk7	Other	Kinase
+FABP3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+FADD	Tumor Suppressor	Other Tumor Suppressor
+FAIM	Oncogene	Other Oncogene
+FAK	Other	Kinase
+FAM117A	Oncogene	Other Oncogene
+FAM170A	Other	Transcription Factor
+FAM172A	Tumor Suppressor	Other Tumor Suppressor
+FAM188A	Tumor Suppressor	Other Tumor Suppressor
+FAM200B	Other	Transcription Factor
+FAM212B	Oncogene	Other Oncogene
+FAM49A	Oncogene	Other Oncogene
+FAM57A	Oncogene	Other Oncogene
+FANCA	Oncogene	Other Oncogene
+FANCC	Oncogene	Other Oncogene
+FANCD2	Oncogene	Other Oncogene
+FANCE	Oncogene	Other Oncogene
+FANCF	Oncogene	Other Oncogene
+FANCG	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+FAS	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+FASTK	Other	Kinase
+FAT1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+FAT2	Oncogene	Other Oncogene
+FAT4	Tumor Suppressor	Other Tumor Suppressor
+FBLN1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+FBP1	Tumor Suppressor	Other Tumor Suppressor
+FBXL13	Tumor Suppressor	Other Tumor Suppressor
+FBXL19	Other	Transcription Factor
+FBXL7	Oncogene	Other Oncogene
+FBXO25	Tumor Suppressor	Other Tumor Suppressor
+FBXO31	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+FBXO32	Tumor Suppressor	Other Tumor Suppressor
+FBXO5	Oncogene	Other Oncogene
+FBXW4	Oncogene	Other Oncogene
+FBXW7	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+FCGR2B	Oncogene	Other Oncogene
+FCRL4	Oncogene	Other Oncogene
+FCRL5	Oncogene	Other Oncogene
+FCSK	Other	Kinase
+FEN1	Oncogene	Other Oncogene
+FER	Other	Kinase
+FER1L4	Tumor Suppressor	Other Tumor Suppressor
+FERD3L	Other	Transcription Factor
+FERps	Other	Kinase
+FES	Oncogene	Kinase
+FEV	Oncogene	Transcription Factor
+FEZF1	Other	Transcription Factor
+FEZF2	Other	Transcription Factor
+FGF1	Oncogene	Other Oncogene
+FGF10	Oncogene	Other Oncogene
+FGF11	Oncogene	Other Oncogene
+FGF12	Oncogene	Other Oncogene
+FGF13	Oncogene	Other Oncogene
+FGF14	Oncogene	Other Oncogene
+FGF2	Oncogene	Other Oncogene
+FGF3	Oncogene	Other Oncogene
+FGF4	Oncogene	Other Oncogene
+FGF5	Oncogene	Other Oncogene
+FGF6	Oncogene	Other Oncogene
+FGF7	Oncogene	Other Oncogene
+FGF8	Oncogene	Other Oncogene
+FGF9	Oncogene	Other Oncogene
+FGFR1	Oncogene	Kinase
+FGFR1OP	Oncogene	Other Oncogene
+FGFR2	Oncogene	Kinase
+FGFR3	Oncogene	Kinase
+FGFR4	Oncogene	Kinase
+FGR	Oncogene	Kinase
+FH	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+FHIT	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+FHL1	Tumor Suppressor	Other Tumor Suppressor
+FHL2	Oncogene	Other Oncogene
+FIGLA	Other	Transcription Factor
+FIP1L1	Oncogene	Other Oncogene
+FIZ1	Other	Transcription Factor
+FLCN	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+FLI1	Oncogene	Transcription Factor
+FLII	Oncogene	Other Oncogene
+FLNA	Tumor Suppressor	Other Tumor Suppressor
+FLNB	Oncogene	Other Oncogene
+FLT1	Oncogene	Kinase
+FLT1ps	Other	Kinase
+FLT3	Oncogene or Tumor Suppressor	Kinase
+FLT4	Other	Kinase
+FLYWCH1	Other	Transcription Factor
+FMNL3	Oncogene	Other Oncogene
+FMOD	Oncogene	Other Oncogene
+FMS	Other	Kinase
+FN1	Oncogene	Other Oncogene
+FNBP1	Oncogene	Other Oncogene
+FNBP4	Oncogene	Other Oncogene
+FNIP1	Oncogene	Other Oncogene
+FOS	Oncogene	Transcription Factor
+FOSB	Oncogene	Transcription Factor
+FOSL1	Oncogene	Transcription Factor
+FOSL2	Oncogene	Transcription Factor
+FOXA1	Oncogene or Tumor Suppressor	Epigenetic
+FOXA2	Tumor Suppressor	Transcription Factor
+FOXA3	Other	Transcription Factor
+FOXB1	Other	Transcription Factor
+FOXB2	Other	Transcription Factor
+FOXC1	Tumor Suppressor	Transcription Factor
+FOXC2	Oncogene	Transcription Factor
+FOXD1	Other	Transcription Factor
+FOXD2	Other	Transcription Factor
+FOXD3	Tumor Suppressor	Transcription Factor
+FOXD4	Other	Transcription Factor
+FOXD4L1	Other	Transcription Factor
+FOXD4L3	Other	Transcription Factor
+FOXD4L4	Other	Transcription Factor
+FOXD4L5	Other	Transcription Factor
+FOXD4L6	Other	Transcription Factor
+FOXE1	Oncogene	Transcription Factor
+FOXE3	Other	Transcription Factor
+FOXF1	Other	Transcription Factor
+FOXF2	Other	Transcription Factor
+FOXG1	Oncogene	Transcription Factor
+FOXH1	Other	Transcription Factor
+FOXI1	Other	Transcription Factor
+FOXI2	Other	Transcription Factor
+FOXI3	Other	Transcription Factor
+FOXJ1	Other	Transcription Factor
+FOXJ2	Other	Transcription Factor
+FOXJ3	Other	Transcription Factor
+FOXK1	Other	Transcription Factor
+FOXK2	Other	Transcription Factor
+FOXL1	Oncogene	Transcription Factor
+FOXL2	Oncogene or Tumor Suppressor	Transcription Factor
+FOXM1	Oncogene	Transcription Factor
+FOXN1	Other	Transcription Factor
+FOXN2	Other	Transcription Factor
+FOXN3	Other	Transcription Factor
+FOXN4	Other	Transcription Factor
+FOXO1	Oncogene or Tumor Suppressor	Epigenetic
+FOXO3	Oncogene or Tumor Suppressor	Transcription Factor
+FOXO4	Oncogene or Tumor Suppressor	Transcription Factor
+FOXO6	Tumor Suppressor	Transcription Factor
+FOXP1	Oncogene or Tumor Suppressor	Epigenetic
+FOXP2	Other	Epigenetic
+FOXP3	Oncogene or Tumor Suppressor	Epigenetic
+FOXP4	Other	Epigenetic
+FOXQ1	Other	Transcription Factor
+FOXR1	Other	Transcription Factor
+FOXR2	Oncogene	Transcription Factor
+FOXS1	Other	Transcription Factor
+FPGT-TNNI3K	Other	Kinase
+FRAP	Other	Kinase
+FRAT1	Oncogene	Other Oncogene
+FRK	Tumor Suppressor	Kinase
+FRMD8	Oncogene	Other Oncogene
+FRS3	Tumor Suppressor	Other Tumor Suppressor
+FRYL	Oncogene	Other Oncogene
+FSCB	Oncogene	Other Oncogene
+FSCN1	Oncogene	Other Oncogene
+FST	Oncogene	Other Oncogene
+FSTL3	Oncogene	Other Oncogene
+FUBP1	Oncogene	RNA Binding Protein
+FUS	Oncogene or Tumor Suppressor	RNA Binding Protein
+FUT8	Oncogene	Other Oncogene
+FXN	Tumor Suppressor	Other Tumor Suppressor
+FXYD5	Oncogene	Other Oncogene
+FYN	Oncogene	Kinase
+FZR1	Tumor Suppressor	Other Tumor Suppressor
+Fused	Other	Kinase
+G0S2	Tumor Suppressor	Other Tumor Suppressor
+G11	Other	Kinase
+GAB1	Oncogene	Other Oncogene
+GAB2	Oncogene	Other Oncogene
+GABARAP	Tumor Suppressor	Other Tumor Suppressor
+GABPA	Other	Transcription Factor
+GABPAP	Oncogene	Other Oncogene
+GABPB1	Oncogene	Other Oncogene
+GADD45A	Oncogene or Tumor Suppressor	Epigenetic
+GADD45B	Tumor Suppressor	Epigenetic
+GADD45G	Oncogene or Tumor Suppressor	Epigenetic
+GADD45GIP1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+GAK	Oncogene	Kinase
+GALK1	Other	Kinase
+GALK2	Other	Kinase
+GALNS	Oncogene	Other Oncogene
+GALNT5	Oncogene	Other Oncogene
+GALR1	Tumor Suppressor	Other Tumor Suppressor
+GANAB	Tumor Suppressor	Other Tumor Suppressor
+GAS1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+GAS5	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+GAS6	Oncogene	Other Oncogene
+GAS7	Oncogene	Other Oncogene
+GATA1	Oncogene	Transcription Factor
+GATA2	Oncogene	Transcription Factor
+GATA3	Oncogene	Transcription Factor
+GATA4	Tumor Suppressor	Transcription Factor
+GATA5	Tumor Suppressor	Transcription Factor
+GATA6	Oncogene	Transcription Factor
+GATAD2A	Other	Epigenetic
+GATAD2B	Other	Epigenetic
+GBP1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+GBX1	Other	Transcription Factor
+GBX2	Other	Transcription Factor
+GCK	Other	Kinase
+GCM1	Other	Transcription Factor
+GCM2	Other	Transcription Factor
+GCN2	Other	Kinase
+GCNT3	Oncogene	Other Oncogene
+GDF10	Oncogene	Other Oncogene
+GDF15	Oncogene	Other Oncogene
+GEN1	Oncogene	Other Oncogene
+GFI1	Oncogene	Epigenetic
+GFI1B	Oncogene	Epigenetic
+GGA1	Oncogene	Other Oncogene
+GGH	Oncogene	Other Oncogene
+GGNBP2	Tumor Suppressor	Other Tumor Suppressor
+GGTA1	Oncogene	Other Oncogene
+GGTA1P	Oncogene	Other Oncogene
+GGTA2P	Oncogene	Other Oncogene
+GHR	Oncogene	Other Oncogene
+GHRH	Oncogene	Other Oncogene
+GHRL	Oncogene	Other Oncogene
+GIMAP7	Oncogene	Other Oncogene
+GIP	Oncogene	Other Oncogene
+GJA1	Tumor Suppressor	Other Tumor Suppressor
+GJB2	Tumor Suppressor	Other Tumor Suppressor
+GKN1	Tumor Suppressor	Other Tumor Suppressor
+GKN2	Tumor Suppressor	Other Tumor Suppressor
+GLB1	Oncogene	Other Oncogene
+GLI1	Oncogene or Tumor Suppressor	Transcription Factor
+GLI2	Oncogene	Transcription Factor
+GLI3	Oncogene	Transcription Factor
+GLI4	Oncogene	Transcription Factor
+GLIPR1	Tumor Suppressor	Other Tumor Suppressor
+GLIS1	Other	Transcription Factor
+GLIS2	Other	Transcription Factor
+GLIS3	Other	Transcription Factor
+GLMN	Oncogene	Other Oncogene
+GLMP	Other	Transcription Factor
+GLS2	Tumor Suppressor	Other Tumor Suppressor
+GLTSCR1	Tumor Suppressor	Other Tumor Suppressor
+GLTSCR2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+GLYR1	Other	Epigenetic
+GMEB1	Other	Transcription Factor
+GMEB2	Other	Transcription Factor
+GMFB	Oncogene	Other Oncogene
+GML	Oncogene	Other Oncogene
+GMPS	Oncogene	Other Oncogene
+GNA11	Oncogene	Other Oncogene
+GNA12	Oncogene	Other Oncogene
+GNAI2	Oncogene	Other Oncogene
+GNAQ	Oncogene	Other Oncogene
+GNAS	Oncogene	Other Oncogene
+GNAT1	Tumor Suppressor	Other Tumor Suppressor
+GNB2L1	Tumor Suppressor	Other Tumor Suppressor
+GNMT	Tumor Suppressor	Other Tumor Suppressor
+GOLGA5	Oncogene	Other Oncogene
+GOPC	Oncogene	Other Oncogene
+GORAB	Tumor Suppressor	Other Tumor Suppressor
+GPA33	Oncogene	Other Oncogene
+GPBP1	Other	Transcription Factor
+GPBP1L1	Other	Transcription Factor
+GPC3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+GPC5	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+GPER1	Oncogene	Other Oncogene
+GPHN	Oncogene	Other Oncogene
+GPNMB	Oncogene	Other Oncogene
+GPR161	Oncogene	Other Oncogene
+GPR68	Oncogene	Other Oncogene
+GPRC5A	Tumor Suppressor	Other Tumor Suppressor
+GPRK4	Other	Kinase
+GPRK5	Other	Kinase
+GPRK6	Other	Kinase
+GPRK6ps	Other	Kinase
+GPRK7	Other	Kinase
+GPX1	Oncogene	Other Oncogene
+GPX3	Tumor Suppressor	Other Tumor Suppressor
+GRB10	Oncogene	Other Oncogene
+GRB2	Oncogene	Other Oncogene
+GREM1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+GRHL1	Other	Transcription Factor
+GRHL2	Other	Transcription Factor
+GRHL3	Other	Transcription Factor
+GRIN2A	Tumor Suppressor	Other Tumor Suppressor
+GRIN2D	Oncogene	Other Oncogene
+GRK1	Other	Kinase
+GRK1	Other	Kinase
+GRK2	Other	Kinase
+GRK3	Other	Kinase
+GRK4	Other	Kinase
+GRK5	Other	Kinase
+GRK5	Other	Kinase
+GRK6	Other	Kinase
+GRK6	Other	Kinase
+GRK7	Other	Kinase
+GRK7	Other	Kinase
+GRN	Oncogene	Other Oncogene
+GRP	Oncogene	Other Oncogene
+GRPR	Oncogene	Other Oncogene
+GSC	Other	Transcription Factor
+GSC2	Other	Transcription Factor
+GSDMA	Oncogene	Other Oncogene
+GSDME	Tumor Suppressor	Other Tumor Suppressor
+GSE1	Oncogene	Epigenetic
+GSK3A	Other	Kinase
+GSK3B	Oncogene or Tumor Suppressor	Kinase
+GSN	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+GSPT1	Oncogene	Other Oncogene
+GSTM1	Oncogene	Other Oncogene
+GSTP1	Tumor Suppressor	Other Tumor Suppressor
+GSTT1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+GSX1	Other	Transcription Factor
+GSX2	Other	Transcription Factor
+GTF2A1	Oncogene	Other Oncogene
+GTF2B	Other	Transcription Factor
+GTF2H1	Oncogene	Other Oncogene
+GTF2I	Other	Epigenetic
+GTF2IRD1	Other	Transcription Factor
+GTF2IRD2	Other	Transcription Factor
+GTF2IRD2B	Other	Transcription Factor
+GTF3A	Other	RNA Binding Protein
+GTPBP4	Tumor Suppressor	Other Tumor Suppressor
+GUCY1A2	Oncogene	Other Oncogene
+GUCY2C	Tumor Suppressor	Kinase
+GUCY2D	Other	Kinase
+GUCY2F	Other	Kinase
+GZF1	Other	Transcription Factor
+H1-2	Oncogene	Other Oncogene
+H1-5	Oncogene	Other Oncogene
+H11	Other	Kinase
+H19	Tumor Suppressor	Other Tumor Suppressor
+H2AFX	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+H2AX	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+H3-3A	Oncogene	Other Oncogene
+H3C2	Oncogene	Other Oncogene
+H3F3A	Oncogene	Other Oncogene
+H4C9	Oncogene	Other Oncogene
+HACD4	Tumor Suppressor	Other Tumor Suppressor
+HACE1	Tumor Suppressor	Other Tumor Suppressor
+HAND1	Other	Transcription Factor
+HAND2	Other	Transcription Factor
+HAPLN1	Oncogene	Other Oncogene
+HAS2	Oncogene	Other Oncogene
+HBP1	Oncogene or Tumor Suppressor	Transcription Factor
+HCAR2	Tumor Suppressor	Other Tumor Suppressor
+HCK	Oncogene	Kinase
+HDAC1	Tumor Suppressor	Epigenetic
+HDAC2	Oncogene	Epigenetic
+HDAC3	Oncogene or Tumor Suppressor	Epigenetic
+HDAC4	Oncogene	Epigenetic
+HDAC6	Oncogene	Epigenetic
+HDHD5	Oncogene	Other Oncogene
+HDLBP	Oncogene	RNA Binding Protein
+HDX	Other	Transcription Factor
+HECA	Tumor Suppressor	Other Tumor Suppressor
+HELT	Other	Transcription Factor
+HEPACAM	Tumor Suppressor	Other Tumor Suppressor
+HERPUD1	Oncogene	Other Oncogene
+HES1	Oncogene	Transcription Factor
+HES2	Other	Transcription Factor
+HES3	Other	Transcription Factor
+HES4	Other	Transcription Factor
+HES5	Other	Transcription Factor
+HES6	Other	Transcription Factor
+HES7	Other	Transcription Factor
+HESX1	Other	Transcription Factor
+HEXIM1	Oncogene	Other Oncogene
+HEY1	Oncogene	Transcription Factor
+HEY2	Other	Transcription Factor
+HEYL	Other	Transcription Factor
+HFE	Oncogene	Other Oncogene
+HGF	Oncogene	Other Oncogene
+HGK	Other	Kinase
+HH498	Other	Kinase
+HHEX	Oncogene	Transcription Factor
+HIC1	Oncogene or Tumor Suppressor	Transcription Factor
+HIC2	Other	Transcription Factor
+HIF1A	Tumor Suppressor	Transcription Factor
+HIF3A	Other	Transcription Factor
+HINFP	Other	Epigenetic
+HINT1	Tumor Suppressor	Other Tumor Suppressor
+HIP1	Oncogene	Other Oncogene
+HIPK1	Other	Kinase
+HIPK2	Oncogene or Tumor Suppressor	Kinase
+HIPK3	Other	Kinase
+HIPK4	Other	Kinase
+HIRA	Tumor Suppressor	Epigenetic
+HIST1H1B	Oncogene	Other Oncogene
+HIST1H1C	Oncogene	Other Oncogene
+HIST1H3B	Oncogene	Other Oncogene
+HIST1H4I	Oncogene	Other Oncogene
+HIVEP1	Oncogene or Tumor Suppressor	Transcription Factor
+HIVEP2	Other	Transcription Factor
+HIVEP3	Oncogene or Tumor Suppressor	Transcription Factor
+HK1	Other	Kinase
+HK2	Other	Kinase
+HK3	Other	Kinase
+HKDC1	Other	Kinase
+HKR1	Oncogene	Transcription Factor
+HLF	Oncogene	Transcription Factor
+HLTF	Oncogene or Tumor Suppressor	Epigenetic
+HLX	Other	Transcription Factor
+HMBOX1	Other	Transcription Factor
+HMG20A	Other	Epigenetic
+HMG20B	Other	Epigenetic
+HMGA1	Oncogene	Transcription Factor
+HMGA2	Oncogene	Transcription Factor
+HMGB1	Oncogene	Epigenetic
+HMGCR	Oncogene	Other Oncogene
+HMGN2P46	Oncogene	Other Oncogene
+HMGN3	Other	Epigenetic
+HMX1	Other	Transcription Factor
+HMX2	Other	Transcription Factor
+HMX3	Other	Transcription Factor
+HNF1A	Oncogene	Transcription Factor
+HNF1B	Other	Transcription Factor
+HNF4A	Tumor Suppressor	Transcription Factor
+HNF4G	Other	Transcription Factor
+HNRNPA2B1	Oncogene	RNA Binding Protein
+HNRNPA3	Oncogene	RNA Binding Protein
+HNRNPD	Oncogene	RNA Binding Protein
+HNRNPK	Oncogene	RNA Binding Protein
+HOMER2	Tumor Suppressor	Other Tumor Suppressor
+HOMEZ	Other	Transcription Factor
+HOOK3	Oncogene	Other Oncogene
+HOPX	Tumor Suppressor	Other Tumor Suppressor
+HOTS	Tumor Suppressor	Other Tumor Suppressor
+HOXA1	Other	Transcription Factor
+HOXA10	Other	Transcription Factor
+HOXA11	Oncogene	Transcription Factor
+HOXA13	Oncogene	Transcription Factor
+HOXA2	Other	Transcription Factor
+HOXA3	Oncogene	Transcription Factor
+HOXA4	Other	Transcription Factor
+HOXA5	Other	Transcription Factor
+HOXA6	Other	Transcription Factor
+HOXA7	Oncogene	Transcription Factor
+HOXA9	Oncogene	Transcription Factor
+HOXB1	Other	Transcription Factor
+HOXB13	Tumor Suppressor	Transcription Factor
+HOXB2	Other	Transcription Factor
+HOXB3	Other	Transcription Factor
+HOXB4	Other	Transcription Factor
+HOXB5	Other	Transcription Factor
+HOXB6	Other	Transcription Factor
+HOXB7	Other	Transcription Factor
+HOXB8	Oncogene	Transcription Factor
+HOXB9	Other	Transcription Factor
+HOXC10	Other	Transcription Factor
+HOXC11	Oncogene	Transcription Factor
+HOXC12	Other	Transcription Factor
+HOXC13	Oncogene	Transcription Factor
+HOXC4	Other	Transcription Factor
+HOXC5	Other	Transcription Factor
+HOXC6	Other	Transcription Factor
+HOXC8	Other	Transcription Factor
+HOXC9	Other	Transcription Factor
+HOXD1	Other	Transcription Factor
+HOXD10	Other	Transcription Factor
+HOXD11	Oncogene	Transcription Factor
+HOXD12	Other	Transcription Factor
+HOXD13	Oncogene	Transcription Factor
+HOXD3	Other	Transcription Factor
+HOXD4	Other	Transcription Factor
+HOXD8	Other	Transcription Factor
+HOXD9	Other	Transcription Factor
+HPGD	Tumor Suppressor	Other Tumor Suppressor
+HPK1	Other	Kinase
+HPR	Oncogene	Other Oncogene
+HPSE	Oncogene	Other Oncogene
+HRAS	Oncogene	Other Oncogene
+HRASLS2	Tumor Suppressor	Other Tumor Suppressor
+HRG	Tumor Suppressor	Other Tumor Suppressor
+HRI	Other	Kinase
+HRIps	Other	Kinase
+HSER	Other	Kinase
+HSF1	Other	Transcription Factor
+HSF2	Other	Transcription Factor
+HSF4	Other	Transcription Factor
+HSF5	Other	Transcription Factor
+HSFX1	Other	Transcription Factor
+HSFX2	Other	Transcription Factor
+HSFY1	Other	Transcription Factor
+HSFY2	Other	Transcription Factor
+HSP90AA1	Oncogene	Other Oncogene
+HSP90AA2P	Oncogene	Other Oncogene
+HSP90AB1	Oncogene	Other Oncogene
+HSP90B1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+HSP90B2P	Oncogene	Other Oncogene
+HSPA5	Oncogene	Other Oncogene
+HSPA9	Oncogene	Other Oncogene
+HSPB1	Oncogene	Other Oncogene
+HSPB7	Tumor Suppressor	Other Tumor Suppressor
+HSPBAP1	Oncogene	Other Oncogene
+HSPD1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+HSPG2	Oncogene	Other Oncogene
+HSPH1	Oncogene	Other Oncogene
+HTATIP2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+HTRA1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+HTRA2	Tumor Suppressor	Other Tumor Suppressor
+HTRA3	Tumor Suppressor	Other Tumor Suppressor
+HUNK	Other	Kinase
+HUS1	Oncogene	Other Oncogene
+HYAL1	Oncogene	Other Oncogene
+HYAL2	Oncogene	Other Oncogene
+Haspin	Other	Kinase
+ICAM1	Oncogene	Other Oncogene
+ICAM5	Oncogene	Other Oncogene
+ICK	Other	Kinase
+ID2	Oncogene	Other Oncogene
+ID3	Oncogene	Other Oncogene
+ID4	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+IDH1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+IDH2	Oncogene	Other Oncogene
+IDNK	Oncogene	Other Oncogene
+IDO1	Oncogene	Other Oncogene
+IDO2	Oncogene	Other Oncogene
+IER2	Oncogene	Other Oncogene
+IER3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+IFI16	Tumor Suppressor	Other Tumor Suppressor
+IFI27	Oncogene	Other Oncogene
+IFI30	Oncogene	Other Oncogene
+IFNAR1	Oncogene	Other Oncogene
+IFNGR2	Oncogene	Other Oncogene
+IFRD2	Oncogene	Other Oncogene
+IFT88	Tumor Suppressor	Other Tumor Suppressor
+IGF1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+IGF1R	Oncogene	Kinase
+IGF2	Oncogene	Other Oncogene
+IGF2BP1	Oncogene	RNA Binding Protein
+IGF2R	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+IGFALS	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+IGFBP1	Oncogene	Other Oncogene
+IGFBP2	Oncogene	Other Oncogene
+IGFBP3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+IGFBP4	Tumor Suppressor	Other Tumor Suppressor
+IGFBP5	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+IGFBP6	Oncogene	Other Oncogene
+IGFBP7	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+IGFBPL1	Tumor Suppressor	Other Tumor Suppressor
+IGH	Oncogene	Other Oncogene
+IGH	Oncogene	Other Oncogene
+IGH-@	Oncogene	Other Oncogene
+IGH@	Oncogene	Other Oncogene
+IGHG1	Oncogene	Other Oncogene
+IGK	Oncogene	Other Oncogene
+IGL	Oncogene	Other Oncogene
+IGL	Oncogene	Other Oncogene
+IGL-@	Oncogene	Other Oncogene
+IGL@	Oncogene	Other Oncogene
+IGSF8	Oncogene	Other Oncogene
+IKBKB	Other	Kinase
+IKBKE	Other	Kinase
+IKKa	Other	Kinase
+IKKb	Other	Kinase
+IKKe	Other	Kinase
+IKZF1	Oncogene or Tumor Suppressor	Epigenetic
+IKZF2	Oncogene or Tumor Suppressor	Transcription Factor
+IKZF3	Oncogene or Tumor Suppressor	Epigenetic
+IKZF4	Other	Transcription Factor
+IKZF5	Other	Transcription Factor
+IL16	Oncogene	Other Oncogene
+IL17A	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+IL17RB	Oncogene	Other Oncogene
+IL17RD	Tumor Suppressor	Other Tumor Suppressor
+IL1B	Oncogene	Other Oncogene
+IL2	Oncogene	Other Oncogene
+IL21R	Oncogene	Other Oncogene
+IL22	Oncogene	Other Oncogene
+IL22RA1	Oncogene	Other Oncogene
+IL23A	Oncogene	Other Oncogene
+IL24	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+IL2RA	Oncogene	Other Oncogene
+IL2RB	Oncogene	Other Oncogene
+IL2RG	Oncogene	Other Oncogene
+IL3	Oncogene	Other Oncogene
+IL3RA	Oncogene	Other Oncogene
+IL4R	Oncogene	Other Oncogene
+IL5	Oncogene	Other Oncogene
+IL6	Oncogene	Other Oncogene
+IL6ST	Oncogene	Other Oncogene
+IL7	Oncogene	Other Oncogene
+IL9	Oncogene	Other Oncogene
+ILK	Tumor Suppressor	Kinase
+ING1	Tumor Suppressor	Epigenetic
+ING2	Oncogene or Tumor Suppressor	Epigenetic
+ING3	Oncogene or Tumor Suppressor	Epigenetic
+ING4	Oncogene or Tumor Suppressor	Epigenetic
+ING5	Tumor Suppressor	Epigenetic
+INGX	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+INHA	Oncogene	Other Oncogene
+INHBE	Oncogene	Other Oncogene
+INKA2	Oncogene	Other Oncogene
+INPP4B	Tumor Suppressor	Other Tumor Suppressor
+INPP5K	Oncogene	Other Oncogene
+INPPL1	Oncogene	Other Oncogene
+INSM1	Other	Transcription Factor
+INSM2	Other	Transcription Factor
+INSR	Other	Kinase
+INSRR	Other	Kinase
+INTS6	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+IQCE	Oncogene	Other Oncogene
+IQGAP2	Tumor Suppressor	Other Tumor Suppressor
+IRAG1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+IRAG2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+IRAK1	Other	Kinase
+IRAK2	Oncogene	Kinase
+IRAK3	Other	Kinase
+IRAK4	Other	Kinase
+IRE1	Other	Kinase
+IRE2	Other	Kinase
+IRF1	Oncogene or Tumor Suppressor	Transcription Factor
+IRF2	Other	Transcription Factor
+IRF2BP2	Oncogene	Other Oncogene
+IRF3	Tumor Suppressor	Transcription Factor
+IRF4	Oncogene or Tumor Suppressor	Transcription Factor
+IRF5	Tumor Suppressor	Transcription Factor
+IRF6	Other	Transcription Factor
+IRF7	Other	Transcription Factor
+IRF8	Tumor Suppressor	Transcription Factor
+IRF9	Other	Transcription Factor
+IRR	Other	Kinase
+IRX1	Tumor Suppressor	Transcription Factor
+IRX2	Other	Transcription Factor
+IRX3	Other	Transcription Factor
+IRX4	Other	Transcription Factor
+IRX5	Other	Transcription Factor
+IRX6	Other	Transcription Factor
+ISG15	Tumor Suppressor	Other Tumor Suppressor
+ISL1	Other	Transcription Factor
+ISL2	Other	Transcription Factor
+ISX	Other	Transcription Factor
+ITGA11	Oncogene	Other Oncogene
+ITGA5	Tumor Suppressor	Other Tumor Suppressor
+ITGA7	Tumor Suppressor	Other Tumor Suppressor
+ITGA9	Oncogene	Other Oncogene
+ITGAV	Tumor Suppressor	Other Tumor Suppressor
+ITGAX	Oncogene	Other Oncogene
+ITGB1	Tumor Suppressor	Other Tumor Suppressor
+ITGB3	Tumor Suppressor	Other Tumor Suppressor
+ITGB4	Oncogene	Other Oncogene
+ITK	Oncogene	Kinase
+JAG1	Oncogene	Other Oncogene
+JAG2	Oncogene	Other Oncogene
+JAK1	Oncogene	Kinase
+JAK2	Oncogene	Kinase
+JAK3	Oncogene	Kinase
+JAKMIP1	Oncogene	Other Oncogene
+JAZF1	Oncogene	Transcription Factor
+JDP2	Oncogene or Tumor Suppressor	Epigenetic
+JNK1	Other	Kinase
+JNK2	Other	Kinase
+JNK3	Other	Kinase
+JRK	Other	Transcription Factor
+JRKL	Other	Transcription Factor
+JUN	Oncogene	Transcription Factor
+JUNB	Oncogene	Transcription Factor
+JUND	Oncogene	Transcription Factor
+JUP	Tumor Suppressor	Other Tumor Suppressor
+KALRN	Other	Kinase
+KANK1	Tumor Suppressor	Other Tumor Suppressor
+KAT14	Oncogene	Other Oncogene
+KAT5	Oncogene or Tumor Suppressor	Epigenetic
+KAT6A	Oncogene	Epigenetic
+KAT6B	Oncogene	Epigenetic
+KAT7	Other	Epigenetic
+KCMF1	Oncogene	Transcription Factor
+KCNH1	Oncogene	Other Oncogene
+KCNIP3	Other	Transcription Factor
+KCNK5	Oncogene	Other Oncogene
+KCNQ5	Oncogene	Other Oncogene
+KCNRG	Tumor Suppressor	Other Tumor Suppressor
+KCTD2	Oncogene	Other Oncogene
+KDM2A	Other	Epigenetic
+KDM2B	Oncogene	Epigenetic
+KDM3A	Oncogene or Tumor Suppressor	Epigenetic
+KDM3B	Tumor Suppressor	Epigenetic
+KDM4C	Oncogene	Epigenetic
+KDM5A	Oncogene or Tumor Suppressor	Epigenetic
+KDM5B	Other	Epigenetic
+KDM5C	Oncogene	Epigenetic
+KDM6A	Oncogene or Tumor Suppressor	Epigenetic
+KDM8	Oncogene or Tumor Suppressor	Epigenetic
+KDR	Oncogene	Kinase
+KDSR	Oncogene	Other Oncogene
+KEAP1	Oncogene	Epigenetic
+KHS1	Other	Kinase
+KHS2	Other	Kinase
+KIAA0895L	Oncogene	Other Oncogene
+KIAA1147	Oncogene	Other Oncogene
+KIAA1524	Oncogene	Other Oncogene
+KIAA1549	Oncogene	Other Oncogene
+KIF14	Oncogene	Other Oncogene
+KIF1B	Tumor Suppressor	Other Tumor Suppressor
+KIF7	Tumor Suppressor	Other Tumor Suppressor
+KIN	Other	RNA Binding Protein
+KIS	Other	Kinase
+KISS1	Tumor Suppressor	Other Tumor Suppressor
+KIT	Oncogene	Kinase
+KITLG	Oncogene	Other Oncogene
+KIZ	Oncogene	Other Oncogene
+KL	Tumor Suppressor	Other Tumor Suppressor
+KLF1	Other	Transcription Factor
+KLF10	Tumor Suppressor	Transcription Factor
+KLF11	Other	Transcription Factor
+KLF12	Other	Transcription Factor
+KLF13	Other	Transcription Factor
+KLF14	Other	Transcription Factor
+KLF15	Other	Transcription Factor
+KLF16	Other	Transcription Factor
+KLF17	Other	Transcription Factor
+KLF2	Other	Transcription Factor
+KLF3	Oncogene	Transcription Factor
+KLF4	Oncogene or Tumor Suppressor	Transcription Factor
+KLF5	Oncogene or Tumor Suppressor	Transcription Factor
+KLF6	Oncogene or Tumor Suppressor	Transcription Factor
+KLF7	Other	Transcription Factor
+KLF8	Other	Transcription Factor
+KLF9	Other	Transcription Factor
+KLHL10	Oncogene	Other Oncogene
+KLK10	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+KLK11	Oncogene	Other Oncogene
+KLK2	Oncogene	Other Oncogene
+KLK4	Oncogene	Other Oncogene
+KLK5	Oncogene	Other Oncogene
+KLK6	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+KLK7	Oncogene	Other Oncogene
+KLRK1	Oncogene	Other Oncogene
+KMT2A	Oncogene	Epigenetic
+KMT2B	Other	Epigenetic
+KMT2C	Oncogene or Tumor Suppressor	Epigenetic
+KMT2D	Oncogene	Epigenetic
+KNL1	Oncogene	Other Oncogene
+KPNA5	Oncogene	Other Oncogene
+KRAS	Oncogene	Other Oncogene
+KRIT1	Tumor Suppressor	Other Tumor Suppressor
+KRT19	Tumor Suppressor	Other Tumor Suppressor
+KRT26	Oncogene	Other Oncogene
+KRT73	Oncogene	Other Oncogene
+KSGCps	Other	Kinase
+KSR1	Oncogene	Kinase
+KSR2	Other	Kinase
+KTN1	Oncogene	Other Oncogene
+L1CAM	Oncogene	Other Oncogene
+L3MBTL1	Other	Epigenetic
+L3MBTL3	Other	RNA Binding Protein
+L3MBTL4	Tumor Suppressor	Epigenetic
+LACTB	Oncogene	Other Oncogene
+LAPTM5	Oncogene	Other Oncogene
+LASP1	Oncogene	Other Oncogene
+LAT2	Tumor Suppressor	Other Tumor Suppressor
+LATS1	Oncogene or Tumor Suppressor	Kinase
+LATS2	Oncogene or Tumor Suppressor	Kinase
+LBX1	Other	Transcription Factor
+LBX2	Other	Transcription Factor
+LCK	Oncogene	Kinase
+LCOR	Other	Transcription Factor
+LCORL	Other	Transcription Factor
+LCP1	Oncogene	Other Oncogene
+LDB1	Oncogene	Other Oncogene
+LEF1	Oncogene	Transcription Factor
+LEFTY1	Tumor Suppressor	Other Tumor Suppressor
+LEFTY2	Tumor Suppressor	Other Tumor Suppressor
+LEUTX	Other	Transcription Factor
+LFNG	Oncogene	Other Oncogene
+LGALS3	Oncogene	Other Oncogene
+LGALS3BP	Oncogene	Other Oncogene
+LGALS7	Tumor Suppressor	Other Tumor Suppressor
+LGI1	Oncogene	Other Oncogene
+LGR6	Oncogene	Other Oncogene
+LHCGR	Oncogene	Other Oncogene
+LHFP	Oncogene	Other Oncogene
+LHFPL6	Oncogene	Other Oncogene
+LHX1	Other	Transcription Factor
+LHX2	Other	Transcription Factor
+LHX3	Other	Transcription Factor
+LHX4	Tumor Suppressor	Transcription Factor
+LHX5	Other	Transcription Factor
+LHX6	Tumor Suppressor	Transcription Factor
+LHX8	Other	Transcription Factor
+LHX9	Other	Transcription Factor
+LIFR	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+LIMA1	Tumor Suppressor	Other Tumor Suppressor
+LIMD1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+LIMK1	Oncogene	Kinase
+LIMK2	Other	Kinase
+LIMK2ps	Other	Kinase
+LIN28A	Other	Transcription Factor
+LIN28B	Other	RNA Binding Protein
+LIN54	Other	Transcription Factor
+LIN9	Tumor Suppressor	Other Tumor Suppressor
+LINC-PINT	Tumor Suppressor	Other Tumor Suppressor
+LITAF	Tumor Suppressor	Other Tumor Suppressor
+LKB1	Other	Kinase
+LLGL1	Tumor Suppressor	Other Tumor Suppressor
+LMF1	Oncogene	Other Oncogene
+LMNTD1	Tumor Suppressor	Other Tumor Suppressor
+LMO1	Oncogene	Other Oncogene
+LMO2	Oncogene	Other Oncogene
+LMO3	Oncogene	Other Oncogene
+LMO7	Oncogene	Other Oncogene
+LMR1	Other	Kinase
+LMR2	Other	Kinase
+LMR3	Other	Kinase
+LMTK2	Other	Kinase
+LMTK3	Other	Kinase
+LMX1A	Other	Transcription Factor
+LMX1B	Other	Transcription Factor
+LNPEP	Oncogene	Other Oncogene
+LOC401317	Tumor Suppressor	Other Tumor Suppressor
+LOK	Other	Kinase
+LOX	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+LOXL2	Oncogene	Other Oncogene
+LOXL3	Oncogene	Other Oncogene
+LOXL4	Oncogene	Other Oncogene
+LPAR1	Oncogene	Other Oncogene
+LPP	Oncogene	Other Oncogene
+LRBA	Oncogene	Other Oncogene
+LRGUK	Oncogene	Other Oncogene
+LRIG1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+LRIG3	Tumor Suppressor	Other Tumor Suppressor
+LRMP	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+LRP1B	Tumor Suppressor	Other Tumor Suppressor
+LRP2	Oncogene	Other Oncogene
+LRP5	Oncogene	Other Oncogene
+LRRC25	Oncogene	Other Oncogene
+LRRC3B	Tumor Suppressor	Other Tumor Suppressor
+LRRC4	Tumor Suppressor	Other Tumor Suppressor
+LRRFIP1	Oncogene	Other Oncogene
+LRRK1	Other	Kinase
+LRRK2	Other	Kinase
+LSAMP	Tumor Suppressor	Other Tumor Suppressor
+LTA	Oncogene	Other Oncogene
+LTB	Oncogene	Other Oncogene
+LTBP2	Oncogene	Other Oncogene
+LTBP3	Oncogene	Other Oncogene
+LTBR	Oncogene	Other Oncogene
+LTF	Tumor Suppressor	Transcription Factor
+LTK	Other	Kinase
+LTO1	Oncogene	Other Oncogene
+LXN	Tumor Suppressor	Other Tumor Suppressor
+LY6E	Oncogene	Other Oncogene
+LYL1	Oncogene	Transcription Factor
+LYN	Oncogene	Kinase
+LYPD3	Oncogene	Other Oncogene
+LZK	Other	Kinase
+LZTS1	Tumor Suppressor	Other Tumor Suppressor
+M1AP	Oncogene	Other Oncogene
+MACF1	Oncogene	Other Oncogene
+MACROD1	Oncogene	Other Oncogene
+MAD1L1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MAD2L1	Oncogene	Other Oncogene
+MADD	Tumor Suppressor	Other Tumor Suppressor
+MAF	Oncogene	Transcription Factor
+MAFA	Oncogene	Transcription Factor
+MAFB	Oncogene	Transcription Factor
+MAFF	Other	Transcription Factor
+MAFG	Oncogene	Transcription Factor
+MAFK	Oncogene	Transcription Factor
+MAGEC2	Oncogene	Other Oncogene
+MAGEE1	Oncogene	Other Oncogene
+MAK	Other	Kinase
+MAL	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MALAT1	Oncogene	Other Oncogene
+MALT1	Oncogene	Other Oncogene
+MAMDC4	Oncogene	Other Oncogene
+MAML2	Oncogene	Other Oncogene
+MANF	Oncogene	Other Oncogene
+MAP2	Oncogene	Other Oncogene
+MAP2K1	Oncogene	Kinase
+MAP2K1ps	Other	Kinase
+MAP2K2	Other	Kinase
+MAP2K2ps	Other	Kinase
+MAP2K3	Other	Kinase
+MAP2K4	Oncogene or Tumor Suppressor	Kinase
+MAP2K5	Oncogene	Kinase
+MAP2K6	Other	Kinase
+MAP2K7	Other	Kinase
+MAP3K1	Oncogene	Kinase
+MAP3K10	Other	Kinase
+MAP3K10	Other	Kinase
+MAP3K11	Other	Kinase
+MAP3K11	Other	Kinase
+MAP3K12	Other	Kinase
+MAP3K13	Other	Kinase
+MAP3K14	Other	Kinase
+MAP3K15	Other	Kinase
+MAP3K19	Other	Kinase
+MAP3K2	Other	Kinase
+MAP3K20	Other	Kinase
+MAP3K21	Other	Kinase
+MAP3K3	Other	Kinase
+MAP3K4	Tumor Suppressor	Kinase
+MAP3K5	Other	Kinase
+MAP3K6	Oncogene	Kinase
+MAP3K7	Oncogene	Kinase
+MAP3K7	Other	Kinase
+MAP3K8	Oncogene or Tumor Suppressor	Kinase
+MAP3K8	Other	Kinase
+MAP3K9	Other	Kinase
+MAP3K9	Other	Kinase
+MAP4	Oncogene	Other Oncogene
+MAP4K1	Tumor Suppressor	Kinase
+MAP4K2	Oncogene	Kinase
+MAP4K3	Other	Kinase
+MAP4K4	Other	Kinase
+MAP4K5	Other	Kinase
+MAPK1	Oncogene	Kinase
+MAPK10	Oncogene or Tumor Suppressor	Kinase
+MAPK11	Other	Kinase
+MAPK12	Oncogene	Kinase
+MAPK13	Oncogene	Kinase
+MAPK14	Oncogene	Kinase
+MAPK15	Other	Kinase
+MAPK3	Oncogene	Kinase
+MAPK4	Oncogene	Kinase
+MAPK6	Oncogene	Kinase
+MAPK7	Oncogene	Kinase
+MAPK8	Oncogene	Kinase
+MAPK9	Oncogene or Tumor Suppressor	Kinase
+MAPKAPK2	Oncogene	Kinase
+MAPKAPK3	Other	Kinase
+MAPKAPK5	Other	Kinase
+MAPKAPKps1	Other	Kinase
+MAPRE1	Oncogene	Other Oncogene
+MARCH3	Oncogene	Other Oncogene
+MARCHF3	Oncogene	Other Oncogene
+MARCKS	Tumor Suppressor	Other Tumor Suppressor
+MARK1	Other	Kinase
+MARK2	Other	Kinase
+MARK3	Other	Kinase
+MARK4	Oncogene	Kinase
+MARKps01	Other	Kinase
+MARKps02	Other	Kinase
+MARKps03	Other	Kinase
+MARKps04	Other	Kinase
+MARKps05	Other	Kinase
+MARKps07	Other	Kinase
+MARKps08	Other	Kinase
+MARKps09	Other	Kinase
+MARKps10	Other	Kinase
+MARKps11	Other	Kinase
+MARKps12	Other	Kinase
+MARKps13	Other	Kinase
+MARKps15	Other	Kinase
+MARKps16	Other	Kinase
+MARKps17	Other	Kinase
+MARKps18	Other	Kinase
+MARKps19	Other	Kinase
+MARKps20	Other	Kinase
+MARKps21	Other	Kinase
+MARKps22	Other	Kinase
+MARKps23	Other	Kinase
+MARKps24	Other	Kinase
+MARKps25	Other	Kinase
+MARKps26	Other	Kinase
+MARKps27	Other	Kinase
+MARKps28	Other	Kinase
+MARKps29	Other	Kinase
+MARKps30	Other	Kinase
+MARS	Oncogene	Other Oncogene
+MARS1	Oncogene	Other Oncogene
+MARVELD1	Tumor Suppressor	Other Tumor Suppressor
+MAS1	Oncogene	Other Oncogene
+MAST1	Other	Kinase
+MAST2	Other	Kinase
+MAST3	Other	Kinase
+MAST4	Other	Kinase
+MASTL	Other	Kinase
+MAT2A	Tumor Suppressor	Other Tumor Suppressor
+MATCAP1	Oncogene	Other Oncogene
+MATK	Oncogene	Kinase
+MAX	Oncogene or Tumor Suppressor	Epigenetic
+MAZ	Other	Epigenetic
+MBD1	Other	Epigenetic
+MBD2	Oncogene	Epigenetic
+MBD3	Other	Epigenetic
+MBD4	Tumor Suppressor	Epigenetic
+MBD6	Other	Epigenetic
+MBNL2	Other	RNA Binding Protein
+MC2R	Oncogene	Other Oncogene
+MCC	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MCF2	Oncogene	Other Oncogene
+MCL1	Oncogene	Other Oncogene
+MCM2	Oncogene	Other Oncogene
+MCM5	Oncogene	Other Oncogene
+MCM7	Oncogene	Other Oncogene
+MCM9	Tumor Suppressor	Other Tumor Suppressor
+MCPH1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MDC1	Tumor Suppressor	Epigenetic
+MDK	Oncogene	Other Oncogene
+MDM2	Oncogene	Other Oncogene
+MDM4	Oncogene	Other Oncogene
+MDS2	Oncogene	Other Oncogene
+ME3	Oncogene	Other Oncogene
+MECOM	Oncogene	Transcription Factor
+MECP2	Other	Epigenetic
+MED12	Oncogene	Other Oncogene
+MEF2A	Other	Transcription Factor
+MEF2B	Oncogene	Transcription Factor
+MEF2C	Oncogene	Transcription Factor
+MEF2D	Oncogene	Transcription Factor
+MEG3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MEIS1	Oncogene	Transcription Factor
+MEIS2	Other	Transcription Factor
+MEIS3	Other	Transcription Factor
+MEIS3P1	Other	Transcription Factor
+MELK	Other	Kinase
+MEN1	Oncogene or Tumor Suppressor	Epigenetic
+MEOX1	Other	Transcription Factor
+MEOX2	Other	Transcription Factor
+MER	Other	Kinase
+MERTK	Oncogene	Kinase
+MESP1	Other	Transcription Factor
+MESP2	Other	Transcription Factor
+MET	Oncogene	Kinase
+METAP2	Oncogene	Other Oncogene
+METTL21A	Oncogene	Other Oncogene
+MFHAS1	Oncogene	Other Oncogene
+MFSD2A	Tumor Suppressor	Other Tumor Suppressor
+MGA	Other	Epigenetic
+MIA	Tumor Suppressor	Other Tumor Suppressor
+MIA2	Tumor Suppressor	Other Tumor Suppressor
+MIB2	Oncogene	Other Oncogene
+MID1	Oncogene	Other Oncogene
+MIER1	Oncogene	Other Oncogene
+MIF	Oncogene	Other Oncogene
+MINDY3	Tumor Suppressor	Other Tumor Suppressor
+MINK	Other	Kinase
+MINK1	Other	Kinase
+MIR1-1	Tumor Suppressor	Other Tumor Suppressor
+MIR1-2	Tumor Suppressor	Other Tumor Suppressor
+MIR100	Tumor Suppressor	Other Tumor Suppressor
+MIR101-1	Tumor Suppressor	Other Tumor Suppressor
+MIR101-2	Tumor Suppressor	Other Tumor Suppressor
+MIR106A	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MIR107	Tumor Suppressor	Other Tumor Suppressor
+MIR10A	Tumor Suppressor	Other Tumor Suppressor
+MIR10B	Oncogene	Other Oncogene
+MIR122	Tumor Suppressor	Other Tumor Suppressor
+MIR1226	Tumor Suppressor	Other Tumor Suppressor
+MIR124-1	Tumor Suppressor	Other Tumor Suppressor
+MIR124-2	Tumor Suppressor	Other Tumor Suppressor
+MIR124-3	Tumor Suppressor	Other Tumor Suppressor
+MIR1247	Tumor Suppressor	Other Tumor Suppressor
+MIR125A	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MIR125B1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MIR125B2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MIR126	Tumor Suppressor	Other Tumor Suppressor
+MIR127	Tumor Suppressor	Other Tumor Suppressor
+MIR129-1	Tumor Suppressor	Other Tumor Suppressor
+MIR129-2	Tumor Suppressor	Other Tumor Suppressor
+MIR1291	Tumor Suppressor	Other Tumor Suppressor
+MIR1297	Tumor Suppressor	Other Tumor Suppressor
+MIR130A	Tumor Suppressor	Other Tumor Suppressor
+MIR132	Tumor Suppressor	Other Tumor Suppressor
+MIR133A1	Tumor Suppressor	Other Tumor Suppressor
+MIR133A2	Tumor Suppressor	Other Tumor Suppressor
+MIR134	Tumor Suppressor	Other Tumor Suppressor
+MIR135A1	Tumor Suppressor	Other Tumor Suppressor
+MIR135A2	Tumor Suppressor	Other Tumor Suppressor
+MIR136	Tumor Suppressor	Other Tumor Suppressor
+MIR137	Tumor Suppressor	Other Tumor Suppressor
+MIR138-1	Tumor Suppressor	Other Tumor Suppressor
+MIR138-2	Tumor Suppressor	Other Tumor Suppressor
+MIR140	Tumor Suppressor	Other Tumor Suppressor
+MIR141	Tumor Suppressor	Other Tumor Suppressor
+MIR142	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MIR143	Tumor Suppressor	Other Tumor Suppressor
+MIR145	Tumor Suppressor	Other Tumor Suppressor
+MIR146A	Tumor Suppressor	Other Tumor Suppressor
+MIR147A	Tumor Suppressor	Other Tumor Suppressor
+MIR148A	Tumor Suppressor	Other Tumor Suppressor
+MIR148B	Tumor Suppressor	Other Tumor Suppressor
+MIR149	Tumor Suppressor	Other Tumor Suppressor
+MIR150	Tumor Suppressor	Other Tumor Suppressor
+MIR152	Tumor Suppressor	Other Tumor Suppressor
+MIR155	Tumor Suppressor	Other Tumor Suppressor
+MIR15A	Tumor Suppressor	Other Tumor Suppressor
+MIR16-1	Tumor Suppressor	Other Tumor Suppressor
+MIR16-2	Tumor Suppressor	Other Tumor Suppressor
+MIR17	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MIR181A1	Tumor Suppressor	Other Tumor Suppressor
+MIR181A2	Tumor Suppressor	Other Tumor Suppressor
+MIR181B1	Tumor Suppressor	Other Tumor Suppressor
+MIR181B2	Tumor Suppressor	Other Tumor Suppressor
+MIR181C	Tumor Suppressor	Other Tumor Suppressor
+MIR182	Tumor Suppressor	Other Tumor Suppressor
+MIR183	Tumor Suppressor	Other Tumor Suppressor
+MIR185	Tumor Suppressor	Other Tumor Suppressor
+MIR186	Tumor Suppressor	Other Tumor Suppressor
+MIR187	Tumor Suppressor	Other Tumor Suppressor
+MIR18A	Tumor Suppressor	Other Tumor Suppressor
+MIR18B	Tumor Suppressor	Other Tumor Suppressor
+MIR192	Tumor Suppressor	Other Tumor Suppressor
+MIR193A	Tumor Suppressor	Other Tumor Suppressor
+MIR193B	Tumor Suppressor	Other Tumor Suppressor
+MIR194-1	Tumor Suppressor	Other Tumor Suppressor
+MIR194-2	Tumor Suppressor	Other Tumor Suppressor
+MIR195	Tumor Suppressor	Other Tumor Suppressor
+MIR196A2	Tumor Suppressor	Other Tumor Suppressor
+MIR196B	Tumor Suppressor	Other Tumor Suppressor
+MIR198	Tumor Suppressor	Other Tumor Suppressor
+MIR199A1	Tumor Suppressor	Other Tumor Suppressor
+MIR200A	Tumor Suppressor	Other Tumor Suppressor
+MIR200B	Tumor Suppressor	Other Tumor Suppressor
+MIR200C	Tumor Suppressor	Other Tumor Suppressor
+MIR203A	Tumor Suppressor	Other Tumor Suppressor
+MIR204	Tumor Suppressor	Other Tumor Suppressor
+MIR205	Tumor Suppressor	Other Tumor Suppressor
+MIR206	Tumor Suppressor	Other Tumor Suppressor
+MIR20A	Tumor Suppressor	Other Tumor Suppressor
+MIR21	Oncogene	Other Oncogene
+MIR210	Tumor Suppressor	Other Tumor Suppressor
+MIR211	Tumor Suppressor	Other Tumor Suppressor
+MIR214	Tumor Suppressor	Other Tumor Suppressor
+MIR215	Tumor Suppressor	Other Tumor Suppressor
+MIR217	Tumor Suppressor	Other Tumor Suppressor
+MIR218-1	Tumor Suppressor	Other Tumor Suppressor
+MIR218-2	Tumor Suppressor	Other Tumor Suppressor
+MIR219A1	Tumor Suppressor	Other Tumor Suppressor
+MIR22	Tumor Suppressor	Other Tumor Suppressor
+MIR221	Oncogene	Other Oncogene
+MIR222	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MIR223	Tumor Suppressor	Other Tumor Suppressor
+MIR23A	Tumor Suppressor	Other Tumor Suppressor
+MIR23B	Tumor Suppressor	Other Tumor Suppressor
+MIR24-1	Tumor Suppressor	Other Tumor Suppressor
+MIR25	Tumor Suppressor	Other Tumor Suppressor
+MIR26A1	Tumor Suppressor	Other Tumor Suppressor
+MIR26A2	Tumor Suppressor	Other Tumor Suppressor
+MIR26B	Tumor Suppressor	Other Tumor Suppressor
+MIR27A	Tumor Suppressor	Other Tumor Suppressor
+MIR27B	Tumor Suppressor	Other Tumor Suppressor
+MIR28	Tumor Suppressor	Other Tumor Suppressor
+MIR296	Tumor Suppressor	Other Tumor Suppressor
+MIR29A	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MIR29B1	Tumor Suppressor	Other Tumor Suppressor
+MIR29C	Tumor Suppressor	Other Tumor Suppressor
+MIR302B	Tumor Suppressor	Other Tumor Suppressor
+MIR30A	Tumor Suppressor	Other Tumor Suppressor
+MIR30C1	Tumor Suppressor	Other Tumor Suppressor
+MIR31	Tumor Suppressor	Other Tumor Suppressor
+MIR320A	Tumor Suppressor	Other Tumor Suppressor
+MIR326	Tumor Suppressor	Other Tumor Suppressor
+MIR329-1	Tumor Suppressor	Other Tumor Suppressor
+MIR335	Tumor Suppressor	Other Tumor Suppressor
+MIR338	Tumor Suppressor	Other Tumor Suppressor
+MIR33A	Tumor Suppressor	Other Tumor Suppressor
+MIR340	Tumor Suppressor	Other Tumor Suppressor
+MIR34A	Tumor Suppressor	Other Tumor Suppressor
+MIR34B	Tumor Suppressor	Other Tumor Suppressor
+MIR34C	Tumor Suppressor	Other Tumor Suppressor
+MIR367	Tumor Suppressor	Other Tumor Suppressor
+MIR370	Tumor Suppressor	Other Tumor Suppressor
+MIR375	Tumor Suppressor	Other Tumor Suppressor
+MIR378A	Tumor Suppressor	Other Tumor Suppressor
+MIR383	Tumor Suppressor	Other Tumor Suppressor
+MIR409	Tumor Suppressor	Other Tumor Suppressor
+MIR410	Tumor Suppressor	Other Tumor Suppressor
+MIR422A	Tumor Suppressor	Other Tumor Suppressor
+MIR424	Tumor Suppressor	Other Tumor Suppressor
+MIR449A	Tumor Suppressor	Other Tumor Suppressor
+MIR449B	Tumor Suppressor	Other Tumor Suppressor
+MIR451A	Tumor Suppressor	Other Tumor Suppressor
+MIR483	Tumor Suppressor	Other Tumor Suppressor
+MIR486-1	Tumor Suppressor	Other Tumor Suppressor
+MIR487B	Tumor Suppressor	Other Tumor Suppressor
+MIR490	Tumor Suppressor	Other Tumor Suppressor
+MIR493	Tumor Suppressor	Other Tumor Suppressor
+MIR494	Tumor Suppressor	Other Tumor Suppressor
+MIR495	Tumor Suppressor	Other Tumor Suppressor
+MIR497	Tumor Suppressor	Other Tumor Suppressor
+MIR502	Tumor Suppressor	Other Tumor Suppressor
+MIR503	Tumor Suppressor	Other Tumor Suppressor
+MIR504	Tumor Suppressor	Other Tumor Suppressor
+MIR505	Tumor Suppressor	Other Tumor Suppressor
+MIR508	Tumor Suppressor	Other Tumor Suppressor
+MIR509-3	Tumor Suppressor	Other Tumor Suppressor
+MIR511	Tumor Suppressor	Other Tumor Suppressor
+MIR517A	Tumor Suppressor	Other Tumor Suppressor
+MIR519D	Tumor Suppressor	Other Tumor Suppressor
+MIR520B	Tumor Suppressor	Other Tumor Suppressor
+MIR520C	Tumor Suppressor	Other Tumor Suppressor
+MIR551A	Tumor Suppressor	Other Tumor Suppressor
+MIR574	Tumor Suppressor	Other Tumor Suppressor
+MIR615	Tumor Suppressor	Other Tumor Suppressor
+MIR636	Tumor Suppressor	Other Tumor Suppressor
+MIR7-1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MIR7-2	Tumor Suppressor	Other Tumor Suppressor
+MIR7-3	Tumor Suppressor	Other Tumor Suppressor
+MIR708	Tumor Suppressor	Other Tumor Suppressor
+MIR874	Tumor Suppressor	Other Tumor Suppressor
+MIR888	Tumor Suppressor	Other Tumor Suppressor
+MIR9-1	Tumor Suppressor	Other Tumor Suppressor
+MIR9-2	Tumor Suppressor	Other Tumor Suppressor
+MIR9-3	Tumor Suppressor	Other Tumor Suppressor
+MIR941-1	Tumor Suppressor	Other Tumor Suppressor
+MIR98	Tumor Suppressor	Other Tumor Suppressor
+MIR99A	Tumor Suppressor	Other Tumor Suppressor
+MIRLET7A1	Tumor Suppressor	Other Tumor Suppressor
+MIRLET7A2	Tumor Suppressor	Other Tumor Suppressor
+MIRLET7A3	Tumor Suppressor	Other Tumor Suppressor
+MIRLET7B	Tumor Suppressor	Other Tumor Suppressor
+MIRLET7C	Tumor Suppressor	Other Tumor Suppressor
+MIRLET7D	Tumor Suppressor	Other Tumor Suppressor
+MIRLET7E	Tumor Suppressor	Other Tumor Suppressor
+MIRLET7F1	Tumor Suppressor	Other Tumor Suppressor
+MIRLET7F2	Tumor Suppressor	Other Tumor Suppressor
+MIRLET7G	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MIRLET7I	Tumor Suppressor	Other Tumor Suppressor
+MISR2	Other	Kinase
+MITF	Oncogene	Transcription Factor
+MIXL1	Oncogene	Transcription Factor
+MKL1	Oncogene	Other Oncogene
+MKNK1	Other	Kinase
+MKNK2	Other	Kinase
+MKNK2	Other	Kinase
+MKRN3	Oncogene	RNA Binding Protein
+MKX	Other	Transcription Factor
+MLF1	Oncogene	Other Oncogene
+MLH1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MLH3	Tumor Suppressor	Other Tumor Suppressor
+MLK1	Other	Kinase
+MLK2	Other	Kinase
+MLK3	Other	Kinase
+MLK4	Other	Kinase
+MLKL	Other	Kinase
+MLLT1	Oncogene	Epigenetic
+MLLT10	Oncogene	Epigenetic
+MLLT11	Oncogene	Other Oncogene
+MLLT3	Oncogene	Other Oncogene
+MLLT6	Oncogene	Epigenetic
+MLX	Other	Transcription Factor
+MLXIP	Other	Transcription Factor
+MLXIPL	Other	Transcription Factor
+MME	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MMP11	Oncogene	Other Oncogene
+MMP14	Oncogene	Other Oncogene
+MMP2	Oncogene	Other Oncogene
+MMP9	Oncogene	Other Oncogene
+MN1	Oncogene	Other Oncogene
+MNAT1	Oncogene	Other Oncogene
+MNK1	Other	Kinase
+MNK1ps	Other	Kinase
+MNK2	Other	Kinase
+MNT	Tumor Suppressor	Transcription Factor
+MNX1	Oncogene	Transcription Factor
+MOB1A	Tumor Suppressor	Other Tumor Suppressor
+MOB1B	Tumor Suppressor	Other Tumor Suppressor
+MOK	Other	Kinase
+MOS	Oncogene	Kinase
+MPL	Oncogene	Other Oncogene
+MPP1	Oncogene	Other Oncogene
+MPPE1	Oncogene	Other Oncogene
+MPSK1	Other	Kinase
+MPSK1ps	Other	Kinase
+MRC1	Oncogene	Other Oncogene
+MRCKa	Other	Kinase
+MRCKb	Other	Kinase
+MRCKps	Other	Kinase
+MRE11	Oncogene	Other Oncogene
+MRTFA	Oncogene	Other Oncogene
+MRVI1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MSANTD1	Other	Transcription Factor
+MSANTD3	Other	Transcription Factor
+MSANTD4	Other	Transcription Factor
+MSC	Other	Transcription Factor
+MSGN1	Other	Transcription Factor
+MSH2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MSH3	Oncogene	Other Oncogene
+MSH6	Oncogene	Epigenetic
+MSI2	Oncogene	RNA Binding Protein
+MSK1	Other	Kinase
+MSK2	Other	Kinase
+MSMB	Tumor Suppressor	Other Tumor Suppressor
+MSN	Oncogene	Other Oncogene
+MSSK1	Other	Kinase
+MST1	Oncogene or Tumor Suppressor	Kinase
+MST1R	Other	Kinase
+MST1R	Oncogene or Tumor Suppressor	Kinase
+MST2	Other	Kinase
+MST3	Other	Kinase
+MST3ps	Other	Kinase
+MST4	Other	Kinase
+MSX1	Other	Transcription Factor
+MSX2	Other	Transcription Factor
+MT1DP	Tumor Suppressor	Other Tumor Suppressor
+MT1F	Tumor Suppressor	Other Tumor Suppressor
+MT1G	Tumor Suppressor	Other Tumor Suppressor
+MT1M	Tumor Suppressor	Other Tumor Suppressor
+MT2A	Tumor Suppressor	Other Tumor Suppressor
+MTA1	Oncogene	Epigenetic
+MTA3	Oncogene	Epigenetic
+MTAP	Tumor Suppressor	Other Tumor Suppressor
+MTCP1	Oncogene	Other Oncogene
+MTERF1	Other	Transcription Factor
+MTERF2	Other	Transcription Factor
+MTERF3	Other	Transcription Factor
+MTERF4	Other	Transcription Factor
+MTF1	Other	Transcription Factor
+MTF2	Other	Epigenetic
+MTHFR	Oncogene	Other Oncogene
+MTMR3	Oncogene	Other Oncogene
+MTOR	Other	Kinase
+MTOR	Oncogene	Kinase
+MTSS1	Tumor Suppressor	Other Tumor Suppressor
+MTUS1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MUC1	Oncogene	Other Oncogene
+MUC13	Oncogene	Other Oncogene
+MUC16	Oncogene	Other Oncogene
+MUC17	Oncogene	Other Oncogene
+MUC2	Oncogene	Other Oncogene
+MUC4	Oncogene	Other Oncogene
+MUC5AC	Oncogene	Other Oncogene
+MUC6	Oncogene	Other Oncogene
+MUS81	Tumor Suppressor	Other Tumor Suppressor
+MUSK	Other	Kinase
+MUTYH	Oncogene	Other Oncogene
+MVD	Other	Kinase
+MVK	Other	Kinase
+MVP	Oncogene	Other Oncogene
+MXD1	Oncogene	Transcription Factor
+MXD3	Other	Transcription Factor
+MXD4	Other	Transcription Factor
+MXI1	Oncogene or Tumor Suppressor	Transcription Factor
+MYB	Oncogene	Transcription Factor
+MYBBP1A	Oncogene or Tumor Suppressor	Epigenetic
+MYBL1	Oncogene	Transcription Factor
+MYBL2	Oncogene	Transcription Factor
+MYC	Oncogene	Transcription Factor
+MYCL	Oncogene	Transcription Factor
+MYCLP1	Oncogene	Other Oncogene
+MYCN	Oncogene	Transcription Factor
+MYD88	Oncogene	Other Oncogene
+MYEOV	Oncogene	Other Oncogene
+MYF5	Other	Transcription Factor
+MYF6	Other	Transcription Factor
+MYH1	Oncogene	Other Oncogene
+MYH11	Oncogene	Other Oncogene
+MYH9	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+MYLK	Other	Kinase
+MYLK2	Other	Kinase
+MYLK3	Other	Kinase
+MYLK4	Other	Kinase
+MYNN	Other	Transcription Factor
+MYO18B	Tumor Suppressor	Other Tumor Suppressor
+MYO1A	Tumor Suppressor	Other Tumor Suppressor
+MYO3A	Other	Kinase
+MYO3B	Other	Kinase
+MYOD1	Oncogene	Transcription Factor
+MYOG	Other	Transcription Factor
+MYPOP	Other	Transcription Factor
+MYRF	Other	Transcription Factor
+MYRFL	Other	Transcription Factor
+MYSM1	Other	Epigenetic
+MYT1	Other	Kinase
+MYT1L	Other	Transcription Factor
+MZB1	Tumor Suppressor	Other Tumor Suppressor
+MZF1	Other	Transcription Factor
+N4BP3	Oncogene	Other Oncogene
+NAA10	Oncogene	Other Oncogene
+NAB2	Oncogene	Other Oncogene
+NACA	Oncogene	Other Oncogene
+NACC2	Other	Transcription Factor
+NADK	Other	Kinase
+NADK2	Other	Kinase
+NAIF1	Other	Transcription Factor
+NANOG	Other	Transcription Factor
+NANOGNB	Other	Transcription Factor
+NANOGP8	Other	Transcription Factor
+NAPA	Oncogene	Other Oncogene
+NAPEPLD	Tumor Suppressor	Other Tumor Suppressor
+NAT1	Oncogene	Other Oncogene
+NAT2	Oncogene	Other Oncogene
+NAV1	Oncogene	Other Oncogene
+NAXD	Other	Kinase
+NBEAP1	Oncogene	Other Oncogene
+NBL1	Oncogene	Other Oncogene
+NBN	Oncogene or Tumor Suppressor	Epigenetic
+NBR1	Oncogene	Other Oncogene
+NCAPD2	Oncogene	Other Oncogene
+NCK1	Oncogene	Other Oncogene
+NCKIPSD	Oncogene	Other Oncogene
+NCOA1	Oncogene	Epigenetic
+NCOA2	Oncogene	Epigenetic
+NCOA3	Oncogene	Epigenetic
+NCOA4	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+NCOA5	Tumor Suppressor	Other Tumor Suppressor
+NCOA6	Oncogene	Epigenetic
+NCOR1	Oncogene	Epigenetic
+NCOR2	Oncogene	Epigenetic
+NDN	Tumor Suppressor	Other Tumor Suppressor
+NDR1	Other	Kinase
+NDR2	Other	Kinase
+NDRG1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+NDRG2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+NDRG4	Tumor Suppressor	Other Tumor Suppressor
+NDST4	Tumor Suppressor	Other Tumor Suppressor
+NECTIN4	Oncogene	Other Oncogene
+NEDD4	Tumor Suppressor	Other Tumor Suppressor
+NEDD4L	Tumor Suppressor	Other Tumor Suppressor
+NEIL1	Oncogene	Other Oncogene
+NEK1	Other	Kinase
+NEK10	Other	Kinase
+NEK11	Other	Kinase
+NEK2	Other	Kinase
+NEK2ps1	Other	Kinase
+NEK2ps2	Other	Kinase
+NEK2ps3	Other	Kinase
+NEK3	Other	Kinase
+NEK4	Other	Kinase
+NEK4ps	Other	Kinase
+NEK5	Other	Kinase
+NEK6	Other	Kinase
+NEK7	Other	Kinase
+NEK8	Other	Kinase
+NEK9	Other	Kinase
+NELFCD	Oncogene	Other Oncogene
+NET1	Oncogene	Other Oncogene
+NEU3	Oncogene	Other Oncogene
+NEURL1	Tumor Suppressor	Other Tumor Suppressor
+NEURL3	Oncogene	Other Oncogene
+NEUROD1	Other	Transcription Factor
+NEUROD2	Other	Transcription Factor
+NEUROD4	Other	Transcription Factor
+NEUROD6	Other	Transcription Factor
+NEUROG1	Other	Transcription Factor
+NEUROG2	Other	Transcription Factor
+NEUROG3	Other	Transcription Factor
+NF1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+NF2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+NFAT5	Oncogene	Transcription Factor
+NFATC1	Oncogene	Transcription Factor
+NFATC2	Oncogene or Tumor Suppressor	Transcription Factor
+NFATC3	Oncogene	Transcription Factor
+NFATC4	Other	Transcription Factor
+NFE2	Other	Transcription Factor
+NFE2L1	Other	Transcription Factor
+NFE2L2	Oncogene	Transcription Factor
+NFE2L3	Other	Transcription Factor
+NFE4	Other	Transcription Factor
+NFIA	Other	Transcription Factor
+NFIB	Oncogene	Transcription Factor
+NFIC	Oncogene	Transcription Factor
+NFIL3	Other	Transcription Factor
+NFIX	Oncogene	Transcription Factor
+NFKB1	Oncogene or Tumor Suppressor	Transcription Factor
+NFKB2	Oncogene	Transcription Factor
+NFKBIA	Oncogene	Other Oncogene
+NFKBIE	Oncogene	Other Oncogene
+NFX1	Other	Transcription Factor
+NFXL1	Other	Transcription Factor
+NFYA	Other	Transcription Factor
+NFYB	Other	Epigenetic
+NFYC	Other	Epigenetic
+NGFR	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+NHERF1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+NHLH1	Other	Transcription Factor
+NHLH2	Other	Transcription Factor
+NIK	Other	Kinase
+NIM1	Other	Kinase
+NIM1K	Other	Kinase
+NIN	Oncogene	Other Oncogene
+NINJ1	Tumor Suppressor	Other Tumor Suppressor
+NIPBL	Oncogene	Epigenetic
+NIT2	Tumor Suppressor	Other Tumor Suppressor
+NKAIN2	Oncogene	Other Oncogene
+NKRF	Other	Transcription Factor
+NKX1-1	Other	Transcription Factor
+NKX1-2	Other	Transcription Factor
+NKX2-1	Oncogene	Transcription Factor
+NKX2-2	Oncogene	Transcription Factor
+NKX2-3	Other	Transcription Factor
+NKX2-4	Other	Transcription Factor
+NKX2-5	Oncogene	Transcription Factor
+NKX2-6	Other	Transcription Factor
+NKX2-8	Tumor Suppressor	Transcription Factor
+NKX3-1	Oncogene or Tumor Suppressor	Transcription Factor
+NKX3-2	Other	Transcription Factor
+NKX6-1	Other	Transcription Factor
+NKX6-2	Other	Transcription Factor
+NKX6-3	Other	Transcription Factor
+NLE1	Oncogene	Other Oncogene
+NLK	Other	Kinase
+NLRC4	Oncogene	Other Oncogene
+NLRP2	Oncogene	Other Oncogene
+NLRP8	Oncogene	Other Oncogene
+NME1	Tumor Suppressor	Other Tumor Suppressor
+NME2	Other	Transcription Factor
+NME3	Oncogene	Other Oncogene
+NMT1	Oncogene	Other Oncogene
+NNAT	Tumor Suppressor	Other Tumor Suppressor
+NNMT	Oncogene	Other Oncogene
+NOBOX	Other	Transcription Factor
+NOD1	Oncogene	Other Oncogene
+NOL3	Oncogene	Other Oncogene
+NOL7	Tumor Suppressor	Other Tumor Suppressor
+NONO	Oncogene	RNA Binding Protein
+NOP53	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+NOTCH1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+NOTCH2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+NOTCH3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+NOTCH4	Oncogene	Other Oncogene
+NOTO	Other	Transcription Factor
+NOV	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+NPAP1	Oncogene	Other Oncogene
+NPAS1	Other	Transcription Factor
+NPAS2	Tumor Suppressor	Epigenetic
+NPAS3	Other	Transcription Factor
+NPAS4	Other	Transcription Factor
+NPM1	Oncogene or Tumor Suppressor	Epigenetic
+NPR1	Other	Kinase
+NPR2	Other	Kinase
+NPRL2	Tumor Suppressor	Other Tumor Suppressor
+NPY	Oncogene	Other Oncogene
+NPY1R	Oncogene	Other Oncogene
+NQO1	Oncogene	Other Oncogene
+NR0B1	Other	Transcription Factor
+NR0B2	Tumor Suppressor	Other Tumor Suppressor
+NR1D1	Other	Transcription Factor
+NR1D2	Other	Transcription Factor
+NR1H2	Other	Transcription Factor
+NR1H3	Other	Transcription Factor
+NR1H4	Other	Transcription Factor
+NR1I2	Tumor Suppressor	Transcription Factor
+NR1I3	Other	Transcription Factor
+NR2C1	Other	Transcription Factor
+NR2C2	Tumor Suppressor	Transcription Factor
+NR2E1	Other	Transcription Factor
+NR2E3	Other	Transcription Factor
+NR2F1	Oncogene	Transcription Factor
+NR2F2	Other	Transcription Factor
+NR2F6	Oncogene	Transcription Factor
+NR3C1	Other	Transcription Factor
+NR3C2	Oncogene	Transcription Factor
+NR4A1	Tumor Suppressor	Transcription Factor
+NR4A2	Other	Transcription Factor
+NR4A3	Oncogene or Tumor Suppressor	Transcription Factor
+NR5A1	Other	Transcription Factor
+NR5A2	Other	Transcription Factor
+NR6A1	Other	Transcription Factor
+NRAS	Oncogene	Other Oncogene
+NRBP1	Tumor Suppressor	Kinase
+NRBP2	Other	Kinase
+NRCAM	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+NRF1	Oncogene or Tumor Suppressor	Transcription Factor
+NRIP1	Oncogene	Other Oncogene
+NRK	Other	Kinase
+NRL	Other	Transcription Factor
+NRSN2	Tumor Suppressor	Other Tumor Suppressor
+NRXN2	Oncogene	Other Oncogene
+NSD1	Oncogene	Epigenetic
+NSD2	Oncogene	Other Oncogene
+NSD3	Tumor Suppressor	Other Tumor Suppressor
+NSD3	Oncogene	Other Oncogene
+NTRK1	Oncogene	Kinase
+NTRK2	Oncogene	Kinase
+NTRK3	Oncogene or Tumor Suppressor	Kinase
+NUAK1	Tumor Suppressor	Kinase
+NUAK2	Other	Kinase
+NUDT6	Oncogene	Other Oncogene
+NUMA1	Oncogene	Other Oncogene
+NUMB	Tumor Suppressor	Other Tumor Suppressor
+NUP133	Oncogene	Other Oncogene
+NUP214	Oncogene	Other Oncogene
+NUP98	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+NUPR1	Tumor Suppressor	Other Tumor Suppressor
+NUTM1	Oncogene	Other Oncogene
+NUTM2B	Oncogene	Other Oncogene
+NuaK1	Other	Kinase
+NuaK2	Other	Kinase
+OBSCN	Oncogene	Kinase
+OLFM4	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+OLIG1	Other	Transcription Factor
+OLIG2	Oncogene	Transcription Factor
+OLIG3	Other	Transcription Factor
+OMD	Oncogene	Other Oncogene
+ONECUT1	Tumor Suppressor	Transcription Factor
+ONECUT2	Other	Transcription Factor
+ONECUT3	Other	Transcription Factor
+OPCML	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+ORAI2	Oncogene	Other Oncogene
+ORAOV1	Oncogene	Other Oncogene
+OSBPL3	Oncogene	Other Oncogene
+OSCP1	Tumor Suppressor	Other Tumor Suppressor
+OSGIN1	Tumor Suppressor	Other Tumor Suppressor
+OSR1	Other	Kinase
+OSR2	Other	Transcription Factor
+OTOF	Oncogene	Other Oncogene
+OTP	Other	Transcription Factor
+OTX1	Other	Transcription Factor
+OTX2	Oncogene	Transcription Factor
+OVOL1	Other	Transcription Factor
+OVOL2	Other	Transcription Factor
+OVOL3	Other	Transcription Factor
+OXSR1	Other	Kinase
+OXSR1	Other	Kinase
+Obscn	Other	Kinase
+P2RX7	Oncogene	Other Oncogene
+P2RY14	Oncogene	Other Oncogene
+P2RY8	Oncogene	Other Oncogene
+PA2G4	Other	Transcription Factor
+PACRG	Tumor Suppressor	Other Tumor Suppressor
+PACSIN2	Oncogene	Other Oncogene
+PADI2	Oncogene	Epigenetic
+PAEP	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PAF1	Oncogene	Epigenetic
+PAFAH1B1	Tumor Suppressor	Other Tumor Suppressor
+PAFAH1B2	Oncogene	Other Oncogene
+PAIP2	Tumor Suppressor	Other Tumor Suppressor
+PAK1	Oncogene	Kinase
+PAK2	Other	Kinase
+PAK2ps	Other	Kinase
+PAK3	Other	Kinase
+PAK4	Other	Kinase
+PAK5	Other	Kinase
+PAK6	Other	Kinase
+PALB2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PANO1	Tumor Suppressor	Other Tumor Suppressor
+PANX2	Tumor Suppressor	Other Tumor Suppressor
+PAPPA2	Oncogene	Other Oncogene
+PAPSS1	Other	Kinase
+PAPSS2	Other	Kinase
+PARK2	Tumor Suppressor	Other Tumor Suppressor
+PARK7	Tumor Suppressor	Other Tumor Suppressor
+PARP1	Tumor Suppressor	Epigenetic
+PARVB	Oncogene	Other Oncogene
+PASK	Other	Kinase
+PATJ	Oncogene	Other Oncogene
+PATZ1	Oncogene	Transcription Factor
+PAWR	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PAX1	Other	Transcription Factor
+PAX2	Oncogene	Transcription Factor
+PAX3	Oncogene	Transcription Factor
+PAX4	Tumor Suppressor	Transcription Factor
+PAX5	Oncogene or Tumor Suppressor	Transcription Factor
+PAX6	Oncogene or Tumor Suppressor	Transcription Factor
+PAX7	Oncogene	Transcription Factor
+PAX8	Oncogene	Transcription Factor
+PAX9	Oncogene	Transcription Factor
+PBK	Other	Kinase
+PBRM1	Oncogene or Tumor Suppressor	Epigenetic
+PBX1	Oncogene	Transcription Factor
+PBX2	Oncogene	Transcription Factor
+PBX2P1	Oncogene	Transcription Factor
+PBX3	Oncogene	Transcription Factor
+PBX4	Other	Transcription Factor
+PCDH10	Tumor Suppressor	Other Tumor Suppressor
+PCDH17	Tumor Suppressor	Other Tumor Suppressor
+PCDH8	Tumor Suppressor	Other Tumor Suppressor
+PCDH9	Tumor Suppressor	Other Tumor Suppressor
+PCDHB15	Oncogene	Other Oncogene
+PCDHB7	Oncogene	Other Oncogene
+PCDHGC3	Tumor Suppressor	Other Tumor Suppressor
+PCED1B	Oncogene	Other Oncogene
+PCGF2	Tumor Suppressor	Epigenetic
+PCGF6	Other	Epigenetic
+PCM1	Oncogene	Other Oncogene
+PCNA	Oncogene	Epigenetic
+PCSK7	Oncogene	Other Oncogene
+PCTAIRE1	Other	Kinase
+PCTAIRE2	Other	Kinase
+PCTAIRE3	Other	Kinase
+PDCD1LG2	Oncogene	Other Oncogene
+PDCD4	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PDCD5	Tumor Suppressor	Other Tumor Suppressor
+PDCD6	Oncogene	Other Oncogene
+PDE11A	Oncogene	Other Oncogene
+PDE4A	Oncogene	Other Oncogene
+PDE4D	Oncogene	Other Oncogene
+PDE4DIP	Oncogene	Other Oncogene
+PDGFA	Oncogene	Other Oncogene
+PDGFB	Oncogene	Other Oncogene
+PDGFRA	Oncogene	Kinase
+PDGFRB	Oncogene	Kinase
+PDGFRL	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PDGFRa	Other	Kinase
+PDGFRb	Other	Kinase
+PDHK1	Other	Kinase
+PDHK2	Other	Kinase
+PDHK3	Other	Kinase
+PDHK4	Other	Kinase
+PDIK1L	Other	Kinase
+PDK1	Other	Kinase
+PDLIM4	Tumor Suppressor	Other Tumor Suppressor
+PDPK1	Other	Kinase
+PDS5B	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PDSS2	Tumor Suppressor	Other Tumor Suppressor
+PDX1	Oncogene or Tumor Suppressor	Transcription Factor
+PDXK	Oncogene	Other Oncogene
+PEA15	Tumor Suppressor	Other Tumor Suppressor
+PEAK1	Other	Kinase
+PEAR1	Oncogene	Other Oncogene
+PEBP1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PECAM1	Oncogene	Other Oncogene
+PEG10	Oncogene	Other Oncogene
+PEG3	Oncogene or Tumor Suppressor	Transcription Factor
+PEK	Other	Kinase
+PER1	Oncogene	Other Oncogene
+PER2	Tumor Suppressor	Other Tumor Suppressor
+PF4	Tumor Suppressor	Other Tumor Suppressor
+PFN1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PFTAIRE1	Other	Kinase
+PFTAIRE2	Other	Kinase
+PGF	Oncogene	Other Oncogene
+PGGHG	Oncogene	Other Oncogene
+PGR	Tumor Suppressor	Transcription Factor
+PGRMC2	Tumor Suppressor	Other Tumor Suppressor
+PHACTR4	Tumor Suppressor	Other Tumor Suppressor
+PHB	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PHB1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PHC3	Tumor Suppressor	Epigenetic
+PHF1	Other	Epigenetic
+PHF19	Other	Epigenetic
+PHF20	Oncogene	Epigenetic
+PHF21A	Other	Epigenetic
+PHF6	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PHIP	Oncogene or Tumor Suppressor	Epigenetic
+PHIP	Oncogene	Epigenetic
+PHKG1	Other	Kinase
+PHKG2	Other	Kinase
+PHKg1	Other	Kinase
+PHKg1ps1	Other	Kinase
+PHKg1ps2	Other	Kinase
+PHKg1ps3	Other	Kinase
+PHKg2	Other	Kinase
+PHLDA2	Tumor Suppressor	Other Tumor Suppressor
+PHLDA3	Tumor Suppressor	Other Tumor Suppressor
+PHLPP1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PHLPP2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PHOX2A	Tumor Suppressor	Transcription Factor
+PHOX2B	Oncogene	Transcription Factor
+PI4K2B	Other	Kinase
+PI4KA	Other	Kinase
+PI4KB	Other	Kinase
+PIAS1	Tumor Suppressor	Other Tumor Suppressor
+PIAS3	Oncogene	Other Oncogene
+PICALM	Oncogene	Other Oncogene
+PICK1	Oncogene	Other Oncogene
+PIGR	Oncogene	Other Oncogene
+PIK3C2A	Other	Kinase
+PIK3C2B	Other	Kinase
+PIK3C2G	Other	Kinase
+PIK3C3	Other	Kinase
+PIK3CA	Oncogene	Kinase
+PIK3CB	Other	Kinase
+PIK3CD	Oncogene	Kinase
+PIK3CG	Other	Kinase
+PIK3R1	Oncogene	Other Oncogene
+PIK3R2	Oncogene	Other Oncogene
+PIK3R4	Other	Kinase
+PIK3R5	Oncogene	Other Oncogene
+PIM1	Oncogene	Kinase
+PIM2	Oncogene	Kinase
+PIM3	Oncogene	Kinase
+PIN1	Tumor Suppressor	Transcription Factor
+PINK1	Other	Kinase
+PINX1	Tumor Suppressor	Other Tumor Suppressor
+PITSLRE	Other	Kinase
+PITX1	Oncogene	Transcription Factor
+PITX2	Other	Transcription Factor
+PITX3	Other	Transcription Factor
+PIWIL2	Tumor Suppressor	Other Tumor Suppressor
+PKACa	Other	Kinase
+PKACb	Other	Kinase
+PKACg	Other	Kinase
+PKCa	Other	Kinase
+PKCb	Other	Kinase
+PKCd	Other	Kinase
+PKCe	Other	Kinase
+PKCg	Other	Kinase
+PKCh	Other	Kinase
+PKCi	Other	Kinase
+PKCips	Other	Kinase
+PKCt	Other	Kinase
+PKCz	Other	Kinase
+PKD1	Tumor Suppressor	Kinase
+PKD2	Other	Kinase
+PKD3	Other	Kinase
+PKDREJ	Oncogene	Other Oncogene
+PKG1	Other	Kinase
+PKG2	Other	Kinase
+PKHD1	Oncogene	Other Oncogene
+PKIG	Oncogene	Other Oncogene
+PKM	Oncogene	Epigenetic
+PKMYT1	Other	Kinase
+PKN1	Other	Kinase
+PKN2	Other	Kinase
+PKN3	Other	Kinase
+PKNOX1	Oncogene or Tumor Suppressor	Transcription Factor
+PKNOX2	Other	Transcription Factor
+PKR	Other	Kinase
+PLA2G16	Tumor Suppressor	Other Tumor Suppressor
+PLA2G2A	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PLA2G4A	Oncogene	Other Oncogene
+PLA2G7	Tumor Suppressor	Other Tumor Suppressor
+PLA2R1	Tumor Suppressor	Other Tumor Suppressor
+PLAAT2	Tumor Suppressor	Other Tumor Suppressor
+PLAAT3	Tumor Suppressor	Other Tumor Suppressor
+PLAAT4	Tumor Suppressor	Other Tumor Suppressor
+PLAG1	Oncogene	Transcription Factor
+PLAGL1	Oncogene or Tumor Suppressor	Transcription Factor
+PLAGL2	Oncogene	Transcription Factor
+PLAUR	Oncogene	Other Oncogene
+PLCB1	Oncogene	Other Oncogene
+PLCB2	Oncogene	Other Oncogene
+PLCB3	Tumor Suppressor	Other Tumor Suppressor
+PLCD1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PLCE1	Tumor Suppressor	Other Tumor Suppressor
+PLCH2	Oncogene	Other Oncogene
+PLCL1	Oncogene	Other Oncogene
+PLD1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PLEK2	Oncogene	Other Oncogene
+PLEKHA2	Oncogene	Other Oncogene
+PLEKHA8	Oncogene	Other Oncogene
+PLEKHB1	Oncogene	Other Oncogene
+PLEKHG2	Oncogene	Other Oncogene
+PLEKHO1	Tumor Suppressor	Other Tumor Suppressor
+PLK1	Oncogene or Tumor Suppressor	Kinase
+PLK1ps1	Other	Kinase
+PLK1ps2	Other	Kinase
+PLK2	Tumor Suppressor	Kinase
+PLK3	Other	Kinase
+PLK4	Other	Kinase
+PLK5	Tumor Suppressor	Other Tumor Suppressor
+PLPP3	Oncogene	Other Oncogene
+PLSCR1	Other	Transcription Factor
+PLXNB1	Oncogene	Other Oncogene
+PLXNC1	Tumor Suppressor	Other Tumor Suppressor
+PMEL	Oncogene	Other Oncogene
+PMEPA1	Oncogene	Other Oncogene
+PML	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PMS1	Oncogene	Other Oncogene
+PMS2	Oncogene	Other Oncogene
+PMVK	Other	Kinase
+PNCK	Other	Kinase
+PNMA1	Oncogene	Other Oncogene
+PNN	Tumor Suppressor	Other Tumor Suppressor
+POGK	Other	Transcription Factor
+POLH	Oncogene	Other Oncogene
+POMK	Other	Kinase
+POU1F1	Other	Transcription Factor
+POU2AF1	Oncogene	Transcription Factor
+POU2F1	Other	Transcription Factor
+POU2F2	Oncogene	Transcription Factor
+POU2F3	Tumor Suppressor	Transcription Factor
+POU3F1	Other	Transcription Factor
+POU3F2	Other	Transcription Factor
+POU3F3	Other	Transcription Factor
+POU3F4	Other	Transcription Factor
+POU4F1	Oncogene	Transcription Factor
+POU4F2	Other	Transcription Factor
+POU4F3	Other	Transcription Factor
+POU5F1	Oncogene	Transcription Factor
+POU5F1B	Other	Transcription Factor
+POU5F2	Other	Transcription Factor
+POU6F1	Other	Transcription Factor
+POU6F2	Oncogene or Tumor Suppressor	Transcription Factor
+PPARA	Tumor Suppressor	Transcription Factor
+PPARD	Oncogene	Transcription Factor
+PPARG	Oncogene or Tumor Suppressor	Transcription Factor
+PPFIBP1	Oncogene	Other Oncogene
+PPM1A	Tumor Suppressor	Other Tumor Suppressor
+PPM1D	Oncogene	Other Oncogene
+PPM1E	Oncogene	Other Oncogene
+PPM1L	Tumor Suppressor	Other Tumor Suppressor
+PPP1CA	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PPP1CC	Oncogene	Other Oncogene
+PPP1R13L	Oncogene	Other Oncogene
+PPP1R14B	Oncogene	Other Oncogene
+PPP1R16B	Oncogene	Other Oncogene
+PPP1R1A	Oncogene	Other Oncogene
+PPP1R1B	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PPP2CA	Tumor Suppressor	Epigenetic
+PPP2CB	Tumor Suppressor	Other Tumor Suppressor
+PPP2R1A	Oncogene	Other Oncogene
+PPP2R1B	Tumor Suppressor	Other Tumor Suppressor
+PPP2R2C	Tumor Suppressor	Other Tumor Suppressor
+PPP2R4	Tumor Suppressor	Other Tumor Suppressor
+PPP2R5C	Tumor Suppressor	Other Tumor Suppressor
+PPP3CC	Tumor Suppressor	Other Tumor Suppressor
+PPTC7	Oncogene	Other Oncogene
+PRAG1	Other	Kinase
+PRCC	Oncogene	Other Oncogene
+PRDM1	Oncogene or Tumor Suppressor	Epigenetic
+PRDM10	Other	Transcription Factor
+PRDM11	Tumor Suppressor	Epigenetic
+PRDM12	Other	Epigenetic
+PRDM13	Other	Epigenetic
+PRDM14	Other	Epigenetic
+PRDM15	Other	Transcription Factor
+PRDM16	Oncogene	Epigenetic
+PRDM2	Oncogene or Tumor Suppressor	Epigenetic
+PRDM4	Tumor Suppressor	Epigenetic
+PRDM5	Tumor Suppressor	Epigenetic
+PRDM6	Other	Epigenetic
+PRDM8	Other	Epigenetic
+PRDM9	Other	Epigenetic
+PRDX1	Oncogene	Other Oncogene
+PREB	Other	Transcription Factor
+PREX1	Oncogene	Other Oncogene
+PRF1	Oncogene	Other Oncogene
+PRG4	Oncogene	Other Oncogene
+PRICKLE1	Tumor Suppressor	Other Tumor Suppressor
+PRKAA1	Tumor Suppressor	Kinase
+PRKAA2	Tumor Suppressor	Kinase
+PRKAB1	Oncogene	Epigenetic
+PRKACA	Other	Kinase
+PRKACB	Other	Kinase
+PRKACG	Other	Kinase
+PRKAR1A	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PRKCA	Other	Kinase
+PRKCB	Tumor Suppressor	Kinase
+PRKCD	Oncogene or Tumor Suppressor	Kinase
+PRKCDBP	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PRKCE	Tumor Suppressor	Kinase
+PRKCG	Other	Kinase
+PRKCH	Other	Kinase
+PRKCI	Other	Kinase
+PRKCQ	Other	Kinase
+PRKCSH	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PRKCZ	Other	Kinase
+PRKD1	Oncogene	Kinase
+PRKD2	Other	Kinase
+PRKD3	Other	Kinase
+PRKDC	Other	Kinase
+PRKG1	Other	Kinase
+PRKG2	Other	Kinase
+PRKN	Tumor Suppressor	Other Tumor Suppressor
+PRKX	Other	Kinase
+PRKXps	Other	Kinase
+PRKY	Other	Kinase
+PRLR	Oncogene	Other Oncogene
+PRMT3	Other	Transcription Factor
+PRODH	Tumor Suppressor	Other Tumor Suppressor
+PROP1	Other	Transcription Factor
+PROS1	Oncogene	Other Oncogene
+PROX1	Tumor Suppressor	Transcription Factor
+PROX2	Other	Transcription Factor
+PRP4	Other	Kinase
+PRP4ps	Other	Kinase
+PRPF4B	Oncogene	Kinase
+PRPK	Other	Kinase
+PRPS1	Oncogene	Other Oncogene
+PRR12	Other	Transcription Factor
+PRR5	Tumor Suppressor	Other Tumor Suppressor
+PRRX1	Oncogene	Transcription Factor
+PRRX2	Oncogene	Transcription Factor
+PSAP	Oncogene	Other Oncogene
+PSCA	Oncogene	Other Oncogene
+PSEN2	Oncogene	Other Oncogene
+PSIP1	Oncogene	Epigenetic
+PSKH1	Other	Kinase
+PSKH1ps	Other	Kinase
+PSKH2	Other	Kinase
+PSMA5	Oncogene	Other Oncogene
+PSMD2	Oncogene	Other Oncogene
+PTBP1	Oncogene	RNA Binding Protein
+PTCH1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PTCH2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PTCRA	Oncogene	Other Oncogene
+PTCSC3	Tumor Suppressor	Other Tumor Suppressor
+PTEN	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PTENP1	Tumor Suppressor	Other Tumor Suppressor
+PTF1A	Other	Transcription Factor
+PTGDR	Tumor Suppressor	Other Tumor Suppressor
+PTGIS	Oncogene	Other Oncogene
+PTGR2	Oncogene	Other Oncogene
+PTGS2	Oncogene	Other Oncogene
+PTH	Oncogene	Other Oncogene
+PTHLH	Oncogene	Other Oncogene
+PTK2	Other	Kinase
+PTK2B	Other	Kinase
+PTK6	Other	Kinase
+PTK7	Oncogene	Kinase
+PTMA	Oncogene	Other Oncogene
+PTN	Oncogene	Other Oncogene
+PTP4A3	Oncogene	Other Oncogene
+PTPA	Tumor Suppressor	Other Tumor Suppressor
+PTPA	Oncogene	Other Oncogene
+PTPN1	Tumor Suppressor	Other Tumor Suppressor
+PTPN11	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PTPN12	Tumor Suppressor	Other Tumor Suppressor
+PTPN13	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PTPN14	Oncogene	Other Oncogene
+PTPN2	Tumor Suppressor	Other Tumor Suppressor
+PTPN21	Oncogene	Other Oncogene
+PTPN23	Tumor Suppressor	Other Tumor Suppressor
+PTPN6	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PTPN7	Oncogene	Other Oncogene
+PTPRA	Oncogene	Other Oncogene
+PTPRC	Tumor Suppressor	Other Tumor Suppressor
+PTPRD	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PTPRE	Oncogene	Other Oncogene
+PTPRG	Oncogene	Other Oncogene
+PTPRH	Oncogene	Other Oncogene
+PTPRJ	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PTPRK	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PTPRT	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+PTPRU	Oncogene	Other Oncogene
+PTTG1	Oncogene	Other Oncogene
+PTTG1IP	Oncogene	Other Oncogene
+PURA	Other	Transcription Factor
+PURB	Other	Transcription Factor
+PURG	Other	Transcription Factor
+PUS10	Oncogene	Other Oncogene
+PVT1	Oncogene	Other Oncogene
+PWAR4	Tumor Suppressor	Other Tumor Suppressor
+PXN	Oncogene	Other Oncogene
+PYCARD	Tumor Suppressor	Other Tumor Suppressor
+PYHIN1	Tumor Suppressor	Other Tumor Suppressor
+PYK2	Other	Kinase
+PYY	Oncogene	Other Oncogene
+QIK	Other	Kinase
+QKI	Tumor Suppressor	RNA Binding Protein
+QSK	Other	Kinase
+RAB1A	Oncogene	Other Oncogene
+RAB25	Tumor Suppressor	Other Tumor Suppressor
+RAB5C	Oncogene	Other Oncogene
+RAB7A	Tumor Suppressor	Other Tumor Suppressor
+RAB8A	Oncogene	Other Oncogene
+RABEP1	Oncogene	Other Oncogene
+RABGAP1L	Oncogene	Other Oncogene
+RABGGTB	Oncogene	Other Oncogene
+RAC2	Oncogene	Other Oncogene
+RAC3	Oncogene	Other Oncogene
+RACK1	Tumor Suppressor	Other Tumor Suppressor
+RACK1	Oncogene	Other Oncogene
+RAD23A	Oncogene	Other Oncogene
+RAD23B	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RAD51B	Oncogene	Other Oncogene
+RAD51C	Tumor Suppressor	Other Tumor Suppressor
+RAD51D	Oncogene	Other Oncogene
+RAD52	Oncogene	Other Oncogene
+RAD9A	Oncogene	Other Oncogene
+RAF1	Oncogene	Kinase
+RAF1ps	Other	Kinase
+RAG1	Other	Epigenetic
+RALA	Oncogene	Other Oncogene
+RALB	Oncogene	Other Oncogene
+RALGDS	Oncogene	Other Oncogene
+RALGPS2	Oncogene	Other Oncogene
+RAMP1	Oncogene	Other Oncogene
+RAN	Oncogene	Other Oncogene
+RANBP17	Oncogene	Other Oncogene
+RANBP2	Oncogene	Other Oncogene
+RANBP9	Tumor Suppressor	Other Tumor Suppressor
+RAP1A	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RAP1B	Oncogene	Other Oncogene
+RAP1GAP	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RAP1GDS1	Oncogene	Other Oncogene
+RAP2A	Oncogene	Other Oncogene
+RAP2B	Oncogene	Other Oncogene
+RAPGEF1	Oncogene	Other Oncogene
+RAPH1	Oncogene	Other Oncogene
+RARA	Oncogene	Epigenetic
+RARB	Oncogene or Tumor Suppressor	Transcription Factor
+RARG	Oncogene	Transcription Factor
+RARRES1	Oncogene	Other Oncogene
+RARRES3	Tumor Suppressor	Other Tumor Suppressor
+RASA1	Oncogene	Other Oncogene
+RASA3	Oncogene	Other Oncogene
+RASAL1	Tumor Suppressor	Other Tumor Suppressor
+RASAL2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RASGRF1	Oncogene	Other Oncogene
+RASGRF2	Oncogene	Other Oncogene
+RASGRP1	Oncogene	Other Oncogene
+RASGRP2	Oncogene	Other Oncogene
+RASL10A	Tumor Suppressor	Other Tumor Suppressor
+RASL10B	Tumor Suppressor	Other Tumor Suppressor
+RASL11A	Tumor Suppressor	Other Tumor Suppressor
+RASL11B	Oncogene	Other Oncogene
+RASSF1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RASSF10	Tumor Suppressor	Other Tumor Suppressor
+RASSF2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RASSF3	Tumor Suppressor	Other Tumor Suppressor
+RASSF4	Tumor Suppressor	Other Tumor Suppressor
+RASSF5	Tumor Suppressor	Other Tumor Suppressor
+RASSF6	Oncogene	Other Oncogene
+RASSF8	Tumor Suppressor	Other Tumor Suppressor
+RAX	Other	Transcription Factor
+RAX2	Other	Transcription Factor
+RB1	Oncogene or Tumor Suppressor	Epigenetic
+RB1CC1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RBAK	Other	Transcription Factor
+RBBP5	Oncogene	Epigenetic
+RBBP6	Oncogene	Other Oncogene
+RBBP7	Oncogene or Tumor Suppressor	Epigenetic
+RBBP8	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RBCK1	Other	Transcription Factor
+RBL1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RBL2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RBM14	Tumor Suppressor	RNA Binding Protein
+RBM15	Oncogene	RNA Binding Protein
+RBM34	Oncogene	RNA Binding Protein
+RBM38	Tumor Suppressor	RNA Binding Protein
+RBM39	Oncogene	RNA Binding Protein
+RBM4	Tumor Suppressor	RNA Binding Protein
+RBM5	Oncogene or Tumor Suppressor	RNA Binding Protein
+RBM6	Tumor Suppressor	RNA Binding Protein
+RBMS3	Tumor Suppressor	RNA Binding Protein
+RBMX	Tumor Suppressor	RNA Binding Protein
+RBP1	Tumor Suppressor	Other Tumor Suppressor
+RBPJ	Other	Transcription Factor
+RBPJL	Other	Transcription Factor
+RBSN	Other	Transcription Factor
+RBX1	Oncogene	Epigenetic
+RCC2	Oncogene	Other Oncogene
+RCHY1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RECK	Tumor Suppressor	Other Tumor Suppressor
+RECQL	Oncogene	Other Oncogene
+RECQL4	Oncogene	Other Oncogene
+RECQL5	Oncogene	Other Oncogene
+REG3A	Oncogene	Other Oncogene
+REG4	Oncogene	Other Oncogene
+REL	Oncogene	Transcription Factor
+RELA	Oncogene	Transcription Factor
+RELB	Oncogene	Transcription Factor
+REPIN1	Other	Transcription Factor
+REPS2	Oncogene	Other Oncogene
+RERE	Oncogene	Other Oncogene
+REST	Oncogene	Epigenetic
+RET	Oncogene	Kinase
+REXO4	Other	Transcription Factor
+RFK	Other	Kinase
+RFWD2	Tumor Suppressor	Other Tumor Suppressor
+RFX1	Other	Transcription Factor
+RFX2	Oncogene	Transcription Factor
+RFX3	Other	Transcription Factor
+RFX4	Other	Transcription Factor
+RFX5	Oncogene	Transcription Factor
+RFX6	Other	Transcription Factor
+RFX7	Other	Transcription Factor
+RFX8	Other	Transcription Factor
+RGL1	Oncogene	Other Oncogene
+RGS1	Oncogene	Other Oncogene
+RGS19	Oncogene	Other Oncogene
+RGS2	Oncogene	Other Oncogene
+RGS3	Oncogene	Other Oncogene
+RHBDF2	Oncogene	Other Oncogene
+RHBG	Oncogene	Other Oncogene
+RHCG	Oncogene	Other Oncogene
+RHOA	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RHOB	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RHOBTB1	Oncogene	Other Oncogene
+RHOBTB2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RHOC	Oncogene	Other Oncogene
+RHOF	Oncogene	Other Oncogene
+RHOG	Oncogene	Other Oncogene
+RHOH	Oncogene	Other Oncogene
+RHOK	Other	Kinase
+RHOXF1	Other	Transcription Factor
+RHOXF2	Other	Transcription Factor
+RHOXF2B	Other	Transcription Factor
+RIGI	Tumor Suppressor	Other Tumor Suppressor
+RINT1	Tumor Suppressor	Other Tumor Suppressor
+RIOK1	Other	Kinase
+RIOK2	Other	Kinase
+RIOK3	Other	Kinase
+RIOK3ps	Other	Kinase
+RIOX2	Oncogene	Other Oncogene
+RIPK1	Other	Kinase
+RIPK2	Other	Kinase
+RIPK3	Other	Kinase
+RIPK4	Other	Kinase
+RIPK4	Other	Kinase
+RITA1	Tumor Suppressor	Other Tumor Suppressor
+RLF	Oncogene	Transcription Factor
+RLN2	Oncogene	Other Oncogene
+RMI2	Oncogene	Other Oncogene
+RMND5B	Oncogene	Other Oncogene
+RMRP	Oncogene	Other Oncogene
+RNASE10	Oncogene	Other Oncogene
+RNASEL	Tumor Suppressor	Kinase
+RNASET2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RNAseL	Other	Kinase
+RND3	Tumor Suppressor	Other Tumor Suppressor
+RNF111	Tumor Suppressor	Other Tumor Suppressor
+RNF139	Oncogene	Other Oncogene
+RNF144A	Tumor Suppressor	Other Tumor Suppressor
+RNF157	Oncogene	Other Oncogene
+RNF180	Tumor Suppressor	Other Tumor Suppressor
+RNF213	Oncogene	Other Oncogene
+RNF216	Oncogene	Other Oncogene
+RNF217-AS1	Oncogene	Other Oncogene
+RNF220	Oncogene	Other Oncogene
+RNF43	Oncogene	Other Oncogene
+RNF7	Oncogene	Other Oncogene
+RNF8	Tumor Suppressor	Epigenetic
+RNH1	Tumor Suppressor	Other Tumor Suppressor
+ROBO1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+ROCK1	Other	Kinase
+ROCK2	Other	Kinase
+RON	Other	Kinase
+ROR1	Other	Kinase
+ROR2	Oncogene or Tumor Suppressor	Kinase
+RORA	Other	Transcription Factor
+RORB	Other	Transcription Factor
+RORC	Oncogene	Transcription Factor
+ROS	Other	Kinase
+ROS1	Oncogene	Kinase
+RPA1	Tumor Suppressor	Other Tumor Suppressor
+RPA2	Oncogene	Other Oncogene
+RPL10	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RPL11	Tumor Suppressor	Other Tumor Suppressor
+RPL22	Oncogene	Other Oncogene
+RPL26	Oncogene	Other Oncogene
+RPL5	Tumor Suppressor	Other Tumor Suppressor
+RPN1	Oncogene	Other Oncogene
+RPRM	Tumor Suppressor	Other Tumor Suppressor
+RPS6KA1	Oncogene	Kinase
+RPS6KA2	Tumor Suppressor	Kinase
+RPS6KA3	Other	Kinase
+RPS6KA4	Other	Kinase
+RPS6KA5	Other	Kinase
+RPS6KA6	Tumor Suppressor	Kinase
+RPS6KB1	Other	Kinase
+RPS6KB2	Other	Kinase
+RPS6KC1	Other	Kinase
+RPS6KL1	Other	Kinase
+RRAS	Oncogene	Other Oncogene
+RRAS2	Oncogene	Other Oncogene
+RREB1	Oncogene	Transcription Factor
+RRM1	Oncogene	Other Oncogene
+RRP9	Oncogene	Other Oncogene
+RSF1	Oncogene	Epigenetic
+RSK1	Other	Kinase
+RSK2	Other	Kinase
+RSK3	Other	Kinase
+RSK4	Other	Kinase
+RSKL1	Other	Kinase
+RSKL2	Other	Kinase
+RSKR	Other	Kinase
+RSPH1	Oncogene	Other Oncogene
+RSPO1	Oncogene	Other Oncogene
+RSPO2	Oncogene	Other Oncogene
+RSPO3	Oncogene	Other Oncogene
+RSRP1	Oncogene	Other Oncogene
+RTN4	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RTN4IP1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+RUNX1	Oncogene or Tumor Suppressor	Transcription Factor
+RUNX1T1	Oncogene	Other Oncogene
+RUNX2	Oncogene or Tumor Suppressor	Transcription Factor
+RUNX3	Oncogene or Tumor Suppressor	Transcription Factor
+RUVBL1	Oncogene	Epigenetic
+RUVBL2	Oncogene	Epigenetic
+RXRA	Other	Transcription Factor
+RXRB	Other	Transcription Factor
+RXRG	Other	Transcription Factor
+RYK	Other	Kinase
+RYKps	Other	Kinase
+S100A10	Oncogene	Other Oncogene
+S100A11	Tumor Suppressor	Other Tumor Suppressor
+S100A11P1	Oncogene	Other Oncogene
+S100A13	Oncogene	Other Oncogene
+S100A14	Oncogene	Other Oncogene
+S100A2	Tumor Suppressor	Other Tumor Suppressor
+S100A7	Oncogene	Other Oncogene
+S100A8	Oncogene	Other Oncogene
+S100A9	Oncogene	Other Oncogene
+S100B	Oncogene	Other Oncogene
+S100P	Oncogene	Other Oncogene
+S1PR4	Oncogene	Other Oncogene
+SAA1	Tumor Suppressor	Other Tumor Suppressor
+SAFB	Tumor Suppressor	RNA Binding Protein
+SAFB2	Other	RNA Binding Protein
+SAG	Oncogene	Other Oncogene
+SAKps	Other	Kinase
+SALL1	Other	Transcription Factor
+SALL2	Tumor Suppressor	Transcription Factor
+SALL3	Other	Transcription Factor
+SALL4	Tumor Suppressor	Transcription Factor
+SAMD9L	Tumor Suppressor	Other Tumor Suppressor
+SARNP	Oncogene	Other Oncogene
+SASH1	Tumor Suppressor	Other Tumor Suppressor
+SATB1	Oncogene	Epigenetic
+SATB2	Other	Epigenetic
+SAV1	Oncogene	Other Oncogene
+SBDS	Oncogene	Other Oncogene
+SBK	Other	Kinase
+SBK1	Other	Kinase
+SBK2	Other	Kinase
+SBK3	Other	Kinase
+SBNO1	Oncogene	Other Oncogene
+SCAF1	Oncogene	Other Oncogene
+SCAMP4	Oncogene	Other Oncogene
+SCAND3	Other	Transcription Factor
+SCARB1	Oncogene	Other Oncogene
+SCGB3A1	Tumor Suppressor	Other Tumor Suppressor
+SCLT1	Oncogene	Other Oncogene
+SCMH1	Other	Epigenetic
+SCML4	Other	Epigenetic
+SCN3B	Oncogene	Other Oncogene
+SCNN1B	Oncogene	Other Oncogene
+SCRIB	Tumor Suppressor	Other Tumor Suppressor
+SCRT1	Other	Transcription Factor
+SCRT2	Other	Transcription Factor
+SCUBE2	Tumor Suppressor	Other Tumor Suppressor
+SCX	Other	Transcription Factor
+SCYL1	Oncogene or Tumor Suppressor	Kinase
+SCYL2	Other	Kinase
+SCYL2ps	Other	Kinase
+SCYL3	Other	Kinase
+SDC1	Oncogene	Other Oncogene
+SDC3	Oncogene	Other Oncogene
+SDC4	Oncogene	Other Oncogene
+SDCCAG8	Oncogene	Other Oncogene
+SDE2	Oncogene	Other Oncogene
+SDHA	Tumor Suppressor	Other Tumor Suppressor
+SDHAF2	Oncogene	Other Oncogene
+SDHB	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SDHC	Oncogene	Other Oncogene
+SDHD	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SEBOX	Other	Transcription Factor
+SEC14L2	Tumor Suppressor	Other Tumor Suppressor
+SEL1L	Oncogene	Other Oncogene
+SELE	Oncogene	Other Oncogene
+SELENBP1	Tumor Suppressor	Other Tumor Suppressor
+SEMA3B	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SEMA3F	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SEMA4B	Oncogene	Other Oncogene
+SEMA4D	Oncogene	Other Oncogene
+SEMA5B	Oncogene	Other Oncogene
+SEPT2	Oncogene	Other Oncogene
+SEPT4	Tumor Suppressor	Other Tumor Suppressor
+SEPT5	Oncogene	Other Oncogene
+SEPT6	Oncogene	Other Oncogene
+SEPT9	Oncogene	Other Oncogene
+SEPTIN2	Oncogene	Other Oncogene
+SEPTIN4	Tumor Suppressor	Other Tumor Suppressor
+SEPTIN5	Oncogene	Other Oncogene
+SEPTIN6	Oncogene	Other Oncogene
+SEPTIN9	Oncogene	Other Oncogene
+SERINC3	Oncogene	Other Oncogene
+SERPINA1	Oncogene	Other Oncogene
+SERPINB1	Oncogene	Other Oncogene
+SERPINB3	Oncogene	Other Oncogene
+SERPINB4	Oncogene	Other Oncogene
+SERPINB5	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SERPINI2	Tumor Suppressor	Other Tumor Suppressor
+SET	Oncogene	Epigenetic
+SETBP1	Oncogene	Transcription Factor
+SETD2	Oncogene or Tumor Suppressor	Epigenetic
+SETDB1	Other	Epigenetic
+SETDB2	Other	Epigenetic
+SF3B1	Oncogene	Epigenetic
+SFMBT2	Oncogene	RNA Binding Protein
+SFN	Tumor Suppressor	Other Tumor Suppressor
+SFPQ	Oncogene	RNA Binding Protein
+SFRP1	Tumor Suppressor	Other Tumor Suppressor
+SFRP2	Tumor Suppressor	Other Tumor Suppressor
+SFRP4	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SFRP5	Tumor Suppressor	Other Tumor Suppressor
+SGK1	Other	Kinase
+SGK2	Other	Kinase
+SGK3	Other	Kinase
+SGMS1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SGSM2	Other	Transcription Factor
+SH2B2	Oncogene	Other Oncogene
+SH2B3	Tumor Suppressor	Other Tumor Suppressor
+SH3BGRL2	Oncogene	Other Oncogene
+SH3BP2	Oncogene	Other Oncogene
+SH3GL1	Oncogene	Other Oncogene
+SH3GL2	Oncogene	Other Oncogene
+SH3GLB1	Tumor Suppressor	Other Tumor Suppressor
+SHBG	Oncogene	Other Oncogene
+SHC1	Oncogene	Other Oncogene
+SHC4	Oncogene	Other Oncogene
+SHH	Oncogene	Other Oncogene
+SHISA3	Tumor Suppressor	Other Tumor Suppressor
+SHOX	Other	Transcription Factor
+SHOX2	Other	Transcription Factor
+SHPRH	Tumor Suppressor	Epigenetic
+SHQ1	Tumor Suppressor	Other Tumor Suppressor
+SIAH1	Tumor Suppressor	Other Tumor Suppressor
+SIAH2	Oncogene	Other Oncogene
+SIK	Other	Kinase
+SIK1	Tumor Suppressor	Kinase
+SIK1B	Other	Kinase
+SIK2	Other	Kinase
+SIK3	Oncogene	Kinase
+SIM1	Other	Transcription Factor
+SIM2	Other	Transcription Factor
+SIPA1	Oncogene	Other Oncogene
+SIRT1	Oncogene or Tumor Suppressor	Epigenetic
+SIRT2	Tumor Suppressor	Epigenetic
+SIRT3	Tumor Suppressor	Other Tumor Suppressor
+SIRT4	Tumor Suppressor	Other Tumor Suppressor
+SIRT6	Tumor Suppressor	Epigenetic
+SIX1	Oncogene	Transcription Factor
+SIX2	Other	Transcription Factor
+SIX3	Other	Transcription Factor
+SIX4	Oncogene	Transcription Factor
+SIX5	Other	Transcription Factor
+SIX6	Other	Transcription Factor
+SKI	Oncogene	Transcription Factor
+SKIL	Oncogene or Tumor Suppressor	Transcription Factor
+SKOR1	Other	Transcription Factor
+SKOR2	Other	Transcription Factor
+SKP1	Oncogene	Epigenetic
+SKP1P2	Oncogene	Other Oncogene
+SKP2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SLAMF6	Oncogene	Other Oncogene
+SLC16A1	Oncogene	Other Oncogene
+SLC16A3	Oncogene	Other Oncogene
+SLC19A1	Oncogene	Other Oncogene
+SLC22A18	Oncogene	Other Oncogene
+SLC22A23	Oncogene	Other Oncogene
+SLC26A11	Oncogene	Other Oncogene
+SLC27A1	Oncogene	Other Oncogene
+SLC29A1	Oncogene	Other Oncogene
+SLC2A4RG	Other	Transcription Factor
+SLC30A5	Oncogene	Other Oncogene
+SLC34A2	Oncogene	Other Oncogene
+SLC38A1	Oncogene	Other Oncogene
+SLC38A2	Oncogene	Other Oncogene
+SLC39A1	Tumor Suppressor	Other Tumor Suppressor
+SLC39A4	Tumor Suppressor	Other Tumor Suppressor
+SLC39A6	Oncogene	Other Oncogene
+SLC43A1	Oncogene	Other Oncogene
+SLC44A4	Oncogene	Other Oncogene
+SLC45A3	Oncogene	Other Oncogene
+SLC49A4	Oncogene	Other Oncogene
+SLC4A1	Oncogene	Other Oncogene
+SLC5A5	Oncogene	Other Oncogene
+SLC5A8	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SLC6A2	Oncogene	Other Oncogene
+SLC6A3	Oncogene	Other Oncogene
+SLC6A5	Oncogene	Other Oncogene
+SLC9A2	Oncogene	Other Oncogene
+SLC9A3R1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SLC9A9	Oncogene	Other Oncogene
+SLIT2	Tumor Suppressor	Other Tumor Suppressor
+SLK	Other	Kinase
+SLX4	Tumor Suppressor	Other Tumor Suppressor
+SMAD1	Other	Transcription Factor
+SMAD2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SMAD3	Oncogene	Transcription Factor
+SMAD4	Oncogene or Tumor Suppressor	Transcription Factor
+SMAD5	Other	Transcription Factor
+SMAD9	Other	Transcription Factor
+SMAP1	Oncogene	Other Oncogene
+SMARCA2	Tumor Suppressor	Epigenetic
+SMARCA4	Oncogene or Tumor Suppressor	Epigenetic
+SMARCB1	Oncogene or Tumor Suppressor	Epigenetic
+SMARCC1	Tumor Suppressor	Epigenetic
+SMCHD1	Tumor Suppressor	Other Tumor Suppressor
+SMG1	Other	Kinase
+SMG6	Oncogene	Other Oncogene
+SMO	Oncogene	Other Oncogene
+SMYD3	Oncogene	Epigenetic
+SMYD4	Tumor Suppressor	Epigenetic
+SNAI1	Oncogene	Transcription Factor
+SNAI2	Oncogene	Epigenetic
+SNAI3	Other	Transcription Factor
+SNAPC2	Other	Transcription Factor
+SNAPC3	Oncogene	Other Oncogene
+SNAPC4	Other	Transcription Factor
+SNAPC5	Other	Transcription Factor
+SNCAIP	Oncogene	Other Oncogene
+SNCG	Oncogene	Other Oncogene
+SNORD50A	Tumor Suppressor	Other Tumor Suppressor
+SNRK	Other	Kinase
+SNX29	Oncogene	Other Oncogene
+SNX5	Oncogene	Other Oncogene
+SOCS1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SOCS2	Oncogene	Other Oncogene
+SOCS3	Tumor Suppressor	Other Tumor Suppressor
+SOD2	Tumor Suppressor	Other Tumor Suppressor
+SOHLH1	Other	Transcription Factor
+SOHLH2	Other	Transcription Factor
+SON	Other	Transcription Factor
+SORBS2	Oncogene	Other Oncogene
+SORL1	Oncogene	Other Oncogene
+SOX1	Tumor Suppressor	Transcription Factor
+SOX10	Oncogene	Transcription Factor
+SOX11	Oncogene or Tumor Suppressor	Transcription Factor
+SOX12	Other	Transcription Factor
+SOX13	Other	Transcription Factor
+SOX14	Other	Transcription Factor
+SOX15	Tumor Suppressor	Transcription Factor
+SOX17	Other	Transcription Factor
+SOX18	Other	Transcription Factor
+SOX2	Oncogene	Transcription Factor
+SOX21	Other	Transcription Factor
+SOX3	Oncogene	Transcription Factor
+SOX30	Other	Transcription Factor
+SOX4	Oncogene	Transcription Factor
+SOX5	Oncogene	Transcription Factor
+SOX6	Other	Transcription Factor
+SOX7	Tumor Suppressor	Transcription Factor
+SOX8	Oncogene	Transcription Factor
+SOX9	Oncogene	Transcription Factor
+SP1	Other	Epigenetic
+SP100	Tumor Suppressor	Epigenetic
+SP110	Oncogene	Transcription Factor
+SP140	Oncogene	Epigenetic
+SP140L	Other	Transcription Factor
+SP2	Other	Transcription Factor
+SP3	Other	Transcription Factor
+SP4	Other	Transcription Factor
+SP5	Other	Transcription Factor
+SP6	Other	Transcription Factor
+SP7	Other	Transcription Factor
+SP8	Other	Transcription Factor
+SP9	Other	Transcription Factor
+SPA17	Oncogene	Other Oncogene
+SPAM1	Oncogene	Other Oncogene
+SPARC	Tumor Suppressor	Other Tumor Suppressor
+SPARCL1	Tumor Suppressor	Other Tumor Suppressor
+SPDEF	Other	Transcription Factor
+SPECC1	Oncogene	Other Oncogene
+SPEG	Other	Kinase
+SPEN	Other	RNA Binding Protein
+SPI1	Oncogene or Tumor Suppressor	Transcription Factor
+SPIB	Other	Transcription Factor
+SPIC	Other	Transcription Factor
+SPINK7	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SPINT1	Oncogene	Other Oncogene
+SPINT2	Tumor Suppressor	Other Tumor Suppressor
+SPOP	Oncogene or Tumor Suppressor	Epigenetic
+SPP1	Oncogene	Other Oncogene
+SPPL2B	Oncogene	Other Oncogene
+SPPL3	Oncogene	Other Oncogene
+SPRY2	Tumor Suppressor	Other Tumor Suppressor
+SPRY4	Tumor Suppressor	Other Tumor Suppressor
+SPTAN1	Oncogene	Other Oncogene
+SPTBN1	Tumor Suppressor	Other Tumor Suppressor
+SPZ1	Other	Transcription Factor
+SRC	Oncogene	Kinase
+SRCAP	Other	Epigenetic
+SREBF1	Other	Transcription Factor
+SREBF2	Other	Transcription Factor
+SRF	Other	Transcription Factor
+SRGAP3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SRI	Oncogene	Other Oncogene
+SRM	Other	Kinase
+SRMS	Other	Kinase
+SRPK1	Other	Kinase
+SRPK2	Oncogene	Kinase
+SRPK2ps	Other	Kinase
+SRPK3	Other	Kinase
+SRPX	Tumor Suppressor	Other Tumor Suppressor
+SRSF2	Oncogene	Other Oncogene
+SRSF3	Oncogene	Epigenetic
+SRSF6	Oncogene	Other Oncogene
+SRY	Other	Transcription Factor
+SS18	Oncogene	Other Oncogene
+SS18L1	Oncogene	Epigenetic
+SSBP2	Tumor Suppressor	Other Tumor Suppressor
+SSBP3	Oncogene	Other Oncogene
+SSBP4	Oncogene	Other Oncogene
+SSPN	Oncogene	Other Oncogene
+SSTK	Other	Kinase
+SSTR2	Oncogene	Other Oncogene
+SSX1	Oncogene	Other Oncogene
+SSX2	Oncogene	Other Oncogene
+SSX4	Oncogene	Other Oncogene
+ST13	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+ST18	Other	Transcription Factor
+ST20	Tumor Suppressor	Other Tumor Suppressor
+ST5	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+ST6GAL1	Oncogene	Other Oncogene
+ST6GALNAC1	Oncogene	Other Oncogene
+ST7	Tumor Suppressor	Other Tumor Suppressor
+STAG1	Oncogene	Other Oncogene
+STAG2	Oncogene	Other Oncogene
+STARD13	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+STARD3	Oncogene	Other Oncogene
+STARD8	Oncogene	Other Oncogene
+STAT1	Tumor Suppressor	Transcription Factor
+STAT2	Other	Transcription Factor
+STAT3	Oncogene or Tumor Suppressor	Transcription Factor
+STAT4	Other	Transcription Factor
+STAT5A	Oncogene or Tumor Suppressor	Transcription Factor
+STAT5B	Oncogene	Transcription Factor
+STAT6	Oncogene	Transcription Factor
+STEAP1	Oncogene	Other Oncogene
+STEAP2	Oncogene	Other Oncogene
+STIL	Oncogene	Other Oncogene
+STK10	Tumor Suppressor	Kinase
+STK11	Oncogene or Tumor Suppressor	Kinase
+STK16	Other	Kinase
+STK17A	Other	Kinase
+STK17B	Other	Kinase
+STK24	Other	Kinase
+STK25	Other	Kinase
+STK26	Other	Kinase
+STK3	Other	Kinase
+STK31	Other	Kinase
+STK32A	Other	Kinase
+STK32B	Other	Kinase
+STK32C	Other	Kinase
+STK33	Other	Kinase
+STK33ps	Other	Kinase
+STK35	Other	Kinase
+STK36	Other	Kinase
+STK38	Other	Kinase
+STK38L	Oncogene	Kinase
+STK39	Other	Kinase
+STK4	Oncogene	Kinase
+STK40	Other	Kinase
+STKLD1	Other	Kinase
+STLK3	Other	Kinase
+STLK5	Other	Kinase
+STLK6	Other	Kinase
+STLK6-rs	Other	Kinase
+STLK6ps1	Other	Kinase
+STOML2	Oncogene	Other Oncogene
+STRADA	Tumor Suppressor	Kinase
+STRADB	Other	Kinase
+STRN	Oncogene	Other Oncogene
+STUB1	Tumor Suppressor	Other Tumor Suppressor
+STX4	Oncogene	Other Oncogene
+STYK1	Other	Kinase
+SUFU	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SULF2	Oncogene	Other Oncogene
+SUSD3	Oncogene	Other Oncogene
+SUZ12	Oncogene or Tumor Suppressor	Epigenetic
+SWAP70	Oncogene	Other Oncogene
+SYDE1	Oncogene	Other Oncogene
+SYK	Oncogene or Tumor Suppressor	Kinase
+SYNE1	Oncogene	Other Oncogene
+SYNE2	Oncogene	Other Oncogene
+SYNE3	Oncogene	Other Oncogene
+SYNM	Tumor Suppressor	Other Tumor Suppressor
+SYNPO2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+SYT13	Tumor Suppressor	Other Tumor Suppressor
+SgK050ps	Other	Kinase
+SgK069	Other	Kinase
+SgK071	Other	Kinase
+SgK085	Other	Kinase
+SgK110	Other	Kinase
+SgK196	Other	Kinase
+SgK223	Other	Kinase
+SgK269	Other	Kinase
+SgK288	Other	Kinase
+SgK307	Other	Kinase
+SgK384ps	Other	Kinase
+SgK396	Other	Kinase
+SgK424	Other	Kinase
+SgK493	Other	Kinase
+SgK494	Other	Kinase
+SgK495	Other	Kinase
+SgK496	Other	Kinase
+Slob	Other	Kinase
+SuRTK106	Other	Kinase
+T	Other	Transcription Factor
+TAB3	Oncogene	Other Oncogene
+TAC1	Oncogene	Other Oncogene
+TACC1	Oncogene	Other Oncogene
+TACC3	Oncogene	Other Oncogene
+TACSTD2	Oncogene	Other Oncogene
+TAF1	Other	Kinase
+TAF15	Oncogene	RNA Binding Protein
+TAF1L	Other	Kinase
+TAGLN	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+TAK1	Other	Kinase
+TAL1	Oncogene	Transcription Factor
+TAL2	Oncogene	Transcription Factor
+TANK	Tumor Suppressor	Other Tumor Suppressor
+TAO1	Other	Kinase
+TAO2	Other	Kinase
+TAO3	Other	Kinase
+TAOK1	Other	Kinase
+TAOK2	Other	Kinase
+TAOK3	Other	Kinase
+TAP1	Oncogene	Other Oncogene
+TAP2	Oncogene	Other Oncogene
+TAT	Tumor Suppressor	Other Tumor Suppressor
+TBCK	Other	Kinase
+TBK1	Other	Kinase
+TBL2	Tumor Suppressor	Other Tumor Suppressor
+TBP	Other	Transcription Factor
+TBPL1	Other	Transcription Factor
+TBPL2	Other	Transcription Factor
+TBR1	Other	Transcription Factor
+TBRG1	Tumor Suppressor	Other Tumor Suppressor
+TBX1	Other	Transcription Factor
+TBX10	Other	Transcription Factor
+TBX15	Other	Transcription Factor
+TBX18	Other	Transcription Factor
+TBX19	Other	Transcription Factor
+TBX2	Oncogene	Transcription Factor
+TBX20	Other	Transcription Factor
+TBX21	Oncogene	Transcription Factor
+TBX22	Oncogene	Transcription Factor
+TBX3	Other	Transcription Factor
+TBX4	Other	Transcription Factor
+TBX5	Tumor Suppressor	Transcription Factor
+TBX6	Other	Transcription Factor
+TBXT	Other	Transcription Factor
+TCEA1	Oncogene	Other Oncogene
+TCEAL7	Tumor Suppressor	Other Tumor Suppressor
+TCEB3	Tumor Suppressor	Other Tumor Suppressor
+TCF12	Oncogene	Transcription Factor
+TCF15	Other	Transcription Factor
+TCF20	Other	Transcription Factor
+TCF21	Other	Transcription Factor
+TCF23	Other	Transcription Factor
+TCF24	Other	Transcription Factor
+TCF3	Oncogene or Tumor Suppressor	Transcription Factor
+TCF4	Tumor Suppressor	Transcription Factor
+TCF7	Other	Transcription Factor
+TCF7L1	Oncogene or Tumor Suppressor	Transcription Factor
+TCF7L1	Other	Transcription Factor
+TCF7L2	Tumor Suppressor	Transcription Factor
+TCF7L2	Oncogene or Tumor Suppressor	Transcription Factor
+TCFL5	Other	Transcription Factor
+TCHP	Tumor Suppressor	Other Tumor Suppressor
+TCIRG1	Oncogene	Other Oncogene
+TCL1A	Oncogene	Other Oncogene
+TCL1B	Oncogene	Other Oncogene
+TCL6	Oncogene	Other Oncogene
+TCTA	Oncogene	Other Oncogene
+TDGF1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+TDGF1P3	Oncogene	Other Oncogene
+TDRG1	Tumor Suppressor	Other Tumor Suppressor
+TEAD1	Other	Transcription Factor
+TEAD2	Other	Transcription Factor
+TEAD3	Other	Transcription Factor
+TEAD4	Other	Transcription Factor
+TEC	Oncogene	Kinase
+TECTA	Oncogene	Other Oncogene
+TEF	Other	Transcription Factor
+TEK	Oncogene	Kinase
+TERB1	Other	Transcription Factor
+TERF1	Other	Transcription Factor
+TERF2	Other	Transcription Factor
+TERT	Oncogene	Other Oncogene
+TES	Tumor Suppressor	Other Tumor Suppressor
+TESK1	Other	Kinase
+TESK2	Other	Kinase
+TET1	Oncogene	Epigenetic
+TET2	Oncogene or Tumor Suppressor	Epigenetic
+TET3	Other	Epigenetic
+TEX14	Other	Kinase
+TFAP2A	Oncogene or Tumor Suppressor	Transcription Factor
+TFAP2B	Other	Transcription Factor
+TFAP2C	Other	Transcription Factor
+TFAP2D	Other	Transcription Factor
+TFAP2E	Other	Transcription Factor
+TFAP4	Oncogene	Transcription Factor
+TFCP2	Other	Transcription Factor
+TFCP2L1	Other	Transcription Factor
+TFDP1	Other	Epigenetic
+TFDP2	Other	Transcription Factor
+TFDP3	Other	Transcription Factor
+TFE3	Oncogene	Transcription Factor
+TFEB	Oncogene	Transcription Factor
+TFEC	Other	Transcription Factor
+TFF1	Oncogene	Other Oncogene
+TFF2	Oncogene	Other Oncogene
+TFF3	Oncogene	Other Oncogene
+TFG	Oncogene	Other Oncogene
+TFPI2	Tumor Suppressor	Other Tumor Suppressor
+TFPT	Oncogene	Epigenetic
+TFRC	Oncogene	Other Oncogene
+TGFA	Oncogene	Other Oncogene
+TGFB1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+TGFB2	Oncogene	Other Oncogene
+TGFB3	Oncogene	Other Oncogene
+TGFBI	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+TGFBR1	Oncogene	Kinase
+TGFBR2	Oncogene or Tumor Suppressor	Kinase
+TGFBR3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+TGFbR1	Other	Kinase
+TGFbR2	Other	Kinase
+TGIF1	Other	Transcription Factor
+TGIF2	Other	Transcription Factor
+TGIF2LX	Other	Transcription Factor
+TGIF2LY	Other	Transcription Factor
+TGM3	Tumor Suppressor	Other Tumor Suppressor
+THADA	Oncogene	Other Oncogene
+THAP1	Other	Transcription Factor
+THAP10	Other	Transcription Factor
+THAP11	Other	Transcription Factor
+THAP12	Other	Transcription Factor
+THAP2	Other	Transcription Factor
+THAP3	Other	Transcription Factor
+THAP4	Other	Transcription Factor
+THAP5	Other	Transcription Factor
+THAP6	Other	Transcription Factor
+THAP7	Other	Transcription Factor
+THAP8	Other	Transcription Factor
+THAP9	Other	Transcription Factor
+THBD	Tumor Suppressor	Other Tumor Suppressor
+THBS1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+THBS2	Oncogene	Other Oncogene
+THBS3	Oncogene	Other Oncogene
+THOC5	Oncogene	Other Oncogene
+THPO	Oncogene	Other Oncogene
+THRA	Oncogene or Tumor Suppressor	Transcription Factor
+THRAP3	Oncogene	Other Oncogene
+THRB	Tumor Suppressor	Transcription Factor
+THRSP	Oncogene	Other Oncogene
+THSD1	Tumor Suppressor	Other Tumor Suppressor
+THY1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+THYN1	Other	Transcription Factor
+TIAM1	Oncogene	Other Oncogene
+TIE1	Oncogene	Kinase
+TIE2	Other	Kinase
+TIF1a	Other	Kinase
+TIF1b	Other	Kinase
+TIF1g	Other	Kinase
+TIGD1	Other	Transcription Factor
+TIGD2	Other	Transcription Factor
+TIGD3	Other	Transcription Factor
+TIGD4	Other	Transcription Factor
+TIGD5	Other	Transcription Factor
+TIGD6	Other	Transcription Factor
+TIGD7	Other	Transcription Factor
+TIMP1	Oncogene	Other Oncogene
+TIMP2	Oncogene	Other Oncogene
+TIMP3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+TJP2	Oncogene	Other Oncogene
+TK1	Oncogene	Other Oncogene
+TLCD2	Oncogene	Other Oncogene
+TLCD3A	Oncogene	Other Oncogene
+TLK1	Other	Kinase
+TLK1ps	Other	Kinase
+TLK2	Other	Kinase
+TLK2ps1	Other	Kinase
+TLK2ps2	Other	Kinase
+TLX1	Oncogene	Transcription Factor
+TLX2	Other	Transcription Factor
+TLX3	Oncogene	Transcription Factor
+TM4SF1	Oncogene	Other Oncogene
+TMEFF1	Tumor Suppressor	Other Tumor Suppressor
+TMEFF2	Tumor Suppressor	Other Tumor Suppressor
+TMEM104	Oncogene	Other Oncogene
+TMEM127	Tumor Suppressor	Other Tumor Suppressor
+TMEM74	Oncogene	Other Oncogene
+TMEM86A	Oncogene	Other Oncogene
+TMF1	Other	Transcription Factor
+TMPRSS11A	Tumor Suppressor	Other Tumor Suppressor
+TMPRSS2	Oncogene	Other Oncogene
+TMPRSS3	Oncogene	Other Oncogene
+TMPRSS4	Oncogene	Other Oncogene
+TMPRSS6	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+TMSB10	Oncogene	Other Oncogene
+TNC	Oncogene	Other Oncogene
+TNF	Oncogene	Other Oncogene
+TNFAIP1	Oncogene	Other Oncogene
+TNFAIP3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+TNFAIP8L2	Tumor Suppressor	Other Tumor Suppressor
+TNFRSF10A	Tumor Suppressor	Other Tumor Suppressor
+TNFRSF10B	Tumor Suppressor	Other Tumor Suppressor
+TNFRSF11A	Oncogene	Other Oncogene
+TNFRSF11B	Oncogene	Other Oncogene
+TNFRSF12A	Tumor Suppressor	Other Tumor Suppressor
+TNFRSF13B	Oncogene	Other Oncogene
+TNFRSF14	Oncogene	Other Oncogene
+TNFRSF17	Oncogene	Other Oncogene
+TNFRSF18	Tumor Suppressor	Other Tumor Suppressor
+TNFRSF1A	Oncogene	Other Oncogene
+TNFRSF1B	Oncogene	Other Oncogene
+TNFRSF6B	Oncogene	Other Oncogene
+TNFRSF8	Oncogene	Other Oncogene
+TNFSF10	Oncogene	Other Oncogene
+TNFSF12	Tumor Suppressor	Other Tumor Suppressor
+TNFSF13B	Oncogene	Other Oncogene
+TNFSF15	Oncogene	Other Oncogene
+TNFSF18	Oncogene	Other Oncogene
+TNFSF9	Tumor Suppressor	Other Tumor Suppressor
+TNIK	Other	Kinase
+TNK1	Tumor Suppressor	Kinase
+TNK2	Other	Kinase
+TNN	Oncogene	Other Oncogene
+TNNI3K	Other	Kinase
+TNR	Oncogene	Other Oncogene
+TOB2	Oncogene	Other Oncogene
+TOM1L2	Tumor Suppressor	Other Tumor Suppressor
+TOP1	Oncogene	Other Oncogene
+TOP2A	Oncogene	Epigenetic
+TOP2B	Oncogene	Epigenetic
+TOPORS	Oncogene or Tumor Suppressor	Transcription Factor
+TP53	Oncogene or Tumor Suppressor	Epigenetic
+TP53BP1	Tumor Suppressor	Epigenetic
+TP53BP2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+TP53COR1	Tumor Suppressor	Other Tumor Suppressor
+TP53INP1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+TP53RK	Oncogene	Other Oncogene
+TP63	Tumor Suppressor	Transcription Factor
+TP73	Oncogene or Tumor Suppressor	Transcription Factor
+TPD52	Oncogene	Other Oncogene
+TPK1	Oncogene	Other Oncogene
+TPM3	Oncogene	Other Oncogene
+TPM4	Oncogene	Other Oncogene
+TPR	Oncogene	Other Oncogene
+TPRX1	Other	Transcription Factor
+TPTE2	Tumor Suppressor	Other Tumor Suppressor
+TPTEP2-CSNK1E	Other	Kinase
+TRA	Oncogene	Other Oncogene
+TRAF1	Oncogene	Other Oncogene
+TRAF3	Oncogene	Other Oncogene
+TRAF4	Oncogene	Other Oncogene
+TRAF7	Oncogene	Other Oncogene
+TRAFD1	Other	Transcription Factor
+TRAP1	Oncogene	Other Oncogene
+TRB	Oncogene	Other Oncogene
+TRD	Oncogene	Other Oncogene
+TRD-GTC9-1	Oncogene	Other Oncogene
+TRERF1	Other	Transcription Factor
+TREX2	Tumor Suppressor	Other Tumor Suppressor
+TRG	Oncogene	Other Oncogene
+TRHR	Oncogene	Other Oncogene
+TRIAP1	Oncogene	Other Oncogene
+TRIB1	Other	Kinase
+TRIB2	Other	Kinase
+TRIB3	Other	Kinase
+TRIM13	Tumor Suppressor	Other Tumor Suppressor
+TRIM15	Tumor Suppressor	Other Tumor Suppressor
+TRIM24	Oncogene or Tumor Suppressor	Epigenetic
+TRIM27	Oncogene	Epigenetic
+TRIM3	Tumor Suppressor	Other Tumor Suppressor
+TRIM31	Tumor Suppressor	Other Tumor Suppressor
+TRIM32	Tumor Suppressor	Other Tumor Suppressor
+TRIM33	Oncogene	Epigenetic
+TRIM35	Tumor Suppressor	Other Tumor Suppressor
+TRIM37	Oncogene	Other Oncogene
+TRIM62	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+TRIO	Oncogene	Kinase
+TRIP11	Oncogene	Other Oncogene
+TRIT1	Tumor Suppressor	Other Tumor Suppressor
+TRKA	Other	Kinase
+TRKB	Other	Kinase
+TRKC	Other	Kinase
+TRMT10A	Oncogene	Other Oncogene
+TRPM1	Oncogene	Other Oncogene
+TRPM6	Other	Kinase
+TRPM7	Other	Kinase
+TRPS1	Other	Transcription Factor
+TRPV1	Oncogene	Other Oncogene
+TRPV6	Oncogene	Other Oncogene
+TRRAP	Other	Kinase
+TSC1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+TSC2	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+TSC22D1	Tumor Suppressor	Transcription Factor
+TSG101	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+TSHR	Oncogene	Other Oncogene
+TSHZ1	Other	Transcription Factor
+TSHZ2	Other	Transcription Factor
+TSHZ3	Other	Transcription Factor
+TSLP	Tumor Suppressor	Other Tumor Suppressor
+TSPAN1	Oncogene	Other Oncogene
+TSPAN13	Tumor Suppressor	Other Tumor Suppressor
+TSPAN32	Tumor Suppressor	Other Tumor Suppressor
+TSPAN8	Oncogene	Other Oncogene
+TSPOAP1	Oncogene	Other Oncogene
+TSSC4	Tumor Suppressor	Other Tumor Suppressor
+TSSK1	Other	Kinase
+TSSK1B	Other	Kinase
+TSSK1B	Other	Kinase
+TSSK2	Other	Kinase
+TSSK3	Other	Kinase
+TSSK4	Other	Kinase
+TSSK6	Other	Kinase
+TSSKps1	Other	Kinase
+TSSKps2	Other	Kinase
+TTBK1	Other	Kinase
+TTBK2	Other	Kinase
+TTC39B	Oncogene	Other Oncogene
+TTC4	Tumor Suppressor	Other Tumor Suppressor
+TTF1	Tumor Suppressor	Transcription Factor
+TTK	Other	Kinase
+TTL	Oncogene	Other Oncogene
+TTLL3	Oncogene	Other Oncogene
+TTN	Other	Kinase
+TTYH1	Oncogene	Other Oncogene
+TUSC1	Tumor Suppressor	Other Tumor Suppressor
+TUSC2	Tumor Suppressor	Other Tumor Suppressor
+TUSC7	Tumor Suppressor	Other Tumor Suppressor
+TWIST1	Oncogene	Transcription Factor
+TWIST2	Tumor Suppressor	Transcription Factor
+TXK	Other	Kinase
+TXN	Oncogene	Other Oncogene
+TXNIP	Tumor Suppressor	Other Tumor Suppressor
+TYK2	Other	Kinase
+TYMP	Oncogene	Other Oncogene
+TYRO3	Oncogene	Kinase
+TYRO3ps	Other	Kinase
+Trad	Other	Kinase
+Trb1	Other	Kinase
+Trb2	Other	Kinase
+Trb3	Other	Kinase
+Trio	Other	Kinase
+U2AF1	Oncogene	RNA Binding Protein
+UBA7	Oncogene	Other Oncogene
+UBE2C	Oncogene	Other Oncogene
+UBE2D2	Oncogene	Other Oncogene
+UBE2QL1	Tumor Suppressor	Other Tumor Suppressor
+UBE3A	Oncogene	Other Oncogene
+UBE4B	Tumor Suppressor	Other Tumor Suppressor
+UBIAD1	Tumor Suppressor	Other Tumor Suppressor
+UBL3	Oncogene	Other Oncogene
+UBL7	Oncogene	Other Oncogene
+UBP1	Other	Transcription Factor
+UCHL1	Tumor Suppressor	Other Tumor Suppressor
+UCHL5	Oncogene	Epigenetic
+UFL1	Tumor Suppressor	Other Tumor Suppressor
+UHMK1	Other	Kinase
+UHRF2	Oncogene or Tumor Suppressor	Epigenetic
+UIMC1	Tumor Suppressor	Epigenetic
+ULK1	Other	Kinase
+ULK2	Other	Kinase
+ULK3	Other	Kinase
+ULK4	Other	Kinase
+UNC5A	Tumor Suppressor	Other Tumor Suppressor
+UNC5B	Tumor Suppressor	Other Tumor Suppressor
+UNC5C	Tumor Suppressor	Other Tumor Suppressor
+UNC5D	Tumor Suppressor	Other Tumor Suppressor
+UNC79	Oncogene	Other Oncogene
+UNCX	Other	Transcription Factor
+UQCRC2	Oncogene	Other Oncogene
+USF1	Oncogene	Transcription Factor
+USF2	Other	Transcription Factor
+USF3	Other	Transcription Factor
+USP12	Tumor Suppressor	Epigenetic
+USP12P1	Tumor Suppressor	Other Tumor Suppressor
+USP15	Oncogene	Epigenetic
+USP24	Oncogene	Other Oncogene
+USP3	Oncogene	Epigenetic
+USP32	Oncogene	Other Oncogene
+USP33	Tumor Suppressor	Other Tumor Suppressor
+USP38	Oncogene	Other Oncogene
+USP39	Oncogene	Other Oncogene
+USP4	Oncogene	Other Oncogene
+USP6	Oncogene	Other Oncogene
+USP7	Oncogene	Epigenetic
+UTP3	Oncogene	Other Oncogene
+UVRAG	Tumor Suppressor	Other Tumor Suppressor
+VAC14	Oncogene	Other Oncogene
+VACAMKL	Other	Kinase
+VAMP8	Oncogene	Other Oncogene
+VAV1	Oncogene	Other Oncogene
+VAV2	Oncogene	Other Oncogene
+VAV3	Oncogene	Other Oncogene
+VAX1	Other	Transcription Factor
+VAX2	Other	Transcription Factor
+VCAN	Oncogene	Other Oncogene
+VCL	Oncogene	Other Oncogene
+VDR	Tumor Suppressor	Epigenetic
+VEGFA	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+VENTX	Other	Transcription Factor
+VEPH1	Oncogene	Other Oncogene
+VEZF1	Other	Transcription Factor
+VEZT	Tumor Suppressor	Other Tumor Suppressor
+VGF	Oncogene	Other Oncogene
+VHL	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+VIL1	Tumor Suppressor	Other Tumor Suppressor
+VIM	Tumor Suppressor	Other Tumor Suppressor
+VPS53	Tumor Suppressor	Other Tumor Suppressor
+VRK1	Oncogene	Kinase
+VRK2	Other	Kinase
+VRK3	Other	Kinase
+VRK3ps	Other	Kinase
+VSNL1	Tumor Suppressor	Other Tumor Suppressor
+VSX1	Other	Transcription Factor
+VSX2	Other	Transcription Factor
+VTCN1	Oncogene	Other Oncogene
+VTI1A	Oncogene	Other Oncogene
+VTRNA2-1	Tumor Suppressor	Other Tumor Suppressor
+VWA5A	Tumor Suppressor	Other Tumor Suppressor
+WAS	Oncogene	Other Oncogene
+WASF2	Oncogene	Other Oncogene
+WDR11	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+WDR48	Tumor Suppressor	Other Tumor Suppressor
+WDR77	Oncogene	Epigenetic
+WDR82	Oncogene	Epigenetic
+WDR82P1	Oncogene	Other Oncogene
+WEE1	Other	Kinase
+WEE2	Other	Kinase
+WFDC1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+WHSC1L1	Tumor Suppressor	Epigenetic
+WIF1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+WISP2	Oncogene	Other Oncogene
+WISP3	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+WIZ	Other	Transcription Factor
+WNK1	Other	Kinase
+WNK2	Oncogene or Tumor Suppressor	Kinase
+WNK3	Other	Kinase
+WNK4	Other	Kinase
+WNT1	Oncogene	Other Oncogene
+WNT10B	Oncogene	Other Oncogene
+WNT11	Tumor Suppressor	Other Tumor Suppressor
+WNT2	Oncogene	Other Oncogene
+WNT3	Oncogene	Other Oncogene
+WNT3A	Oncogene	Other Oncogene
+WNT5A	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+WNT6	Oncogene	Other Oncogene
+WNT7A	Tumor Suppressor	Other Tumor Suppressor
+WRAP53	Oncogene	Other Oncogene
+WRN	Oncogene	Other Oncogene
+WT1	Oncogene or Tumor Suppressor	Transcription Factor
+WWOX	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+WWP1	Oncogene	Other Oncogene
+Wee1	Other	Kinase
+Wee1B	Other	Kinase
+Wee1Bps	Other	Kinase
+Wee1ps1	Other	Kinase
+Wee1ps2	Other	Kinase
+Wnk1	Other	Kinase
+Wnk2	Other	Kinase
+Wnk3	Other	Kinase
+Wnk4	Other	Kinase
+XAF1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+XBP1	Other	Transcription Factor
+XBP1P1	Other	Transcription Factor
+XDH	Oncogene	Other Oncogene
+XIRP1	Oncogene	Other Oncogene
+XIST	Tumor Suppressor	Other Tumor Suppressor
+XPA	Oncogene	Transcription Factor
+XPC	Oncogene	Other Oncogene
+XPO5	Tumor Suppressor	Other Tumor Suppressor
+XRCC3	Oncogene	Other Oncogene
+XRCC5	Tumor Suppressor	Other Tumor Suppressor
+XRCC6	Oncogene	Other Oncogene
+XXYLT1	Oncogene	Other Oncogene
+YANK1	Other	Kinase
+YANK2	Other	Kinase
+YANK3	Other	Kinase
+YAP1	Oncogene or Tumor Suppressor	Oncogene or Tumor Suppressor
+YBX1	Oncogene	RNA Binding Protein
+YBX2	Other	RNA Binding Protein
+YBX3	Other	Transcription Factor
+YES	Other	Kinase
+YES1	Oncogene	Kinase
+YESps	Other	Kinase
+YPEL3	Tumor Suppressor	Other Tumor Suppressor
+YSK1	Other	Kinase
+YWHAE	Oncogene	Epigenetic
+YY1	Other	Epigenetic
+YY2	Other	Transcription Factor
+ZAK	Other	Kinase
+ZAP70	Other	Kinase
+ZBED1	Other	Transcription Factor
+ZBED2	Other	Transcription Factor
+ZBED3	Other	Transcription Factor
+ZBED4	Other	Transcription Factor
+ZBED5	Other	Transcription Factor
+ZBED6	Other	Transcription Factor
+ZBED9	Other	Transcription Factor
+ZBTB1	Other	Transcription Factor
+ZBTB10	Other	Transcription Factor
+ZBTB11	Other	Transcription Factor
+ZBTB12	Other	Transcription Factor
+ZBTB14	Other	Transcription Factor
+ZBTB16	Oncogene or Tumor Suppressor	Epigenetic
+ZBTB17	Other	Transcription Factor
+ZBTB18	Tumor Suppressor	Transcription Factor
+ZBTB2	Other	Transcription Factor
+ZBTB20	Other	Transcription Factor
+ZBTB21	Other	Transcription Factor
+ZBTB22	Other	Transcription Factor
+ZBTB24	Other	Transcription Factor
+ZBTB25	Other	Transcription Factor
+ZBTB26	Other	Transcription Factor
+ZBTB3	Other	Transcription Factor
+ZBTB32	Other	Transcription Factor
+ZBTB33	Oncogene	Epigenetic
+ZBTB34	Other	Transcription Factor
+ZBTB37	Other	Transcription Factor
+ZBTB38	Other	Transcription Factor
+ZBTB39	Other	Transcription Factor
+ZBTB4	Tumor Suppressor	Transcription Factor
+ZBTB40	Other	Transcription Factor
+ZBTB41	Other	Transcription Factor
+ZBTB42	Other	Transcription Factor
+ZBTB43	Other	Transcription Factor
+ZBTB44	Other	Transcription Factor
+ZBTB45	Other	Transcription Factor
+ZBTB46	Other	Transcription Factor
+ZBTB47	Other	Transcription Factor
+ZBTB48	Oncogene or Tumor Suppressor	Transcription Factor
+ZBTB49	Other	Transcription Factor
+ZBTB5	Other	Transcription Factor
+ZBTB6	Other	Transcription Factor
+ZBTB7A	Other	Transcription Factor
+ZBTB7B	Other	Transcription Factor
+ZBTB7C	Tumor Suppressor	Epigenetic
+ZBTB8A	Other	Transcription Factor
+ZBTB8B	Other	Transcription Factor
+ZBTB9	Other	Transcription Factor
+ZC3H10	Tumor Suppressor	RNA Binding Protein
+ZC3H8	Oncogene	RNA Binding Protein
+ZDHHC14	Oncogene	Other Oncogene
+ZDHHC18	Oncogene	Other Oncogene
+ZDHHC2	Tumor Suppressor	Other Tumor Suppressor
+ZDHHC3	Oncogene	Other Oncogene
+ZDHHC7	Oncogene	Other Oncogene
+ZEB1	Other	Transcription Factor
+ZEB2	Oncogene	Transcription Factor
+ZFAS1	Tumor Suppressor	Other Tumor Suppressor
+ZFAT	Other	Transcription Factor
+ZFHX2	Other	Transcription Factor
+ZFHX3	Oncogene or Tumor Suppressor	Transcription Factor
+ZFHX4	Other	Transcription Factor
+ZFP1	Other	Transcription Factor
+ZFP14	Other	Transcription Factor
+ZFP2	Other	Transcription Factor
+ZFP28	Other	Transcription Factor
+ZFP3	Other	Transcription Factor
+ZFP30	Other	Transcription Factor
+ZFP36	Oncogene or Tumor Suppressor	RNA Binding Protein
+ZFP36L1	Tumor Suppressor	RNA Binding Protein
+ZFP36L1	Oncogene	RNA Binding Protein
+ZFP36L2	Oncogene or Tumor Suppressor	RNA Binding Protein
+ZFP36L2	Other	RNA Binding Protein
+ZFP37	Other	Transcription Factor
+ZFP41	Other	Transcription Factor
+ZFP42	Other	Transcription Factor
+ZFP57	Other	Epigenetic
+ZFP62	Other	Transcription Factor
+ZFP64	Oncogene	Transcription Factor
+ZFP69	Other	Transcription Factor
+ZFP69B	Other	Transcription Factor
+ZFP82	Tumor Suppressor	Transcription Factor
+ZFP90	Other	Transcription Factor
+ZFP91	Other	Transcription Factor
+ZFP92	Other	Transcription Factor
+ZFPM1	Other	Transcription Factor
+ZFPM2	Other	Transcription Factor
+ZFTA	Other	Transcription Factor
+ZFX	Other	Transcription Factor
+ZFY	Other	Transcription Factor
+ZFYVE26	Oncogene	Other Oncogene
+ZGLP1	Other	Transcription Factor
+ZGPAT	Other	RNA Binding Protein
+ZHX1	Other	Epigenetic
+ZHX2	Tumor Suppressor	Transcription Factor
+ZHX3	Other	Transcription Factor
+ZIC1	Tumor Suppressor	Transcription Factor
+ZIC2	Other	Transcription Factor
+ZIC3	Other	Transcription Factor
+ZIC4	Other	Transcription Factor
+ZIC5	Other	Transcription Factor
+ZIK1	Other	Transcription Factor
+ZIM2	Other	Transcription Factor
+ZIM3	Other	Transcription Factor
+ZKSCAN1	Other	Transcription Factor
+ZKSCAN2	Other	Transcription Factor
+ZKSCAN3	Other	Transcription Factor
+ZKSCAN4	Other	Transcription Factor
+ZKSCAN5	Other	Transcription Factor
+ZKSCAN7	Other	Transcription Factor
+ZKSCAN8	Other	Transcription Factor
+ZMAT1	Other	Transcription Factor
+ZMAT4	Other	Transcription Factor
+ZMIZ1	Oncogene	Other Oncogene
+ZMYM2	Oncogene	Epigenetic
+ZMYND10	Tumor Suppressor	Other Tumor Suppressor
+ZMYND11	Tumor Suppressor	Epigenetic
+ZMYND8	Oncogene	Epigenetic
+ZNF10	Other	Transcription Factor
+ZNF100	Other	Transcription Factor
+ZNF101	Other	Transcription Factor
+ZNF107	Other	Transcription Factor
+ZNF112	Other	Transcription Factor
+ZNF114	Other	Transcription Factor
+ZNF117	Other	Transcription Factor
+ZNF12	Other	Transcription Factor
+ZNF121	Other	Transcription Factor
+ZNF124	Other	Transcription Factor
+ZNF131	Other	Transcription Factor
+ZNF132	Other	Transcription Factor
+ZNF133	Other	Transcription Factor
+ZNF134	Other	Transcription Factor
+ZNF135	Other	Transcription Factor
+ZNF136	Other	Transcription Factor
+ZNF138	Other	Transcription Factor
+ZNF14	Other	Transcription Factor
+ZNF140	Other	Transcription Factor
+ZNF141	Other	Transcription Factor
+ZNF142	Other	Transcription Factor
+ZNF143	Other	Transcription Factor
+ZNF146	Oncogene	Transcription Factor
+ZNF148	Other	Transcription Factor
+ZNF154	Other	Transcription Factor
+ZNF155	Other	Transcription Factor
+ZNF157	Other	Transcription Factor
+ZNF16	Other	Transcription Factor
+ZNF160	Other	Transcription Factor
+ZNF165	Other	Transcription Factor
+ZNF169	Other	Transcription Factor
+ZNF17	Other	Transcription Factor
+ZNF174	Other	Transcription Factor
+ZNF175	Other	Transcription Factor
+ZNF177	Other	Transcription Factor
+ZNF18	Other	Transcription Factor
+ZNF180	Other	Transcription Factor
+ZNF181	Other	Transcription Factor
+ZNF182	Other	Transcription Factor
+ZNF184	Other	Transcription Factor
+ZNF185	Tumor Suppressor	Other Tumor Suppressor
+ZNF189	Other	Transcription Factor
+ZNF19	Other	Transcription Factor
+ZNF195	Other	Transcription Factor
+ZNF197	Other	Transcription Factor
+ZNF2	Other	Transcription Factor
+ZNF20	Other	Transcription Factor
+ZNF200	Other	Transcription Factor
+ZNF202	Other	Transcription Factor
+ZNF205	Other	Transcription Factor
+ZNF207	Other	Transcription Factor
+ZNF208	Other	Transcription Factor
+ZNF211	Other	Transcription Factor
+ZNF212	Other	Transcription Factor
+ZNF213	Other	Transcription Factor
+ZNF214	Other	Transcription Factor
+ZNF215	Other	Transcription Factor
+ZNF217	Oncogene	Epigenetic
+ZNF219	Other	Transcription Factor
+ZNF22	Other	Transcription Factor
+ZNF221	Other	Transcription Factor
+ZNF222	Other	Transcription Factor
+ZNF223	Other	Transcription Factor
+ZNF224	Other	Transcription Factor
+ZNF225	Other	Transcription Factor
+ZNF226	Other	Transcription Factor
+ZNF227	Other	Transcription Factor
+ZNF229	Other	Transcription Factor
+ZNF23	Other	Transcription Factor
+ZNF230	Other	Transcription Factor
+ZNF232	Other	Transcription Factor
+ZNF233	Other	Transcription Factor
+ZNF234	Other	Transcription Factor
+ZNF235	Other	Transcription Factor
+ZNF236	Other	Transcription Factor
+ZNF239	Oncogene	RNA Binding Protein
+ZNF24	Other	Transcription Factor
+ZNF248	Other	Transcription Factor
+ZNF25	Other	Transcription Factor
+ZNF250	Other	Transcription Factor
+ZNF251	Other	Transcription Factor
+ZNF253	Other	Transcription Factor
+ZNF254	Other	Transcription Factor
+ZNF256	Other	Transcription Factor
+ZNF257	Other	Transcription Factor
+ZNF26	Other	Transcription Factor
+ZNF260	Other	Transcription Factor
+ZNF263	Other	Transcription Factor
+ZNF264	Other	Transcription Factor
+ZNF266	Other	Transcription Factor
+ZNF267	Other	Transcription Factor
+ZNF268	Other	Transcription Factor
+ZNF273	Other	Transcription Factor
+ZNF274	Other	Transcription Factor
+ZNF275	Other	Transcription Factor
+ZNF276	Other	Transcription Factor
+ZNF277	Other	Transcription Factor
+ZNF28	Other	Transcription Factor
+ZNF280A	Other	Transcription Factor
+ZNF280B	Other	Transcription Factor
+ZNF280C	Other	Transcription Factor
+ZNF280D	Other	Transcription Factor
+ZNF281	Oncogene	Transcription Factor
+ZNF282	Other	Transcription Factor
+ZNF283	Other	Transcription Factor
+ZNF284	Other	Transcription Factor
+ZNF285	Other	Transcription Factor
+ZNF286A	Other	Transcription Factor
+ZNF286B	Other	Transcription Factor
+ZNF287	Other	Transcription Factor
+ZNF292	Tumor Suppressor	Transcription Factor
+ZNF296	Other	Transcription Factor
+ZNF3	Other	Transcription Factor
+ZNF30	Other	Transcription Factor
+ZNF300	Other	Transcription Factor
+ZNF302	Other	Transcription Factor
+ZNF304	Other	Transcription Factor
+ZNF311	Other	Transcription Factor
+ZNF316	Other	Transcription Factor
+ZNF317	Other	Transcription Factor
+ZNF318	Oncogene	Transcription Factor
+ZNF319	Other	Transcription Factor
+ZNF32	Other	Transcription Factor
+ZNF320	Other	Transcription Factor
+ZNF322	Other	Transcription Factor
+ZNF322P1	Other	Transcription Factor
+ZNF324	Other	Transcription Factor
+ZNF324B	Other	Transcription Factor
+ZNF326	Other	Transcription Factor
+ZNF329	Other	Transcription Factor
+ZNF331	Oncogene	Transcription Factor
+ZNF333	Other	Transcription Factor
+ZNF334	Other	Transcription Factor
+ZNF335	Other	Transcription Factor
+ZNF337	Other	Transcription Factor
+ZNF33A	Other	Transcription Factor
+ZNF33B	Other	Transcription Factor
+ZNF34	Other	Transcription Factor
+ZNF341	Other	Transcription Factor
+ZNF343	Other	Transcription Factor
+ZNF345	Other	Transcription Factor
+ZNF346	Other	Transcription Factor
+ZNF347	Other	Transcription Factor
+ZNF35	Oncogene	Transcription Factor
+ZNF350	Other	Transcription Factor
+ZNF354A	Other	Transcription Factor
+ZNF354B	Other	Transcription Factor
+ZNF354C	Other	Transcription Factor
+ZNF358	Other	Transcription Factor
+ZNF362	Other	Transcription Factor
+ZNF365	Other	Transcription Factor
+ZNF366	Tumor Suppressor	Transcription Factor
+ZNF367	Other	Transcription Factor
+ZNF37A	Other	Transcription Factor
+ZNF382	Tumor Suppressor	Transcription Factor
+ZNF383	Other	Transcription Factor
+ZNF384	Oncogene	Transcription Factor
+ZNF385A	Other	Transcription Factor
+ZNF385B	Other	Transcription Factor
+ZNF385C	Other	Transcription Factor
+ZNF385D	Other	Transcription Factor
+ZNF391	Other	Transcription Factor
+ZNF394	Other	Transcription Factor
+ZNF395	Other	Transcription Factor
+ZNF396	Other	Transcription Factor
+ZNF397	Other	Transcription Factor
+ZNF398	Other	Transcription Factor
+ZNF404	Other	Transcription Factor
+ZNF407	Other	Transcription Factor
+ZNF408	Other	Transcription Factor
+ZNF41	Other	Transcription Factor
+ZNF410	Other	Transcription Factor
+ZNF414	Other	Transcription Factor
+ZNF415	Other	Transcription Factor
+ZNF416	Other	Transcription Factor
+ZNF417	Other	Transcription Factor
+ZNF418	Other	Transcription Factor
+ZNF419	Other	Transcription Factor
+ZNF420	Other	Transcription Factor
+ZNF423	Oncogene	Transcription Factor
+ZNF425	Other	Transcription Factor
+ZNF426	Other	Transcription Factor
+ZNF428	Other	Transcription Factor
+ZNF429	Other	Transcription Factor
+ZNF43	Other	Transcription Factor
+ZNF430	Other	Transcription Factor
+ZNF431	Other	Transcription Factor
+ZNF432	Other	Transcription Factor
+ZNF433	Other	Transcription Factor
+ZNF436	Other	Transcription Factor
+ZNF438	Other	Transcription Factor
+ZNF439	Other	Transcription Factor
+ZNF44	Other	Transcription Factor
+ZNF440	Other	Transcription Factor
+ZNF441	Other	Transcription Factor
+ZNF442	Oncogene	Transcription Factor
+ZNF443	Other	Transcription Factor
+ZNF444	Other	Transcription Factor
+ZNF445	Other	Transcription Factor
+ZNF446	Other	Transcription Factor
+ZNF449	Other	Transcription Factor
+ZNF45	Other	Transcription Factor
+ZNF451	Other	Transcription Factor
+ZNF454	Other	Transcription Factor
+ZNF460	Other	Transcription Factor
+ZNF461	Other	Transcription Factor
+ZNF462	Other	Transcription Factor
+ZNF467	Other	Transcription Factor
+ZNF468	Other	Transcription Factor
+ZNF469	Other	Transcription Factor
+ZNF470	Other	Transcription Factor
+ZNF471	Other	Transcription Factor
+ZNF473	Other	Transcription Factor
+ZNF474	Other	Transcription Factor
+ZNF479	Other	Transcription Factor
+ZNF48	Other	Transcription Factor
+ZNF480	Other	Transcription Factor
+ZNF483	Other	Transcription Factor
+ZNF484	Other	Transcription Factor
+ZNF485	Other	Transcription Factor
+ZNF486	Other	Transcription Factor
+ZNF487	Other	Transcription Factor
+ZNF488	Other	Transcription Factor
+ZNF490	Other	Transcription Factor
+ZNF491	Other	Transcription Factor
+ZNF492	Other	Transcription Factor
+ZNF493	Other	Transcription Factor
+ZNF496	Other	Transcription Factor
+ZNF497	Other	Transcription Factor
+ZNF500	Other	Transcription Factor
+ZNF501	Other	Transcription Factor
+ZNF502	Other	Transcription Factor
+ZNF503	Other	Transcription Factor
+ZNF506	Other	Transcription Factor
+ZNF507	Other	Transcription Factor
+ZNF510	Other	Transcription Factor
+ZNF511	Other	Transcription Factor
+ZNF512	Other	Transcription Factor
+ZNF512B	Other	Transcription Factor
+ZNF513	Other	Transcription Factor
+ZNF514	Other	Transcription Factor
+ZNF516	Other	Epigenetic
+ZNF517	Other	Transcription Factor
+ZNF518A	Other	Transcription Factor
+ZNF518B	Other	Transcription Factor
+ZNF519	Other	Transcription Factor
+ZNF521	Oncogene	Transcription Factor
+ZNF524	Other	Transcription Factor
+ZNF525	Other	Transcription Factor
+ZNF526	Other	Transcription Factor
+ZNF527	Other	Transcription Factor
+ZNF528	Other	Transcription Factor
+ZNF529	Other	Transcription Factor
+ZNF530	Other	Transcription Factor
+ZNF532	Other	Epigenetic
+ZNF534	Other	Transcription Factor
+ZNF536	Other	Transcription Factor
+ZNF540	Other	Transcription Factor
+ZNF541	Other	Epigenetic
+ZNF543	Other	Transcription Factor
+ZNF544	Other	Transcription Factor
+ZNF546	Other	Transcription Factor
+ZNF547	Other	Transcription Factor
+ZNF548	Other	Transcription Factor
+ZNF549	Other	Transcription Factor
+ZNF550	Other	Transcription Factor
+ZNF551	Other	Transcription Factor
+ZNF552	Other	Transcription Factor
+ZNF554	Other	Transcription Factor
+ZNF555	Other	Transcription Factor
+ZNF556	Other	Transcription Factor
+ZNF557	Other	Transcription Factor
+ZNF558	Other	Transcription Factor
+ZNF559	Other	Transcription Factor
+ZNF560	Other	Transcription Factor
+ZNF561	Other	Transcription Factor
+ZNF562	Other	Transcription Factor
+ZNF563	Other	Transcription Factor
+ZNF564	Other	Transcription Factor
+ZNF565	Other	Transcription Factor
+ZNF566	Other	Transcription Factor
+ZNF567	Other	Transcription Factor
+ZNF568	Other	Transcription Factor
+ZNF569	Oncogene	Transcription Factor
+ZNF57	Other	Transcription Factor
+ZNF570	Other	Transcription Factor
+ZNF571	Other	Transcription Factor
+ZNF572	Other	Transcription Factor
+ZNF573	Other	Transcription Factor
+ZNF574	Other	Transcription Factor
+ZNF575	Other	Transcription Factor
+ZNF576	Other	Transcription Factor
+ZNF577	Other	Transcription Factor
+ZNF578	Other	Transcription Factor
+ZNF579	Other	Transcription Factor
+ZNF580	Other	Transcription Factor
+ZNF581	Other	Transcription Factor
+ZNF582	Other	Transcription Factor
+ZNF583	Other	Transcription Factor
+ZNF584	Other	Transcription Factor
+ZNF585A	Other	Transcription Factor
+ZNF585B	Other	Transcription Factor
+ZNF586	Other	Transcription Factor
+ZNF587	Other	Transcription Factor
+ZNF587B	Other	Transcription Factor
+ZNF589	Other	Transcription Factor
+ZNF592	Other	Epigenetic
+ZNF594	Other	Transcription Factor
+ZNF595	Other	Transcription Factor
+ZNF596	Other	Transcription Factor
+ZNF597	Other	Transcription Factor
+ZNF598	Other	Transcription Factor
+ZNF599	Other	Transcription Factor
+ZNF600	Other	Transcription Factor
+ZNF605	Other	Transcription Factor
+ZNF606	Other	Transcription Factor
+ZNF607	Other	Transcription Factor
+ZNF608	Oncogene	Transcription Factor
+ZNF609	Other	Transcription Factor
+ZNF610	Other	Transcription Factor
+ZNF611	Other	Transcription Factor
+ZNF613	Other	Transcription Factor
+ZNF614	Other	Transcription Factor
+ZNF615	Other	Transcription Factor
+ZNF616	Other	Transcription Factor
+ZNF618	Other	Transcription Factor
+ZNF619	Other	Transcription Factor
+ZNF620	Other	Transcription Factor
+ZNF621	Other	Transcription Factor
+ZNF623	Other	Transcription Factor
+ZNF624	Other	Transcription Factor
+ZNF625	Other	Transcription Factor
+ZNF626	Other	Transcription Factor
+ZNF627	Other	Transcription Factor
+ZNF628	Other	Transcription Factor
+ZNF629	Other	Transcription Factor
+ZNF630	Other	Transcription Factor
+ZNF639	Other	Transcription Factor
+ZNF641	Other	Transcription Factor
+ZNF644	Other	Transcription Factor
+ZNF645	Other	Transcription Factor
+ZNF646	Other	Transcription Factor
+ZNF648	Other	Transcription Factor
+ZNF649	Other	Transcription Factor
+ZNF652	Other	Transcription Factor
+ZNF653	Other	Transcription Factor
+ZNF654	Other	Transcription Factor
+ZNF655	Other	Transcription Factor
+ZNF658	Other	Transcription Factor
+ZNF66	Other	Transcription Factor
+ZNF660	Other	Transcription Factor
+ZNF662	Other	Transcription Factor
+ZNF664	Other	Transcription Factor
+ZNF665	Other	Transcription Factor
+ZNF667	Other	Transcription Factor
+ZNF668	Oncogene or Tumor Suppressor	Transcription Factor
+ZNF669	Other	Transcription Factor
+ZNF670	Other	Transcription Factor
+ZNF671	Other	Transcription Factor
+ZNF672	Other	Transcription Factor
+ZNF674	Other	Transcription Factor
+ZNF675	Other	Transcription Factor
+ZNF676	Other	Transcription Factor
+ZNF677	Other	Transcription Factor
+ZNF678	Other	Transcription Factor
+ZNF679	Other	Transcription Factor
+ZNF680	Other	Transcription Factor
+ZNF681	Other	Transcription Factor
+ZNF682	Other	Transcription Factor
+ZNF683	Other	Transcription Factor
+ZNF684	Other	Transcription Factor
+ZNF687	Other	Epigenetic
+ZNF688	Other	Transcription Factor
+ZNF689	Other	Transcription Factor
+ZNF69	Other	Transcription Factor
+ZNF691	Other	Transcription Factor
+ZNF692	Other	Transcription Factor
+ZNF695	Other	Transcription Factor
+ZNF696	Other	Transcription Factor
+ZNF697	Other	Transcription Factor
+ZNF699	Other	Transcription Factor
+ZNF7	Other	Transcription Factor
+ZNF70	Other	Transcription Factor
+ZNF700	Other	Transcription Factor
+ZNF701	Other	Transcription Factor
+ZNF703	Other	Transcription Factor
+ZNF704	Other	Transcription Factor
+ZNF705A	Other	Transcription Factor
+ZNF705B	Other	Transcription Factor
+ZNF705D	Other	Transcription Factor
+ZNF705E	Other	Transcription Factor
+ZNF705EP	Other	Transcription Factor
+ZNF705G	Other	Transcription Factor
+ZNF706	Other	Transcription Factor
+ZNF707	Other	Transcription Factor
+ZNF708	Other	Transcription Factor
+ZNF709	Other	Transcription Factor
+ZNF71	Other	Transcription Factor
+ZNF710	Other	Transcription Factor
+ZNF711	Other	Epigenetic
+ZNF713	Other	Transcription Factor
+ZNF714	Other	Transcription Factor
+ZNF716	Other	Transcription Factor
+ZNF717	Other	Transcription Factor
+ZNF718	Other	Transcription Factor
+ZNF721	Other	Transcription Factor
+ZNF724	Other	Transcription Factor
+ZNF726	Other	Transcription Factor
+ZNF727	Other	Transcription Factor
+ZNF728	Other	Transcription Factor
+ZNF729	Other	Transcription Factor
+ZNF730	Other	Transcription Factor
+ZNF732	Other	Transcription Factor
+ZNF735	Other	Transcription Factor
+ZNF736	Other	Transcription Factor
+ZNF737	Other	Transcription Factor
+ZNF74	Other	RNA Binding Protein
+ZNF740	Other	Transcription Factor
+ZNF746	Other	Transcription Factor
+ZNF747	Other	Transcription Factor
+ZNF749	Other	Transcription Factor
+ZNF750	Other	Transcription Factor
+ZNF75A	Other	Transcription Factor
+ZNF75D	Other	Transcription Factor
+ZNF76	Other	Transcription Factor
+ZNF761	Other	Transcription Factor
+ZNF763	Other	Transcription Factor
+ZNF764	Other	Transcription Factor
+ZNF765	Other	Transcription Factor
+ZNF766	Other	Transcription Factor
+ZNF768	Other	Transcription Factor
+ZNF77	Other	Transcription Factor
+ZNF770	Other	Transcription Factor
+ZNF771	Other	Transcription Factor
+ZNF772	Other	Transcription Factor
+ZNF773	Other	Transcription Factor
+ZNF774	Other	Transcription Factor
+ZNF775	Other	Transcription Factor
+ZNF776	Other	Transcription Factor
+ZNF777	Other	Transcription Factor
+ZNF778	Other	Transcription Factor
+ZNF780A	Other	Transcription Factor
+ZNF780B	Other	Transcription Factor
+ZNF781	Other	Transcription Factor
+ZNF782	Other	Transcription Factor
+ZNF783	Other	Transcription Factor
+ZNF784	Other	Transcription Factor
+ZNF785	Other	Transcription Factor
+ZNF786	Other	Transcription Factor
+ZNF787	Other	Transcription Factor
+ZNF788	Other	Transcription Factor
+ZNF788P	Other	Transcription Factor
+ZNF789	Other	Transcription Factor
+ZNF79	Other	Transcription Factor
+ZNF790	Other	Transcription Factor
+ZNF791	Other	Transcription Factor
+ZNF792	Other	Transcription Factor
+ZNF793	Other	Transcription Factor
+ZNF799	Other	Transcription Factor
+ZNF8	Other	Transcription Factor
+ZNF80	Other	Transcription Factor
+ZNF800	Other	Transcription Factor
+ZNF804A	Other	Transcription Factor
+ZNF804B	Other	Transcription Factor
+ZNF805	Other	Transcription Factor
+ZNF808	Other	Transcription Factor
+ZNF81	Other	Transcription Factor
+ZNF813	Other	Transcription Factor
+ZNF814	Other	Transcription Factor
+ZNF816	Other	Transcription Factor
+ZNF821	Other	Transcription Factor
+ZNF823	Other	Transcription Factor
+ZNF827	Other	Transcription Factor
+ZNF829	Other	Transcription Factor
+ZNF83	Other	Transcription Factor
+ZNF830	Other	Transcription Factor
+ZNF831	Other	Transcription Factor
+ZNF835	Other	Transcription Factor
+ZNF836	Other	Transcription Factor
+ZNF837	Other	Transcription Factor
+ZNF84	Other	Transcription Factor
+ZNF841	Other	Transcription Factor
+ZNF843	Other	Transcription Factor
+ZNF844	Other	Transcription Factor
+ZNF845	Other	Transcription Factor
+ZNF846	Other	Transcription Factor
+ZNF85	Other	Transcription Factor
+ZNF850	Other	Transcription Factor
+ZNF852	Other	Transcription Factor
+ZNF853	Other	Transcription Factor
+ZNF860	Other	Transcription Factor
+ZNF865	Other	Transcription Factor
+ZNF875	Oncogene	Transcription Factor
+ZNF878	Other	Transcription Factor
+ZNF879	Other	Transcription Factor
+ZNF880	Other	Transcription Factor
+ZNF883	Other	Transcription Factor
+ZNF888	Other	Transcription Factor
+ZNF891	Other	Transcription Factor
+ZNF90	Other	Transcription Factor
+ZNF91	Other	Transcription Factor
+ZNF92	Other	Transcription Factor
+ZNF93	Other	Transcription Factor
+ZNF98	Other	Transcription Factor
+ZNF99	Other	Transcription Factor
+ZSCAN1	Other	Transcription Factor
+ZSCAN10	Other	Transcription Factor
+ZSCAN12	Other	Transcription Factor
+ZSCAN16	Other	Transcription Factor
+ZSCAN18	Other	Transcription Factor
+ZSCAN2	Other	Transcription Factor
+ZSCAN20	Other	Transcription Factor
+ZSCAN21	Other	Transcription Factor
+ZSCAN22	Oncogene	Transcription Factor
+ZSCAN23	Other	Transcription Factor
+ZSCAN25	Other	Transcription Factor
+ZSCAN26	Other	Transcription Factor
+ZSCAN29	Other	Transcription Factor
+ZSCAN30	Other	Transcription Factor
+ZSCAN31	Other	Transcription Factor
+ZSCAN32	Other	Transcription Factor
+ZSCAN4	Other	Transcription Factor
+ZSCAN5A	Other	Transcription Factor
+ZSCAN5B	Other	Transcription Factor
+ZSCAN5C	Other	Transcription Factor
+ZSCAN9	Other	Transcription Factor
+ZUFSP	Other	Transcription Factor
+ZUP1	Other	Transcription Factor
+ZXDA	Other	Transcription Factor
+ZXDB	Other	Transcription Factor
+ZXDC	Other	Transcription Factor
+ZYX	Tumor Suppressor	Other Tumor Suppressor
+ZZZ3	Other	Epigenetic
+caMLCK	Other	Kinase
+eEF2K	Other	Kinase
+p38a	Other	Kinase
+p38b	Other	Kinase
+p38d	Other	Kinase
+p38g	Other	Kinase
+p70S6K	Other	Kinase
+p70S6Kb	Other	Kinase
+p70S6Kps1	Other	Kinase
+p70S6Kps2	Other	Kinase
+skMLCK	Other	Kinase
+smMLCK	Other	Kinase
+CSDE1	Other	RNA Binding Protein
+ZC3H3	Other	RNA Binding Protein
+MATR3	Other	RNA Binding Protein
+SAMD4A	Other	RNA Binding Protein
+YTHDC2	Other	RNA Binding Protein
+CUGBP2	Other	RNA Binding Protein
+PUM2	Other	RNA Binding Protein
+RC3H2	Other	RNA Binding Protein
+ZC3H11A	Other	RNA Binding Protein
+PARP12	Other	RNA Binding Protein
+CSDA	Other	RNA Binding Protein
+SFRS8	Other	RNA Binding Protein
+EIF4B	Other	RNA Binding Protein
+U2AF2	Other	RNA Binding Protein
+SFRS14	Other	RNA Binding Protein
+ZC3H15	Other	RNA Binding Protein
+THUMPD1	Other	RNA Binding Protein
+DHX8	Other	RNA Binding Protein
+SRBD1	Other	RNA Binding Protein
+PABPC1	Other	RNA Binding Protein
+DAZAP1	Other	RNA Binding Protein
+IGF2BP2	Other	RNA Binding Protein
+ZNF638	Other	RNA Binding Protein
+SART3	Other	RNA Binding Protein
+MKRN2	Other	RNA Binding Protein
+RBM7	Other	RNA Binding Protein
+RBMS2	Other	RNA Binding Protein
+MBNL3	Other	RNA Binding Protein
+SNRPA	Other	RNA Binding Protein
+SYNJ2	Other	RNA Binding Protein
+A2BP1	Other	RNA Binding Protein
+KIAA0020	Other	RNA Binding Protein
+CNOT4	Other	RNA Binding Protein
+YTHDC1	Other	RNA Binding Protein
+PPIE	Other	RNA Binding Protein
+CHERP	Other	RNA Binding Protein
+RBM22	Other	RNA Binding Protein
+KHSRP	Other	RNA Binding Protein
+RBM41	Other	RNA Binding Protein
+PCBP4	Other	RNA Binding Protein
+PABPC4	Other	RNA Binding Protein
+TNRC6A	Other	RNA Binding Protein
+RBM27	Other	RNA Binding Protein
+HNRNPC	Other	RNA Binding Protein
+DAZL	Other	RNA Binding Protein
+HNRNPH3	Other	RNA Binding Protein
+SETD1A	Other	RNA Binding Protein
+HNRNPM	Other	RNA Binding Protein
+TRMT2A	Other	RNA Binding Protein
+SF3A1	Other	RNA Binding Protein
+SNRPD3	Other	RNA Binding Protein
+POLDIP3	Other	RNA Binding Protein
+ZMAT5	Other	RNA Binding Protein
+RBM9	Other	RNA Binding Protein
+ZC3H7B	Other	RNA Binding Protein
+RBM23	Other	RNA Binding Protein
+SFRS5	Other	RNA Binding Protein
+ZC3H14	Other	RNA Binding Protein
+ACIN1	Other	RNA Binding Protein
+PABPN1	Other	RNA Binding Protein
+PABPC1L	Other	RNA Binding Protein
+BRUNOL4	Other	RNA Binding Protein
+CSTF2	Other	RNA Binding Protein
+ZC3H12B	Other	RNA Binding Protein
+FMR1	Other	RNA Binding Protein
+HTATSF1	Other	RNA Binding Protein
+RBM3	Other	RNA Binding Protein
+ESRP2	Other	RNA Binding Protein
+MTHFSD	Other	RNA Binding Protein
+DNAJC17	Other	RNA Binding Protein
+MYEF2	Other	RNA Binding Protein
+HNRNPL	Other	RNA Binding Protein
+SNRNP70	Other	RNA Binding Protein
+SFRS16	Other	RNA Binding Protein
+TRMT1	Other	RNA Binding Protein
+NOVA2	Other	RNA Binding Protein
+SF4	Other	RNA Binding Protein
+ZC3HAV1	Other	RNA Binding Protein
+EIF3B	Other	RNA Binding Protein
+RBM28	Other	RNA Binding Protein
+LSM5	Other	RNA Binding Protein
+EIF4H	Other	RNA Binding Protein
+ELAVL2	Other	RNA Binding Protein
+FUBP3	Other	RNA Binding Protein
+CPEB3	Other	RNA Binding Protein
+LARP4B	Other	RNA Binding Protein
+SUPT6H	Other	RNA Binding Protein
+PPARGC1A	Other	RNA Binding Protein
+CPSF6	Other	RNA Binding Protein
+KRR1	Other	RNA Binding Protein
+SFRS9	Other	RNA Binding Protein
+SFRS3	Other	RNA Binding Protein
+RBM24	Other	RNA Binding Protein
+KHDRBS2	Other	RNA Binding Protein
+CPEB4	Other	RNA Binding Protein
+FXR1	Other	RNA Binding Protein
+NCL	Other	RNA Binding Protein
+Pre-mRNA	Other	RNA Binding Protein
+SFRS7	Other	RNA Binding Protein
+PNO1	Other	RNA Binding Protein
+TIA1	Other	RNA Binding Protein
+SFRS4	Other	RNA Binding Protein
+SFRS11	Other	RNA Binding Protein
+PRPF3	Other	RNA Binding Protein
+PTBP2	Other	RNA Binding Protein
+ROD1	Other	RNA Binding Protein
+RBM18	Other	RNA Binding Protein
+C14orf156	Other	RNA Binding Protein
+RBM25	Other	RNA Binding Protein
+ENOX1	Other	RNA Binding Protein
+TARDBP	Other	RNA Binding Protein
+AKAP1	Other	RNA Binding Protein
+PSPC1	Other	RNA Binding Protein
+ZCCHC17	Other	RNA Binding Protein
+KHDRBS1	Other	RNA Binding Protein
+ZC3H7A	Other	RNA Binding Protein
+BICC1	Other	RNA Binding Protein
+RBM19	Other	RNA Binding Protein
+ZC3H13	Other	RNA Binding Protein
+SFRS6	Other	RNA Binding Protein
+RNF113A	Other	RNA Binding Protein
+SNRPD2	Other	RNA Binding Protein
+SNRPB	Other	RNA Binding Protein
+SNRPB2	Other	RNA Binding Protein
+HNRNPR	Other	RNA Binding Protein
+RALY	Other	RNA Binding Protein
+RBM42	Other	RNA Binding Protein
+HNRNPH2	Other	RNA Binding Protein
+NAA38	Other	RNA Binding Protein
+SNRPN	Other	RNA Binding Protein
+FXR2	Other	RNA Binding Protein
+LSM7	Other	RNA Binding Protein
+LSM4	Other	RNA Binding Protein
+ZC3H4	Other	RNA Binding Protein
+EIF3G	Other	RNA Binding Protein
+PPIL4	Other	RNA Binding Protein
+ANKHD1	Other	RNA Binding Protein
+KHDRBS3	Other	RNA Binding Protein
+RBM8A	Other	RNA Binding Protein
+LIN28	Other	RNA Binding Protein
+GRSF1	Other	RNA Binding Protein
+ANKRD17	Other	RNA Binding Protein
+UNK	Other	RNA Binding Protein
+NIP7	Other	RNA Binding Protein
+TOE1	Other	RNA Binding Protein
+SRRM1	Other	RNA Binding Protein
+MKRN1	Other	RNA Binding Protein
+EIF2S1	Other	RNA Binding Protein
+THUMPD3	Other	RNA Binding Protein
+RBMX2	Other	RNA Binding Protein
+PUM1	Other	RNA Binding Protein
+MSI1	Other	RNA Binding Protein
+SYNCRIP	Other	RNA Binding Protein
+HNRNPA1	Other	RNA Binding Protein
+RC3H1	Other	RNA Binding Protein
+IGF2BP3	Other	RNA Binding Protein
+NUPL2	Other	RNA Binding Protein
+SFRS1	Other	RNA Binding Protein
+TRA2B	Other	RNA Binding Protein
+CPEB2	Other	RNA Binding Protein
+ALKBH8	Other	RNA Binding Protein
+SLTM	Other	RNA Binding Protein
+PNPT1	Other	RNA Binding Protein
+THUMPD2	Other	RNA Binding Protein
+ASCC1	Other	RNA Binding Protein
+SSB	Other	RNA Binding Protein
+LARP1B	Other	RNA Binding Protein
+G3BP2	Other	RNA Binding Protein
+ZCRB1	Other	RNA Binding Protein
+SNRPF	Other	RNA Binding Protein
+SETD1B	Other	RNA Binding Protein
+RBM26	Other	RNA Binding Protein
+RNF113B	Other	RNA Binding Protein
+NOVA1	Other	RNA Binding Protein
+BRUNOL6	Other	RNA Binding Protein
+DUS3L	Other	RNA Binding Protein
+SF3B4	Other	RNA Binding Protein
+LGTN	Other	RNA Binding Protein
+HNRPLL	Other	RNA Binding Protein
+SNRPG	Other	RNA Binding Protein
+G3BP1	Other	RNA Binding Protein
+A1CF	Other	RNA Binding Protein
+PPRC1	Other	RNA Binding Protein
+PDCD11	Other	RNA Binding Protein
+TUT1	Other	RNA Binding Protein
+CUGBP1	Other	RNA Binding Protein
+RPS3	Other	RNA Binding Protein
+ZC3H12C	Other	RNA Binding Protein
+CPSF7	Other	RNA Binding Protein
+YTHDF1	Other	RNA Binding Protein
+PABPC3	Other	RNA Binding Protein
+TIAL1	Other	RNA Binding Protein
+RBM46	Other	RNA Binding Protein
+BOLL	Other	RNA Binding Protein
+PAN3	Other	RNA Binding Protein
+MBNL1	Other	RNA Binding Protein
+HNRPDL	Other	RNA Binding Protein
+CARHSP1	Other	RNA Binding Protein
+RBMS1	Other	RNA Binding Protein
+SFRS12	Other	RNA Binding Protein
+SFRS13B	Other	RNA Binding Protein
+C4orf23	Other	RNA Binding Protein
+MKI67IP	Other	RNA Binding Protein
+LARP1	Other	RNA Binding Protein
+RBM45	Other	RNA Binding Protein
+PPARGC1B	Other	RNA Binding Protein
+LSM11	Other	RNA Binding Protein
+SFRS15	Other	RNA Binding Protein
+RBPMS	Other	RNA Binding Protein
+ZC3H18	Other	RNA Binding Protein
+SYNJ1	Other	RNA Binding Protein
+TNRC4	Other	RNA Binding Protein
+CPSF4	Other	RNA Binding Protein
+BRUNOL5	Other	RNA Binding Protein
+U2AF1L4	Other	RNA Binding Protein
+SFRS2	Other	RNA Binding Protein
+LARP4	Other	RNA Binding Protein
+RAVER1	Other	RNA Binding Protein
+ELAVL4	Other	RNA Binding Protein
+RAVER2	Other	RNA Binding Protein
+DHX57	Other	RNA Binding Protein
+TDRD10	Other	RNA Binding Protein
+TIPARP	Other	RNA Binding Protein
+RBM47	Other	RNA Binding Protein
+SR140	Other	RNA Binding Protein
+TTC14	Other	RNA Binding Protein
+LSM6	Other	RNA Binding Protein
+TRA2A	Other	RNA Binding Protein
+ENOX2	Other	RNA Binding Protein
+LARP6	Other	RNA Binding Protein
+KIAA0430	Other	RNA Binding Protein
+RBPMS2	Other	RNA Binding Protein
+SNRPD1	Other	RNA Binding Protein
+SAMD14	Other	RNA Binding Protein
+Fox-1	Other	RNA Binding Protein
+POLR2G	Other	RNA Binding Protein
+SF1	Other	RNA Binding Protein
+HNRNPH1	Other	RNA Binding Protein
+ZRSR2	Other	RNA Binding Protein
+PCBP1	Other	RNA Binding Protein
+RBMY1F	Other	RNA Binding Protein
+HNRNPF	Other	RNA Binding Protein
+RBMXL2	Other	RNA Binding Protein
+LSM3	Other	RNA Binding Protein
+NCBP2L	Other	RNA Binding Protein
+CSDC2	Other	RNA Binding Protein
+RBM4B	Other	RNA Binding Protein
+LARP7	Other	RNA Binding Protein
+PABPC5	Other	RNA Binding Protein
+LSM1	Other	RNA Binding Protein
+RBMXL3	Other	RNA Binding Protein
+MEX3C	Other	RNA Binding Protein
+RBM44	Other	RNA Binding Protein
+CSTF2T	Other	RNA Binding Protein
+HNRNPA0	Other	RNA Binding Protein
+ZC3H12D	Other	RNA Binding Protein
+SAMD4B	Other	RNA Binding Protein
+HNRNPCL1	Other	RNA Binding Protein
+RBM15B	Other	RNA Binding Protein
+PUF60	Other	RNA Binding Protein
+TRNAU1AP	Other	RNA Binding Protein
+SFRS2B	Other	RNA Binding Protein
+MEX3D	Other	RNA Binding Protein
+LSM10	Other	RNA Binding Protein
+SNRPE	Other	RNA Binding Protein
+TDRKH	Other	RNA Binding Protein
+RBM10	Other	RNA Binding Protein
+LENG9	Other	RNA Binding Protein
+LSMD1	Other	RNA Binding Protein
+MEX3B	Other	RNA Binding Protein
+PCBP3	Other	RNA Binding Protein
+THOC4	Other	RNA Binding Protein
+RBM12B	Other	RNA Binding Protein
+SNRNP35	Other	RNA Binding Protein
+PABPC1L2B	Other	RNA Binding Protein
+RALYL	Other	RNA Binding Protein
+DDX53	Other	RNA Binding Protein
+RBM33	Other	RNA Binding Protein
+RBM43	Other	RNA Binding Protein
+RBM11	Other	RNA Binding Protein
+YTHDF3	Other	RNA Binding Protein
+RNPC3	Other	RNA Binding Protein
+PABPC1L2A	Other	RNA Binding Protein
+DAZ3	Other	RNA Binding Protein
+RDM1	Other	RNA Binding Protein
+CPSF4L	Other	RNA Binding Protein
+DAZ1	Other	RNA Binding Protein
+ZC3H6	Other	RNA Binding Protein
+SFRS13A	Other	RNA Binding Protein
+RRP7A	Other	RNA Binding Protein
+ELAVL3	Other	RNA Binding Protein
+C14orf21	Other	RNA Binding Protein
+PCBP2	Other	RNA Binding Protein
+HNRNPAB	Other	RNA Binding Protein
+NOL8	Other	RNA Binding Protein
+HELZ	Other	RNA Binding Protein
+YTHDF2	Other	RNA Binding Protein
+MEX3A	Other	RNA Binding Protein
+RBM20	Other	RNA Binding Protein
+DPPA5	Other	RNA Binding Protein
+MIR1236	Other	RNA Binding Protein
+U6	Other	RNA Binding Protein
+PPP1R10	Other	RNA Binding Protein
+PRR3	Other	RNA Binding Protein
+PABPN1L	Other	RNA Binding Protein
+RNPS1	Other	RNA Binding Protein
+DAZ2	Other	RNA Binding Protein
+ZRSR1	Other	RNA Binding Protein
+RBM16	Other	RNA Binding Protein
+RBMXL1	Other	RNA Binding Protein
+RBMY1J	Other	RNA Binding Protein
+SNRPEL1	Other	RNA Binding Protein
+MCTS1	Other	RNA Binding Protein
+PABPC4L	Other	RNA Binding Protein
+RBMY1A1	Other	RNA Binding Protein
+MKRNP5	Other	RNA Binding Protein
+NSUN6	Other	RNA Binding Protein
+UNKL	Other	RNA Binding Protein
+RBMY1E	Other	RNA Binding Protein
+HNRNPA1L2	Other	RNA Binding Protein
+RBMY1B	Other	RNA Binding Protein
+RBMY1D	Other	RNA Binding Protein
+RBM12	Other	RNA Binding Protein
+DAZ4	Other	RNA Binding Protein
+DGKQ	Other	RNA Binding Protein
+RBM17	Other	RNA Binding Protein
+MCM3AP	Other	RNA Binding Protein
+PARN	Other	RNA Binding Protein
+TLR2	Other	RNA Binding Protein
+PARP10	Other	RNA Binding Protein
+MOV10L1	Other	RNA Binding Protein
+LEMD3	Other	RNA Binding Protein
+UPF3B	Other	RNA Binding Protein
+RCAN2	Other	RNA Binding Protein
+SRRT	Other	RNA Binding Protein
+ZC3H12A	Other	RNA Binding Protein
+ZC3HAV1L	Other	RNA Binding Protein
+PARP14	Other	RNA Binding Protein
+TMEM63A	Other	RNA Binding Protein
+SLBP	Other	RNA Binding Protein
+NUFIP1	Other	RNA Binding Protein
+SRRM2	Other	RNA Binding Protein
+APTX	Other	RNA Binding Protein
+ZFR	Other	RNA Binding Protein
+UPF1	Other	RNA Binding Protein
+SNRPC	Other	RNA Binding Protein
+C1orf25	Other	RNA Binding Protein
+ZFR2	Other	RNA Binding Protein
+IREB2	Other	RNA Binding Protein
+ACO1	Other	RNA Binding Protein
+TROVE2	Other	RNA Binding Protein
+TEP1	Other	RNA Binding Protein
+GAPDH	Other	RNA Binding Protein
+ZRANB2	Other	RNA Binding Protein
+HDGFL2	Other	Epigenetic
+A1CF	Other	Epigenetic
+ACTL6A	Other	Epigenetic
+ACTL6B	Other	Epigenetic
+ACTR3B	Other	Epigenetic
+ACTR5	Other	Epigenetic
+ACTR6	Other	Epigenetic
+ACTR8	Other	Epigenetic
+AICDA	Other	Epigenetic
+ALKBH1	Other	Epigenetic
+ANKRD32	Other	Epigenetic
+ANP32E	Other	Epigenetic
+APBB1	Other	Epigenetic
+APEX1	Other	Epigenetic
+APOBEC1	Other	Epigenetic
+APOBEC3A	Other	Epigenetic
+APOBEC3B	Other	Epigenetic
+APOBEC3C	Other	Epigenetic
+APOBEC3D	Other	Epigenetic
+APOBEC3F	Other	Epigenetic
+APOBEC3G	Other	Epigenetic
+APOBEC3H	Other	Epigenetic
+ARID4B	Other	Epigenetic
+ARRB1	Other	Epigenetic
+ASF1A	Other	Epigenetic
+ASF1B	Other	Epigenetic
+ASH2L	Other	Epigenetic
+ASXL2	Other	Epigenetic
+ASXL3	Other	Epigenetic
+ATAD2	Other	Epigenetic
+ATAD2B	Other	Epigenetic
+ATN1	Other	Epigenetic
+ATXN7	Other	Epigenetic
+ATXN7L3	Other	Epigenetic
+BABAM1	Other	Epigenetic
+BAHD1	Other	Epigenetic
+BAZ1A	Other	Epigenetic
+BAZ1B	Other	Epigenetic
+BRCC3	Other	Epigenetic
+BRD1	Other	Epigenetic
+BRD8	Other	Epigenetic
+BRD9	Other	Epigenetic
+BRPF1	Other	Epigenetic
+BRPF3	Other	Epigenetic
+BRWD1	Other	Epigenetic
+C11orf30	Other	Epigenetic
+C14orf169	Other	Epigenetic
+C17orf49	Other	Epigenetic
+CARM1	Other	Epigenetic
+CBX1	Other	Epigenetic
+CBX3	Other	Epigenetic
+CBX6	Other	Epigenetic
+CBX7	Other	Epigenetic
+CBX8	Other	Epigenetic
+CCDC101	Other	Epigenetic
+CDY1	Other	Epigenetic
+CDY1B	Other	Epigenetic
+CDY2A	Other	Epigenetic
+CDY2B	Other	Epigenetic
+CDYL	Other	Epigenetic
+CDYL2	Other	Epigenetic
+CECR2	Other	Epigenetic
+CENPC	Other	Epigenetic
+CHAF1A	Other	Epigenetic
+CHAF1B	Other	Epigenetic
+CHD1L	Other	Epigenetic
+CHD4	Other	Epigenetic
+CHD6	Other	Epigenetic
+CHD7	Other	Epigenetic
+CHD8	Other	Epigenetic
+CHRAC1	Other	Epigenetic
+CHTOP	Other	Epigenetic
+CIR1	Other	Epigenetic
+CLNS1A	Other	Epigenetic
+CSRP2BP	Other	Epigenetic
+CTBP1	Other	Epigenetic
+CTBP2	Other	Epigenetic
+CTR9	Other	Epigenetic
+CUL3	Other	Epigenetic
+CUL4A	Other	Epigenetic
+DDB1	Other	Epigenetic
+DDX21	Other	Epigenetic
+DDX50	Other	Epigenetic
+DMAP1	Other	Epigenetic
+DNAJC1	Other	Epigenetic
+DNAJC2	Other	Epigenetic
+DNMT3L	Other	Epigenetic
+DNTTIP2	Other	Epigenetic
+DPF2	Other	Epigenetic
+DPPA3	Other	Epigenetic
+DPY30	Other	Epigenetic
+DTX3L	Other	Epigenetic
+DZIP3	Other	Epigenetic
+EHMT2	Other	Epigenetic
+EID1	Other	Epigenetic
+EID2	Other	Epigenetic
+EID2B	Other	Epigenetic
+ELP2	Other	Epigenetic
+ELP3	Other	Epigenetic
+ELP4	Other	Epigenetic
+ELP5	Other	Epigenetic
+ELP6	Other	Epigenetic
+ENY2	Other	Epigenetic
+EPC1	Other	Epigenetic
+EPC2	Other	Epigenetic
+EXOSC1	Other	Epigenetic
+EXOSC2	Other	Epigenetic
+EXOSC3	Other	Epigenetic
+EXOSC4	Other	Epigenetic
+EXOSC5	Other	Epigenetic
+EXOSC6	Other	Epigenetic
+EXOSC7	Other	Epigenetic
+EXOSC8	Other	Epigenetic
+EXOSC9	Other	Epigenetic
+EYA1	Other	Epigenetic
+EYA2	Other	Epigenetic
+EYA3	Other	Epigenetic
+FAM175A	Other	Epigenetic
+FAM175B	Other	Epigenetic
+FBL	Other	Epigenetic
+FBRS	Other	Epigenetic
+FBRSL1	Other	Epigenetic
+GATAD1	Other	Epigenetic
+GSG2	Other	Epigenetic
+GTF3C4	Other	Epigenetic
+HAT1	Other	Epigenetic
+HCFC1	Other	Epigenetic
+HCFC2	Other	Epigenetic
+HDAC10	Other	Epigenetic
+HDAC11	Other	Epigenetic
+HDAC5	Other	Epigenetic
+HDAC7	Other	Epigenetic
+HDAC8	Other	Epigenetic
+HDAC9	Other	Epigenetic
+HDGF	Other	Epigenetic
+HELLS	Other	Epigenetic
+HIF1AN	Other	Epigenetic
+HIRIP3	Other	Epigenetic
+HJURP	Other	Epigenetic
+HLCS	Other	Epigenetic
+HMGN1	Other	Epigenetic
+HMGN2	Other	Epigenetic
+HMGN4	Other	Epigenetic
+HMGN5	Other	Epigenetic
+HP1BP3	Other	Epigenetic
+HR	Other	Epigenetic
+HSPA1A	Other	Epigenetic
+HSPA1B	Other	Epigenetic
+HUWE1	Other	Epigenetic
+IKBKAP	Other	Epigenetic
+INO80	Other	Epigenetic
+INO80B	Other	Epigenetic
+INO80C	Other	Epigenetic
+INO80D	Other	Epigenetic
+INO80E	Other	Epigenetic
+JADE1	Other	Epigenetic
+JADE2	Other	Epigenetic
+JADE3	Other	Epigenetic
+JARID2	Other	Epigenetic
+JMJD1C	Other	Epigenetic
+JMJD6	Other	Epigenetic
+KANSL1	Other	Epigenetic
+KANSL2	Other	Epigenetic
+KANSL3	Other	Epigenetic
+KAT2A	Other	Epigenetic
+KAT2B	Other	Epigenetic
+KAT8	Other	Epigenetic
+KDM1A	Other	Epigenetic
+KDM1B	Other	Epigenetic
+KDM4A	Other	Epigenetic
+KDM4B	Other	Epigenetic
+KDM4D	Other	Epigenetic
+KDM4E	Other	Epigenetic
+KDM5D	Other	Epigenetic
+KDM6B	Other	Epigenetic
+KDM7A	Other	Epigenetic
+KMT2E	Other	Epigenetic
+L3MBTL2	Other	Epigenetic
+LAS1L	Other	Epigenetic
+LBR	Other	Epigenetic
+LEO1	Other	Epigenetic
+LRWD1	Other	Epigenetic
+MBD5	Other	Epigenetic
+MBIP	Other	Epigenetic
+MBTD1	Other	Epigenetic
+MCRS1	Other	Epigenetic
+MEAF6	Other	Epigenetic
+MGEA5	Other	Epigenetic
+MINA	Other	Epigenetic
+MORF4L1	Other	Epigenetic
+MORF4L2	Other	Epigenetic
+MOV10	Other	Epigenetic
+MPHOSPH8	Other	Epigenetic
+MRGBP	Other	Epigenetic
+MSL1	Other	Epigenetic
+MSL2	Other	Epigenetic
+MSL3	Other	Epigenetic
+MTA2	Other	Epigenetic
+MUM1	Other	Epigenetic
+MYO1C	Other	Epigenetic
+NAA60	Other	Epigenetic
+NAP1L1	Other	Epigenetic
+NAP1L2	Other	Epigenetic
+NAP1L4	Other	Epigenetic
+NASP	Other	Epigenetic
+NAT10	Other	Epigenetic
+NCL	Other	Epigenetic
+NFRKB	Other	Epigenetic
+NOC2L	Other	Epigenetic
+NPM2	Other	Epigenetic
+NSL1	Other	Epigenetic
+OGT	Other	Epigenetic
+PADI1	Other	Epigenetic
+PADI3	Other	Epigenetic
+PADI4	Other	Epigenetic
+PAGR1	Other	Epigenetic
+PARG	Other	Epigenetic
+PARP2	Other	Epigenetic
+PARP3	Other	Epigenetic
+PAXIP1	Other	Epigenetic
+PCGF1	Other	Epigenetic
+PCGF3	Other	Epigenetic
+PCGF5	Other	Epigenetic
+PDP1	Other	Epigenetic
+PELP1	Other	Epigenetic
+PHC1	Other	Epigenetic
+PHC2	Other	Epigenetic
+PHF10	Other	Epigenetic
+PHF12	Other	Epigenetic
+PHF13	Other	Epigenetic
+PHF14	Other	Epigenetic
+PHF2	Other	Epigenetic
+PHF20L1	Other	Epigenetic
+PHF8	Other	Epigenetic
+PIWIL4	Other	Epigenetic
+POGZ	Other	Epigenetic
+POLE3	Other	Epigenetic
+PPARGC1A	Other	Epigenetic
+PPM1G	Other	Epigenetic
+PPP4C	Other	Epigenetic
+PPP4R2	Other	Epigenetic
+PRDM7	Other	Epigenetic
+PRKAB2	Other	Epigenetic
+PRKAG1	Other	Epigenetic
+PRKAG2	Other	Epigenetic
+PRKAG3	Other	Epigenetic
+PRMT1	Other	Epigenetic
+PRMT2	Other	Epigenetic
+PRMT5	Other	Epigenetic
+PRMT6	Other	Epigenetic
+PRMT7	Other	Epigenetic
+PRMT8	Other	Epigenetic
+PRMT9	Other	Epigenetic
+PRPF31	Other	Epigenetic
+PRR14	Other	Epigenetic
+RAD51	Other	Epigenetic
+RAD54B	Other	Epigenetic
+RAD54L	Other	Epigenetic
+RAD54L2	Other	Epigenetic
+RAG2	Other	Epigenetic
+RAI1	Other	Epigenetic
+RBBP4	Other	Epigenetic
+RCC1	Other	Epigenetic
+RCOR1	Other	Epigenetic
+RCOR3	Other	Epigenetic
+RING1	Other	Epigenetic
+RLIM	Other	Epigenetic
+RMI1	Other	Epigenetic
+RNF168	Other	Epigenetic
+RNF2	Other	Epigenetic
+RNF20	Other	Epigenetic
+RNF40	Other	Epigenetic
+RRP8	Other	Epigenetic
+RYBP	Other	Epigenetic
+SAP130	Other	Epigenetic
+SAP18	Other	Epigenetic
+SAP25	Other	Epigenetic
+SAP30	Other	Epigenetic
+SAP30L	Other	Epigenetic
+SCML2	Other	Epigenetic
+SENP1	Other	Epigenetic
+SENP3	Other	Epigenetic
+SETD1A	Other	Epigenetic
+SETD1B	Other	Epigenetic
+SETD3	Other	Epigenetic
+SETD5	Other	Epigenetic
+SETD6	Other	Epigenetic
+SETD7	Other	Epigenetic
+SETD8	Other	Epigenetic
+SETMAR	Other	Epigenetic
+SF3B3	Other	Epigenetic
+SFMBT1	Other	Epigenetic
+SIN3A	Other	Epigenetic
+SIN3B	Other	Epigenetic
+SIRT7	Other	Epigenetic
+SMARCA1	Other	Epigenetic
+SMARCA5	Other	Epigenetic
+SMARCAD1	Other	Epigenetic
+SMARCAL1	Other	Epigenetic
+SMARCC2	Other	Epigenetic
+SMARCD1	Other	Epigenetic
+SMARCD2	Other	Epigenetic
+SMARCD3	Other	Epigenetic
+SMARCE1	Other	Epigenetic
+SMEK1	Other	Epigenetic
+SMEK2	Other	Epigenetic
+SMYD1	Other	Epigenetic
+SMYD2	Other	Epigenetic
+SRSF1	Other	Epigenetic
+SS18L2	Other	Epigenetic
+SSRP1	Other	Epigenetic
+SUDS3	Other	Epigenetic
+SUPT16H	Other	Epigenetic
+SUPT3H	Other	Epigenetic
+SUPT6H	Other	Epigenetic
+SUPT7L	Other	Epigenetic
+SUV39H1	Other	Epigenetic
+SUV39H2	Other	Epigenetic
+SUV420H1	Other	Epigenetic
+SUV420H2	Other	Epigenetic
+SYNCRIP	Other	Epigenetic
+TADA1	Other	Epigenetic
+TADA2A	Other	Epigenetic
+TADA2B	Other	Epigenetic
+TADA3	Other	Epigenetic
+TAF10	Other	Epigenetic
+TAF12	Other	Epigenetic
+TAF2	Other	Epigenetic
+TAF3	Other	Epigenetic
+TAF4	Other	Epigenetic
+TAF5	Other	Epigenetic
+TAF5L	Other	Epigenetic
+TAF6	Other	Epigenetic
+TAF6L	Other	Epigenetic
+TAF7	Other	Epigenetic
+TAF8	Other	Epigenetic
+TAF9	Other	Epigenetic
+TAF9B	Other	Epigenetic
+TBL1XR1	Other	Epigenetic
+TDG	Other	Epigenetic
+TDRD3	Other	Epigenetic
+TDRD7	Other	Epigenetic
+TDRKH	Other	Epigenetic
+TEX10	Other	Epigenetic
+TLE1	Other	Epigenetic
+TLE2	Other	Epigenetic
+TLE4	Other	Epigenetic
+TNP1	Other	Epigenetic
+TNP2	Other	Epigenetic
+TONSL	Other	Epigenetic
+TRIM16	Other	Epigenetic
+TRIM28	Other	Epigenetic
+TYW5	Other	Epigenetic
+UBE2A	Other	Epigenetic
+UBE2B	Other	Epigenetic
+UBE2D1	Other	Epigenetic
+UBE2D3	Other	Epigenetic
+UBE2E1	Other	Epigenetic
+UBE2H	Other	Epigenetic
+UBE2N	Other	Epigenetic
+UBE2T	Other	Epigenetic
+UBN1	Other	Epigenetic
+UBR2	Other	Epigenetic
+UBR5	Other	Epigenetic
+UBR7	Other	Epigenetic
+UHRF1	Other	Epigenetic
+USP11	Other	Epigenetic
+USP16	Other	Epigenetic
+USP17L2	Other	Epigenetic
+USP21	Other	Epigenetic
+USP22	Other	Epigenetic
+USP36	Other	Epigenetic
+USP44	Other	Epigenetic
+USP46	Other	Epigenetic
+USP49	Other	Epigenetic
+UTY	Other	Epigenetic
+VPS72	Other	Epigenetic
+WAC	Other	Epigenetic
+WDR5	Other	Epigenetic
+WHSC1	Other	Epigenetic
+WSB2	Other	Epigenetic
+YAF2	Other	Epigenetic
+YEATS2	Other	Epigenetic
+YEATS4	Other	Epigenetic
+YWHAB	Other	Epigenetic
+YWHAZ	Other	Epigenetic
+ZCWPW1	Other	Epigenetic
+ZMYM3	Other	Epigenetic
+ZNHIT1	Other	Epigenetic
+ZRANB3	Other	Epigenetic
