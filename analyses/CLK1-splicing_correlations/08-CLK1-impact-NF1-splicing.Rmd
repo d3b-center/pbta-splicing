@@ -48,8 +48,8 @@ source(file.path(figures_dir, "theme_for_plots.R"))
 clin_file <- file.path(data_dir,"histologies-plot-group.tsv")
 rsem_transc_counts <- file.path(data_dir,"rna-isoform-expression-rsem-tpm.rds")
 rsem_tpm_counts <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
-rmats_clk1_file <- file.path(results_dir, "clk1-splice-events-rmats.tsv")
-rmats_nf1_file <- file.path(results_dir, "nf1-splice-events-rmats.tsv")
+rmats_clk1_file <- file.path(data_dir, "clk1-splice-events-rmats.tsv")
+rmats_nf1_file <- file.path(data_dir, "nf1-splice-events-rmats.tsv")
 gtf_file <- file.path(data_dir, "gencode.v39.primary_assembly.annotation.gtf.gz")
 phos_file <- file.path(results_dir, "hgg-dmg-clk-nf1-expression-phosphorylation.tsv")
 
@@ -120,7 +120,7 @@ First, we want to visualize exon 4 inclusion across all brain tumor types, to gi
 ```{r}
 plot_CLK1_PSI_df <- rmats_goi %>% 
   dplyr::rename(Kids_First_Biospecimen_ID=sample_id) %>%
-  left_join(stranded, by='Kids_First_Biospecimen_ID') %>%
+  right_join(stranded, by='Kids_First_Biospecimen_ID') %>%
   select(Kids_First_Biospecimen_ID,IncLevel1,plot_group, plot_group_hex, geneSymbol) %>%
   filter(geneSymbol == "CLK1") %>%
    mutate(plot_group_wrapped = stringr::str_wrap(plot_group, width = 20))
@@ -149,7 +149,7 @@ We want to assess NF1 splicing across all brain tumor types, to give us a sense 
 # Prepare the plot_df data frame
 plot_df <- rmats_goi %>%
   dplyr::rename(Kids_First_Biospecimen_ID = sample_id) %>%
-  left_join(stranded, by = 'Kids_First_Biospecimen_ID') %>%
+  right_join(stranded, by = 'Kids_First_Biospecimen_ID') %>%
   select(event_type, IncLevel1, Kids_First_Biospecimen_ID, plot_group, plot_group_hex) %>%
   dplyr::mutate(event_type = case_when(event_type == "CLK1-Exon4_PSI" ~ "CLK1-201 (Exon 4)",
                                        event_type == "NF1-Exon23a_PSI" ~ "NF1-202 (Exon23a)",
@@ -297,7 +297,7 @@ Let's look specifically by plot groups
 # add all HGG plot group
 histologies_df_plus <- histologies_df %>%
   mutate(plot_group = ifelse(plot_group %in% c("DIPG or DMG", "Other high-grade glioma"), "High-grade glioma",
-                                  NA_character_)) %>%
+                                  plot_group)) %>%
   filter(plot_group == "High-grade glioma") %>%
   bind_rows(histologies_df)
 
@@ -317,10 +317,13 @@ for (group in plot_groups) {
   # subset samples in plot group
   bs_ids <- histologies_df_plus %>%
     filter(plot_group %in% group) %>%
-    pull(match_id)
+    pull(match_id) %>%
+    unique()
   
   # subset tpm / psi matrix
-  subset_group <- subset_tpm_df[bs_ids,to_subset]
+  # Subset with existing bs_ids
+  valid_bs_ids <- bs_ids[bs_ids %in% rownames(subset_tpm_df)]
+  subset_group <- subset_tpm_df[valid_bs_ids,to_subset]
 
   # Compute the correlation matrix
   gp_mat <- cor(as.matrix(subset_group), use = "pairwise.complete.obs", method = "spearman")

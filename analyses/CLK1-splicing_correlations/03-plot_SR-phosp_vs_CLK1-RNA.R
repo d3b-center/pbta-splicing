@@ -106,12 +106,13 @@ heat_plot <- Heatmap(mat,
                      show_heatmap_legend=TRUE,
                      cluster_columns = TRUE,
                      right_annotation = row_anno,
-                     #na_col = "lightgrey",
-                     #rect_gp = gpar(col = "white"),
                      row_title = NULL,
                      column_title = NULL,
-                     column_title_side = "top")
+                     column_title_side = "top",
+                     heatmap_legend_param = list(legend_direction = "horizontal", 
+                                                 legend_position = "top"))
 
-pdf(heatmap_output_file, width = 8, height = 6)
-print(heat_plot)
+pdf(heatmap_output_file, width = 6, height = 7)
+draw(heat_plot, heatmap_legend_side = "top")
 dev.off()
+

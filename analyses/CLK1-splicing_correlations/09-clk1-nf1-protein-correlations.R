@@ -44,7 +44,7 @@ cptac_phospho_file <- file.path(data_dir, "cptac-protein-imputed-phospho-express
 hope_proteo_file <- file.path(data_dir, "hope-protein-imputed-prot-expression-abundance.tsv.gz")
 hope_phospho_file <- file.path(data_dir, "hope-protein-imputed-phospho-expression-abundance.tsv.gz")
 
-data_file <- file.path(results_dir, "clk1-nf1-psi-exp-phos-df.rds")
+data_file <- file.path(results_dir, "hgg-dmg-clk-nf1-expression-phosphorylation.tsv")
 
 ## read in histology, cohort, and independent specimens file
 cohort_df <- read_tsv(cohort_file) %>%
@@ -63,8 +63,14 @@ map_file_phospho <- cohort_df %>%
 
 indep_rna_df <- read_tsv(indep_rna_file)
 
-data_df <- readRDS(data_file) %>%
-  rownames_to_column("match_id") %>%
+# extract HGG samples, retain stranded libraries, and filter for independent specimens
+hist_rna <- cohort_df %>% 
+  filter(RNA_library == "stranded",
+    cohort == "PBTA",
+    Kids_First_Biospecimen_ID %in% indep_rna_df$Kids_First_Biospecimen_ID) %>%
+  select(Kids_First_Biospecimen_ID, RNA_library, CNS_region, match_id, molecular_subtype, plot_group)
+
+data_df <- read_tsv(data_file) %>%
   left_join(hist_rna[,c("Kids_First_Biospecimen_ID", "match_id")])
 
 # define lists of nf1 and clk genes
@@ -75,21 +81,6 @@ nf1_trans_list <- c("Total NF1", "NF1-202_PC", "NF1-215_RI")
 nf1_splice_list <- c("NF1-Exon23a_PSI", "NF1-215_PSI")
 
 all_lists <- c(clk1_trans_list, clk1_splice_list, nf1_trans_list, nf1_splice_list)
-
-# extract HGG samples, retain stranded libraries, and filter for independent specimens
-hist_rna <- cohort_df %>% 
-  filter(#plot_group %in% c("DIPG or DMG", "Other high-grade glioma"),
-         #RNA_library == "stranded",
-         cohort == "PBTA",
-         Kids_First_Biospecimen_ID %in% indep_rna_df$Kids_First_Biospecimen_ID) %>%
-  select(Kids_First_Biospecimen_ID, RNA_library, CNS_region, match_id, molecular_subtype, plot_group)
-
-# select only HGG/DIPG/DMG
-#data_df <- readRDS(data_file) %>%
-#  rownames_to_column("Kids_First_Biospecimen_ID") %>%
-#  filter(Kids_First_Biospecimen_ID %in% hist_rna$Kids_First_Biospecimen_ID) %>%
-#  left_join(hist_rna[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
-#  select(match_id, any_of(all_lists))
 
 # define proteomics and phosphoproteomics-specific histologies files
 hist_proteo <- cohort_df %>%
