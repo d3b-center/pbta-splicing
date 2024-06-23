@@ -27,6 +27,7 @@ data_dir   <- file.path(root_dir, "data")
 
 input_dir   <- file.path(analysis_dir, "input")
 plots_dir   <- file.path(analysis_dir, "plots")
+results_dir   <- file.path(analysis_dir, "results")
 
 ## check and create plots dir
 if(!dir.exists(plots_dir)){
@@ -37,9 +38,13 @@ if(!dir.exists(plots_dir)){
 heatmap_output_file <- file.path(plots_dir,"SF_RNA_vs_protein_levels_heatmap.pdf") 
 
 ## get CPTAC output table 
-cptac_output_file <- file.path(input_dir,"CPTAC3-pbt_SF_family.xls") 
+cptac_output_file <- file.path(input_dir,"CPTAC3-pbt_SFs.xls") 
+de_file <- file.path(results_dir, "all_hgg-diffSFs_sig_genes.txt")
 
 # Load dataset
+de_genes <- read_tsv(de_file) %>%
+  pull(gene)
+
 cptac_data <- readxl::read_excel(cptac_output_file) %>%
   # select only rows with CLK1 or SRFs, remove muts
   filter(grepl("\\srna|\\spro", idx), 
@@ -47,6 +52,7 @@ cptac_data <- readxl::read_excel(cptac_output_file) %>%
   # remove extra info from cols
   rename_with(~ gsub("X7316.", "7316-", .), everything()) %>%
   dplyr::rename(Assay = `Data type`) %>%
+  filter(`Gene symbol` %in% de_genes) %>%
   # clean up naming for plotting
   mutate(Assay = case_when(Assay == "proteo" ~ "Whole Cell Proteomics",
                            Assay == "rna" ~ "RNA-Seq"),
@@ -80,13 +86,15 @@ row_annot <- cptac_data %>%
   dplyr::select(Assay) %>%
   as.data.frame()
 
+
 # create anno colors
 anno_col <- list(Assay = c("RNA-Seq" = "#DC3220", "Whole Cell Proteomics" = "#40B0A6"))
 
 # Heatmap annotation
 row_anno = rowAnnotation(df = row_annot,
-                         col = anno_col, show_legend = TRUE)
-
+                         col = anno_col, 
+                         show_legend = TRUE, 
+                         show_annotation_name = FALSE)
 
 # Make heatmap without legends
 heat_plot <- Heatmap(mat,
@@ -97,22 +105,16 @@ heat_plot <- Heatmap(mat,
                      column_gap = 0.5,
                      show_row_names = TRUE,
                      show_column_names = FALSE,
-                     show_heatmap_legend=TRUE,
+                     show_heatmap_legend = TRUE,
                      cluster_columns = TRUE, 
                      right_annotation = row_anno,
-                     heatmap_legend_param = list(direction = "horizontal"),
-                     #na_col = "lightgrey",
-                     #rect_gp = gpar(col = "white"),
                      row_title = NULL, 
                      column_title = NULL, 
-                     row_names_gp = grid::gpar(fontsize = 12),
-                     column_title_side = "top") 
+                     row_names_gp = grid::gpar(fontsize = 9),
+                     column_title_side = "top",
+                     heatmap_legend_param = list(legend_direction = "horizontal", 
+                                                 legend_position = "top"))
 
-# Draw the heatmap with legends on top
-heat_plot_leg <- draw(heat_plot, 
-                     annotation_legend_side = "top", 
-                     heatmap_legend_side = "top")
-
-pdf(heatmap_output_file, width = 8, height = 6)
-print(heat_plot_leg)
+pdf(heatmap_output_file, width = 7, height = 5)
+draw(heat_plot, heatmap_legend_side = "top")
 dev.off()

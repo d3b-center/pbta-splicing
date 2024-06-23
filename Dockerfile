@@ -5,11 +5,7 @@ WORKDIR /rocker-build/
 
 ### Install apt-getable packages to start
 #########################################
-RUN apt-get -y update && apt-get install -y --no-install-recommends
-
-# Install dev libraries and curl
-RUN apt install -y  \
-  bedtools \
+RUN apt-get -y update && apt-get install -y bedtools \
 	build-essential \
 	bzip2 \
 	cpanminus \
@@ -18,6 +14,9 @@ RUN apt install -y  \
 	libbz2-dev \
 	libcurl4-openssl-dev \
 	libgdal-dev \
+        libglpk40 \
+        libglpk-dev \
+        libhdf5-dev \
 	libgmp-dev \
 	liblzma-dev \
 	libmpfr-dev \
@@ -67,6 +66,7 @@ RUN R -e 'BiocManager::install(c( \
   "ggthemes", \
   "ggVennDiagram", \
   "gridExtra", \
+  "GSVA", \
   "Hmisc", \
   "hrbrthemes", \
   "limma", \
@@ -84,6 +84,7 @@ RUN R -e 'BiocManager::install(c( \
   "sva", \
   "survival", \
   "survminer", \
+  "VennDiagram",\	
   "UpSetR" \
 ))'
 

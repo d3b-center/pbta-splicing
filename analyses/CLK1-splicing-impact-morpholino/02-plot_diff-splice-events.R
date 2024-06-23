@@ -118,4 +118,4 @@ psi_comb_select <- psi_comb %>%
   left_join(annots)
 
 write_tsv(psi_comb_select, 
-          file=file.path(results_dir,"splice-events-signficant.tsv"))
+          file=file.path(results_dir,"splice-events-significant.tsv"))
