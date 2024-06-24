@@ -1,6 +1,5 @@
 library(tidyverse)
 library(openxlsx)
-library(survival)
 library(vroom)
 
 # Get `magrittr` pipe
@@ -27,13 +26,19 @@ histology_es_splice_events <- file.path(analysis_dir, "histology-specific-splici
 optimal_cluster_tsv <- file.path(analysis_dir, "clustering_analysis", "output", "optimal_clustering", "lspline_output.tsv")
 cluster_membership <- file.path(analysis_dir, "clustering_analysis", "output", "cluster_members_by_cancer_group_subtype.tsv")
 CNS_match_json <- file.path(table_dir, "input", "CNS_primary_site_match.json")
-deseq2_sf_file <- file.path(analysis_dir, "splicing-factor_dysregulation", "results", "diffSFs_sig_genes.txt")
-func_sites_es_file <- file.path(analysis_dir, "splicing_events_functional_sites", "results", "splicing_events.total.HGG.neg.intersectUnip.ggplot.txt") 
-func_sites_ei_file <- file.path(analysis_dir, "splicing_events_functional_sites", "results", "splicing_events.total.HGG.pos.intersectUnip.ggplot.txt") 
+deseq2_sf_file <- file.path(analysis_dir, "splicing-factor_dysregulation", "results", "all_hgg-diffSFs_sig_genes.txt")
+func_sites_es_file <- file.path(analysis_dir, "splicing_events_functional_sites", "results", "splicing_events.SE.total.neg.intersectunip.ggplot.txt") 
+func_sites_ei_file <- file.path(analysis_dir, "splicing_events_functional_sites", "results", "splicing_events.SE.total.pos.intersectunip.ggplot.txt") 
 kinase_func_sites_file <- file.path(analysis_dir, "splicing_events_functional_sites", "results", "kinases-functional_sites.tsv")
 deseq2_morph_file <- file.path(root_dir,"analyses/CLK1-splicing-impact-morpholino","results","ctrl_vs_treated.de.tsv")
 rmats_tsv_file <- file.path(data_dir,"ctrl-vs-morpholino-merged-rmats.tsv")
-func_sites_morpho_tsv_file <- file.path(analysis_dir,"CLK1-splicing-impact-morpholino","results","splicing_events.morpho.intersectUnip.ggplot.txt")
+func_sites_SE_morpho_tsv_file <- file.path(analysis_dir,"CLK1-splicing-impact-morpholino","results","splicing_events.morpho.SE.intersectUnip.ggplot.txt")
+func_sites_A5SS_morpho_tsv_file <- file.path(analysis_dir,"CLK1-splicing-impact-morpholino","results","splicing_events.morpho.A5SS.intersectUnip.ggplot.txt")
+func_sites_A3SS_morpho_tsv_file <- file.path(analysis_dir,"CLK1-splicing-impact-morpholino","results","splicing_events.morpho.A3SS.intersectUnip.ggplot.txt")
+func_sites_RI_morpho_tsv_file <- file.path(analysis_dir,"CLK1-splicing-impact-morpholino","results","splicing_events.morpho.RI.intersectUnip.ggplot.txt")
+
+
+func_sites_goi_file <- file.path(analysis_dir,"CLK1-splicing-impact-morpholino","results", "differential_splice_by_goi_category.tsv")
 primers_file <-  file.path(input_dir,"primers.tsv")
 
 # define suppl output files and sheet names, when appropriate
@@ -188,7 +193,11 @@ write.xlsx(list_s3_table,
 
 ## Table 4 Differential HGG splicing events impacting functional sites
 ## sheet 1, exon inclusion events
-ei_events_df <- vroom(func_sites_ei_file)
+ds_events_es_df <- vroom(func_sites_es_file)
+ds_events_ei_df <- vroom(func_sites_ei_file)
+ds_events_A3SS_df <- vroom(func_sites_A3SS_morpho_tsv_file)
+ds_events_RI_df <- vroom(func_sites_RI_morpho_tsv_file)
+
 
 ## sheet 2, exon skipping events
 es_events_df <- vroom(func_sites_es_file)
@@ -197,9 +206,10 @@ es_events_df <- vroom(func_sites_es_file)
 kinase_events_df <- vroom(kinase_func_sites_file)
 
 
+
 # Combine and output
-list_s4_table <- list(exon_inclusion = ei_events_df,
-                      exon_skipping = es_events_df,
+list_s4_table <- list(ds_skipping = ds_events_es_df,
+                      ds_inclusion = ds_events_ei_df,
                       kinases= kinase_events_df)
 
 write.xlsx(list_s4_table,
@@ -219,12 +229,21 @@ deseq2_morpholino_df <- vroom(deseq2_morph_file) %>%
                 padj)
   
 rmats_df <-  vroom(rmats_tsv_file)
-ds_func_df <- vroom(func_sites_morpho_tsv_file)
+ds_events_SE_df <- vroom(func_sites_SE_morpho_tsv_file)
+ds_events_A5SS_df <- vroom(func_sites_A5SS_morpho_tsv_file)
+ds_events_A3SS_df <- vroom(func_sites_A3SS_morpho_tsv_file)
+ds_events_RI_df <- vroom(func_sites_RI_morpho_tsv_file)
+cancer_genes_func_df <- vroom(func_sites_goi_file)
+
 primers_df <- vroom(primers_file, delim = "\t")
 
 list_s5_table <- list(deseq2_morp = deseq2_morpholino_df,
                       rmats = rmats_df,
-                      func_sites = ds_func_df,
+                      ds_SE = ds_events_SE_df,
+                      ds_A5SS = ds_events_A5SS_df,
+                      ds_A3SS = ds_events_A3SS_df,
+                      ds_RI = ds_events_RI_df,
+                      ds_cancer_genes = cancer_genes_func_df,
                       primers = primers_df)
 
 write.xlsx(list_s5_table,
