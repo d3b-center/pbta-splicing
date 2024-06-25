@@ -163,7 +163,7 @@ opt_cluster_df <- opt_cluster_df %>%
                 avg_sil,
                 cluster_qual,
                 rank)
-    
+
 ## sheet 4, cluster membership
 cluster_membership_df <- read_tsv(cluster_membership)
 
@@ -227,7 +227,7 @@ deseq2_morpholino_df <- vroom(deseq2_morph_file) %>%
                 stat,	
                 pvalue,	
                 padj)
-  
+
 rmats_df <-  vroom(rmats_tsv_file)
 ds_events_SE_df <- vroom(func_sites_SE_morpho_tsv_file)
 ds_events_A5SS_df <- vroom(func_sites_A5SS_morpho_tsv_file)
@@ -250,4 +250,3 @@ write.xlsx(list_s5_table,
            table_s5_file,
            overwrite=TRUE,
            keepNA=TRUE)
-
