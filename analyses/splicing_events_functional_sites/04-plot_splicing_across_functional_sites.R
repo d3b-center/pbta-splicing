@@ -9,7 +9,6 @@
 suppressPackageStartupMessages({
   library("vroom")
   library("ggplot2")
-  library("dplyr")
   library("tidyverse")
   library("clusterProfiler")
   library("msigdbr")
@@ -164,16 +163,39 @@ ora_skip_results <- enricher(
 )
 
 
-enrich_skip_plot <- enrichplot::dotplot(ora_skip_results, showCategory = 15) + 
+options(enrichplot.colours = c("darkorange","blue"))
+enrich_skip_plot <- enrichplot::dotplot(ora_skip_results,
+                                   x = "geneRatio",
+                                   size = "Count",
+                                   color = "p.adjust",
+                                   label_format = 30,
+                                   showCategory = 15) +   
+  labs(y = "Pathway",
+       x = "Gene Ratio") +
   theme_Publication() +
-  scale_color_gradient(name = "Adjusted p-value", 
-                       low = "orange", high = "#0C7BDC") +  # Modify color range
-  labs(color = "B-H adj p-value")  # Modify legend title 
-enrich_incl_plot <- enrichplot::dotplot(ora_incl_results, showCategory = 15) +
+  scale_size(name = "Gene Count") +  
+  scale_fill_gradient(low = "darkorange", high = "blue", name = "B-H p-value") +
+  guides(
+    fill = guide_colorbar(title = "B-H p-value", label.position = "right", barwidth = 1, barheight = 4)
+  )
+
+
+options(enrichplot.colours = c("darkorange","blue"))
+enrich_incl_plot <- enrichplot::dotplot(ora_incl_results,
+                                        x = "geneRatio",
+                                        size = "Count",
+                                        color = "p.adjust",
+                                        label_format = 30,
+                                        showCategory = 15) +   
+  labs(y = "Pathway",
+       x = "Gene Ratio") +
   theme_Publication() +
-  scale_color_gradient(name = "Adjusted p-value", 
-                       low = "orange", high = "#0C7BDC") +  # Modify color range
-  labs(color = "B-H adj p-value")  # Modify legend title
+  scale_size(name = "Gene Count") +  
+  scale_fill_gradient(low = "darkorange", high = "blue", name = "B-H p-value") +
+  guides(
+    fill = guide_colorbar(title = "B-H p-value", label.position = "right", barwidth = 1, barheight = 4)
+  )
+
 
 ## since kegg pathways have and show more enrichment, we will save those
 plot_pathways <- plot_grid(enrich_skip_plot,enrich_incl_plot,align="hv",
@@ -193,7 +215,8 @@ kinase_incl_pref <- kinase_incl_pref %>%
   dplyr::mutate('Exon Coordinates' = str_match(SpliceID, "(\\w+)\\:(\\d+\\-\\d+)\\_")[, 3]) %>%
   unique()
 
-kinase_pref <- rbind(kinase_skip_pref, kinase_incl_pref) %>% select(SpliceID,dPSI,Uniprot, gene, Preference,`Exon Coordinates`)
+kinase_pref <- rbind(kinase_skip_pref, kinase_incl_pref) %>% 
+  dplyr::select(SpliceID,dPSI,Uniprot, gene, Preference,`Exon Coordinates`)
 
 ## write kinase results for table
 write_tsv(kinase_pref, kinases_functional_sites)
