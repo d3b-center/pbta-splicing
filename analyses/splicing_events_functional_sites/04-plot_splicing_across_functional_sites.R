@@ -193,7 +193,7 @@ kinase_incl_pref <- kinase_incl_pref %>%
   dplyr::mutate('Exon Coordinates' = str_match(SpliceID, "(\\w+)\\:(\\d+\\-\\d+)\\_")[, 3]) %>%
   unique()
 
-kinase_pref <- rbind(kinase_skip_pref, kinase_incl_pref)
+kinase_pref <- rbind(kinase_skip_pref, kinase_incl_pref) %>% select(SpliceID,dPSI,Uniprot, gene, Preference,`Exon Coordinates`)
 
 ## write kinase results for table
 write_tsv(kinase_pref, kinases_functional_sites)
