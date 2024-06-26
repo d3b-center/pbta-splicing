@@ -191,8 +191,10 @@ psi_comb_goi$plot_subtype <- factor(psi_comb_goi$plot_subtype, levels = c("Kinas
                                                                           "Epigenetic", "Other Oncogene", "Other Tumor Suppressor"))
 unique(psi_comb_goi$plot_subtype)
 
+psi_comb_goi_tab <- psi_comb_goi %>% dplyr::select(SpliceID,gene, dPSI,Type, Uniprot, Preference,plot_type, plot_subtype)
+
 # write for supplemental 
-write_tsv(psi_comb_goi, file.path(results_dir, "differential_splice_by_goi_category.tsv"))
+write_tsv(psi_comb_goi_tab, file.path(results_dir, "differential_splice_by_goi_category.tsv"))
 
 ## plot num of hits per gene fam
 plot_barplot_family <- ggplot(psi_comb_goi, aes(x = fct_rev(fct_infreq(plot_subtype)), fill= Preference)) +
