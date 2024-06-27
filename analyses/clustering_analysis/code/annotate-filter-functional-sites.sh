@@ -26,6 +26,7 @@ done
 perl code/format-sites.pl
 
 ## filter primary matrices for functional sites from files outputted from above code
-perl code/filter-sites.pl input/pan_cancer_SE.tmp.tsv input/psi-se.functonal-sites.tsv > input/pan-cancer-SE-func.tsv
+perl code/filter-sites.pl input/pan-cancer-SE-func.tsv.tmp input/pan-cancer-SE-func.list.tmp > input/pan-cancer-SE-func.tsv
 
-rm *tmp*
+rm input/*tmp
+rm input/*tmp*

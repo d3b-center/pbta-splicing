@@ -5,7 +5,7 @@ use warnings;
 
 
 # Process files
-open(OUT, '>', 'input/input/pan-cancer-SE-func.tsv.tmp') or die "Cannot open file: $!";
+open(OUT, '>', 'input/pan-cancer-SE-func.list.tmp') or die "Cannot open file: $!";
 print OUT "SpliceID\t\tUniprot\n";
 open(IN, "input/pan-cancer-SE-func.tsv.tmp.intersectunipLocSignal.hg38.col.wo.txt") or die "Cannot open file: $!";
 my %seen;
@@ -19,7 +19,7 @@ while (my $line = <IN>)
 close(IN);
 
 open(IN, "input/pan-cancer-SE-func.tsv.tmp.intersectunipDisulfBond.hg38.col.wo.txt") or die "Cannot open file: $!";
-my %seen;
+%seen=();
 while (my $line = <IN>)
 {
     chomp $line;
@@ -30,7 +30,7 @@ while (my $line = <IN>)
 close(IN);
 
 open(IN, "input/pan-cancer-SE-func.tsv.tmp.intersectunipMod.hg38.col.wo.txt") or die "Cannot open file: $!";
-my %seen;
+%seen=();
 while (my $line = <IN>)
 {
     chomp $line;
@@ -41,7 +41,7 @@ while (my $line = <IN>)
 close(IN);
 
 open(IN, "input/pan-cancer-SE-func.tsv.tmp.intersectunipOther.hg38.col.wo.txt") or die "Cannot open file: $!";
-my %seen;
+%seen=();
 while (my $line = <IN>)
 {
     chomp $line;
