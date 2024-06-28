@@ -6,7 +6,7 @@ results_dir="results/"
 bed_dir="../splicing_events_functional_sites/input/"
 
 ## create initial primary matrix
-#perl 01-create-psi-matrix-primary.pl $data_dir/splice-events-rmats.tsv.gz SE $results_dir/pan-cancer-SE-func.tsv.tmp
+perl 01-create-psi-matrix-primary.pl $data_dir/splice-events-rmats.tsv.gz SE $results_dir/pan-cancer-SE-func.tsv.tmp
 
 # Define the bed files from uniprot
 bed_files=("unipMod.hg38.col.bed" "unipOther.hg38.col.bed" "unipDisulfBond.hg38.col.bed" "unipLocSignal.hg38.col.bed" "unipDomain.hg38.col.bed")
@@ -23,7 +23,6 @@ for splicing_file in "${splicing_event_files[@]}"; do
 done
 
 ## format bedtools output
-#perl 02-format-sites.pl
 perl 02-format-sites.pl results/pan-cancer-SE-func.tsv.tmp.intersectunipLocSignal.hg38.col.wo.txt results/pan-cancer-SE-func.tsv.tmp.intersectunipDisulfBond.hg38.col.wo.txt results/pan-cancer-SE-func.tsv.tmp.intersectunipMod.hg38.col.wo.txt results/pan-cancer-SE-func.tsv.tmp.intersectunipOther.hg38.col.wo.txt results/pan-cancer-SE-func.list.tmp
 
 ## filter primary matrices for functional sites from files outputted from above code
