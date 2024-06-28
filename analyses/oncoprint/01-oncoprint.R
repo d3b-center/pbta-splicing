@@ -74,7 +74,9 @@ goi <- read_csv(goi_file) %>%
   pull(HGAT) %>%
   unique() %>%
   c(sf_list) 
-  
+
+## just SFs (exploratory)
+goi <- sf_list 
 
 indep_rna_df <- vroom(indep_rna_file) %>% 
   dplyr::filter(cohort == 'PBTA') %>%
