@@ -1,8 +1,5 @@
-# 0) scripts to create matrix and input
-# pre-process and create neccessary input for clustering
-perl code/00-create_matrix_of_PSI_SE_gene.pl ../../data/histologies.tsv ../../data/splice-events-rmats.tsv.gz ../../data/independent-specimens.rnaseqpanel.primary.tsv input/pan_cancer_splicing_SE.gene.tsv
-Rscript --vanilla code/01-convert_to_rds.R
-Rscript --vanilla code/02-create-inputs.R
+# 1) scripts to create matrix and input
+Rscript --vanilla code/01a-convert_func_to_rds.R
 
 # 1) run script for optimal clustering
 Rscript code/03-optimal-clustering.R \
