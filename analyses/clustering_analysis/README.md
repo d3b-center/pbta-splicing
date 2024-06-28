@@ -14,7 +14,7 @@ This module performs the following analyses:
 The module can be run using a single bash command:
 
 ```
-bash run.sh
+bash run-full-matirx-clustering.sh
 ```
 
 ### Input
