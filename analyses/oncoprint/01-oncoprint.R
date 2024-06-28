@@ -47,6 +47,7 @@ tmb_file <- file.path(input_dir, "snv-mutation-tmb-coding.tsv")
 cnv_file <- file.path(data_dir, "consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz")
 psi_exp_file <- file.path(root_dir, "analyses", "CLK1-splicing_correlations", "results", "clk1-nf1-psi-exp-phos-df.rds")
 fus_file <- file.path(data_dir, "fusion-putative-oncogenic.tsv")
+sf_file <- file.path(root_dir, "analyses","splicing-factor_dysregulation/input","splicing_factors.txt")
 
 ## color for barplot
 source(file.path(input_dir, "mutation-colors.R"))
@@ -66,10 +67,14 @@ histologies_df <- read_tsv(clin_file, guess_max = 100000) %>%
                                            Kids_First_Participant_ID == "PT_ZH3SBJPZ" ~ NA_character_,
                                            TRUE ~ NA_character_))
 
+## get splicing factor list + CLKs and SRPKs
+sf_list <- readLines(sf_file)
+
 goi <- read_csv(goi_file) %>%
   pull(HGAT) %>%
   unique() %>%
-  c("CLK1")
+  c(sf_list) 
+  
 
 indep_rna_df <- vroom(indep_rna_file) %>% 
   dplyr::filter(cohort == 'PBTA') %>%
