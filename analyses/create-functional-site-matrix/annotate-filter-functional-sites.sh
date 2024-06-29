@@ -27,6 +27,7 @@ perl 02-format-sites.pl "${results_dir}pan-cancer-SE-func.tsv.tmp.intersectunipL
 
 ## filter primary matrices for functional sites from files outputted from above code
 perl 03-filter-sites.pl "${results_dir}pan-cancer-SE-func.tsv.tmp" "${results_dir}pan-cancer-SE-func.list.tmp" > "${results_dir}pan-cancer-SE-func.tsv"
+perl 03-filter-sites.pl "${results_dir}pan-cancer-SE-func.tsv.tmp" "${results_dir}pan-cancer-SE-func.list.tmp" > "${results_dir}pan-cancer-SE-func.tsv"
 gzip ${results_dir}pan-cancer-SE-func.tsv
 
 rm $results_dir/*tmp
