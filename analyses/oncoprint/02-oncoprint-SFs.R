@@ -68,7 +68,7 @@ histologies_df <- read_tsv(clin_file, guess_max = 100000) %>%
                                            TRUE ~ NA_character_))
 
 ## get splicing factor list + CLKs and SRPKs
-goi <- readLines(sf_file) %>%
+goi <- readLines(goi_file) %>%
   c("NF1", "CLK1")
 
 indep_rna_df <- vroom(indep_rna_file) %>% 
@@ -341,4 +341,45 @@ plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:100,], get_type = function(x) s
 pdf(plot_out, width = 15, height = 15)
 plot_oncoprint
 dev.off()
+
+
+
+# create df for enrichment
+ids_clk1 <- histologies_df_sorted %>%
+  rownames_to_column(var = "match_id") %>%
+  select(match_id, clk1_status)
+
+total_high <- nrow(ids_clk1)/2
+total_low <- nrow(ids_clk1)/2
+
+
+alteration_counts <- collapse_snv_dat %>%
+  full_join(ids_clk1) %>%
+  filter(clk1_status != "Middle") %>%
+  ## group by junction and calculate means
+  select(Hugo_Symbol, clk1_status) %>%
+  group_by(Hugo_Symbol, clk1_status) %>%
+  count() %>%
+  ungroup() %>%
+  # Spread to wide format to get separate columns for "High" and "Low"
+  pivot_wider(names_from = clk1_status, values_from = n, values_fill = list(n = 0)) %>%
+  rowwise() %>%
+  mutate(
+    Fisher_Test = list(
+      fisher.test(
+        matrix(
+          c(High, total_high - High,  # Counts of High and the absence of High
+            Low, total_low - Low),    # Counts of Low and the absence of Low
+          nrow = 2
+        )
+      )
+    ),
+    P_Value = Fisher_Test$p.value
+  ) %>%
+  select(Hugo_Symbol, High, Low, P_Value) %>%
+  ungroup() %>%
+  arrange(P_Value) %>%
+  write_tsv(file.path(results_dir, "clk1_high_low_mutation_counts_SFs.tsv"))
+
+
 

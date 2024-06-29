@@ -66,11 +66,9 @@ histologies_df <- read_tsv(clin_file, guess_max = 100000) %>%
                                            Kids_First_Participant_ID == "PT_ZH3SBJPZ" ~ NA_character_,
                                            TRUE ~ NA_character_))
 
-## get splicing factor list + CLKs and SRPKs
-sf_list <- readLines(sf_file)
-
 goi <- read_csv(goi_file) %>%
   pull(HGAT) %>%
+  c("CLK1") %>%
   unique()
 
 indep_rna_df <- vroom(indep_rna_file) %>% 
