@@ -81,7 +81,7 @@ lspline_clustering <- function(expr_mat, hist_file,
                                compute_all_equal = TRUE,
                                output_dir) {
   # create output directory
-  dir.create(output_dir, recursive = T, showWarnings = F)
+ # dir.create(output_dir, recursive = T, showWarnings = F)
 
   # read histology file
   if (!is.null(hist_file)) {

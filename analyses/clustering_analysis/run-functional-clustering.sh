@@ -3,7 +3,10 @@ Rscript --vanilla code/01a-convert_func_to_rds.R
 
 # 1) run script for optimal clustering
 Rscript code/03-optimal-clustering.R \
---input_mat "input/pan_cancer_splicing_SE.gene.rds" \
+--cluster_dir "analyses/clustering_analysis" \
+--analysis_dir "analyses/clustering_analysis/functional-sites" \
+--input_mat "input/pan_cancer_splicing_SE_func.rds" \
+--output_folder "optimal_clustering" \
 --cluster_algorithm "hc, km, pam" \
 --cluster_distance "pearson, spearman, euclidean, manhattan, binary, maximum, canberra, minkowski" \
 --filter_expr FALSE \

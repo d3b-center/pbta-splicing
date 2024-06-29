@@ -30,11 +30,30 @@ option_list <- list(
   make_option(c("--transformation_type"), type = "character",
               help = "transformation type (none, tmm, vst, uq, log2, rank)"),
   make_option(c("--max_k"), type = "numeric",
-              help = "maximum k-values to evaluate (>= 2)")
+              help = "maximum k-values to evaluate (>= 2)"),
+  make_option(c("--cluster_dir"), type = "character",
+              help = "clustering module directory"),
+  make_option(c("--analysis_dir"), type = "character",
+              help = "analysis directory"),
+  make_option(c("--output_folder"), type = "character",
+              help = "output folder to be created to save files")
 )
 opt <- parse_args(OptionParser(option_list = option_list))
+
+# set directories
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+cluster_dir <- file.path(root_dir, opt$cluster_dir)
+analysis_dir <- file.path(root_dir, opt$analysis_dir)
+output_folder <- file.path(analysis_dir, opt$output_folder)
+dir.create(output_folder, showWarnings = F, recursive = T)
+
+print(root_dir)
+print(cluster_dir)
+print(analysis_dir)
+print(output_folder)
+
 # input matrix
-input_mat <- opt$input_mat
+input_mat <- file.path(analysis_dir, opt$input_mat)
 print(input_mat)
 
 # histology file (optional)
@@ -93,14 +112,9 @@ print(transformation_type)
 max_k <- opt$max_k %>% as.numeric()
 print(max_k)
 
-# set directories
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-analysis_dir <- file.path(root_dir, "analyses", "clustering_analysis")
-output_dir <- file.path(analysis_dir, "output", "optimal_clustering")
-dir.create(output_dir, showWarnings = F, recursive = T)
 
 # source functions
-source(file.path(analysis_dir, 'util', 'lspline_clustering.R'))
+source(file.path(cluster_dir, 'util', 'lspline_clustering.R'))
 
 # compute optimal clustering across all combinations of algorithms, distances and input k-values
   lspline_clustering(expr_mat = input_mat,
@@ -114,4 +128,4 @@ source(file.path(analysis_dir, 'util', 'lspline_clustering.R'))
                      var_prop = var_prop,
                      transformation_type = transformation_type,
                      max_k = max_k,
-                     output_dir = output_dir)
+                     output_folder = output_folder)
