@@ -42,17 +42,18 @@ cons_maf_file <- file.path(data_dir,"snv-consensus-plus-hotspots.maf.tsv.gz")
 tumor_only_maf_file <- file.path(data_dir,"snv-mutect2-tumor-only-plus-hotspots.maf.tsv.gz")
 clin_file <- file.path(root_dir, "analyses", "cohort_summary", "results", "histologies-plot-group.tsv")
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
-goi_file <- file.path(input_dir,"oncoprint-goi-lists-OpenPedCan-gencode-v39.csv")
+#goi_file <- file.path(input_dir,"oncoprint-goi-lists-OpenPedCan-gencode-v39.csv")
 tmb_file <- file.path(input_dir, "snv-mutation-tmb-coding.tsv")
 cnv_file <- file.path(data_dir, "consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz")
 psi_exp_file <- file.path(root_dir, "analyses", "CLK1-splicing_correlations", "results", "clk1-nf1-psi-exp-phos-df.rds")
 fus_file <- file.path(data_dir, "fusion-putative-oncogenic.tsv")
+goi_file <- file.path(root_dir, "analyses","splicing-factor_dysregulation/input","splicing_factors.txt")
 
 ## color for barplot
 source(file.path(input_dir, "mutation-colors.R"))
 
 ## output file
-plot_out <- file.path(plots_dir,"oncoprint.pdf")
+plot_out <- file.path(plots_dir,"oncoprint-SFs.pdf")
 
 # read in files
 histologies_df <- read_tsv(clin_file, guess_max = 100000) %>%
@@ -67,11 +68,8 @@ histologies_df <- read_tsv(clin_file, guess_max = 100000) %>%
                                            TRUE ~ NA_character_))
 
 ## get splicing factor list + CLKs and SRPKs
-sf_list <- readLines(sf_file)
-
-goi <- read_csv(goi_file) %>%
-  pull(HGAT) %>%
-  unique()
+goi <- readLines(sf_file) %>%
+  c("NF1", "CLK1")
 
 indep_rna_df <- vroom(indep_rna_file) %>% 
   dplyr::filter(cohort == 'PBTA') %>%
@@ -108,18 +106,18 @@ splice_df <-  readRDS(psi_exp_file) %>%
                 )
 
 # read in cnv file and reformat to add to maf
-cnv_df <- read_tsv(cnv_file) %>%
-  # select only goi, DNA samples of interest
-  filter(gene_symbol %in% goi,
-         biospecimen_id %in% matched_dna_samples$Kids_First_Biospecimen_ID) %>%
-  mutate(Variant_Classification = case_when(status == "amplification" ~ "Amp",
-                                            status == "deep deletion" ~ "Del",
-                                            status %in% c("loss", "Loss") & copy_number < 2 ~ "Loss",
-                                            TRUE ~ NA_character_)) %>%
-  filter(!is.na(Variant_Classification)) %>%
-  dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id,
-                Hugo_Symbol = gene_symbol) %>%
-  select(Kids_First_Biospecimen_ID, Hugo_Symbol, Variant_Classification)
+#cnv_df <- read_tsv(cnv_file) %>%
+#  # select only goi, DNA samples of interest
+# filter(gene_symbol %in% goi,
+#         biospecimen_id %in% matched_dna_samples$Kids_First_Biospecimen_ID) %>%
+#  mutate(Variant_Classification = case_when(status == "amplification" ~ "Amp",
+#                                            status == "deep deletion" ~ "Del",
+#                                            status %in% c("loss", "Loss") & copy_number < 2 ~ "Loss",
+#                                            TRUE ~ NA_character_)) %>%
+#  filter(!is.na(Variant_Classification)) %>%
+#  dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id,
+#                Hugo_Symbol = gene_symbol) %>%
+#  select(Kids_First_Biospecimen_ID, Hugo_Symbol, Variant_Classification)
 
 # read in fusion file and reformat to add to maf
 fus_df <- read_tsv(fus_file) %>%
@@ -167,13 +165,14 @@ maf <- cons_maf %>%
 maf_filtered <- maf %>%
   dplyr::filter(Hugo_Symbol %in% goi,
                 Tumor_Sample_Barcode  %in% matched_dna_samples$Kids_First_Biospecimen_ID,
-                Variant_Classification %in% names(colors))
+                Variant_Classification %in% names(colors),
+                Chromosome != "chrY")
 
 collapse_snv_dat <- maf_filtered %>%
   select(Tumor_Sample_Barcode,Hugo_Symbol,Variant_Classification) %>%
   dplyr::group_by(Hugo_Symbol,Tumor_Sample_Barcode) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
-  bind_rows(cnv_df, fus_df) %>%
+  bind_rows(fus_df) %>%
   dplyr::summarise(count = as.double(length(Variant_Classification[!is.na(Variant_Classification)])),
                    Variant_Classification=str_c(unique(Variant_Classification),collapse = ",")) %>%
   left_join(histologies_df[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
@@ -311,7 +310,7 @@ gene_matrix_sorted <- gene_matrix %>%
 # global option to increase space between heatmap and annotations
 ht_opt$ROW_ANNO_PADDING = unit(1.25, "cm")
 
-plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:25,], get_type = function(x) strsplit(x, ",")[[1]],
+plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:100,], get_type = function(x) strsplit(x, ",")[[1]],
                             column_names_gp = gpar(fontsize = 9), show_column_names = F,
                             alter_fun = list(
                               background = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "whitesmoke",col="whitesmoke")),
@@ -339,44 +338,7 @@ plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:25,], get_type = function(x) st
                             column_order =  colnames(gene_matrix_sorted))
 
 # Save plot as PDF
-pdf(plot_out, width = 15, height = 8)
+pdf(plot_out, width = 15, height = 15)
 plot_oncoprint
 dev.off()
-
-# create df for enrichment
-ids_clk1 <- histologies_df_sorted %>%
-  rownames_to_column(var = "match_id") %>%
-  select(match_id, clk1_status)
-
-total_high <- nrow(ids_clk1)/2
-total_low <- nrow(ids_clk1)/2
-
-
-alteration_counts <- collapse_snv_dat %>%
-  full_join(ids_clk1) %>%
-  filter(clk1_status != "Middle") %>%
-  ## group by junction and calculate means
-  select(Hugo_Symbol, clk1_status) %>%
-  group_by(Hugo_Symbol, clk1_status) %>%
-  count() %>%
-  ungroup() %>%
-  # Spread to wide format to get separate columns for "High" and "Low"
-  pivot_wider(names_from = clk1_status, values_from = n, values_fill = list(n = 0)) %>%
-  rowwise() %>%
-  mutate(
-    Fisher_Test = list(
-      fisher.test(
-        matrix(
-          c(High, total_high - High,  # Counts of High and the absence of High
-            Low, total_low - Low),    # Counts of Low and the absence of Low
-          nrow = 2
-        )
-      )
-    ),
-    P_Value = Fisher_Test$p.value
-  ) %>%
-  select(Hugo_Symbol, High, Low, P_Value) %>%
-  ungroup() %>%
-  arrange(P_Value) %>%
-  write_tsv(file.path(results_dir, "clk1_high_low_mutation_counts.tsv"))
 
