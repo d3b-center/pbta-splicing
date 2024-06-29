@@ -10,9 +10,9 @@
 #' @param algorithms algorithms to be evaluated
 #' @param distances distances to be evaluated
 #' @param filter_expr filter genes by expession. logical TRUE or FALSE
-#' @param dispersion_percentile_val value for DGCA::filterGenes dispersion_percentile parameter
+#' @param dispersion_percentile_val value for filter_genes (formerly DGCA filterGenes) dispersion_percentile parameter
 #' @param protein_coding_only filter genes to protein coding only. logical TRUE or FALSE
-#' @param gencode_version gencode version to fetch gtf. Default is 27
+#' @param gencode_file gencode file
 #' @param feature_selection feature selection strategy. Either variance or dip.test
 #' @param var_prop proportion of most variable genes to choose
 #' @param min_n minimum number of genes for dip.test
@@ -50,7 +50,6 @@
 
 suppressPackageStartupMessages({
   library(tidyverse)
-  library(DGCA)
   library(rtracklayer)
   library(DESeq2)
   library(edgeR)
@@ -69,11 +68,18 @@ source(file.path(analysis_dir, "util", "perform_diptest.R"))
 source(file.path(analysis_dir, "util", "run_ccp.R"))
 source(file.path(analysis_dir, "util", "get_cdf_datapoints.R"))
 
-lspline_clustering <- function(expr_mat, hist_file, 
+# Use this function instead of DGCA::filterGenes
+filter_genes <- function(expr_mat, dispersion_percentile_val) {
+  dispersion <- apply(expr_mat, 1, function(x) sd(x) / mean(x))
+  threshold <- quantile(dispersion, dispersion_percentile_val)
+  expr_mat[dispersion >= threshold, ]
+}
+
+lspline_clustering <- function(expr_mat, hist_file, gencode_file,
                                algorithms = c("hc", "pam", "km"), 
                                distances = c("pearson", "spearman", "euclidean", "manhattan", "binary", "maximum", "canberra", "minkowski"),
                                filter_expr = TRUE, dispersion_percentile_val = 0.2,
-                               protein_coding_only = TRUE, gencode_version = 27,
+                               protein_coding_only = TRUE, 
                                feature_selection = c("variance", "dip.test"),
                                var_prop = NULL, min_n = NULL, transformation_type = c("none", "tmm", "vst", "uq", "log2", "rank"),
                                max_k, coef_cutoff = 0.5,
@@ -108,19 +114,14 @@ lspline_clustering <- function(expr_mat, hist_file,
   # filter based on expression
   if (filter_expr) {
     print("filter by expression")
-    expr_mat <- DGCA::filterGenes(
-      inputMat = expr_mat,
-      filterTypes = c("central", "dispersion"),
-      filterDispersionType = "cv",
-      filterDispersionPercentile = dispersion_percentile_val,
-      sequential = TRUE
-    )
+    expr_mat <- filter_genes(expr_mat, dispersion_percentile_val)
   }
 
   # filter to protein coding genes only
   if (protein_coding_only) {
     print("filter to protein coding genes")
-    fname <- paste0("ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_", gencode_version, "/gencode.v", gencode_version, ".primary_assembly.annotation.gtf.gz")
+   # fname <- paste0("ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_", gencode_version, "/gencode.v", gencode_version, ".primary_assembly.annotation.gtf.gz")
+    fname <- gencode_file
     gencode_gtf <- rtracklayer::import(con = fname)
     gencode_gtf <- as.data.frame(gencode_gtf)
     gencode_gtf <- gencode_gtf %>%

@@ -36,7 +36,9 @@ option_list <- list(
   make_option(c("--analysis_dir"), type = "character",
               help = "analysis directory"),
   make_option(c("--output_folder"), type = "character",
-              help = "output folder to be created to save files")
+              help = "output folder to be created to save files"),
+  make_option(c("--gencode_file"), type = "character", default = NULL,
+              help = "gencode file for protein coding subset")
 )
 opt <- parse_args(OptionParser(option_list = option_list))
 
@@ -46,11 +48,13 @@ cluster_dir <- file.path(root_dir, opt$cluster_dir)
 analysis_dir <- file.path(root_dir, opt$analysis_dir)
 output_folder <- file.path(analysis_dir, opt$output_folder)
 dir.create(output_folder, showWarnings = F, recursive = T)
+gencode_file <- file.path(root_dir, opt$gencode_file)
 
 print(root_dir)
 print(cluster_dir)
 print(analysis_dir)
 print(output_folder)
+print(gencode_file)
 
 # input matrix
 input_mat <- file.path(analysis_dir, opt$input_mat)
@@ -79,15 +83,6 @@ print(filter_expr)
 # filter to protein coding genes only?
 protein_coding_only <- opt$protein_coding_only
 print(protein_coding_only)
-
-# gencode version for protein coding genes
-gencode_version <- opt$gencode_version 
-if(!is.null(gencode_version)){
-  # if gencode version is not NULL, it should be at least at version 27 
-  # gencode_version <- gencode_version %>% as.numeric()
-  stopifnot(gencode_version >= 27) 
-}
-print(gencode_version)
 
 # type of feature selection
 feature_selection <- opt$feature_selection
@@ -123,9 +118,9 @@ source(file.path(cluster_dir, 'util', 'lspline_clustering.R'))
                      distances = cluster_distance,
                      filter_expr = filter_expr,
                      protein_coding_only = protein_coding_only,
-                     gencode_version = gencode_version,
+                     gencode_file = gencode_file,
                      feature_selection = feature_selection,
                      var_prop = var_prop,
                      transformation_type = transformation_type,
                      max_k = max_k,
-                     output_folder = output_folder)
+                     output_dir = output_folder)

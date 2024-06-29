@@ -1,19 +1,22 @@
 # 1) scripts to create matrix and input
 Rscript --vanilla code/01a-convert_func_to_rds.R
 
-# 1) run script for optimal clustering
+# 1) run script for optimal clustering (protein coding only, functional sites)
 Rscript code/03-optimal-clustering.R \
 --cluster_dir "analyses/clustering_analysis" \
 --analysis_dir "analyses/clustering_analysis/functional-sites" \
 --input_mat "input/pan_cancer_splicing_SE_func.rds" \
 --output_folder "optimal_clustering" \
 --cluster_algorithm "hc, km, pam" \
---cluster_distance "pearson, spearman, euclidean, manhattan, binary, maximum, canberra, minkowski" \
+--cluster_distance "pearson, euclidean, canberra" \
 --filter_expr FALSE \
 --protein_coding_only FALSE \
 --feature_selection "dip.test" \
 --transformation_type "none" \
 --max_k 17
+#--gencode_file "data/gencode.v39.primary_assembly.annotation.gtf.gz" \
+--cluster_algorithm "hc, km, pam" \
+--cluster_distance "pearson, spearman, euclidean, manhattan, binary, maximum, canberra, minkowski" \
 
 # 1) PBTA splicing data
 # get ccp clustering output for a specific combination of distance + algorithm + % variable genes
