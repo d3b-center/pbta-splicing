@@ -116,8 +116,7 @@ cnv_df <- read_tsv(cnv_file) %>%
                                             TRUE ~ NA_character_)) %>%
   filter(!is.na(Variant_Classification)) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id,
-                Hugo_Symbol = gene_symbol) %>%
-  select(Kids_First_Biospecimen_ID, Hugo_Symbol, Variant_Classification)
+                Hugo_Symbol = gene_symbol) 
 
 # read in fusion file and reformat to add to maf
 fus_df <- read_tsv(fus_file) %>%
@@ -173,8 +172,10 @@ maf_filtered <- maf %>%
                 Tumor_Sample_Barcode  %in% matched_dna_samples$Kids_First_Biospecimen_ID,
                 Variant_Classification %in% names(colors)) %>%
   dplyr::mutate(keep = case_when(Variant_Classification == "Missense_Mutation" & (grepl("dam", PolyPhen) | grepl("deleterious\\(", SIFT)) ~ "yes",
+                                 Variant_Classification == "Missense_Mutation" & PolyPhen == "" & SIFT == "" ~ "yes",
                                  Variant_Classification != "Missense_Mutation" ~ "yes",
-                                 TRUE ~ "no"))
+                                 TRUE ~ "no")) %>%
+  dplyr::filter(keep == "yes")
 
 collapse_snv_dat <- maf_filtered %>%
   select(Tumor_Sample_Barcode,Hugo_Symbol,Variant_Classification) %>%
@@ -186,49 +187,10 @@ collapse_snv_dat <- maf_filtered %>%
   left_join(histologies_df[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
   select(-Kids_First_Biospecimen_ID)
 
-# create df for enrichment
-ids_clk1 <- histologies_df_sorted %>%
-  rownames_to_column(var = "match_id") %>%
-  select(match_id, clk1_status)
-
-total_high <- nrow(ids_clk1)/2
-total_low <- nrow(ids_clk1)/2
-
-
-alteration_counts <- collapse_snv_dat %>%
-  full_join(ids_clk1) %>%
-  filter(clk1_status != "Middle") %>%
-  ## group by junction and calculate means
-  select(Hugo_Symbol, clk1_status) %>%
-  group_by(Hugo_Symbol, clk1_status) %>%
-  count() %>%
-  ungroup() %>%
-  # Spread to wide format to get separate columns for "High" and "Low"
-  pivot_wider(names_from = clk1_status, values_from = n, values_fill = list(n = 0)) %>%
-  rowwise() %>%
-  mutate(
-    Fisher_Test = list(
-      fisher.test(
-        matrix(
-          c(High, total_high - High,  # Counts of High and the absence of High
-            Low, total_low - Low),    # Counts of Low and the absence of Low
-          nrow = 2
-        )
-      )
-    ),
-    P_Value = Fisher_Test$p.value
-  ) %>%
-  select(Hugo_Symbol, High, Low, P_Value) %>%
-  ungroup() %>%
-  arrange(P_Value) %>%
-  write_tsv(file.path(results_dir, "clk1_high_low_mutation_counts.tsv"))
-
-
 # get genes in order of most to least mutations and are in enrichment results
 gene_row_order <- collapse_snv_dat %>%
   count(Hugo_Symbol) %>%
-  arrange(-n) %>%
-  filter(Hugo_Symbol %in% alteration_counts$Hugo_Symbol) 
+  arrange(-n)
 
 # complex heatmap
 gene_matrix <- reshape2::acast(collapse_snv_dat,
@@ -390,4 +352,41 @@ plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:25,], get_type = function(x) st
 pdf(plot_out, width = 15, height = 8)
 plot_oncoprint
 dev.off()
+
+# create df for enrichment
+ids_clk1 <- histologies_df_sorted %>%
+  rownames_to_column(var = "match_id") %>%
+  select(match_id, clk1_status)
+
+total_high <- nrow(ids_clk1)/2
+total_low <- nrow(ids_clk1)/2
+
+
+alteration_counts <- collapse_snv_dat %>%
+  full_join(ids_clk1) %>%
+  filter(clk1_status != "Middle") %>%
+  ## group by junction and calculate means
+  select(Hugo_Symbol, clk1_status) %>%
+  group_by(Hugo_Symbol, clk1_status) %>%
+  count() %>%
+  ungroup() %>%
+  # Spread to wide format to get separate columns for "High" and "Low"
+  pivot_wider(names_from = clk1_status, values_from = n, values_fill = list(n = 0)) %>%
+  rowwise() %>%
+  mutate(
+    Fisher_Test = list(
+      fisher.test(
+        matrix(
+          c(High, total_high - High,  # Counts of High and the absence of High
+            Low, total_low - Low),    # Counts of Low and the absence of Low
+          nrow = 2
+        )
+      )
+    ),
+    P_Value = Fisher_Test$p.value
+  ) %>%
+  select(Hugo_Symbol, High, Low, P_Value) %>%
+  ungroup() %>%
+  arrange(P_Value) %>%
+  write_tsv(file.path(results_dir, "clk1_high_low_mutation_counts.tsv"))
 

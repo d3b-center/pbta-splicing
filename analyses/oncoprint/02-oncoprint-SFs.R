@@ -148,7 +148,12 @@ maf_cols <- c("Hugo_Symbol",
               "Variant_Type",
               "Tumor_Sample_Barcode",
               "t_ref_count",
-              "t_alt_count")
+              "t_alt_count",
+              "Transcript_ID",
+              "EXON",
+              "PolyPhen",
+              "SIFT",
+              "gnomad_3_1_1_splice_ai_consequence")
 
 # read in and combine MAFs
 cons_maf <- data.table::fread(cons_maf_file, data.table = FALSE) %>%
@@ -165,8 +170,12 @@ maf <- cons_maf %>%
 maf_filtered <- maf %>%
   dplyr::filter(Hugo_Symbol %in% goi,
                 Tumor_Sample_Barcode  %in% matched_dna_samples$Kids_First_Biospecimen_ID,
-                Variant_Classification %in% names(colors),
-                Chromosome != "chrY")
+                Variant_Classification %in% names(colors)) %>%
+  dplyr::mutate(keep = case_when(Variant_Classification == "Missense_Mutation" & (grepl("dam", PolyPhen) | grepl("deleterious\\(", SIFT)) ~ "yes",
+                                 Variant_Classification == "Missense_Mutation" & PolyPhen == "" & SIFT == "" ~ "yes",
+                                 Variant_Classification != "Missense_Mutation" ~ "yes",
+                                 TRUE ~ "no")) %>%
+  dplyr::filter(keep == "yes")
 
 collapse_snv_dat <- maf_filtered %>%
   select(Tumor_Sample_Barcode,Hugo_Symbol,Variant_Classification) %>%
