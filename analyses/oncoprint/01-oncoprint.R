@@ -68,8 +68,8 @@ histologies_df <- read_tsv(clin_file, guess_max = 100000) %>%
 
 goi <- read_csv(goi_file) %>%
   pull(HGAT) %>%
-  c("CLK1") %>%
-  unique()
+  unique() %>%
+  c("CLK1")
 
 indep_rna_df <- vroom(indep_rna_file) %>% 
   dplyr::filter(cohort == 'PBTA') %>%
@@ -112,7 +112,7 @@ cnv_df <- read_tsv(cnv_file) %>%
          biospecimen_id %in% matched_dna_samples$Kids_First_Biospecimen_ID) %>%
   mutate(Variant_Classification = case_when(status == "amplification" ~ "Amp",
                                             status == "deep deletion" ~ "Del",
-                                            status %in% c("loss", "Loss") & copy_number < 2 ~ "Loss",
+                                            #status %in% c("loss", "Loss") & copy_number < 2 ~ "Loss",
                                             TRUE ~ NA_character_)) %>%
   filter(!is.na(Variant_Classification)) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id,
@@ -140,7 +140,8 @@ fus_df <- read_tsv(fus_file) %>%
 maf_cols <- c("Hugo_Symbol", 
               "Chromosome", 
               "Start_Position", 
-              "End_Position", 
+              "End_Position",
+              "HGVSg",
               "HGVSp_Short",
               "Reference_Allele", 
               "Tumor_Seq_Allele2", 
@@ -148,7 +149,12 @@ maf_cols <- c("Hugo_Symbol",
               "Variant_Type",
               "Tumor_Sample_Barcode",
               "t_ref_count",
-              "t_alt_count")
+              "t_alt_count",
+              "Transcript_ID",
+              "EXON",
+              "PolyPhen",
+              "SIFT",
+              "gnomad_3_1_1_splice_ai_consequence")
 
 # read in and combine MAFs
 cons_maf <- data.table::fread(cons_maf_file, data.table = FALSE) %>%
@@ -165,7 +171,10 @@ maf <- cons_maf %>%
 maf_filtered <- maf %>%
   dplyr::filter(Hugo_Symbol %in% goi,
                 Tumor_Sample_Barcode  %in% matched_dna_samples$Kids_First_Biospecimen_ID,
-                Variant_Classification %in% names(colors))
+                Variant_Classification %in% names(colors)) %>%
+  dplyr::mutate(keep = case_when(Variant_Classification == "Missense_Mutation" & (grepl("dam", PolyPhen) | grepl("deleterious\\(", SIFT)) ~ "yes",
+                                 Variant_Classification != "Missense_Mutation" ~ "yes",
+                                 TRUE ~ "no"))
 
 collapse_snv_dat <- maf_filtered %>%
   select(Tumor_Sample_Barcode,Hugo_Symbol,Variant_Classification) %>%
@@ -177,10 +186,49 @@ collapse_snv_dat <- maf_filtered %>%
   left_join(histologies_df[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
   select(-Kids_First_Biospecimen_ID)
 
-# get genes in order of most to least mutations
+# create df for enrichment
+ids_clk1 <- histologies_df_sorted %>%
+  rownames_to_column(var = "match_id") %>%
+  select(match_id, clk1_status)
+
+total_high <- nrow(ids_clk1)/2
+total_low <- nrow(ids_clk1)/2
+
+
+alteration_counts <- collapse_snv_dat %>%
+  full_join(ids_clk1) %>%
+  filter(clk1_status != "Middle") %>%
+  ## group by junction and calculate means
+  select(Hugo_Symbol, clk1_status) %>%
+  group_by(Hugo_Symbol, clk1_status) %>%
+  count() %>%
+  ungroup() %>%
+  # Spread to wide format to get separate columns for "High" and "Low"
+  pivot_wider(names_from = clk1_status, values_from = n, values_fill = list(n = 0)) %>%
+  rowwise() %>%
+  mutate(
+    Fisher_Test = list(
+      fisher.test(
+        matrix(
+          c(High, total_high - High,  # Counts of High and the absence of High
+            Low, total_low - Low),    # Counts of Low and the absence of Low
+          nrow = 2
+        )
+      )
+    ),
+    P_Value = Fisher_Test$p.value
+  ) %>%
+  select(Hugo_Symbol, High, Low, P_Value) %>%
+  ungroup() %>%
+  arrange(P_Value) %>%
+  write_tsv(file.path(results_dir, "clk1_high_low_mutation_counts.tsv"))
+
+
+# get genes in order of most to least mutations and are in enrichment results
 gene_row_order <- collapse_snv_dat %>%
   count(Hugo_Symbol) %>%
-  arrange(-n)
+  arrange(-n) %>%
+  filter(Hugo_Symbol %in% alteration_counts$Hugo_Symbol) 
 
 # complex heatmap
 gene_matrix <- reshape2::acast(collapse_snv_dat,
@@ -228,6 +276,8 @@ histologies_df_sorted <- splice_df %>%
 quantiles_clk1 <- quantile(histologies_df_sorted$CLK1_PSI, probs=c(.25, .75), na.rm = TRUE)
 lower_sbi <- quantiles_clk1[1]
 upper_sbi <- quantiles_clk1[2]
+
+
 
 histologies_df_sorted <- histologies_df_sorted %>%
   mutate(clk1_status = case_when(CLK1_PSI > upper_sbi ~ "High",
@@ -340,41 +390,4 @@ plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:25,], get_type = function(x) st
 pdf(plot_out, width = 15, height = 8)
 plot_oncoprint
 dev.off()
-
-# create df for enrichment
-ids_clk1 <- histologies_df_sorted %>%
-  rownames_to_column(var = "match_id") %>%
-  select(match_id, clk1_status)
-
-total_high <- nrow(ids_clk1)/2
-total_low <- nrow(ids_clk1)/2
-
-
-alteration_counts <- collapse_snv_dat %>%
-  full_join(ids_clk1) %>%
-  filter(clk1_status != "Middle") %>%
-  ## group by junction and calculate means
-  select(Hugo_Symbol, clk1_status) %>%
-  group_by(Hugo_Symbol, clk1_status) %>%
-  count() %>%
-  ungroup() %>%
-  # Spread to wide format to get separate columns for "High" and "Low"
-  pivot_wider(names_from = clk1_status, values_from = n, values_fill = list(n = 0)) %>%
-  rowwise() %>%
-  mutate(
-    Fisher_Test = list(
-      fisher.test(
-        matrix(
-          c(High, total_high - High,  # Counts of High and the absence of High
-            Low, total_low - Low),    # Counts of Low and the absence of Low
-          nrow = 2
-        )
-      )
-    ),
-    P_Value = Fisher_Test$p.value
-  ) %>%
-  select(Hugo_Symbol, High, Low, P_Value) %>%
-  ungroup() %>%
-  arrange(P_Value) %>%
-  write_tsv(file.path(results_dir, "clk1_high_low_mutation_counts.tsv"))
 
