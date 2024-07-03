@@ -261,23 +261,17 @@ histologies_df_sorted <- histologies_df_sorted %>%
                                  TRUE ~ "Middle"),
          sbi_status = case_when(SI > upper_sbi ~ "High",
                          SI < lower_sbi ~ "Low",
-                         TRUE ~ "Middle"))
+                         TRUE ~ "Middle")) %>%
+  filter(tmb_status == "Normal")
 
 histologies_df_sorted2 <- histologies_df_sorted %>%
-  select(reported_gender,  cancer_predisposition, plot_group, molecular_subtype, CNS_region, tmb_status, 
-         CLK1_PSI, SI, `CLK1-201`, `Total CLK1`, `NF1-215 PSI`, `Total NF1`, `NF1 pS864`, `NF1 pS2796`, `Total NF1 Protein`) %>%
+  select(reported_gender, cancer_predisposition, plot_group, molecular_subtype, CNS_region, SI) %>%
   dplyr::rename("Gender"=reported_gender,
                 "Histology" = plot_group,
                 "Predisposition" = cancer_predisposition,
                 "Molecular Subtype"=molecular_subtype,
                 "CNS Region"=CNS_region, 
-                "Mutation Status"=tmb_status,
-               # "CLK1 status" = clk1_status,
-                "CLK1 Ex4 PSI"= CLK1_PSI,
-                "SBI" = SI,
-                "CLK1-201" =`CLK1-201`,
-                "Total CLK1 RNA" = `Total CLK1`,
-                "Total NF1 RNA" = `Total NF1`) 
+                "SBI" = SI) 
 
 # write out metadata
 histologies_df_sorted2 %>%
@@ -311,20 +305,8 @@ ha = HeatmapAnnotation(name = "annotation",
                                                  "HGG, PXA" = "navy",
                                                  "To be classified" = "whitesmoke"),
                          "CNS Region" = loc_cols,
-                         "Mutation Status" = c("Normal" = "grey80",
-                                               "Hypermutant" = "orange",
-                                               "Ultra-hypermutant" = "red",
-                                               "Unknown" = "whitesmoke"),
-                         #"CLK1 status" = c("High" = "red", "Middle" = "grey", "Low" = "darkblue"),
                          "CLK1 Ex4 PSI" = colorRamp2(c(-4, 0, 2), c("darkblue","white", "red")),
-                         "SBI" = colorRamp2(c(-4, 0, 4), c("darkblue","white", "red")),
-                         "CLK1-201" = colorRamp2(c(-3, 0, 3), c("darkblue", "white",  "red")),
-                         "Total NF1 RNA" = colorRamp2(c(-3, 0, 3), c("darkblue", "white",  "red")),
-                         "Total CLK1 RNA" = colorRamp2(c(-3, 0, 3), c("darkblue", "white",  "red")),
-                         "NF1-215 PSI" = colorRamp2(c(-2, 0, 4), c("darkblue", "white",  "red")),
-                         "NF1 pS864" = colorRamp2(c(-2, 0, 2), c("darkblue", "white",  "red")),
-                         "NF1 pS2796" = colorRamp2(c(-2, 0, 2), c("darkblue", "white",  "red")),
-                         "Total NF1 Protein" = colorRamp2(c(-2, 0, 2), c("darkblue", "white",  "red"))
+                         "SBI" = colorRamp2(c(-4, 0, 4), c("darkblue","white", "red"))
                          ),
                        annotation_name_side = "right", 
                        annotation_name_gp = gpar(fontsize = 9),
@@ -340,7 +322,7 @@ gene_matrix_sorted <- gene_matrix %>%
 # global option to increase space between heatmap and annotations
 ht_opt$ROW_ANNO_PADDING = unit(1.25, "cm")
 
-plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:100,], get_type = function(x) strsplit(x, ",")[[1]],
+plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:20,], get_type = function(x) strsplit(x, ",")[[1]],
                             column_names_gp = gpar(fontsize = 9), show_column_names = F,
                             alter_fun = list(
                               background = function(x, y, w, h) grid.rect(x, y, w, h, gp = gpar(fill = "whitesmoke",col="whitesmoke")),
@@ -368,7 +350,7 @@ plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:100,], get_type = function(x) s
                             column_order =  colnames(gene_matrix_sorted))
 
 # Save plot as PDF
-pdf(plot_out, width = 15, height = 15)
+pdf(plot_out, width = 10, height = 5)
 plot_oncoprint
 dev.off()
 
