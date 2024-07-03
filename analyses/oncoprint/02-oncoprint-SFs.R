@@ -42,12 +42,13 @@ cons_maf_file <- file.path(data_dir,"snv-consensus-plus-hotspots.maf.tsv.gz")
 tumor_only_maf_file <- file.path(data_dir,"snv-mutect2-tumor-only-plus-hotspots.maf.tsv.gz")
 clin_file <- file.path(root_dir, "analyses", "cohort_summary", "results", "histologies-plot-group.tsv")
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
-#goi_file <- file.path(input_dir,"oncoprint-goi-lists-OpenPedCan-gencode-v39.csv")
 tmb_file <- file.path(input_dir, "snv-mutation-tmb-coding.tsv")
 cnv_file <- file.path(data_dir, "consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz")
 psi_exp_file <- file.path(root_dir, "analyses", "CLK1-splicing_correlations", "results", "clk1-nf1-psi-exp-phos-df.rds")
 fus_file <- file.path(data_dir, "fusion-putative-oncogenic.tsv")
 goi_file <- file.path(root_dir, "analyses","splicing-factor_dysregulation/input","splicing_factors.txt")
+hugo_file <- file.path(input_dir, "hgnc-symbol-check.csv")
+sbi_file <- file.path(root_dir, "analyses", "splicing_index", "results", "splicing_index.SE.txt")
 
 ## color for barplot
 source(file.path(input_dir, "mutation-colors.R"))
@@ -67,9 +68,18 @@ histologies_df <- read_tsv(clin_file, guess_max = 100000) %>%
                                            Kids_First_Participant_ID == "PT_ZH3SBJPZ" ~ NA_character_,
                                            TRUE ~ NA_character_))
 
+# read in sbi file
+sbi_df <- read_tsv(sbi_file) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = Sample) %>%
+  left_join(histologies_df[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
+  select(match_id, SI)
+
 ## get splicing factor list + CLKs and SRPKs
+hugo_genes <- read_csv(hugo_file, skip = 1) %>%
+  pull(`Approved symbol`)
 goi <- readLines(goi_file) %>%
-  c("NF1", "CLK1")
+  c(hugo_genes) %>%
+  unique()
 
 indep_rna_df <- vroom(indep_rna_file) %>% 
   dplyr::filter(cohort == 'PBTA') %>%
@@ -97,13 +107,14 @@ tmb_df <- read_tsv(tmb_file) %>%
 splice_df <-  readRDS(psi_exp_file) %>%
   rownames_to_column("match_id") %>%
   filter(match_id %in% indep_rna_df$match_id) %>%
+  left_join(sbi_df) %>%
   # z-score
   dplyr::mutate(`CLK1-201 (Exon4) PSI` = as.numeric(scale(`CLK1-201 (Exon4) PSI`)),
                 `NF1-215 PSI` = as.numeric(scale(`NF1-215 PSI`)),
                 `CLK1-201` = as.numeric(scale(`CLK1-201`)),
                 `Total CLK1` = as.numeric(scale(`Total CLK1`)),
-                `Total NF1` = as.numeric(scale(`Total NF1`))
-                )
+                `Total NF1` = as.numeric(scale(`Total NF1`)),
+                SI = as.numeric(scale(SI)))
 
 # read in cnv file and reformat to add to maf
 #cnv_df <- read_tsv(cnv_file) %>%
@@ -213,10 +224,10 @@ gene_matrix <- gene_matrix %>%
 # mutate the hgg dataframe for plotting
 histologies_df_sorted <- splice_df %>%
   left_join(histologies_df, by = "match_id", relationship = "many-to-many") %>%
-  select(match_id, plot_group, cancer_predisposition, reported_gender, molecular_subtype, CNS_region, `CLK1-201 (Exon4) PSI`,
+  select(match_id, plot_group, cancer_predisposition, reported_gender, molecular_subtype, CNS_region, `CLK1-201 (Exon4) PSI`, SI,
          `NF1-215 PSI`, `CLK1-201`, `Total CLK1`, `Total NF1`, `NF1 pS864`, `NF1 pS2796`, `Total NF1 Protein`) %>%
   unique() %>%
-  group_by(match_id, plot_group, cancer_predisposition, reported_gender, molecular_subtype, `CLK1-201 (Exon4) PSI`,
+  group_by(match_id, plot_group, cancer_predisposition, reported_gender, molecular_subtype, `CLK1-201 (Exon4) PSI`, SI,
            `NF1-215 PSI`, `CLK1-201`, `Total CLK1`, `Total NF1`, `NF1 pS864`, `NF1 pS2796`, `Total NF1 Protein`) %>%
   summarise(CNS_region = str_c(unique(na.omit(CNS_region)), collapse = ","),
             CLK1_PSI = mean(`CLK1-201 (Exon4) PSI`),
@@ -225,7 +236,7 @@ histologies_df_sorted <- splice_df %>%
   filter(match_id %in% names(gene_matrix)) %>%
   # unset rownames
   column_to_rownames("match_id") %>%
-  arrange(CLK1_PSI) %>%
+  arrange(SI) %>%
   dplyr::mutate(molecular_subtype = gsub(", TP53", "", molecular_subtype),
                 molecular_subtype = case_when(grepl("To be classified", molecular_subtype) ~ "To be classified",
                                               TRUE ~ molecular_subtype),
@@ -236,17 +247,25 @@ histologies_df_sorted <- splice_df %>%
 
 # get clk1 high/low
 quantiles_clk1 <- quantile(histologies_df_sorted$CLK1_PSI, probs=c(.25, .75), na.rm = TRUE)
-lower_sbi <- quantiles_clk1[1]
-upper_sbi <- quantiles_clk1[2]
+lower_clk <- quantiles_clk1[1]
+upper_clk <- quantiles_clk1[2]
+
+# get SI high/low
+quantiles_si <- quantile(histologies_df_sorted$SI, probs=c(.25, .75), na.rm = TRUE)
+lower_si <- quantiles_si[1]
+upper_si <- quantiles_si[2]
 
 histologies_df_sorted <- histologies_df_sorted %>%
-  mutate(clk1_status = case_when(CLK1_PSI > upper_sbi ~ "High",
-                                 CLK1_PSI < lower_sbi ~ "Low",
-                                 TRUE ~ "Middle"))
+  mutate(clk1_status = case_when(CLK1_PSI > upper_clk ~ "High",
+                                 CLK1_PSI < lower_clk ~ "Low",
+                                 TRUE ~ "Middle"),
+         sbi_status = case_when(SI > upper_sbi ~ "High",
+                         SI < lower_sbi ~ "Low",
+                         TRUE ~ "Middle"))
 
 histologies_df_sorted2 <- histologies_df_sorted %>%
   select(reported_gender,  cancer_predisposition, plot_group, molecular_subtype, CNS_region, tmb_status, 
-         CLK1_PSI, `CLK1-201`, `Total CLK1`, `NF1-215 PSI`, `Total NF1`, `NF1 pS864`, `NF1 pS2796`, `Total NF1 Protein`) %>%
+         CLK1_PSI, SI, `CLK1-201`, `Total CLK1`, `NF1-215 PSI`, `Total NF1`, `NF1 pS864`, `NF1 pS2796`, `Total NF1 Protein`) %>%
   dplyr::rename("Gender"=reported_gender,
                 "Histology" = plot_group,
                 "Predisposition" = cancer_predisposition,
@@ -255,6 +274,7 @@ histologies_df_sorted2 <- histologies_df_sorted %>%
                 "Mutation Status"=tmb_status,
                # "CLK1 status" = clk1_status,
                 "CLK1 Ex4 PSI"= CLK1_PSI,
+                "SBI" = SI,
                 "CLK1-201" =`CLK1-201`,
                 "Total CLK1 RNA" = `Total CLK1`,
                 "Total NF1 RNA" = `Total NF1`) 
@@ -297,6 +317,7 @@ ha = HeatmapAnnotation(name = "annotation",
                                                "Unknown" = "whitesmoke"),
                          #"CLK1 status" = c("High" = "red", "Middle" = "grey", "Low" = "darkblue"),
                          "CLK1 Ex4 PSI" = colorRamp2(c(-4, 0, 2), c("darkblue","white", "red")),
+                         "SBI" = colorRamp2(c(-4, 0, 4), c("darkblue","white", "red")),
                          "CLK1-201" = colorRamp2(c(-3, 0, 3), c("darkblue", "white",  "red")),
                          "Total NF1 RNA" = colorRamp2(c(-3, 0, 3), c("darkblue", "white",  "red")),
                          "Total CLK1 RNA" = colorRamp2(c(-3, 0, 3), c("darkblue", "white",  "red")),
@@ -356,7 +377,7 @@ dev.off()
 # create df for enrichment
 ids_clk1 <- histologies_df_sorted %>%
   rownames_to_column(var = "match_id") %>%
-  select(match_id, clk1_status)
+  select(match_id, clk1_status, sbi_status)
 
 total_high <- nrow(ids_clk1)/2
 total_low <- nrow(ids_clk1)/2
@@ -364,14 +385,14 @@ total_low <- nrow(ids_clk1)/2
 
 alteration_counts <- collapse_snv_dat %>%
   full_join(ids_clk1) %>%
-  filter(clk1_status != "Middle") %>%
+  filter(sbi_status != "Middle") %>%
   ## group by junction and calculate means
-  select(Hugo_Symbol, clk1_status) %>%
-  group_by(Hugo_Symbol, clk1_status) %>%
+  select(Hugo_Symbol, sbi_status) %>%
+  group_by(Hugo_Symbol, sbi_status) %>%
   count() %>%
   ungroup() %>%
   # Spread to wide format to get separate columns for "High" and "Low"
-  pivot_wider(names_from = clk1_status, values_from = n, values_fill = list(n = 0)) %>%
+  pivot_wider(names_from = sbi_status, values_from = n, values_fill = list(n = 0)) %>%
   rowwise() %>%
   mutate(
     Fisher_Test = list(
@@ -388,7 +409,7 @@ alteration_counts <- collapse_snv_dat %>%
   select(Hugo_Symbol, High, Low, P_Value) %>%
   ungroup() %>%
   arrange(P_Value) %>%
-  write_tsv(file.path(results_dir, "clk1_high_low_mutation_counts_SFs.tsv"))
+  write_tsv(file.path(results_dir, "sbi_high_low_mutation_counts_SFs.tsv"))
 
 
 
