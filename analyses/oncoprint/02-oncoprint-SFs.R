@@ -43,7 +43,7 @@ tumor_only_maf_file <- file.path(data_dir,"snv-mutect2-tumor-only-plus-hotspots.
 clin_file <- file.path(root_dir, "analyses", "cohort_summary", "results", "histologies-plot-group.tsv")
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 tmb_file <- file.path(input_dir, "snv-mutation-tmb-coding.tsv")
-cnv_file <- file.path(data_dir, "consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz")
+cnv_file <- file.path(root_dir, "consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz")
 psi_exp_file <- file.path(root_dir, "analyses", "CLK1-splicing_correlations", "results", "clk1-nf1-psi-exp-phos-df.rds")
 fus_file <- file.path(data_dir, "fusion-putative-oncogenic.tsv")
 goi_file <- file.path(root_dir, "analyses","splicing-factor_dysregulation/input","splicing_factors.txt")
@@ -117,18 +117,18 @@ splice_df <-  readRDS(psi_exp_file) %>%
                 SI = as.numeric(scale(SI)))
 
 # read in cnv file and reformat to add to maf
-#cnv_df <- read_tsv(cnv_file) %>%
-#  # select only goi, DNA samples of interest
-# filter(gene_symbol %in% goi,
-#         biospecimen_id %in% matched_dna_samples$Kids_First_Biospecimen_ID) %>%
-#  mutate(Variant_Classification = case_when(status == "amplification" ~ "Amp",
-#                                            status == "deep deletion" ~ "Del",
+cnv_df <- read_tsv(cnv_file) %>%
+  # select only goi, DNA samples of interest
+ filter(gene_symbol %in% goi,
+         biospecimen_id %in% matched_dna_samples$Kids_First_Biospecimen_ID) %>%
+  mutate(Variant_Classification = case_when(status == "amplification" ~ "Amp",
+                                            status == "deep deletion" ~ "Del",
 #                                            status %in% c("loss", "Loss") & copy_number < 2 ~ "Loss",
-#                                            TRUE ~ NA_character_)) %>%
-#  filter(!is.na(Variant_Classification)) %>%
-#  dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id,
-#                Hugo_Symbol = gene_symbol) %>%
-#  select(Kids_First_Biospecimen_ID, Hugo_Symbol, Variant_Classification)
+                                            TRUE ~ NA_character_)) %>%
+  filter(!is.na(Variant_Classification)) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id,
+                Hugo_Symbol = gene_symbol) %>%
+  select(Kids_First_Biospecimen_ID, Hugo_Symbol, Variant_Classification)
 
 # read in fusion file and reformat to add to maf
 fus_df <- read_tsv(fus_file) %>%
