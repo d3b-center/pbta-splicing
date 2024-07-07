@@ -43,7 +43,7 @@ tumor_only_maf_file <- file.path(data_dir,"snv-mutect2-tumor-only-plus-hotspots.
 clin_file <- file.path(root_dir, "analyses", "cohort_summary", "results", "histologies-plot-group.tsv")
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 tmb_file <- file.path(input_dir, "snv-mutation-tmb-coding.tsv")
-cnv_file <- file.path(root_dir, "consensus_wgs_plus_freec_wxs_plus_freec_tumor_only.tsv.gz")
+cnv_file <- file.path(data_dir, "consensus_wgs_plus_freec_wxs_plus_freec_tumor_only.tsv.gz")
 psi_exp_file <- file.path(root_dir, "analyses", "CLK1-splicing_correlations", "results", "clk1-nf1-psi-exp-phos-df.rds")
 fus_file <- file.path(data_dir, "fusion-putative-oncogenic.tsv")
 goi_file <- file.path(root_dir, "analyses","splicing-factor_dysregulation/input","splicing_factors.txt")
