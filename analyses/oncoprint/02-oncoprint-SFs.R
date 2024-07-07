@@ -227,6 +227,12 @@ print(paste(length(unique(collapse_snv_dat$match_id)), "tumors altered in",
             length(unique(matched_dna_samples$match_id)), "patients"))
 print(paste(round(length(unique(collapse_snv_dat$match_id))/length(unique(matched_dna_samples$match_id))*100, 2),"%"))
 
+collapse_snv_dat_mut <- collapse_snv_dat %>%
+  filter(!Variant_Classification %in% c("Amp", "Del"))
+print(paste(length(unique(collapse_snv_dat_mut$match_id)), "tumors mutated in", 
+            length(unique(matched_dna_samples$match_id)), "patients"))
+print(paste(round(length(unique(collapse_snv_dat_mut$match_id))/length(unique(matched_dna_samples$match_id))*100, 2),"%"))
+
 # mutate the hgg dataframe for plotting
 histologies_df_sorted <- splice_df %>%
   left_join(histologies_df, by = "match_id", relationship = "many-to-many") %>%
