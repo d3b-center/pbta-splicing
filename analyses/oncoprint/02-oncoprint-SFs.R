@@ -121,9 +121,10 @@ cnv_df <- read_tsv(cnv_file) %>%
   # select only goi, DNA samples of interest
  filter(gene_symbol %in% goi,
          biospecimen_id %in% matched_dna_samples$Kids_First_Biospecimen_ID) %>%
-  mutate(Variant_Classification = case_when(status == "amplification" ~ "Amp",
-                                            status == "deep deletion" ~ "Del",
-#                                            status %in% c("loss", "Loss") & copy_number < 2 ~ "Loss",
+  mutate(Variant_Classification = case_when(status %in% c("amplification", "Amplification") ~ "Amp",
+                                            copy_number > 2*ploidy ~ "Amp",
+                                            status %in% c("deep deletion", "Deep deletion") ~ "Del",
+                                            copy_number == 0 ~ "Del",
                                             TRUE ~ NA_character_)) %>%
   filter(!is.na(Variant_Classification)) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id,
@@ -145,7 +146,6 @@ fus_df <- read_tsv(fus_file) %>%
          Hugo_Symbol %in% goi) %>%
   select(Kids_First_Biospecimen_ID, Hugo_Symbol, Variant_Classification) %>%
   unique()
-
 
 # maf cols to select
 maf_cols <- c("Hugo_Symbol", 
@@ -192,7 +192,7 @@ collapse_snv_dat <- maf_filtered %>%
   select(Tumor_Sample_Barcode,Hugo_Symbol,Variant_Classification) %>%
   dplyr::group_by(Hugo_Symbol,Tumor_Sample_Barcode) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
-  bind_rows(fus_df, cnv_df) %>%
+  bind_rows(cnv_df, fus_df) %>%
   dplyr::summarise(count = as.double(length(Variant_Classification[!is.na(Variant_Classification)])),
                    Variant_Classification=str_c(unique(Variant_Classification),collapse = ",")) %>%
   left_join(histologies_df[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
@@ -214,12 +214,18 @@ gene_matrix <- reshape2::acast(collapse_snv_dat,
   mutate(across(everything(), ~if_else(str_detect(., ","), "Multi_Hit", .))) %>%
   rownames_to_column(var = "Hugo_Symbol") %>%
   mutate(Sort_Order = match(Hugo_Symbol, gene_row_order$Hugo_Symbol)) %>%
-  arrange(Sort_Order)
+  arrange(Sort_Order)  %>%
+  write_tsv(file.path(results_dir, "onco_matrix_SFs.tsv"))
 
 rownames(gene_matrix) <- gene_matrix$Hugo_Symbol 
 
 gene_matrix <- gene_matrix %>%
-  select(-c(Sort_Order, Hugo_Symbol)) 
+  select(-c(Sort_Order, Hugo_Symbol))
+
+# how many samples/what percent have alterations?
+print(paste(length(unique(collapse_snv_dat$match_id)), "tumors altered in", 
+            length(unique(matched_dna_samples$match_id)), "patients"))
+print(paste(round(length(unique(collapse_snv_dat$match_id))/length(unique(matched_dna_samples$match_id))*100, 2),"%"))
 
 # mutate the hgg dataframe for plotting
 histologies_df_sorted <- splice_df %>%

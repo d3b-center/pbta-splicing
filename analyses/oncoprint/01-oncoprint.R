@@ -110,9 +110,10 @@ cnv_df <- read_tsv(cnv_file) %>%
   # select only goi, DNA samples of interest
   filter(gene_symbol %in% goi,
          biospecimen_id %in% matched_dna_samples$Kids_First_Biospecimen_ID) %>%
-  mutate(Variant_Classification = case_when(status == "amplification" ~ "Amp",
-                                            status == "deep deletion" ~ "Del",
-                                            #status %in% c("loss", "Loss") & copy_number < 2 ~ "Loss",
+  mutate(Variant_Classification = case_when(status %in% c("amplification", "Amplification") ~ "Amp",
+                                            copy_number > 2*ploidy ~ "Amp",
+                                            status %in% c("deep deletion", "Deep deletion") ~ "Del",
+                                            copy_number == 0 ~ "Del",
                                             TRUE ~ NA_character_)) %>%
   filter(!is.na(Variant_Classification)) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id,
