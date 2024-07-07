@@ -54,19 +54,10 @@ sbi_file <- file.path(root_dir, "analyses", "splicing_index", "results", "splici
 source(file.path(input_dir, "mutation-colors.R"))
 
 ## output file
-plot_out <- file.path(plots_dir,"oncoprint-SFs.pdf")
+plot_out <- file.path(plots_dir,"oncoprint-splicesosome-SFs.pdf")
 
 # read in files
-histologies_df <- read_tsv(clin_file, guess_max = 100000) %>%
-  mutate(cancer_predisposition = case_when(cancer_predispositions == "Neurofibromatosis, Type 1 (NF-1)" ~ "NF-1",
-                                           cancer_predispositions == "Li-Fraumeni syndrome (TP53)" ~ "LFS",
-                                           cancer_predispositions == "Other inherited conditions NOS" ~ "Other",
-                                           Kids_First_Participant_ID == "PT_3CHB9PK5" ~ "CMMRD",
-                                           #  Kids_First_Participant_ID == "PT_D5KKHPAE" ~ "BRCA1",
-                                           # Kids_First_Participant_ID == "PT_7WT6P5M8" ~ "PNKP",
-                                           Kids_First_Participant_ID == "PT_JNEV57VK" ~ "LS",
-                                           Kids_First_Participant_ID == "PT_ZH3SBJPZ" ~ NA_character_,
-                                           TRUE ~ NA_character_))
+histologies_df <- read_tsv(clin_file, guess_max = 100000) 
 
 # read in sbi file
 sbi_df <- read_tsv(sbi_file) %>%
@@ -236,10 +227,10 @@ print(paste(round(length(unique(collapse_snv_dat_mut$match_id))/length(unique(ma
 # mutate the hgg dataframe for plotting
 histologies_df_sorted <- splice_df %>%
   left_join(histologies_df, by = "match_id", relationship = "many-to-many") %>%
-  select(match_id, plot_group, cancer_predisposition, reported_gender, molecular_subtype, CNS_region, `CLK1-201 (Exon4) PSI`, SI,
+  select(match_id, plot_group, reported_gender, molecular_subtype, CNS_region, `CLK1-201 (Exon4) PSI`, SI,
          `NF1-215 PSI`, `CLK1-201`, `Total CLK1`, `Total NF1`, `NF1 pS864`, `NF1 pS2796`, `Total NF1 Protein`) %>%
   unique() %>%
-  group_by(match_id, plot_group, cancer_predisposition, reported_gender, molecular_subtype, `CLK1-201 (Exon4) PSI`, SI,
+  group_by(match_id, plot_group, reported_gender, molecular_subtype, `CLK1-201 (Exon4) PSI`, SI,
            `NF1-215 PSI`, `CLK1-201`, `Total CLK1`, `Total NF1`, `NF1 pS864`, `NF1 pS2796`, `Total NF1 Protein`) %>%
   summarise(CNS_region = str_c(unique(na.omit(CNS_region)), collapse = ","),
             CLK1_PSI = mean(`CLK1-201 (Exon4) PSI`),
@@ -257,30 +248,21 @@ histologies_df_sorted <- splice_df %>%
                 tmb_status = case_when(is.na(tmb_status) ~ "Unknown",
                                        TRUE ~ tmb_status)) 
 
-# get clk1 high/low
-quantiles_clk1 <- quantile(histologies_df_sorted$CLK1_PSI, probs=c(.25, .75), na.rm = TRUE)
-lower_clk <- quantiles_clk1[1]
-upper_clk <- quantiles_clk1[2]
-
 # get SI high/low
 quantiles_si <- quantile(histologies_df_sorted$SI, probs=c(.25, .75), na.rm = TRUE)
 lower_si <- quantiles_si[1]
 upper_si <- quantiles_si[2]
 
 histologies_df_sorted <- histologies_df_sorted %>%
-  mutate(clk1_status = case_when(CLK1_PSI > upper_clk ~ "High",
-                                 CLK1_PSI < lower_clk ~ "Low",
-                                 TRUE ~ "Middle"),
-         sbi_status = case_when(SI > upper_si ~ "High",
+  mutate(sbi_status = case_when(SI > upper_si ~ "High",
                                 SI < lower_si ~ "Low",
                                 TRUE ~ "Middle")) %>%
   filter(tmb_status == "Normal")
 
 histologies_df_sorted2 <- histologies_df_sorted %>%
-  select(reported_gender, cancer_predisposition, plot_group, molecular_subtype, CNS_region, SI) %>%
+  select(reported_gender, plot_group, molecular_subtype, CNS_region, SI) %>%
   dplyr::rename("Gender"=reported_gender,
                 "Histology" = plot_group,
-                "Predisposition" = cancer_predisposition,
                 "Molecular Subtype"=molecular_subtype,
                 "CNS Region"=CNS_region, 
                 "SBI" = SI) 
@@ -304,9 +286,6 @@ ha = HeatmapAnnotation(name = "annotation",
                                       "Unknown" = "whitesmoke"),
                          "Histology" = c("DIPG or DMG" = "#ff40d9",
                                          "Other high-grade glioma" = "#ffccf5"),
-                         "Predisposition" = c("LFS" = "red",
-                                              "NF-1" = "black",
-                                              "Other" = "grey"),
                          "Molecular Subtype" = c("DHG, H3 G35" = "springgreen4",
                                                  "DMG, H3 K28" = "#ff40d9",
                                                  "HGG, H3 wildtype" = "lightpink",
@@ -317,7 +296,6 @@ ha = HeatmapAnnotation(name = "annotation",
                                                  "HGG, PXA" = "navy",
                                                  "To be classified" = "whitesmoke"),
                          "CNS Region" = loc_cols,
-                         "CLK1 Ex4 PSI" = colorRamp2(c(-4, 0, 2), c("darkblue","white", "red")),
                          "SBI" = colorRamp2(c(-4, 0, 4), c("darkblue","white", "red"))
                        ),
                        annotation_name_side = "right", 
@@ -362,23 +340,23 @@ plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:20,], get_type = function(x) st
                             column_order =  colnames(gene_matrix_sorted))
 
 # Save plot as PDF
-pdf(plot_out, width = 9, height = 4)
+pdf(plot_out, width = 9, height = 3.5)
 plot_oncoprint
 dev.off()
 
 
 
 # create df for enrichment
-ids_clk1 <- histologies_df_sorted %>%
+ids <- histologies_df_sorted %>%
   rownames_to_column(var = "match_id") %>%
-  select(match_id, clk1_status, sbi_status)
+  select(match_id, sbi_status)
 
-total_high <- nrow(ids_clk1)/2
-total_low <- nrow(ids_clk1)/2
+total_high <- nrow(ids)/2
+total_low <- nrow(ids)/2
 
 
 alteration_counts <- collapse_snv_dat %>%
-  full_join(ids_clk1) %>%
+  full_join(ids) %>%
   filter(sbi_status != "Middle") %>%
   ## group by junction and calculate means
   select(Hugo_Symbol, sbi_status) %>%
