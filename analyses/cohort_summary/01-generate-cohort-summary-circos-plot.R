@@ -137,7 +137,7 @@ hist_indep_df <- hist_indep_df %>%
 split <- factor(hist_indep_df$plot_group)
 
 # colors for others
-gender_cols <- c( "deeppink4", "navy", "lightgrey")
+gender_cols <- c( "pink", "#56B4E9", "lightgrey")
 names(gender_cols) <- c("Female", "Male", "Unknown")
 
 loc_cols <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
