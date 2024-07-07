@@ -44,7 +44,7 @@ clin_file <- file.path(root_dir, "analyses", "cohort_summary", "results", "histo
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 goi_file <- file.path(input_dir,"oncoprint-goi-lists-OpenPedCan-gencode-v39.csv")
 tmb_file <- file.path(input_dir, "snv-mutation-tmb-coding.tsv")
-cnv_file <- file.path(data_dir, "consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz")
+cnv_file <- file.path(root_dir, "consensus_wgs_plus_freec_wxs_plus_freec_tumor_only.tsv.gz")
 psi_exp_file <- file.path(root_dir, "analyses", "CLK1-splicing_correlations", "results", "clk1-nf1-psi-exp-phos-df.rds")
 fus_file <- file.path(data_dir, "fusion-putative-oncogenic.tsv")
 
@@ -110,14 +110,14 @@ cnv_df <- read_tsv(cnv_file) %>%
   # select only goi, DNA samples of interest
   filter(gene_symbol %in% goi,
          biospecimen_id %in% matched_dna_samples$Kids_First_Biospecimen_ID) %>%
-  mutate(Variant_Classification = case_when(status == "amplification" ~ "Amp",
-                                            status == "deep deletion" ~ "Del",
-                                            status %in% c("loss", "Loss") & copy_number < 2 ~ "Loss",
+  mutate(Variant_Classification = case_when(status %in% c("amplification", "Amplification") ~ "Amp",
+                                            copy_number > 2*ploidy ~ "Amp",
+                                            status %in% c("deep deletion", "Deep deletion") ~ "Del",
+                                            copy_number == 0 ~ "Del",
                                             TRUE ~ NA_character_)) %>%
   filter(!is.na(Variant_Classification)) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id,
-                Hugo_Symbol = gene_symbol) %>%
-  select(Kids_First_Biospecimen_ID, Hugo_Symbol, Variant_Classification)
+                Hugo_Symbol = gene_symbol) 
 
 # read in fusion file and reformat to add to maf
 fus_df <- read_tsv(fus_file) %>%
@@ -140,7 +140,8 @@ fus_df <- read_tsv(fus_file) %>%
 maf_cols <- c("Hugo_Symbol", 
               "Chromosome", 
               "Start_Position", 
-              "End_Position", 
+              "End_Position",
+              "HGVSg",
               "HGVSp_Short",
               "Reference_Allele", 
               "Tumor_Seq_Allele2", 
@@ -148,7 +149,12 @@ maf_cols <- c("Hugo_Symbol",
               "Variant_Type",
               "Tumor_Sample_Barcode",
               "t_ref_count",
-              "t_alt_count")
+              "t_alt_count",
+              "Transcript_ID",
+              "EXON",
+              "PolyPhen",
+              "SIFT",
+              "gnomad_3_1_1_splice_ai_consequence")
 
 # read in and combine MAFs
 cons_maf <- data.table::fread(cons_maf_file, data.table = FALSE) %>%
@@ -165,7 +171,12 @@ maf <- cons_maf %>%
 maf_filtered <- maf %>%
   dplyr::filter(Hugo_Symbol %in% goi,
                 Tumor_Sample_Barcode  %in% matched_dna_samples$Kids_First_Biospecimen_ID,
-                Variant_Classification %in% names(colors))
+                Variant_Classification %in% names(colors)) %>%
+  dplyr::mutate(keep = case_when(Variant_Classification == "Missense_Mutation" & (grepl("dam", PolyPhen) | grepl("deleterious\\(", SIFT)) ~ "yes",
+                                 Variant_Classification == "Missense_Mutation" & PolyPhen == "" & SIFT == "" ~ "yes",
+                                 Variant_Classification != "Missense_Mutation" ~ "yes",
+                                 TRUE ~ "no")) %>%
+  dplyr::filter(keep == "yes")
 
 collapse_snv_dat <- maf_filtered %>%
   select(Tumor_Sample_Barcode,Hugo_Symbol,Variant_Classification) %>%
@@ -177,7 +188,7 @@ collapse_snv_dat <- maf_filtered %>%
   left_join(histologies_df[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
   select(-Kids_First_Biospecimen_ID)
 
-# get genes in order of most to least mutations
+# get genes in order of most to least mutations and are in enrichment results
 gene_row_order <- collapse_snv_dat %>%
   count(Hugo_Symbol) %>%
   arrange(-n)
@@ -228,6 +239,8 @@ histologies_df_sorted <- splice_df %>%
 quantiles_clk1 <- quantile(histologies_df_sorted$CLK1_PSI, probs=c(.25, .75), na.rm = TRUE)
 lower_sbi <- quantiles_clk1[1]
 upper_sbi <- quantiles_clk1[2]
+
+
 
 histologies_df_sorted <- histologies_df_sorted %>%
   mutate(clk1_status = case_when(CLK1_PSI > upper_sbi ~ "High",
