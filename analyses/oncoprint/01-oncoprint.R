@@ -44,7 +44,7 @@ clin_file <- file.path(root_dir, "analyses", "cohort_summary", "results", "histo
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 goi_file <- file.path(input_dir,"oncoprint-goi-lists-OpenPedCan-gencode-v39.csv")
 tmb_file <- file.path(input_dir, "snv-mutation-tmb-coding.tsv")
-cnv_file <- file.path(root_dir, "consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz")
+cnv_file <- file.path(root_dir, "consensus_wgs_plus_freec_wxs_plus_freec_tumor_only.tsv.gz")
 psi_exp_file <- file.path(root_dir, "analyses", "CLK1-splicing_correlations", "results", "clk1-nf1-psi-exp-phos-df.rds")
 fus_file <- file.path(data_dir, "fusion-putative-oncogenic.tsv")
 

@@ -43,7 +43,7 @@ tumor_only_maf_file <- file.path(data_dir,"snv-mutect2-tumor-only-plus-hotspots.
 clin_file <- file.path(root_dir, "analyses", "cohort_summary", "results", "histologies-plot-group.tsv")
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 tmb_file <- file.path(input_dir, "snv-mutation-tmb-coding.tsv")
-cnv_file <- file.path(root_dir, "consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz")
+cnv_file <- file.path(root_dir, "consensus_wgs_plus_freec_wxs_plus_freec_tumor_only.tsv.gz")
 psi_exp_file <- file.path(root_dir, "analyses", "CLK1-splicing_correlations", "results", "clk1-nf1-psi-exp-phos-df.rds")
 fus_file <- file.path(data_dir, "fusion-putative-oncogenic.tsv")
 goi_file <- file.path(root_dir, "analyses","splicing-factor_dysregulation/input","splicing_factors.txt")
@@ -192,7 +192,7 @@ collapse_snv_dat <- maf_filtered %>%
   select(Tumor_Sample_Barcode,Hugo_Symbol,Variant_Classification) %>%
   dplyr::group_by(Hugo_Symbol,Tumor_Sample_Barcode) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
-  bind_rows(fus_df) %>%
+  bind_rows(fus_df, cnv_df) %>%
   dplyr::summarise(count = as.double(length(Variant_Classification[!is.na(Variant_Classification)])),
                    Variant_Classification=str_c(unique(Variant_Classification),collapse = ",")) %>%
   left_join(histologies_df[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
@@ -259,8 +259,8 @@ histologies_df_sorted <- histologies_df_sorted %>%
   mutate(clk1_status = case_when(CLK1_PSI > upper_clk ~ "High",
                                  CLK1_PSI < lower_clk ~ "Low",
                                  TRUE ~ "Middle"),
-         sbi_status = case_when(SI > upper_sbi ~ "High",
-                         SI < lower_sbi ~ "Low",
+         sbi_status = case_when(SI > upper_si ~ "High",
+                         SI < lower_si ~ "Low",
                          TRUE ~ "Middle")) %>%
   filter(tmb_status == "Normal")
 
@@ -277,7 +277,7 @@ histologies_df_sorted2 <- histologies_df_sorted %>%
 histologies_df_sorted2 %>%
   rownames_to_column(var = "match_id") %>%
   left_join(unique(histologies_df[,c("match_id", "Kids_First_Participant_ID")])) %>%
-  write_tsv(file.path(results_dir, "oncoprint_sample_metadata.tsv"))
+  write_tsv(file.path(results_dir, "oncoprint_sample_metadata_SFs.tsv"))
 
 loc_cols <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", "#44AA99", "#882255", "#6699CC")
 
@@ -350,7 +350,7 @@ plot_oncoprint <- oncoPrint(gene_matrix_sorted[1:20,], get_type = function(x) st
                             column_order =  colnames(gene_matrix_sorted))
 
 # Save plot as PDF
-pdf(plot_out, width = 10, height = 5)
+pdf(plot_out, width = 9, height = 4)
 plot_oncoprint
 dev.off()
 
