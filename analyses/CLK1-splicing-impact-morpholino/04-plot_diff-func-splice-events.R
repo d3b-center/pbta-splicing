@@ -142,19 +142,14 @@ genelist_cat <- genelist_ref_df %>%
                                            "TumorSuppressorGene, TranscriptionFactor, RNA Binding Protein, Epigenetic",
                                            "TumorSuppressorGene, RNA Binding Protein, Epigenetic", 
                                            "TumorSuppressorGene, TranscriptionFactor, Epigenetic", "TumorSuppressorGene, Epigenetic",
-                                           "TumorSuppressorGene, Kinase, Epigenetic", "Kinase, TumorSuppressorGene, Epigenetic") ~ "Tumor Suppressor",
-                               type %in% c("Kinase, Oncogene", "Oncogene", "Oncogene, Kinase", "Oncogene, TranscriptionFactor",
+                                           "TumorSuppressorGene, Kinase, Epigenetic", "Kinase, TumorSuppressorGene, Epigenetic",
+                                           "Kinase, Oncogene", "Oncogene", "Oncogene, Kinase", "Oncogene, TranscriptionFactor",
                                            "Oncogene, RNA Binding Protein", "Oncogene, TranscriptionFactor, RNA Binding Protein",
                                            "Oncogene, TranscriptionFactor, Epigenetic", "Oncogene, Kinase, Epigenetic",
                                            "Oncogene, Epigenetic", "Kinase, Oncogene, Epigenetic", "Oncogene, RNA Binding Protein, Epigenetic",
-                                           "TranscriptionFactor, Oncogene") ~ "Oncogene",
+                                           "TranscriptionFactor, Oncogene") ~ "Oncogene or Tumor Suppressor",
                                TRUE ~ "Other"),
-         plot_subtype = case_when(type %in% c("Kinase", "Kinase, TranscriptionFactor", "Kinase, Oncogene", "TumorSuppressorGene, Kinase", 
-                                              "Kinase, TumorSuppressorGene, Oncogene", "Oncogene, Kinase", "Kinase, RNA Binding Protein",
-                                              "TumorSuppressorGene, Oncogene, Kinase, Epigenetic", "TumorSuppressorGene, Kinase, Epigenetic",
-                                              "Oncogene, Kinase, Epigenetic", "Kinase, TumorSuppressorGene, Oncogene, Epigenetic",
-                                              "Kinase, TumorSuppressorGene, Epigenetic", "Kinase, Oncogene, Epigenetic", "Kinase, Epigenetic",
-                                              "Kinase, TumorSuppressorGene", "TumorSuppressorGene, Oncogene, Kinase") ~ "Kinase",
+         plot_subtype = case_when(grepl("Kinase", type) ~ "Kinase",
                                   type %in% c("Oncogene, TranscriptionFactor", "TumorSuppressorGene, Oncogene, TranscriptionFactor",
                                               "TumorSuppressorGene, TranscriptionFactor", "TranscriptionFactor, Oncogene") ~ "Transcription Factor",
                                   type %in% c("Oncogene, RNA Binding Protein", "TranscriptionFactor, RNA Binding Protein", 
@@ -167,9 +162,7 @@ genelist_cat <- genelist_ref_df %>%
                                               "TumorSuppressorGene, Oncogene, Epigenetic", "TumorSuppressorGene, Epigenetic",
                                               "TranscriptionFactor, Epigenetic", "Oncogene, TranscriptionFactor, Epigenetic",
                                               "Oncogene, Epigenetic") ~ "Epigenetic",
-                                  type == "TumorSuppressorGene" ~ "Other Tumor Suppressor",
-                                  type == "Oncogene" ~ "Other Oncogene",
-                                  type == "TumorSuppressorGene, Oncogene" ~ "Oncogene or Tumor Suppressor",
+                                  type %in% c("TumorSuppressorGene, Oncogene", "Oncogene", "TumorSuppressorGene") ~ "Oncogene or Tumor Suppressor",
                                   type == "TranscriptionFactor" ~ "Transcription Factor",
                                   TRUE ~ type)) %>%
   dplyr::select(Gene_Symbol, plot_type, plot_subtype) %>%
@@ -184,11 +177,10 @@ table(genelist_cat$plot_subtype, genelist_cat$plot_type)
 psi_comb_goi <- psi_comb %>% inner_join(genelist_cat, by="gene")   
 
 # relevel the plot_type and subtype
-psi_comb_goi$plot_type <- factor(psi_comb_goi$plot_type, levels = c("Oncogene", "Tumor Suppressor",
-                                                                    "Oncogene or Tumor Suppressor", "Other"))
+psi_comb_goi$plot_type <- factor(psi_comb_goi$plot_type, levels = c("Oncogene or Tumor Suppressor", "Other"))
 psi_comb_goi$plot_subtype <- factor(psi_comb_goi$plot_subtype, levels = c("Kinase", "Oncogene or Tumor Suppressor",
                                                                           "Transcription Factor", "RNA Binding Protein",
-                                                                          "Epigenetic", "Other Oncogene", "Other Tumor Suppressor"))
+                                                                          "Epigenetic"))
 unique(psi_comb_goi$plot_subtype)
 
 psi_comb_goi_tab <- psi_comb_goi %>% dplyr::select(SpliceID,gene, dPSI,Type, Uniprot, Preference,plot_type, plot_subtype)
@@ -209,10 +201,10 @@ plot_barplot_family <- ggplot(psi_comb_goi, aes(x = fct_rev(fct_infreq(plot_subt
             hjust = -0.5, size = 3.5) +
   theme_Publication() +
   coord_flip() +
-  ylim(0,150)
+  ylim(0,220)
 
 # Save plot as PDF
-pdf(file_dpsi_goi_plot, height = 8, width = 8, useDingbats = FALSE) 
+pdf(file_dpsi_goi_plot, height = 6, width = 8, useDingbats = FALSE) 
 plot_barplot_family
 dev.off()
 
