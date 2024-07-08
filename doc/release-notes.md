@@ -1,13 +1,15 @@
 # release notes
 
 ## current release (v9)
-- Data release data: 2024-07-01
-- OpenPedCan data release date: 2024-01-03 (v13)
+- Data release date: 2024-07-01
+- Data release update (CNV consensus file): 2024-07-07
+- OpenPedCan (OPC) data release date: 2024-01-03 (v13)
 	- v14 pre-release `histologies.tsv` was created in [PR 542](https://github.com/d3b-center/OpenPedCan-analysis/pull/542) and is used here
 - status: available
 
 Modifications:
 -`snv-mutect2-tumor-only-plus-hotspots.maf.tsv.gz` was re-generated (OPC pre-v16 release) and now contains SIFT/PolyPhen scores
+- OPC v15 modified CNV consensus file `consensus_wgs_plus_freec_wxs_plus_freec_tumor_only.tsv.gz` was created in [PR 591](https://github.com/d3b-center/OpenPedCan-analysis/pull/591) and is used here 
 
 v9
 .
@@ -16,7 +18,7 @@ v9
 ├── control-rna-isoform-expression-rsem-counts-tpm.rds
 ├── OmicsDefaultModelProfiles.csv
 ├── OmicsExpressionTranscriptsTPMLogp1Profile.csv
-├── consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz
+├── consensus_wgs_plus_freec_wxs_plus_freec_tumor_only.tsv.gz
 ├── cptac-protein-imputed-phospho-expression-log2-ratio.tsv.gz
 ├── cptac-protein-imputed-prot-expression-abundance.tsv.gz
 ├── ctrl-vs-morpholino-gene-counts-rsem-expected_count.tsv
@@ -78,7 +80,7 @@ v9
 └── splice-events-rmats.tsv.gz
 
 ## previous release (v8)
-- Data release data: 2024-04-05
+- Data release date: 2024-04-05
 - OpenPedCan data release date: 2024-01-03 (v13)
 	- v14 pre-release `histologies.tsv` was created in [PR 542](https://github.com/d3b-center/OpenPedCan-analysis/pull/542) and is used here
 - status: available
@@ -162,7 +164,7 @@ v8
 └── splice-events-rmats.tsv.gz
 
 ## previous release (v7)
-- Data release data: 2024-01-08
+- Data release date: 2024-01-08
 - OpenPedCan data release date: 2024-01-03 (v13)
 	- v14 pre-release `histologies.tsv` was created in [PR 542](https://github.com/d3b-center/OpenPedCan-analysis/pull/542) and is used here
 - status: available
@@ -240,7 +242,7 @@ v7
 
 
 ## previous release (v6)
-- Data release data: 2023-09-08
+- Data release date: 2023-09-08
 - OpenPedCan data release date: 2023-04-30 (v12)
 - status: available
 
@@ -278,7 +280,7 @@ v6
 ```
 
 ## previous release (v5)
-- Data release data: 2023-05-26
+- Data release date: 2023-05-26
 - OpenPedCan data release date: 2023-04-30 (v12)
 - status: available
 
@@ -311,7 +313,7 @@ v5
 ```
 
 ## previous release (v4)
-- Data release data: 2023-04-30
+- Data release date: 2023-04-30
 - OpenPedCan data release date: 2023-04-30 (v12)
 - status: available
 
