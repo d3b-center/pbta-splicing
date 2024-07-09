@@ -81,7 +81,7 @@ for (eachfile in c(day3_file, day6_file)) {
   barplot <- ggplot(via_df, aes(x = Dose, y = Absorbance, fill = Dose)) +
     stat_summary(fun = mean, geom = "bar", position = position_dodge(width = 0.8), width = 0.7, color = "black") +
     stat_summary(fun.data = mean_se, geom = "errorbar", position = position_dodge(width = 0.8), width = 0.25) +
-    geom_text(data = stat_results, aes(x = Dose, y = y_pos, label = star), vjust = -0., size = 7) +
+    geom_text(data = stat_results, aes(x = Dose, y = y_pos, label = star), vjust = -0.2, size = 7) +
     geom_text(aes(x = "5uM", y = 9e6, label = "*p<0.001"), vjust = -0.5, size = 4) +
     xlab("Treatment and Dose") + 
     ylab("Luminescence (RLU)") +
