@@ -28,3 +28,5 @@ Rscript --vanilla 09-clk1-nf1-protein-correlations.R
 
 # plot DMG clk1/nf1 rna, protein, splicing z-scores
 Rscript --vanilla 10-clk1-nf1-single-sample-heatmap.R
+
+rm ./Rplots.pdf

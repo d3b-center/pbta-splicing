@@ -102,7 +102,7 @@ Input files:
 │   ├── CLK1_exp_vs_SRSF_exp_all_hgg.pdf
 │   ├── CLK1_exp_vs_SRSF_exp_midline_hgg.pdf
 │   ├── CLK1_exp_vs_SRSF_exp_other_hgg.pdf
-│   ├── CLK1ex4-hgg-normals.pdf
+│   ├── CLK1ex4-hgg-gtex.pdf
 │   ├── CLK2_exp_vs_SRSF_SRPK_exp_all_hgg.pdf
 │   ├── CLK2_exp_vs_SRSF_SRPK_exp_midline_hgg.pdf
 │   ├── CLK2_exp_vs_SRSF_SRPK_exp_other_hgg.pdf
