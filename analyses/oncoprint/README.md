@@ -7,7 +7,7 @@ The purpose of this module is to assess CLK1 exon 4 PSI levels in the context of
 ## Usage
 ### How to Run:
 ```
-Rscript --vanilla 01-oncoprint.R
+bash run-oncoprint.sh
 ```
 
 #### Input:
@@ -25,6 +25,7 @@ Rscript --vanilla 01-oncoprint.R
 
 ## Scripts
 * `01-oncoprint.R` generates oncoprint with mutation frequencies with CLK1 exon 4 PSI, gender, molecular subtype, CNS region and mutation status information across pediatric HGGs, as well as enrichment of CLK1 high/low tumors by gene alteration 
+* `02-oncoprint-SFs.R` generates oncoprint with SF mutation frequencies with CLK1 exon 4 PSI, gender, molecular subtype, CNS region and mutation status information across pediatric HGGs, as well as enrichment of CLK1 high/low tumors by gene alteration 
 
 ## Directory Structure
 ```
