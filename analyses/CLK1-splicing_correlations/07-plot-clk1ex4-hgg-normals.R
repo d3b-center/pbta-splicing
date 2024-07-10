@@ -40,11 +40,10 @@ all_hist_file <- file.path(data_dir, "histologies.tsv")
 pbta_hist_file <- file.path(data_dir, "histologies-plot-group.tsv")
 pbta_tpm_file <- file.path(data_dir, "rna-isoform-expression-rsem-tpm.rds") 
 gtex_trans_tpm_file <- file.path(data_dir, "GTEx_Analysis_2017-06-05_v8_RSEMv1.3.0_transcript_tpm.gct.gz")
-control_tpm_file <- file.path(data_dir, "control-rna-isoform-expression-rsem-counts-tpm.rds") 
 indep_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 
 ## output file for plot
-gtex_plot_path <- file.path(plots_dir, "CLK1ex4-hgg-normals.pdf")
+gtex_plot_path <- file.path(plots_dir, "CLK1ex4-hgg-gtex.pdf")
 
 ## load files
 indep_df <- read_tsv(indep_file) %>% 
@@ -85,18 +84,8 @@ gtex_clk1ex4_counts <- fread(gtex_trans_tpm_file, skip = 2) %>%
   # reduce labels
   dplyr::mutate(plot_group = gsub("Brain - ", "", plot_group))
 
-control_counts <- readRDS(control_tpm_file) %>%
-  filter(transcript_id == "ENST00000321356.9_CLK1-201",
-         sample_id != "BM") %>%
-  dplyr::mutate(plot_group = gsub("_", " ", sample_id)) %>%
-  dplyr::rename(ENST00000321356 = TPM) %>%
-  select(ENST00000321356, plot_group) %>%
-  # add prefix
-  dplyr::mutate(plot_group = ifelse(plot_group != "Fetal brain", paste("Pediatric", plot_group, sep = " "),
-                                    plot_group))
-  
 combined_df <- hgg_counts %>%
-  bind_rows(gtex_clk1ex4_counts, control_counts)
+  bind_rows(gtex_clk1ex4_counts)
 
 # Calculate medians and reorder plot_group levels based on these medians
 combined_df_ordered <- combined_df %>%
@@ -111,7 +100,6 @@ pal <- combined_df %>%
   unique() %>%
   left_join(unique(all_hgg_hist[,c("plot_group", "plot_group_hex")])) %>%
   mutate(plot_group_hex = case_when(is.na(plot_group_hex) & plot_group %in% gtex_clk1ex4_counts$plot_group ~ "gray93",
-                                    is.na(plot_group_hex) & plot_group %in% control_counts$plot_group ~ "lightskyblue1",
                                     TRUE ~ plot_group_hex))
 
 colors <- setNames(pal$plot_group_hex, pal$plot_group)
@@ -124,26 +112,27 @@ gtex_plot <- ggplot(combined_df_ordered, aes(x = plot_group, y = ENST00000321356
   labs(title = "",
        x = "Tissue",
        y = expression(bold(bolditalic("CLK1 ENST00000321356")*" TPM (log"[2]*")"))) +
-       theme_Publication() +
+  theme_Publication() +
   theme(legend.position = "none", 
         axis.text.x = element_text(angle = 75, hjust = 1)) +
-  scale_x_discrete(labels = function(x) sapply(x, function(l) str_wrap(l, width = 20))) # Wrap x-axis labels
+  scale_x_discrete(labels = function(x) sapply(x, function(l) str_wrap(l, width = 30))) # Wrap x-axis labels
 
 
 # Define legend colors
 legend_colors <- c("DIPG or DMG" = "#ff40d9", 
                    "Other high-grade glioma" = "#ffccf5", 
-                   "GTEx Brain" = "gray93", 
-                   "Pediatric Brain" = "lightskyblue1")
+                   "GTEx Brain" = "gray93")
 
 # Manual legend creation
-legend_grob <- grid::grid.legend(draw = TRUE, labels = c("Tissue", "DIPG or DMG", "Other high-grade glioma", "GTEx Brain", "Pediatric Brain"),
+legend_grob <- grid::grid.legend(draw = TRUE, labels = c("Tissue", "DIPG or DMG", "Other high-grade glioma", "GTEx Brain"),
                                  pch = 21,
-                                 gp = gpar(col = c("white", "black","black","black","black","black"), 
-                                           fill = c("white", "#ff40d9", "#ffccf5", "gray93", "lightskyblue1"), 
+                                 gp = gpar(col = c("white", "black","black","black","black"), 
+                                           fill = c("white", "#ff40d9", "#ffccf5", "gray93"), 
                                            fontsize = 10))
 
-pdf(gtex_plot_path, height = 8, width = 11)
+pdf(gtex_plot_path, height = 8, width = 9)
 grid.arrange(gtex_plot, legend_grob, ncol= 2, widths=c(8,2), heights=c(4,1))
 dev.off()
+
+
 
