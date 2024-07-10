@@ -192,7 +192,7 @@ deseq_df <- vroom(deseq2_sf_file) %>%
   dplyr::select(-Significant)
 
 # Combine and output
-list_s3_table <- list(splicing_factors_and_splicosome=sf_list, deseq2=deseq_df)
+list_s3_table <- list(splicing_factors_and_splicosome=goi_list, deseq2=deseq_df)
 
 write.xlsx(list_s3_table,
            table_s3_file,
