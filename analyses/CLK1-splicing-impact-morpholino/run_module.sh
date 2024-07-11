@@ -34,7 +34,6 @@ Rscript -e "rmarkdown::render('07-run-gsva-comparisons.Rmd', clean = TRUE)"
 
 ## intersect DE and DS
 Rscript --vanilla 08-intersection-dex-des.R
-rm Venn*.log
 
 ## lolliplot of splicing cases
 Rscript --vanilla 09-plot_total-splicing-cases.R
