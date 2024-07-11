@@ -23,7 +23,7 @@ analyses_dir="$BASEDIR/analyses"
 echo "----------------------------------"
 echo "cohort summary"
 cd ${analyses_dir}/cohort_summary
-Rscript 01-generate-cohort-summary-circos-plot.R
+#Rscript 01-generate-cohort-summary-circos-plot.R
 
 ## stranded-polyA-assessment
 echo "----------------------------------"
@@ -35,7 +35,7 @@ cd ${analyses_dir}/stranded-polyA-assessment
 echo "----------------------------------"
 echo "histology-specific splice events"
 cd ${analyses_dir}/histology-specific-splicing
-bash run_module.sh
+#bash run_module.sh
 
 ## splicing index
 echo "----------------------------------"
