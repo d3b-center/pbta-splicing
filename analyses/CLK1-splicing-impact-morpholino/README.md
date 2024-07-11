@@ -29,6 +29,7 @@ input
 
 ```
 
+<<<<<<< HEAD
 ### Output
 ```
 results/ctrl_vs_morpho.rsem.genes.collapsed.rds
@@ -63,12 +64,20 @@ plots/gsva_heatmap_kegg_de.pdf
 ```
 
 ## Folder content
+=======
+## Folder content
+* `00-get-splice-transcripts.R` identifies the transcripts which are being spliced, using the rMATs morpholino results file
+>>>>>>> main
 * `01-diffExpr-ctrl_vs_morph.R` performs differential expression analysis on ctrl vs treated cells using DESeq2. It also subsets based on genes of interests (transcription factors, kinases, etc)
 * `02-plot_diff-splice-events.R` plots PSI distributions of differential splice events
 * `03-run_bedtools_intersect-morpho.sh` formats rMATs output into bed format, and runs bedtools to intersect with uniprot db files
 * `04-plot_diff-func-splice-events.R` plots PSI distributions of differential splice events categorized by functionnal site and then subsets cancer genes
 * `05-ora-analysis.R` performs an over-representation analysis on above splice events that hit functional sites
+<<<<<<< HEAD
 * `06-conduct-gsva-analysis.R` performs GSVA on HALLMARK, KEGG, and DNA repair pathways from https://pubmed.ncbi.nlm.nih.gov/29617664/
+=======
+* `06-conduct-gsva-analysis.R` performs GSVA on CLK1 morpholino and control morpholino DE and DS events. DS events are delineated by all functional events or all functional events in onco/tsgs. This module uses HALLMARK, KEGG, and DNA repair pathways from https://pubmed.ncbi.nlm.nih.gov/29617664/.
+>>>>>>> main
 * `07-run-gsva-comparisons.Rmd` performs CLK1 morpholino vs non targeting morpholino cell line treatment comparisons of GSVA scores HALLMARK, KEGG, and DNA repair pathways from https://pubmed.ncbi.nlm.nih.gov/29617664/.
 * `08-intersection-dex-des.R` intersects dysregulated genes to assess overlap between genes that are both differentially spliced and expressed. Generates Venn diagram and performs ORA of overlapping genes. 
 * `09-plot_total-splicing-cases.R` plots number of splicing events per type per treatment.
@@ -76,6 +85,10 @@ plots/gsva_heatmap_kegg_de.pdf
 ## Directory structure
 ```
 .
+<<<<<<< HEAD
+=======
+├── 00-get-splice-transcripts.R
+>>>>>>> main
 ├── 01-diffExpr-ctrl_vs_morph.R
 ├── 02-plot_diff-splice-events.R
 ├── 03-run_bedtools_intersect-morpho.sh
@@ -85,7 +98,11 @@ plots/gsva_heatmap_kegg_de.pdf
 ├── 07-run-gsva-comparisons.Rmd
 ├── 07-run-gsva-comparisons.html
 ├── 08-intersection-dex-des.R
+<<<<<<< HEAD
 ├── 09-plot_total-splicing-cases.R 
+=======
+├── 09-plot_total-splicing-cases.R
+>>>>>>> main
 ├── README.md
 ├── input
 │   ├── RBP_known.txt
@@ -99,12 +116,17 @@ plots/gsva_heatmap_kegg_de.pdf
 │   ├── nucleotide_excision_repair.txt
 │   └── oncoprint-goi-lists-OpenPedCan-gencode-v39.csv
 ├── plots
+<<<<<<< HEAD
+=======
+│   ├── CLK1_ds-dex-targets_ora_dotplot.pdf
+>>>>>>> main
 │   ├── CLK1_targets_ora_dotplot.func-sites.pdf
 │   ├── CLK1_targets_ora_dotplot.pdf
 │   ├── ctrl_vs_clk1-morp_volcano.pdf
 │   ├── dPSI-distr-func-goi.pdf
 │   ├── dPSI-distr-func.pdf
 │   ├── dPSI_distr.pdf
+<<<<<<< HEAD
 │   ├── gene-fam-DE-plot.pdf
 │   ├── gsva_heatmap_dna_repair.pdf
 │   ├── gsva_heatmap_dna_repair_de.pdf
@@ -112,6 +134,22 @@ plots/gsva_heatmap_kegg_de.pdf
 │   ├── gsva_heatmap_hallmark_de.pdf
 │   ├── gsva_heatmap_kegg.pdf
 │   ├── gsva_heatmap_kegg_de.pdf
+=======
+│   ├── des-dex-venn.pdf
+│   ├── gene-fam-DE-plot.pdf
+│   ├── gsva_heatmap_dna_repair.pdf
+│   ├── gsva_heatmap_dna_repair_de.pdf
+│   ├── gsva_heatmap_dna_repair_sp.pdf
+│   ├── gsva_heatmap_dna_repair_sp_onc.pdf
+│   ├── gsva_heatmap_hallmark.pdf
+│   ├── gsva_heatmap_hallmark_de.pdf
+│   ├── gsva_heatmap_hallmark_sp.pdf
+│   ├── gsva_heatmap_hallmark_sp_onc.pdf
+│   ├── gsva_heatmap_kegg.pdf
+│   ├── gsva_heatmap_kegg_de.pdf
+│   ├── gsva_heatmap_kegg_sp.pdf
+│   ├── gsva_heatmap_kegg_sp_onc.pdf
+>>>>>>> main
 │   └── splice-types.pdf
 ├── results
 │   ├── ctrl_vs_morpho.rsem.genes.collapsed.rds
@@ -123,6 +161,7 @@ plots/gsva_heatmap_kegg_de.pdf
 │   ├── expr_collapsed_de_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv
 │   ├── expr_collapsed_de_clk1_ctrl_morpho_hallmark_gsva_scores.tsv
 │   ├── expr_collapsed_de_clk1_ctrl_morpho_kegg_gsva_scores.tsv
+<<<<<<< HEAD
 │   ├── gsva_score_diff_dna_repair.tsv
 │   ├── gsva_score_diff_dna_repair_de.tsv
 │   ├── gsva_score_diff_hallmark.tsv
@@ -132,3 +171,28 @@ plots/gsva_heatmap_kegg_de.pdf
 │   └── splicing_events.morpho.intersectUnip.ggplot.txt
 └── run_module.sh
 ```
+=======
+│   ├── expr_splice_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv
+│   ├── expr_splice_clk1_ctrl_morpho_hallmark_gsva_scores.tsv
+│   ├── expr_splice_clk1_ctrl_morpho_kegg_gsva_scores.tsv
+│   ├── expr_splice_onco_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv
+│   ├── expr_splice_onco_clk1_ctrl_morpho_hallmark_gsva_scores.tsv
+│   ├── expr_splice_onco_clk1_ctrl_morpho_kegg_gsva_scores.tsv
+│   ├── gsva_score_diff_dna_repair.tsv
+│   ├── gsva_score_diff_dna_repair_de.tsv
+│   ├── gsva_score_diff_dna_repair_sp.tsv
+│   ├── gsva_score_diff_dna_repair_sp_onc.tsv
+│   ├── gsva_score_diff_hallmark.tsv
+│   ├── gsva_score_diff_hallmark_de.tsv
+│   ├── gsva_score_diff_hallmark_sp.tsv
+│   ├── gsva_score_diff_hallmark_sp_onc.tsv
+│   ├── gsva_score_diff_kegg.tsv
+│   ├── gsva_score_diff_kegg_de.tsv
+│   ├── gsva_score_diff_kegg_sp.tsv
+│   ├── gsva_score_diff_kegg_sp_onc.tsv
+│   ├── morpholino_splice_NF1_0.1_psi_diff_transcripts.tsv
+│   ├── splice-events-significant.tsv
+│   └── splicing_events.morpho.intersectUnip.ggplot.txt
+└── run_module.sh
+```
+>>>>>>> main

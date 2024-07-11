@@ -41,6 +41,7 @@ file_dpsi_plot <- file.path(plots_dir,"dPSI-distr-func.pdf")
 file_dpsi_goi_plot <- file.path(plots_dir,"dPSI-distr-func-goi.pdf")
 
 ## get and setup input
+<<<<<<< HEAD
 
 ## retrieve psi values from tables
 file_psi_func <- file.path(results_dir,"splicing_events.morpho.intersectUnip.ggplot.txt")
@@ -53,18 +54,42 @@ dpsi_unip_incl <- vroom(file_psi_func) %>%
          dPSI=abs(dPSI))
 
 dpsi_unip_skp <- vroom(file_psi_func) %>% 
+=======
+## retrieve psi values from tables
+file_psi_SE_func <- file.path(results_dir,"splicing_events.morpho.SE.intersectUnip.ggplot.txt")
+file_psi_RI_func <- file.path(results_dir,"splicing_events.morpho.RI.intersectUnip.ggplot.txt")
+file_psi_A5SS_func <- file.path(results_dir,"splicing_events.morpho.A5SS.intersectUnip.ggplot.txt")
+file_psi_A3SS_func <- file.path(results_dir,"splicing_events.morpho.A3SS.intersectUnip.ggplot.txt")
+
+## combine all splice types together
+dpsi_unip_incl <- vroom(c(file_psi_SE_func, file_psi_RI_func, file_psi_A5SS_func, file_psi_A3SS_func)) %>%
+  mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) %>%
+  filter(dPSI<0) %>% 
+  mutate(Preference='Inclusion',
+         dPSI=abs(dPSI)) 
+
+dpsi_unip_skp <- vroom(c(file_psi_SE_func, file_psi_RI_func, file_psi_A5SS_func, file_psi_A3SS_func)) %>% 
+>>>>>>> main
   mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) %>%
   filter(dPSI>0) %>% 
   mutate(Preference='Skipping')
 
+<<<<<<< HEAD
 
 psi_comb <- rbind(dpsi_unip_incl,dpsi_unip_skp) %>% 
   mutate(Uniprot = case_when(Uniprot == 'DisulfBond' ~ "Disulfide Bond",
                              Uniprot == 'LocSignal' ~ "Localization Signal",
+=======
+psi_comb <- rbind(dpsi_unip_incl,dpsi_unip_skp) %>% 
+  mutate(Uniprot = case_when(Uniprot == 'DisulfBond' ~ "Disulfide Bond",
+                             Uniprot == 'LocSignal' ~ "Localization Signal",
+                             Uniprot == 'Mod' ~ 'Modification',
+>>>>>>> main
                              .default = Uniprot),
          Uniprot_wrapped = stringr::str_wrap(Uniprot, width = 10)
   )
 
+<<<<<<< HEAD
 
 ## ggstatplot across functional sites
 set.seed(123)
@@ -97,6 +122,41 @@ print (plot_dsp)
 dev.off()
 
 ##subset by GOI
+=======
+## ggstatplot across functional sites
+set.seed(123)
+counts_psi_comb <- psi_comb %>% 
+  count(Type, Uniprot_wrapped, Preference) %>%
+  # add n = for first n
+  mutate(n = as.character(n),
+         n = case_when(Type == "A3SS" & Uniprot_wrapped == "Disulfide\nBond" & Preference == "Inclusion" ~ paste0("n = ",n),
+                       TRUE ~ as.character(n)))
+
+# Your ggplot code with adjustments
+plot_dsp <- ggplot(psi_comb, aes(x = Uniprot_wrapped, y = dPSI * 100, fill = Preference)) +
+  geom_boxplot(aes(color = Preference), position = position_dodge(width = 0.9), outlier.shape = NA, size = 0.5, alpha = 0.4) +
+  ggforce::geom_sina(aes(color = Preference), pch = 16, size = 3, position = position_dodge(width = 0.9), alpha = 0.4) +
+  facet_wrap(~Type, nrow = 1) +
+  scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) +
+  scale_fill_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) +
+  theme_Publication() +
+  labs(y = "Percent Spliced In (PSI)", x = "Uniprot-defined Functional Site") +
+  geom_text(data = counts_psi_comb, aes(label = paste(n), x = Uniprot_wrapped, y = 10), vjust = 3, size = 3, position = position_dodge(width = 0.9)) +
+  theme(
+    legend.position = "top",  # Move legend to the top
+    legend.direction = "horizontal",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  ylim(c(-15, 100))
+
+# Save plot as PDF
+pdf(file_dpsi_plot, 
+    width = 12, height = 4)
+print (plot_dsp)
+dev.off()
+
+## subset by GOI
+>>>>>>> main
 # gene list files
 known_rbp_file <- file.path(input_dir,'RBP_known.txt')
 known_epi_file <- file.path(input_dir,'epi_known.txt')
@@ -139,6 +199,7 @@ genelist_cat <- genelist_ref_df %>%
                                            "TumorSuppressorGene, TranscriptionFactor, RNA Binding Protein, Epigenetic",
                                            "TumorSuppressorGene, RNA Binding Protein, Epigenetic", 
                                            "TumorSuppressorGene, TranscriptionFactor, Epigenetic", "TumorSuppressorGene, Epigenetic",
+<<<<<<< HEAD
                                            "TumorSuppressorGene, Kinase, Epigenetic", "Kinase, TumorSuppressorGene, Epigenetic") ~ "Tumor Suppressor",
                                type %in% c("Kinase, Oncogene", "Oncogene", "Oncogene, Kinase", "Oncogene, TranscriptionFactor",
                                            "Oncogene, RNA Binding Protein", "Oncogene, TranscriptionFactor, RNA Binding Protein",
@@ -152,6 +213,16 @@ genelist_cat <- genelist_ref_df %>%
                                               "Oncogene, Kinase, Epigenetic", "Kinase, TumorSuppressorGene, Oncogene, Epigenetic",
                                               "Kinase, TumorSuppressorGene, Epigenetic", "Kinase, Oncogene, Epigenetic", "Kinase, Epigenetic",
                                               "Kinase, TumorSuppressorGene", "TumorSuppressorGene, Oncogene, Kinase") ~ "Kinase",
+=======
+                                           "TumorSuppressorGene, Kinase, Epigenetic", "Kinase, TumorSuppressorGene, Epigenetic",
+                                           "Kinase, Oncogene", "Oncogene", "Oncogene, Kinase", "Oncogene, TranscriptionFactor",
+                                           "Oncogene, RNA Binding Protein", "Oncogene, TranscriptionFactor, RNA Binding Protein",
+                                           "Oncogene, TranscriptionFactor, Epigenetic", "Oncogene, Kinase, Epigenetic",
+                                           "Oncogene, Epigenetic", "Kinase, Oncogene, Epigenetic", "Oncogene, RNA Binding Protein, Epigenetic",
+                                           "TranscriptionFactor, Oncogene") ~ "Oncogene or Tumor Suppressor",
+                               TRUE ~ "Other"),
+         plot_subtype = case_when(grepl("Kinase", type) ~ "Kinase",
+>>>>>>> main
                                   type %in% c("Oncogene, TranscriptionFactor", "TumorSuppressorGene, Oncogene, TranscriptionFactor",
                                               "TumorSuppressorGene, TranscriptionFactor", "TranscriptionFactor, Oncogene") ~ "Transcription Factor",
                                   type %in% c("Oncogene, RNA Binding Protein", "TranscriptionFactor, RNA Binding Protein", 
@@ -164,15 +235,24 @@ genelist_cat <- genelist_ref_df %>%
                                               "TumorSuppressorGene, Oncogene, Epigenetic", "TumorSuppressorGene, Epigenetic",
                                               "TranscriptionFactor, Epigenetic", "Oncogene, TranscriptionFactor, Epigenetic",
                                               "Oncogene, Epigenetic") ~ "Epigenetic",
+<<<<<<< HEAD
                                   type == "TumorSuppressorGene" ~ "Other Tumor Suppressor",
                                   type == "Oncogene" ~ "Other Oncogene",
                                   type == "TumorSuppressorGene, Oncogene" ~ "Oncogene or Tumor Suppressor",
+=======
+                                  type %in% c("TumorSuppressorGene, Oncogene", "Oncogene", "TumorSuppressorGene") ~ "Oncogene or Tumor Suppressor",
+>>>>>>> main
                                   type == "TranscriptionFactor" ~ "Transcription Factor",
                                   TRUE ~ type)) %>%
   dplyr::select(Gene_Symbol, plot_type, plot_subtype) %>%
   # add other RBP, Epi not already in the list
   bind_rows(known_rbp_not_inlist, known_epi_not_inlist) %>% 
+<<<<<<< HEAD
   dplyr::rename('gene'=Gene_Symbol)
+=======
+  dplyr::rename('gene'=Gene_Symbol) %>%
+  write_tsv(file.path(results_dir, "gene_categories.tsv"))
+>>>>>>> main
 
 # check that all of the subgroups look right
 table(genelist_cat$plot_subtype, genelist_cat$plot_type)
@@ -180,12 +260,26 @@ table(genelist_cat$plot_subtype, genelist_cat$plot_type)
 psi_comb_goi <- psi_comb %>% inner_join(genelist_cat, by="gene")   
 
 # relevel the plot_type and subtype
+<<<<<<< HEAD
 psi_comb_goi$plot_type <- factor(psi_comb_goi$plot_type, levels = c("Oncogene", "Tumor Suppressor",
                                                                     "Oncogene or Tumor Suppressor", "Other"))
 psi_comb_goi$plot_subtype <- factor(psi_comb_goi$plot_subtype, levels = c("Kinase", "Oncogene or Tumor Suppressor",
                                                                           "Transcription Factor", "RNA Binding Protein",
                                                                           "Epigenetic", "Other Oncogene", "Other Tumor Suppressor"))
 unique(psi_comb_goi$plot_subtype)
+=======
+psi_comb_goi$plot_type <- factor(psi_comb_goi$plot_type, levels = c("Oncogene or Tumor Suppressor", "Other"))
+psi_comb_goi$plot_subtype <- factor(psi_comb_goi$plot_subtype, levels = c("Kinase", "Oncogene or Tumor Suppressor",
+                                                                          "Transcription Factor", "RNA Binding Protein",
+                                                                          "Epigenetic"))
+unique(psi_comb_goi$plot_subtype)
+
+psi_comb_goi_tab <- psi_comb_goi %>% dplyr::select(SpliceID,gene, dPSI,Type, Uniprot, Preference,plot_type, plot_subtype)
+
+# write for supplemental 
+write_tsv(psi_comb_goi_tab, file.path(results_dir, "differential_splice_by_goi_category.tsv"))
+
+>>>>>>> main
 ## plot num of hits per gene fam
 plot_barplot_family <- ggplot(psi_comb_goi, aes(x = fct_rev(fct_infreq(plot_subtype)), fill= Preference)) +
   geom_bar(stat="count", position='dodge', color="black") + 
@@ -199,10 +293,17 @@ plot_barplot_family <- ggplot(psi_comb_goi, aes(x = fct_rev(fct_infreq(plot_subt
             hjust = -0.5, size = 3.5) +
   theme_Publication() +
   coord_flip() +
+<<<<<<< HEAD
   ylim(0,115)
 
 # Save plot as PDF
 pdf(file_dpsi_goi_plot, height = 8, width = 8, useDingbats = FALSE) 
+=======
+  ylim(0,220)
+
+# Save plot as PDF
+pdf(file_dpsi_goi_plot, height = 6, width = 8, useDingbats = FALSE) 
+>>>>>>> main
 plot_barplot_family
 dev.off()
 

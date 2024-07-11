@@ -190,6 +190,10 @@ for (goi in names(goi_list)) {
    
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 # plot CLK expr vs SRSF/SRPK expr
 for (clk in clk_list) {
   for (brain_region in region_list) {
@@ -247,7 +251,12 @@ for (clk in clk_list) {
         facet_wrap(~geneSymbol, nrow = 3, scales = "free_y") + 
         theme_Publication()
       
+<<<<<<< HEAD
     } else {
+=======
+    }
+    else {
+>>>>>>> main
       
       p <-  ggplot(exp_df, aes(x = clk_logExp, y = logExp)) +
         geom_point(colour = "black") +
@@ -277,3 +286,60 @@ for (clk in clk_list) {
   
 }
 
+<<<<<<< HEAD
+=======
+# clk1 vs srpk1
+# Get CLK expr
+for (brain_region in region_list) {
+  
+  if (brain_region == "all"){
+    # take all hgg bs ids
+    bs_id_list <- all_hgg_bsids$Kids_First_Biospecimen_ID
+  }
+  
+  else if (brain_region == "midline"){
+    # take only midline bs ids
+    bs_id_list <- all_hgg_bsids %>%
+      filter(plot_group == "DIPG or DMG") %>%
+      pull(Kids_First_Biospecimen_ID)
+  }
+  
+  else if (brain_region == "other"){
+    # take only midline bs ids
+    bs_id_list <- all_hgg_bsids %>%
+      filter(plot_group == "Other high-grade glioma") %>%
+      pull(Kids_First_Biospecimen_ID)
+}
+  clk_expr <- rmats_exp_df %>%
+    filter(geneSymbol == "CLK1",
+           sample_id %in% bs_id_list) %>% 
+    dplyr::select(sample_id, logExp) %>%
+    dplyr::rename("clk_logExp" = logExp)
+
+  # Get /SRPK expr
+  exp_df <- rmats_exp_df %>%
+    filter(geneSymbol == "SRPK1",
+           sample_id %in% bs_id_list)  %>%
+    inner_join(clk_expr, by= "sample_id") 
+
+  p <-  ggplot(exp_df, aes(x = clk_logExp, y = logExp)) +
+    geom_point(colour = "black") +
+    stat_smooth(method = "lm", 
+                formula = y ~ x, 
+                geom = "smooth", 
+                colour = "red",
+                fill = "pink",
+                linetype="dashed") +
+    xlab(expression(bold(bolditalic("CLK1")~"TPM (log2)"))) +
+    ylab(expression(bold(bolditalic("SPRK1")~"TPM (log2)"))) +
+        stat_cor(method = "pearson",
+             label.x = 0, label.y = 6, size = 3) +
+    theme_Publication()
+  # save plot
+  pdf(file.path(paste0(plots_dir, "/CLK1_exp_v_SRPK1_exp_", brain_region, "_hgg.pdf")), 
+      width = 4, height = 4)
+  print(p)
+  dev.off()
+}
+
+>>>>>>> main

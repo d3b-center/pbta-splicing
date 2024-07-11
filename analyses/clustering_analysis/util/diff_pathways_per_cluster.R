@@ -43,10 +43,24 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
                                  phenoData = new("AnnotatedDataFrame", data = cluster_output))
   
   # GSVA analysis
+<<<<<<< HEAD
   gsva_eset <- GSVA::gsva(expr = eset,
                           gset.idx.list = gene_set, 
                           method = "ssgsea", 
                           kcdf = "Gaussian") 
+=======
+  gsea_scores_param <- gsvaParam(eset,
+                                 geneSets = gene_set,
+                                 kcdf = "Gaussian",
+                                 assay = NA_character_,
+                                 annotation = NA_character_,
+                                 tau = 1,
+                                 minSize = 1, 
+                                 maxSize = 1500, ## Arguments from K. Rathi
+                                 maxDiff = TRUE) ## Setting this argument to TRUE computes Gaussian-distributed scores (bimodal score distribution if FALSE)
+  
+  gsva_eset <- gsva(gsea_scores_param, verbose = TRUE)
+>>>>>>> main
   
   # convert to long format
   gsva_scores <- gsva_eset@assayData$exprs %>%
@@ -155,5 +169,9 @@ diff_pathways_per_cluster <- function(input_mat, input_clin, cluster_output, n_c
                      color = heat_colors,
                      name = "GSVA score",
                      filename = file.path(output_dir, paste0(prefix, "_top", n, "_pathways.pdf")), 
+<<<<<<< HEAD
                      width = 12, height = 6)
+=======
+                     width = 12, height = 5.5)
+>>>>>>> main
 }

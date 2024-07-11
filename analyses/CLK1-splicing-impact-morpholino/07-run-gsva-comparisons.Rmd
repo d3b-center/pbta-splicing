@@ -37,11 +37,30 @@ kegg_file <- file.path(results_dir, "expr_collapsed_clk1_ctrl_morpho_kegg_gsva_s
 de_kegg_file <- file.path(results_dir, "expr_collapsed_de_clk1_ctrl_morpho_kegg_gsva_scores.tsv")
 dna_file <- file.path(results_dir, "expr_collapsed_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv")
 de_dna_file <- file.path(results_dir, "expr_collapsed_de_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv")
+<<<<<<< HEAD
+=======
+
+hall_splice_file <- file.path(results_dir, "expr_splice_clk1_ctrl_morpho_hallmark_gsva_scores.tsv")
+hall_splice_onco_file <- file.path(results_dir, "expr_splice_onco_clk1_ctrl_morpho_hallmark_gsva_scores.tsv")
+kegg_splice_file <- file.path(results_dir, "expr_splice_clk1_ctrl_morpho_kegg_gsva_scores.tsv")
+kegg_splice_onco_file <- file.path(results_dir, "expr_splice_onco_clk1_ctrl_morpho_kegg_gsva_scores.tsv")
+dna_splice_file <- file.path(results_dir, "expr_splice_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv")
+dna_splice_onco_file <- file.path(results_dir, "expr_splice_onco_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv")
+
+# reduce kegg pathways
+hallmark_file <- file.path(root_dir, "analyses", "clustering_analysis", "input", "genesets.tsv")
+>>>>>>> main
 ```
 
 Create histology file for grouping samples
 
 ```{r load files}
+<<<<<<< HEAD
+=======
+hall_to_keep <- read_tsv(hallmark_file) %>%
+  filter(Keep == "Yes")
+ 
+>>>>>>> main
 sample_ids <- c("CTRL1", "CTRL2", "CTRL3", "Treated1", "Treated2", "Treated3")
 treatments <- c("Non-targeting Morpholino", 
                 "Non-targeting Morpholino", 
@@ -52,16 +71,29 @@ treatments <- c("Non-targeting Morpholino",
 df <- tibble(sample_id = sample_ids, Treatment = treatments)
 
 # read in scores and de results
+<<<<<<< HEAD
 hallmark_scores <- read_tsv(gsva_file)
 hallmark_pathways <- unique(hallmark_scores$geneset)
 
 kegg_scores <- read_tsv(kegg_file)
+=======
+hallmark_scores <- read_tsv(gsva_file) %>%
+  filter(geneset %in% hall_to_keep$Geneset)
+hallmark_pathways <- unique(hallmark_scores$geneset)
+
+kegg_scores <- read_tsv(kegg_file) 
+>>>>>>> main
 kegg_pathways <- unique(kegg_scores$geneset)
 
 dna_scores <- read_tsv(dna_file)
 dna_pathways <- unique(dna_scores$geneset)
 
+<<<<<<< HEAD
 hallmark_scores_de <- read_tsv(de_gsva_file)
+=======
+hallmark_scores_de <- read_tsv(de_gsva_file) %>%
+  filter(geneset %in% hall_to_keep$Geneset)
+>>>>>>> main
 hallmark_pathways_de <- unique(hallmark_scores_de$geneset)
 
 kegg_scores_de <- read_tsv(de_kegg_file)
@@ -69,6 +101,30 @@ kegg_pathways_de <- unique(kegg_scores_de$geneset)
 
 dna_scores_de <- read_tsv(de_dna_file)
 dna_pathways_de <- unique(dna_scores_de$geneset)
+<<<<<<< HEAD
+=======
+
+# splicing
+hallmark_scores_sp <- read_tsv(hall_splice_file) %>%
+  filter(geneset %in% hall_to_keep$Geneset)
+hallmark_pathways_sp <- unique(hallmark_scores_sp$geneset)
+
+kegg_scores_sp <- read_tsv(kegg_splice_file)
+kegg_pathways_sp <- unique(kegg_scores_sp$geneset)
+
+dna_scores_sp <- read_tsv(dna_splice_file)
+dna_pathways_sp <- unique(dna_scores_sp$geneset)
+
+hallmark_scores_sp_onc <- read_tsv(hall_splice_onco_file) %>%
+  filter(geneset %in% hall_to_keep$Geneset)
+hallmark_pathways_sp_onc <- unique(hallmark_scores_sp_onc$geneset)
+
+kegg_scores_sp_onc <- read_tsv(kegg_splice_onco_file)
+kegg_pathways_sp_onc <- unique(kegg_scores_sp_onc$geneset)
+
+dna_scores_sp_onc <- read_tsv(dna_splice_onco_file)
+dna_pathways_sp_onc <- unique(dna_scores_sp_onc$geneset)
+>>>>>>> main
 ```
 
 Run GSVA score comparisons between samples with and without CLK1 morpholino
@@ -92,9 +148,18 @@ ctrl_ids <- df %>%
 # treat_ids and ctrl_ids are vectors containing IDs for treated and control samples
 ```{r create gene lists}
 # Lists of score data frames and pathway lists
+<<<<<<< HEAD
 score_sources <- list(kegg_scores, hallmark_scores, dna_scores, kegg_scores_de, hallmark_scores_de, dna_scores_de)
 pathway_sources <- list(kegg_pathways, hallmark_pathways, dna_pathways, kegg_pathways_de, hallmark_pathways_de, dna_pathways_de)
 score_names <- c("kegg", "hallmark", "dna_repair", "kegg_de", "hallmark_de", "dna_repair_de") # Names for output files
+=======
+score_sources <- list(kegg_scores, hallmark_scores, dna_scores, kegg_scores_de, hallmark_scores_de, dna_scores_de,
+                      kegg_scores_sp, hallmark_scores_sp, dna_scores_sp, kegg_scores_sp_onc, hallmark_scores_sp_onc, dna_scores_sp_onc)
+pathway_sources <- list(kegg_pathways, hallmark_pathways, dna_pathways, kegg_pathways_de, hallmark_pathways_de, dna_pathways_de,
+                        kegg_pathways_sp, hallmark_pathways_sp, dna_pathways_sp, kegg_pathways_sp_onc, hallmark_pathways_sp_onc, dna_pathways_sp_onc)
+score_names <- c("kegg", "hallmark", "dna_repair", "kegg_de", "hallmark_de", "dna_repair_de",
+                 "kegg_sp", "hallmark_sp", "dna_repair_sp", "kegg_sp_onc", "hallmark_sp_onc", "dna_repair_sp_onc") # Names for output files
+>>>>>>> main
 
 for (i in 1:length(score_sources)) {
   score_df <- score_sources[[i]]
@@ -166,9 +231,14 @@ for (i in 1:length(score_sources)) {
   score_df_summarized <- score_df %>%
     mutate(Treatment = ifelse(grepl("CTRL", sample_id), "Non-targeting Morpholino", "CLK1 Exon 4 Morpholino")) %>%
     group_by(geneset, Treatment) %>%
+<<<<<<< HEAD
     summarise(Mean_GSVA_Score = mean(gsva_score, na.rm = TRUE)) %>%
     ungroup() 
   
+=======
+    summarise(Mean_GSVA_Score = mean(gsva_score, na.rm = TRUE), .groups = 'drop')
+
+>>>>>>> main
 # Re-order
 ordering_metric <- score_df_summarized %>%
   filter(Treatment == "CLK1 Exon 4 Morpholino") %>%
@@ -189,15 +259,24 @@ score_df_summarized$geneset <- factor(score_df_summarized$geneset, levels = orde
     
   score_name <- score_names[i]
   gsva_scores_mat <- score_df %>%
+<<<<<<< HEAD
   spread(sample_id, gsva_score) %>%
   tibble::column_to_rownames("geneset") %>%
   as.matrix()
   
   if (i %in% c(1,4)){
+=======
+  spread(., sample_id, gsva_score) %>%
+  tibble::column_to_rownames("geneset") %>%
+  as.matrix()
+  
+  if (i %in% c(1,4,7,10)){
+>>>>>>> main
     height <- 30
     width <- 12
     cell_width <- 3
   }
+<<<<<<< HEAD
   else if (i %in% c(2,5)){
     height <- 15
     width <- 8
@@ -209,11 +288,26 @@ score_df_summarized$geneset <- factor(score_df_summarized$geneset, levels = orde
     width <- 5.5
     cell_width <- 3
 
+=======
+  else if (i %in% c(2,5,8,11)){
+    height <- 10
+    width <- 8
+    cell_width <- 3
+  }
+  else if (i %in% c(3,6,9,12)){
+    height <- 3.5
+    width <- 5.5
+    cell_width <- 3
+>>>>>>> main
   }
   
 heatmap_obj <- Heatmap(
   gsva_scores_mat,
+<<<<<<< HEAD
   col = colorRamp2(c(-.8, 0, .8), c("blue", "white", "darkorange")),
+=======
+  col = colorRamp2(c(-.8, 0, .8), c("darkblue", "white", "red")),
+>>>>>>> main
   name = "GSVA Scores",
   na_col = "whitesmoke",
   width = unit(cell_width, "cm"),

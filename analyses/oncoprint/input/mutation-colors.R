@@ -13,7 +13,11 @@ colors = c("Missense_Mutation" = "#3CB371",
             "Fusion" = "#7B68EE",
             "Multi_Hit_Fusion" = "#CD96CD",
            # "Multi_Hit" = "#FF3E96",
+<<<<<<< HEAD
             "Multi_Hit" = "#7B68EE",
+=======
+            "Multi_Hit" = "lightsalmon4",
+>>>>>>> main
             "Del" = "#313695",
             "Loss" = "#CAE1FF",
             "Amp" = "#c51b7d",

@@ -68,6 +68,7 @@ ora_results <- enricher(
 )
 
 ora_result_df <- data.frame(ora_results@result)
+<<<<<<< HEAD
 enrich_plot_func<- enrichplot::dotplot(ora_results) +   
   theme_Publication() +
   scale_color_gradient(name = "Adjusted p-value", 
@@ -78,5 +79,27 @@ ggplot2::ggsave(ora_dotplot_func_path,
                 plot=enrich_plot_func,
                 width=9,
                 height=5,
+=======
+options(enrichplot.colours = c("darkorange","blue"))
+enrich_plot_func <- enrichplot::dotplot(ora_results,
+                                        x = "geneRatio",
+                                        size = "Count",
+                                        color = "p.adjust",
+                                        label_format = 30,
+                                        showCategory = 20) +   
+  labs(y = "Pathway",
+       x = "Gene Ratio") +
+  theme_Publication() +
+  scale_size(name = "Gene Count") +  
+  scale_fill_gradient(low = "darkorange", high = "blue", name = "B-H p-value") +
+  guides(
+    fill = guide_colorbar(title = "B-H p-value", label.position = "right", barwidth = 1, barheight = 4)
+  )
+
+ggplot2::ggsave(ora_dotplot_func_path,
+                plot=enrich_plot_func,
+                width=8,
+                height=4,
+>>>>>>> main
                 device="pdf",
                 dpi=300)

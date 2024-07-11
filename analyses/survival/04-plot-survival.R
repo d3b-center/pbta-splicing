@@ -37,6 +37,11 @@ names(file_names) <- groups
 
 # Loop through histology groups and subtypes to generate Kaplan-Meier plots from models
 
+<<<<<<< HEAD
+=======
+pdf(NULL)
+
+>>>>>>> main
 for (group in groups){
   
   input_dir <- file.path(analysis_dir, "results", dir_names[group])

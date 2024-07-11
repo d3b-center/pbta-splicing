@@ -47,15 +47,27 @@ Set file paths
 ```{r}
 histologies_file <- file.path(results_dir, "splicing_indices_with_survival.tsv")
 
+<<<<<<< HEAD
 diff_psi_file <- file.path(data_dir, "splice-events-rmats.tsv.gz")
+=======
+diff_psi_file <- file.path(root_dir, "analyses",
+                           "CLK1-splicing_correlations", "results",
+                           "clk1-splice-events-rmats.tsv")
+>>>>>>> main
 ```
 
 Load histologies and subset for HGG and DMG
 
 ```{r}
 hgg_hist <- read_tsv(histologies_file) %>%
+<<<<<<< HEAD
   dplyr::filter(Histology %in% c("DIPG or DMG", "Other high-grade glioma")) %>%
   dplyr::select(Kids_First_Biospecimen_ID, mol_sub_group,
+=======
+  dplyr::filter(Histology %in% c("DIPG or DMG", "Other high-grade glioma"),
+                !is.na(OS_days) | !is.na(EFS_days)) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, Histology, mol_sub_group,
+>>>>>>> main
                 OS_days, OS_years, OS_status,
                 EFS_days, EFS_years, EFS_status)
 ```
@@ -75,6 +87,7 @@ hgg_hist <- hgg_hist %>%
   left_join(splice_CLK1_df)
 ```
 
+<<<<<<< HEAD
 Calculate CLK1 quantiles and define samples as Low, Medium, High
 
 ```{r}
@@ -85,6 +98,24 @@ upper_sbi <- quantiles_clk1[2]
 hgg_hist <- hgg_hist %>%
   mutate(clk1_status = case_when(PSI > upper_sbi ~ "CLK1 exon 4 High",
                                  PSI < lower_sbi ~ "CLK1 exon 4 Low",
+=======
+Calculate CLK1 quantiles and define samples as Low, Medium, High within tumor histologies
+
+```{r}
+quantiles_clk1_hgg <- quantile(hgg_hist$PSI[hgg_hist$Histology == "Other high-grade glioma"], probs=c(.25, .75), na.rm = TRUE)
+lower_sbi_hgg <- quantiles_clk1_hgg[1]
+upper_sbi_hgg <- quantiles_clk1_hgg[2]
+
+quantiles_clk1_dmg <- quantile(hgg_hist$PSI[hgg_hist$Histology == "DIPG or DMG"], probs=c(.25, .75), na.rm = TRUE)
+lower_sbi_dmg <- quantiles_clk1_dmg[1]
+upper_sbi_dmg <- quantiles_clk1_dmg[2]
+
+hgg_hist <- hgg_hist %>%
+  mutate(clk1_status = case_when((Histology == "DIPG or DMG" & PSI > upper_sbi_dmg) |
+                                  (Histology == "Other high-grade glioma" & PSI > upper_sbi_hgg) ~ "CLK1 exon 4 High",
+                                 (Histology == "DIPG or DMG" & PSI <= lower_sbi_dmg) |
+                                  (Histology == "Other high-grade glioma" & PSI <= lower_sbi_hgg) ~ "CLK1 exon 4 Low",
+>>>>>>> main
                                  TRUE ~ "Middle"))
 ```
 

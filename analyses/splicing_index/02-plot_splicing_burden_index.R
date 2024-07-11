@@ -3,7 +3,11 @@
 # script that takes in SBI tsv files and  computes relative proportion 
 # (splicing burden index of aberrant splicing changes in samples
 #
+<<<<<<< HEAD
 # written by Ammar Naqvi
+=======
+# written by Ammar Naqvi, Jo Lynne Rokita
+>>>>>>> main
 #
 # usage: Rscript 02-plot_splicing_burden_index.R
 ################################################################################
@@ -56,10 +60,13 @@ palette_df <- read_tsv(palette_file) %>%
   select(Histology, plot_group_hex) %>%
   unique()
 
+<<<<<<< HEAD
 plot_colors <- palette_df$plot_group_hex
 names(plot_colors) <- palette_df$Histology
 plot_colors <- list(plot_colors)
 
+=======
+>>>>>>> main
 # Function to calculate medians and ranks
 prepare_data_for_plot <- function(df, grouping_variable = NULL, min_samples = 5) {
   df %>%
@@ -98,15 +105,26 @@ plot_sbi <- function(sbi_df, plot_file) {
            Histology = fct_reorder(Histology, SI, .fun = median)
     ) 
   
+<<<<<<< HEAD
+=======
+  plot_colors <- si_cdf_plot$plot_group_hex
+  names(plot_colors) <- si_cdf_plot$Histology
+  
+  
+>>>>>>> main
   p <- ggplot(si_cdf_plot) + 
     aes(
       x = group_rank,
       y = SI 
     ) 
   
+<<<<<<< HEAD
   p <- p + #geom_point(color = si_cdf_plot$plot_group_hex, 
             #          alpha = 0.7, shape = 21) +
     geom_point(aes(colour=plot_group_hex, fill=plot_group_hex), 
+=======
+  p <- p + geom_point(aes(fill=Histology, alpha = 0.8), 
+>>>>>>> main
                shape = 21, colour = "black", size = 3) + 
   
     # Add summary line for median
@@ -138,7 +156,11 @@ plot_sbi <- function(sbi_df, plot_file) {
     ) +
     
     facet_wrap(~Histology + sample_size, nrow = 1, strip.position = "bottom")  +
+<<<<<<< HEAD
     scale_color_identity() 
+=======
+    scale_fill_manual(values = plot_colors) 
+>>>>>>> main
 
   # Save plot
   ggsave(filename = plot_file, path = plots_dir, plot = p,

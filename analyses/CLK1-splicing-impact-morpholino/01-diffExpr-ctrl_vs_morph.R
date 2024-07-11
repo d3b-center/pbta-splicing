@@ -152,6 +152,7 @@ genelist_cat <- genelist_ref_df %>%
                                            "TumorSuppressorGene, TranscriptionFactor, RNA Binding Protein, Epigenetic",
                                            "TumorSuppressorGene, RNA Binding Protein, Epigenetic", 
                                            "TumorSuppressorGene, TranscriptionFactor, Epigenetic", "TumorSuppressorGene, Epigenetic",
+<<<<<<< HEAD
                                            "TumorSuppressorGene, Kinase, Epigenetic", "Kinase, TumorSuppressorGene, Epigenetic") ~ "Tumor Suppressor",
                                type %in% c("Kinase, Oncogene", "Oncogene", "Oncogene, Kinase", "Oncogene, TranscriptionFactor",
                                            "Oncogene, RNA Binding Protein", "Oncogene, TranscriptionFactor, RNA Binding Protein",
@@ -165,6 +166,16 @@ genelist_cat <- genelist_ref_df %>%
                                               "Oncogene, Kinase, Epigenetic", "Kinase, TumorSuppressorGene, Oncogene, Epigenetic",
                                               "Kinase, TumorSuppressorGene, Epigenetic", "Kinase, Oncogene, Epigenetic", "Kinase, Epigenetic",
                                               "Kinase, TumorSuppressorGene", "TumorSuppressorGene, Oncogene, Kinase") ~ "Kinase",
+=======
+                                           "TumorSuppressorGene, Kinase, Epigenetic", "Kinase, TumorSuppressorGene, Epigenetic",
+                                           "Kinase, Oncogene", "Oncogene", "Oncogene, Kinase", "Oncogene, TranscriptionFactor",
+                                           "Oncogene, RNA Binding Protein", "Oncogene, TranscriptionFactor, RNA Binding Protein",
+                                           "Oncogene, TranscriptionFactor, Epigenetic", "Oncogene, Kinase, Epigenetic",
+                                           "Oncogene, Epigenetic", "Kinase, Oncogene, Epigenetic", "Oncogene, RNA Binding Protein, Epigenetic",
+                                           "TranscriptionFactor, Oncogene") ~ "Oncogene or Tumor Suppressor",
+                               TRUE ~ "Other"),
+         plot_subtype = case_when(grepl("Kinase", type) ~ "Kinase",
+>>>>>>> main
                                   type %in% c("Oncogene, TranscriptionFactor", "TumorSuppressorGene, Oncogene, TranscriptionFactor",
                                               "TumorSuppressorGene, TranscriptionFactor", "TranscriptionFactor, Oncogene") ~ "Transcription Factor",
                                   type %in% c("Oncogene, RNA Binding Protein", "TranscriptionFactor, RNA Binding Protein", 
@@ -177,9 +188,13 @@ genelist_cat <- genelist_ref_df %>%
                                               "TumorSuppressorGene, Oncogene, Epigenetic", "TumorSuppressorGene, Epigenetic",
                                               "TranscriptionFactor, Epigenetic", "Oncogene, TranscriptionFactor, Epigenetic",
                                               "Oncogene, Epigenetic") ~ "Epigenetic",
+<<<<<<< HEAD
                                   type == "TumorSuppressorGene" ~ "Other Tumor Suppressor",
                                   type == "Oncogene" ~ "Other Oncogene",
                                   type == "TumorSuppressorGene, Oncogene" ~ "Oncogene or Tumor Suppressor",
+=======
+                                  type %in% c("TumorSuppressorGene, Oncogene", "Oncogene", "TumorSuppressorGene") ~ "Oncogene or Tumor Suppressor",
+>>>>>>> main
                                   type == "TranscriptionFactor" ~ "Transcription Factor",
                                   TRUE ~ type)) %>%
   dplyr::select(Gene_Symbol, plot_type, plot_subtype) %>%
@@ -204,11 +219,18 @@ sign_regl_gene_df <- genes_to_plot %>%
                               log2FoldChange>1 ~ 'Up')) 
 
 # relevel the plot_type and subtype
+<<<<<<< HEAD
 sign_regl_gene_df$plot_type <- factor(sign_regl_gene_df$plot_type, levels = c("Oncogene", "Tumor Suppressor",
                                                                               "Oncogene or Tumor Suppressor", "Other"))
 sign_regl_gene_df$plot_subtype <- factor(sign_regl_gene_df$plot_subtype, levels = c("Kinase", "Oncogene or Tumor Suppressor",
                                                                               "Transcription Factor", "RNA Binding Protein",
                                                                               "Epigenetic", "Other Oncogene", "Other Tumor Suppressor"))
+=======
+sign_regl_gene_df$plot_type <- factor(sign_regl_gene_df$plot_type, levels = c("Oncogene or Tumor Suppressor", "Other"))
+sign_regl_gene_df$plot_subtype <- factor(sign_regl_gene_df$plot_subtype, levels = c("Kinase", "Oncogene or Tumor Suppressor",
+                                                                              "Transcription Factor", "RNA Binding Protein",
+                                                                              "Epigenetic"))
+>>>>>>> main
 unique(sign_regl_gene_df$plot_subtype)
   
 ## plot num of hits per gene fam
@@ -224,11 +246,19 @@ plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(plot
                                  hjust = -0.5, size = 3.5) +
                       theme_Publication() +
                       coord_flip() +
+<<<<<<< HEAD
                       ylim(0,40)
+=======
+                      ylim(0,80)
+>>>>>>> main
 
   
 
 # print and save plot
+<<<<<<< HEAD
 pdf(file_gene_family_plot, height = 8, width = 8, useDingbats = FALSE) 
+=======
+pdf(file_gene_family_plot, height = 6, width = 8, useDingbats = FALSE) 
+>>>>>>> main
 print(plot_barplot_family)
 dev.off()

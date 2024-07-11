@@ -5,11 +5,15 @@ WORKDIR /rocker-build/
 
 ### Install apt-getable packages to start
 #########################################
+<<<<<<< HEAD
 RUN apt-get -y update && apt-get install -y --no-install-recommends
 
 # Install dev libraries and curl
 RUN apt install -y  \
   bedtools \
+=======
+RUN apt-get -y update && apt-get install -y bedtools \
+>>>>>>> main
 	build-essential \
 	bzip2 \
 	cpanminus \
@@ -18,6 +22,12 @@ RUN apt install -y  \
 	libbz2-dev \
 	libcurl4-openssl-dev \
 	libgdal-dev \
+<<<<<<< HEAD
+=======
+        libglpk40 \
+        libglpk-dev \
+        libhdf5-dev \
+>>>>>>> main
 	libgmp-dev \
 	liblzma-dev \
 	libmpfr-dev \
@@ -27,7 +37,11 @@ RUN apt install -y  \
 	libssl-dev \
 	libv8-dev \
 	libxt-dev \
+<<<<<<< HEAD
 	libudunits2-dev\
+=======
+	libudunits2-dev \
+>>>>>>> main
 	zlib1g-dev
 
 # Install java
@@ -68,9 +82,17 @@ RUN R -e 'BiocManager::install(c( \
   "ggVennDiagram", \
   "gridExtra", \
   "GSVA", \
+<<<<<<< HEAD
   "hrbrthemes", \
   "limma", \
   "lspline", \
+=======
+  "Hmisc", \
+  "hrbrthemes", \
+  "limma", \
+  "lspline", \
+  "maftools",\
+>>>>>>> main
   "msigdbr", \
   "optparse", \
   "org.Hs.eg.db", \
@@ -83,6 +105,7 @@ RUN R -e 'BiocManager::install(c( \
   "sva", \
   "survival", \
   "survminer", \
+<<<<<<< HEAD
   "UpSetR" \
 ))' 
 
@@ -92,6 +115,18 @@ RUN R -e "remotes::install_github('d3b-center/annoFuseData', ref = '321bc4f6db6e
 RUN R -e "remotes::install_github('PoisonAlien/maftools', ref = 'd99e992e768cba7bfd7d74d47b773c3575d451eb', dependencies = TRUE)"
 RUN R -e "remotes::install_github('thomasp85/patchwork', ref = '1cb732b129ed6a65774796dc1f618558c7498b66', dependencies = TRUE)"
 RUN R -e "remotes::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
+=======
+  "VennDiagram",\	
+  "UpSetR" \
+))'
+
+
+## install GitHub packages
+RUN R -e "remotes::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
+RUN R -e "remotes::install_github('d3b-center/annoFuseData', ref = '321bc4f6db6e9a21358f0d09297142f6029ac7aa', dependencies = TRUE)"
+RUN R -e "remotes::install_github('thomasp85/patchwork', ref = '1cb732b129ed6a65774796dc1f618558c7498b66', dependencies = TRUE)"
+RUN R -e "remotes::install_github('rcastelo/GSVA', ref = 'df9001cfd07017001dfba07a3099e6b7dc5ce324')"
+>>>>>>> main
 
 # install perl packages
 RUN cpanm install Statistics::Lite
