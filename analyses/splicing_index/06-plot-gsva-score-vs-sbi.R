@@ -21,6 +21,7 @@ analysis_dir <- file.path(root_dir, "analyses", "splicing_index")
 input_dir   <- file.path(analysis_dir, "input")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir   <- file.path(analysis_dir, "plots")
+figures_dir <- file.path(root_dir, "figures")
 
 # Source function for plots theme
 source(file.path(figures_dir, "theme_for_plots.R"))
