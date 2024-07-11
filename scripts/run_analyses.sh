@@ -29,7 +29,7 @@ Rscript 01-generate-cohort-summary-circos-plot.R
 echo "----------------------------------"
 echo stranded-polyA-assessment
 cd ${analyses_dir}/stranded-polyA-assessment
-bash run_module.sh
+#bash run_module.sh
 
 ## histology-specific splice events
 echo "----------------------------------"
@@ -83,6 +83,13 @@ echo "----------------------------------"
 echo "KNS42-cell-line"
 echo "----------------------------------"
 cd ${analyses_dir}/KNS42-cell-line
+bash run_module.sh
+
+## CLK1-splicing-impact-morpholino
+echo "----------------------------------"
+echo "CLK1-splicing-impact-morpholino"
+echo "----------------------------------"
+cd ${analyses_dir}/CLK1-splicing-impact-morpholino
 bash run_module.sh
 
 ## CLK1-splicing-impact-morpholino
