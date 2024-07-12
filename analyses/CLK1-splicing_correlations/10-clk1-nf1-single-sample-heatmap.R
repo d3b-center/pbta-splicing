@@ -51,7 +51,7 @@ cohort_df <- read_tsv(cohort_file)
 goi <- c("CLK1", "NF1")
 clk1_trans_list <- c("CLK1-201", "Total CLK1")
 clk1_splice_list <- "CLK1-201 (Exon4) PSI"
-nf1_trans_list <- c("Total NF1", "NF1-202", "NF1-215")
+nf1_trans_list <- c("Total NF1", "NF1-201", "NF1-202", "NF1-215")
 nf1_splice_list <- c("NF1-202 (Exon23a) PSI", "NF1-215 PSI")
 
 trans_lists <- c(clk1_trans_list, nf1_trans_list)
@@ -146,7 +146,7 @@ row_annot <- as.data.frame(rownames(full_data)) %>%
   dplyr::rename(ID = `rownames(full_data)`) %>%
   mutate(Abundance = case_when(ID == "Total NF1 protein" ~ "Whole Cell Protein",
                            ID %in% c("NF1 pS864", "NF1 pS2796") ~ "Phosphoprotein",
-                           ID %in% c("NF1-202", "CLK1-201", "NF1-215") ~ "Transcript",
+                           ID %in% c("NF1-201", "NF1-202", "CLK1-201", "NF1-215") ~ "Transcript",
                            ID == "Total NF1 mRNA" ~ "Gene",
                            ID %in% c("CLK1-201 Exon4 PSI", "NF1-202 Exon23a PSI", "NF1-215 PSI") ~ "mRNA splicing"))
 

@@ -44,7 +44,7 @@ cptac_phospho_file <- file.path(data_dir, "cptac-protein-imputed-phospho-express
 hope_proteo_file <- file.path(data_dir, "hope-protein-imputed-prot-expression-abundance.tsv.gz")
 hope_phospho_file <- file.path(data_dir, "hope-protein-imputed-phospho-expression-abundance.tsv.gz")
 
-data_file <- file.path(results_dir, "hgg-dmg-clk-nf1-expression-phosphorylation.tsv")
+data_file <- file.path(results_dir, "clk1-nf1-psi-exp-phos-df.rds")
 
 ## read in histology, cohort, and independent specimens file
 cohort_df <- read_tsv(cohort_file) %>%
@@ -70,14 +70,15 @@ hist_rna <- cohort_df %>%
     Kids_First_Biospecimen_ID %in% indep_rna_df$Kids_First_Biospecimen_ID) %>%
   select(Kids_First_Biospecimen_ID, RNA_library, CNS_region, match_id, molecular_subtype, plot_group)
 
-data_df <- read_tsv(data_file) %>%
+data_df <- readRDS(data_file) %>%
+  rownames_to_column(var = "match_id") %>%
   left_join(hist_rna[,c("Kids_First_Biospecimen_ID", "match_id")])
 
 # define lists of nf1 and clk genes
 goi <- c("CLK1", "NF1")
 clk1_trans_list <- c("CLK1-201", "Total CLK1")
 clk1_splice_list <- "CLK1-Exon4_PSI"
-nf1_trans_list <- c("Total NF1", "NF1-202_PC", "NF1-215_RI")
+nf1_trans_list <- c("Total NF1", "NF1_201_PC", "NF1-202_PC", "NF1-215_RI")
 nf1_splice_list <- c("NF1-Exon23a_PSI", "NF1-215_PSI")
 
 all_lists <- c(clk1_trans_list, clk1_splice_list, nf1_trans_list, nf1_splice_list)
@@ -250,6 +251,7 @@ print(combined_pval_mat)
 
 # add rownames
 rownames(combined_cor_mat) <- case_when(rownames(combined_cor_mat) == "CLK1-201 (Exon4) PSI" ~ "CLK1-201 Exon4 PSI",
+                                    rownames(combined_cor_mat) == "NF1-201_PC" ~ "NF1-201",
                                     rownames(combined_cor_mat) == "NF1-202_PC" ~ "NF1-202",
                                     rownames(combined_cor_mat) == "NF1-215_RI" ~ "NF1-215",
                                     rownames(combined_cor_mat) == "NF1-202 (Exon23a) PSI" ~ "NF1-202 Exon23a PSI",
@@ -261,6 +263,7 @@ rownames(combined_cor_mat) <- case_when(rownames(combined_cor_mat) == "CLK1-201 
 
 # add rownames
 rownames(combined_pval_mat) <- case_when(rownames(combined_pval_mat) == "CLK1-201 (Exon4) PSI" ~ "CLK1-201 Exon4 PSI",
+                                        rownames(combined_pval_mat) == "NF1-201_PC" ~ "NF1-201",
                                         rownames(combined_pval_mat) == "NF1-202_PC" ~ "NF1-202",
                                         rownames(combined_pval_mat) == "NF1-215_RI" ~ "NF1-215",
                                         rownames(combined_pval_mat) == "NF1-202 (Exon23a) PSI" ~ "NF1-202 Exon23a PSI",
@@ -272,7 +275,7 @@ rownames(combined_pval_mat) <- case_when(rownames(combined_pval_mat) == "CLK1-20
 
 # reorder rownames
 ordered_rows <- c("CLK1-201 Exon4 PSI", "NF1-202 Exon23a PSI", "NF1-215 PSI",
-                  "CLK1-201", "Total CLK1", "NF1-202", "NF1-215", "Total NF1",
+                  "CLK1-201", "Total CLK1", "NF1-201", "NF1-202", "NF1-215", "Total NF1",
                   "NF1 pS864", "NF1 pS2796", "Total NF1 protein")
 combined_cor_mat <- combined_cor_mat[ordered_rows,]
 combined_pval_mat <- combined_pval_mat[ordered_rows,]
@@ -282,7 +285,7 @@ row_annot <- as.data.frame(rownames(combined_cor_mat)) %>%
   dplyr::rename(ID = `rownames(combined_cor_mat)`) %>%
   mutate(Feature = case_when(ID == "Total NF1 protein" ~ "Whole Cell Protein",
                                ID %in% c("NF1 pS864", "NF1 pS2796") ~ "Phosphoprotein",
-                               ID %in% c("NF1-202", "CLK1-201", "NF1-215",
+                               ID %in% c("NF1-201", "NF1-202", "CLK1-201", "NF1-215",
                                          "Total NF1", "Total CLK1") ~ "RNA Expression",
                                ID %in% c("CLK1-201 Exon4 PSI", "NF1-202 Exon23a PSI", "NF1-215 PSI") ~ "mRNA splicing"))
 
@@ -352,9 +355,10 @@ dev.off()
 # create dfs for generating expr-prot and expr-prot scatter plots
 proteo_scatter_df <- clk_nf1_proteo_df %>%
   left_join(mol_df %>% dplyr::select(match_id, `CLK1-201 (Exon4) PSI`, `Total CLK1`, `CLK1-201`, 
-                                     `Total NF1`, `NF1-202`, `NF1-202 (Exon23a) PSI`,
+                                     `Total NF1`, `NF1-201`, `NF1-202`, `NF1-202 (Exon23a) PSI`,
                                      `NF1-215 PSI`, `NF1-215`)) %>%
   dplyr::rename(`CLK1-201 Exon4 PSI` = `CLK1-201 (Exon4) PSI`,
+                `NF1-201 Log2 TPM` = `NF1-201`,
                 `NF1-202 Log2 TPM` = `NF1-202`,
                 `NF1-215 PSI` = `NF1-215 PSI`,
                 `NF1-202 Exon23a PSI` = `NF1-202 (Exon23a) PSI`,
@@ -369,11 +373,12 @@ phos_scatter_df <- clk_nf1_phospho_df %>%
   # select only significant
   select(match_id, `NF1-S2796`, `NF1-S864`) %>%
   left_join(mol_df %>% dplyr::select(match_id, `CLK1-201 (Exon4) PSI`, `Total CLK1`, `CLK1-201`, 
-                                     `Total NF1`, `NF1-202`, `NF1-202 (Exon23a) PSI`,
+                                     `Total NF1`, `NF1-201`, `NF1-202`, `NF1-202 (Exon23a) PSI`,
                                      `NF1-215 PSI`, `NF1-215`, NF1)) %>%
   dplyr::rename(`NF1 pS2796` = `NF1-S2796`,
                 `NF1 pS864` = `NF1-S864`,
                 `CLK1-201 Exon4 PSI` = `CLK1-201 (Exon4) PSI`,
+                `NF1-201 Log2 TPM` = `NF1-201`,
                 `NF1-202 Log2 TPM` = `NF1-202`,
                 `NF1-215 PSI` = `NF1-215 PSI`,
                 `NF1-202 Exon23a PSI` = `NF1-202 (Exon23a) PSI`,
