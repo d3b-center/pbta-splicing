@@ -43,7 +43,7 @@ clin_df <- vroom(clin_df) %>%
 clk1_targets <- read_lines(clk1_target_file)
 
 crispr <- read_csv(crispr_score) %>%
-  filter(wald_p_value < 0.05 & wald_fdr < 0.05 & z < 1.5) %>% 
+  filter(wald_p_value < 0.05 & wald_fdr < 0.1 & z < -1.5) %>% 
   mutate(sample_id = str_replace(sample, "_[^_]*$", "")) %>%
   mutate(sample_id = str_replace_all(sample_id, "_", "-")) %>%
   inner_join(clin_df, by="sample_id") %>%
