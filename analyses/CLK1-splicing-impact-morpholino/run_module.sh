@@ -38,3 +38,6 @@ rm Venn*.log
 
 ## lolliplot of splicing cases
 Rscript --vanilla 09-plot_total-splicing-cases.R
+
+## intersect with crispr scores from CCMA
+Rscript --vanilla 10-crispr-screen-intersection.R
