@@ -38,8 +38,9 @@ input
 * `05-ora-analysis.R` performs an over-representation analysis on above splice events that hit functional sites
 * `06-conduct-gsva-analysis.R` performs GSVA on CLK1 morpholino and control morpholino DE and DS events. DS events are delineated by all functional events or all functional events in onco/tsgs. This module uses HALLMARK, KEGG, and DNA repair pathways from https://pubmed.ncbi.nlm.nih.gov/29617664/.
 * `07-run-gsva-comparisons.Rmd` performs CLK1 morpholino vs non targeting morpholino cell line treatment comparisons of GSVA scores HALLMARK, KEGG, and DNA repair pathways from https://pubmed.ncbi.nlm.nih.gov/29617664/.
-* `08-intersection-dex-des.R` intersects dysregulated genes to assess overlap between genes that are both differentially spliced and expressed. Generates Venn diagram and performs ORA of overlapping genes. 
+* `08-intersection-dex-des.R` intersects dysregulated genes to assess overlap between genes that are both differentially spliced and expressed. Generates Venn diagram and performs ORA of overlapping genes.
 * `09-plot_total-splicing-cases.R` plots number of splicing events per type per treatment.
+* `10-crispr-screen-intersection.R` plots the intersection of CLK1 targets and genes that are essential in HGGs (via CRISPR scores obtained from CCMA)
 
 ## Directory structure
 ```
@@ -54,9 +55,12 @@ input
 ├── 07-run-gsva-comparisons.Rmd
 ├── 07-run-gsva-comparisons.html
 ├── 08-intersection-dex-des.R
+├── 09-crispr-screen-intersection.R
 ├── 09-plot_total-splicing-cases.R
+├── 10-crispr-screen-intersection.R
 ├── README.md
 ├── input
+│   ├── CCMA_crispr_genedependency_042024.csv
 │   ├── RBP_known.txt
 │   ├── base_excision_repair.txt
 │   ├── dna_repair_all.txt
@@ -68,13 +72,17 @@ input
 │   ├── nucleotide_excision_repair.txt
 │   └── oncoprint-goi-lists-OpenPedCan-gencode-v39.csv
 ├── plots
+│   ├── CLK1_ds-dex-targets_ora_dotplot-func.pdf
 │   ├── CLK1_ds-dex-targets_ora_dotplot.pdf
 │   ├── CLK1_targets_ora_dotplot.func-sites.pdf
 │   ├── CLK1_targets_ora_dotplot.pdf
+│   ├── clk1-targets-crispr-cbtn-lines.pdf
+│   ├── clk1-targets-crispr_cbtn_lines-sign.pdf
 │   ├── ctrl_vs_clk1-morp_volcano.pdf
 │   ├── dPSI-distr-func-goi.pdf
 │   ├── dPSI-distr-func.pdf
 │   ├── dPSI_distr.pdf
+│   ├── des-dex-venn-func.pdf
 │   ├── des-dex-venn.pdf
 │   ├── gene-fam-DE-plot.pdf
 │   ├── gsva_heatmap_dna_repair.pdf
@@ -91,9 +99,12 @@ input
 │   ├── gsva_heatmap_kegg_sp_onc.pdf
 │   └── splice-types.pdf
 ├── results
+│   ├── clk1-targets-crispr-cbtn-lines.txt
+│   ├── common_genes_de_ds_functional.txt
 │   ├── ctrl_vs_morpho.rsem.genes.collapsed.rds
 │   ├── ctrl_vs_treated.de.formatted.tsv
 │   ├── ctrl_vs_treated.de.tsv
+│   ├── differential_splice_by_goi_category.tsv
 │   ├── expr_collapsed_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv
 │   ├── expr_collapsed_clk1_ctrl_morpho_hallmark_gsva_scores.tsv
 │   ├── expr_collapsed_clk1_ctrl_morpho_kegg_gsva_scores.tsv
@@ -106,6 +117,7 @@ input
 │   ├── expr_splice_onco_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv
 │   ├── expr_splice_onco_clk1_ctrl_morpho_hallmark_gsva_scores.tsv
 │   ├── expr_splice_onco_clk1_ctrl_morpho_kegg_gsva_scores.tsv
+│   ├── gene_categories.tsv
 │   ├── gsva_score_diff_dna_repair.tsv
 │   ├── gsva_score_diff_dna_repair_de.tsv
 │   ├── gsva_score_diff_dna_repair_sp.tsv
@@ -120,6 +132,10 @@ input
 │   ├── gsva_score_diff_kegg_sp_onc.tsv
 │   ├── morpholino_splice_NF1_0.1_psi_diff_transcripts.tsv
 │   ├── splice-events-significant.tsv
+│   ├── splicing_events.morpho.A3SS.intersectUnip.ggplot.txt
+│   ├── splicing_events.morpho.A5SS.intersectUnip.ggplot.txt
+│   ├── splicing_events.morpho.RI.intersectUnip.ggplot.txt
+│   ├── splicing_events.morpho.SE.intersectUnip.ggplot.txt
 │   └── splicing_events.morpho.intersectUnip.ggplot.txt
-└── run_module.sh
+├── run_module.sh
 ```
