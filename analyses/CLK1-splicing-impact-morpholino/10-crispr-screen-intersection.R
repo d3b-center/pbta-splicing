@@ -1,9 +1,9 @@
 ################################################################################
-# 09-crispr-screen-intersection.R
+# 10-crispr-screen-intersection.R
 # Intersect CRISPR scores with CLK1 targets
 #
 # written by Ammar Naqvi, Jo Lynne Rokita
-# Usage: Rscript 09-crispr-screen-intersection.R
+# Usage: Rscript 10-crispr-screen-intersection.R
 ################################################################################
 
 ## load libraries
@@ -73,7 +73,7 @@ clk1_targets_scores <- mean_z %>%
          mean_z < 1.5)
 
 # Create the plot
-crispr_scores_plot <- ggplot(mean_z, aes(x = reorder(gene, -mean_z), y = mean_z)) +
+crispr_scores_plot <- ggplot(mean_z, aes(x = reorder(gene, mean_z), y = mean_z)) +
   #geom_point(color = "blue", size = 3) +
   geom_point(size=3, colour="blue",size=3) + 
   geom_point(data=clk1_targets_scores, colour="red", size = 3) +
@@ -105,7 +105,7 @@ clk1_targets_scores_z15 <- mean_z_15 %>%
   filter(gene %in% clk1_targets_crispr)
 
 # Create the plot
-crispr_scores_z_plot <- ggplot(mean_z_15, aes(x = reorder(gene, -mean_z), y = mean_z)) +
+crispr_scores_z_plot <- ggplot(mean_z_15, aes(x = reorder(gene, mean_z), y = mean_z)) +
   geom_point(size=3, colour="blue",size=3) + 
   geom_point(data=clk1_targets_scores_z15, colour="red", size = 3) +
   geom_point(data=clk1_targets_scores_z15, colour="black", size = 3, pch = 21) +
