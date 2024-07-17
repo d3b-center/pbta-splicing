@@ -82,7 +82,8 @@ clk1_targets_scores_z15 <- mean_z_15 %>%
 
 # Create the plot
 crispr_scores_z_plot <- ggplot(mean_z_15, aes(x = reorder(gene, -mean_z), y = mean_z)) +
-  geom_point(size=3, colour="blue",size=3) + 
+  geom_point(size=3, colour="gray89") + 
+  geom_point(size=3, colour = "gray50", pch = 21) + 
   geom_point(data=clk1_targets_scores_z15, colour="red", size = 3) +
   geom_point(data=clk1_targets_scores_z15, colour="black", size = 3, pch = 21) +
   labs(title = "CRISPR Depedency Scores",
