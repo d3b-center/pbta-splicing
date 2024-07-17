@@ -10,7 +10,8 @@
 suppressPackageStartupMessages({
   library("ggplot2")
   library("vroom")
-  library("tidyverse") 
+  library("tidyverse")
+  library("ggrepel")
 })
 
 # Get `magrittr` pipe
@@ -48,14 +49,21 @@ clin_df <- vroom(clin_df) %>%
 
 clk1_targets <- read_lines(clk1_target_file)
 
-crispr <- read_csv(crispr_score) %>%
-  filter(wald_p_value < 0.05 & wald_fdr < 0.10) %>% 
+crispr_df <- read_csv(crispr_score) 
+
+# filter for HGG cell lines only 
+crispr_dep <- crispr_df %>%
+  filter(wald_p_value < 0.05 & wald_fdr < 0.05 & z < -1.5) %>% 
   mutate(sample_id = str_replace(sample, "_[^_]*$", "")) %>%
   mutate(sample_id = str_replace_all(sample_id, "_", "-")) %>%
   inner_join(clin_df, by="sample_id") %>%
   dplyr::filter(composition=="Solid Tissue") %>%
-  dplyr::select(gene,sample_id,z,beta) %>%
-  distinct()
+  dplyr::select(gene,sample,sample_id,z,beta) %>%
+  group_by(gene, sample_id) %>%
+  summarise(z = mean(z),
+            beta = mean(beta)) %>%
+  ungroup()
+
 
 
 
