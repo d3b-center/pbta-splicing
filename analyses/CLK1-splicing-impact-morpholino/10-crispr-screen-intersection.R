@@ -8,15 +8,9 @@
 
 ## load libraries
 suppressPackageStartupMessages({
-  library("clusterProfiler")
-  library("msigdbr")
-  library("org.Hs.eg.db")
   library("ggplot2")
-  library("DOSE")
   library("vroom")
   library("tidyverse")
-  library('ggVennDiagram')
-  
 })
 
 # Get `magrittr` pipe
