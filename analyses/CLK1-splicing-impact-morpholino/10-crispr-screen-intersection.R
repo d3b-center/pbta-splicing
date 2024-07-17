@@ -2,7 +2,7 @@
 # 09-crispr-screen-intersection.R
 # Intersect CRISPR scores with CLK1 targets
 #
-# written by Ryan Corbett, Jo Lynne Rokita
+# written by Ammar Naqvi, Jo Lynne Rokita
 # Usage: Rscript 09-crispr-screen-intersection.R
 ################################################################################
 
