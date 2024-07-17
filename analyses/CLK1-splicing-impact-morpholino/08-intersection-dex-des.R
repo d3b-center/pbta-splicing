@@ -188,12 +188,12 @@ venn_diag<- ggVennDiagram(x=list(dex_comb_subset$geneSymbol, splice_func_df$gene
                           category.names = c("DE" , "DS", "DG"),
                           label_percent_digit = 1) +  
   scale_fill_distiller(palette = "Blues", direction = 1, name = expression(bold("Gene count"))) + 
-  labs(title = expression(bold("Differentially expressed and spliced genes"))) +
+  labs(title = expression(bold("Differentially expressed and spliced genes and dependent genes"))) +
   coord_flip()
 
 ggplot2::ggsave(venn_output_func_file,
                 plot=venn_diag,
-                width=5.5,
+                width=6.5,
                 height=4,
                 device="pdf",
                 dpi=300)
