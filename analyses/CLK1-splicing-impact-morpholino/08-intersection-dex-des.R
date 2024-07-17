@@ -183,8 +183,8 @@ df_sign_targets_crispr <- data.frame(geneSymbol = sign_targets_crispr)
 venn_diag<- ggVennDiagram(x=list(dex_comb_subset$geneSymbol, splice_func_df$geneSymbol,df_sign_targets_crispr$geneSymbol), 
                           edge_lty = "dashed", 
                           edge_size = 1,
-                          label_size = 6,
-                          set_size = 5,
+                          label_size = 5,
+                          set_size = 4,
                           category.names = c("DE" , "DS", "DG"),
                           label_percent_digit = 1) +  
   scale_fill_distiller(palette = "Blues", direction = 1, name = expression(bold("Gene count"))) + 
