@@ -37,6 +37,8 @@ clk1_target_file <- file.path(results_dir,"common_genes_de_ds_functional.txt")
 
 ## ouput files
 clk1_targets_crispr_file <- file.path(results_dir,"clk1-targets-crispr-cbtn-lines.txt")
+gene_dependent_crispr_file <- file.path(results_dir,"sign-crispr-cbtn-lines.txt")
+
 crispr_score_plot_file <- file.path(plots_dir,"clk1-targets-crispr-cbtn-lines.pdf")
 crispr_score_sign_plot_file <- file.path(plots_dir,"clk1-targets-crispr_cbtn_lines-sign.pdf")
 
@@ -55,6 +57,8 @@ crispr <- read_csv(crispr_score) %>%
   dplyr::select(gene,sample_id,z,beta) %>%
   distinct()
 
+
+
 clk1_targets_crispr <- intersect(clk1_targets, crispr$gene)
 
 unique(clk1_targets_crispr) %>%
@@ -70,7 +74,7 @@ mean_z <- crispr %>%
 ## identify CLK1 targets
 clk1_targets_scores <- mean_z %>%
   filter(gene %in% clk1_targets_crispr,
-         mean_z < 1.5)
+         mean_z < -1.5)
 
 # Create the plot
 crispr_scores_plot <- ggplot(mean_z, aes(x = reorder(gene, -mean_z), y = mean_z)) +
@@ -99,6 +103,10 @@ mean_z_15 <- crispr %>%
   summarise(mean_z = mean(z, na.rm = TRUE)) %>%
   arrange(desc(mean_z)) %>% 
   filter(mean_z < -1.5)
+
+unique(mean_z_15$gene) %>%
+  write_lines(gene_dependent_crispr_file)
+
 
 ## identify CLK1 targets
 clk1_targets_scores_z15 <- mean_z_15 %>%
