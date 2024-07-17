@@ -170,14 +170,22 @@ total_events_func <- splice_func_df %>%
   dplyr::select(geneSymbol) %>% 
   unique()
 
+sign_targets_crispr_file <- file.path(results_dir,"sign-crispr-cbtn-lines.txt")
+sign_targets_crispr <- readLines(sign_targets_crispr_file) 
+
+# Define header names
+header_names <- c("geneSymbol")
+
+# Create a data frame with header names
+df_sign_targets_crispr <- data.frame(geneSymbol = sign_targets_crispr)
 
 ## plot venn diagram
-venn_diag<- ggVennDiagram(x=list(dex_comb_subset$geneSymbol, splice_func_df$geneSymbol), 
+venn_diag<- ggVennDiagram(x=list(dex_comb_subset$geneSymbol, splice_func_df$geneSymbol,df_sign_targets_crispr$geneSymbol), 
                           edge_lty = "dashed", 
                           edge_size = 1,
                           label_size = 6,
                           set_size = 5,
-                          category.names = c("DE" , "DS"),
+                          category.names = c("DE" , "DS", "DG"),
                           label_percent_digit = 1) +  
   scale_fill_distiller(palette = "Blues", direction = 1, name = expression(bold("Gene count"))) + 
   labs(title = expression(bold("Differentially expressed and spliced genes"))) +
