@@ -193,13 +193,13 @@ venn_diag<- ggVennDiagram(x=list(dex_comb_subset$geneSymbol, splice_func_df$gene
 
 ggplot2::ggsave(venn_output_func_file,
                 plot=venn_diag,
-                width=6.5,
+                width=5.5,
                 height=4,
                 device="pdf",
                 dpi=300)
 
 
-common <- intersect(unique(dex_comb_subset$geneSymbol), unique(splice_func_df$geneSymbol)) %>%
+common <- intersect(unique(dex_comb_subset$geneSymbol), unique(splice_func_df$geneSymbol), unique(df_sign_targets_crispr$geneSymbol)) %>%
   sort() %>%
   write_lines(file.path(results_dir, "common_genes_de_ds_functional.txt"))
 
