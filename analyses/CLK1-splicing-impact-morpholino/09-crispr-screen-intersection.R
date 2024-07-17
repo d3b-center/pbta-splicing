@@ -10,7 +10,7 @@
 suppressPackageStartupMessages({
   library("ggplot2")
   library("vroom")
-  library("tidyverse")
+  library("tidyverse") 
 })
 
 # Get `magrittr` pipe
