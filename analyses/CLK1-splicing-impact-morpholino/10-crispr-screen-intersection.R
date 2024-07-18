@@ -96,7 +96,6 @@ crispr_scores_z_plot <- ggplot(crispr_dep_each, aes(x = reorder(gene, z), y = z)
   labs(title = paste0(each),
        x = "Gene",
        y = "CRISPR Dependencey Z-score") +
-  #geom_text_repel(data = mean_z_15 %>% filter(gene %in% clk1_targets_crispr), aes(label = gene), color = "black") +
   geom_text_repel(data = crispr_dep_each %>% filter(gene %in% clk1_targets_crispr_intersect$gene), 
                   aes(label = gene), color = "black", 
                   nudge_y = 0.7, # Adjust the nudging value to avoid overlap
@@ -104,16 +103,13 @@ crispr_scores_z_plot <- ggplot(crispr_dep_each, aes(x = reorder(gene, z), y = z)
                   point.padding = 0.5, # Add padding around the point
                   segment.size = 0.2, # Set the size of the line segment connecting the label to the point
                   max.overlaps = Inf) + # Allow for infinite overlaps, which ggrepel will handle
- # facet_grid(~sample_id, scales = "free_x") +
   theme_Publication() +
   theme(
     panel.grid.major = element_blank(),  # Remove major grid lines
     panel.grid.minor = element_blank(),  # Remove minor grid lines
     axis.text.x = element_blank(),  # Remove x-axis labels
     axis.ticks.x = element_blank()  # Remove x-axis ticks
-  ) +
-    annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, linewidth = 0.6)+
-    annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, linewidth = 0.5)
+  )
 
 # Save plot as pdf
 pdf(file.path(paste0(plots_dir, "/clk1-crispr-swoosh-", each, ".pdf")), height = 4, width = 6)
