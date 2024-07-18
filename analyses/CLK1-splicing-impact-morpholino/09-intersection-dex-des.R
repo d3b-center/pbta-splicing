@@ -1,5 +1,5 @@
 ################################################################################
-# 08-intersection-dex-des.R
+# 10-intersection-dex-des.R
 # Over-represenative analysis of mis-spliced genes that have splicing variants
 # impacting functional sitesmediated by CLK1
 #
@@ -66,14 +66,15 @@ psi_comb <- splicing_df %>%
                                 IncLevelDifference <= -.10 ~ "Inclusion",
                                 TRUE ~ NA_character_),
          abs_IncLevelDifference = abs(IncLevelDifference)) %>%
-  filter(!is.na(Preference))
+  filter(!is.na(Preference)) 
 
 dex_comb  <-  read_tsv(de_file) %>%
   mutate(Preference = case_when(log2FoldChange > 2 & padj < 0.05 ~ "Up",
                                 log2FoldChange < 2 & padj < 0.05 ~ "Down",
                                 TRUE ~ NA_character_)) %>%
   filter(!is.na(Preference)) %>%
-  dplyr::rename(geneSymbol = Gene_Symbol)
+  dplyr::rename(geneSymbol = Gene_Symbol) %>%
+  write_tsv(file.path(results_dir, "de_genes.tsv"))
 
 intersect <- psi_comb %>%
   inner_join(dex_comb, by='geneSymbol', relationship = "many-to-many",
@@ -170,22 +171,16 @@ total_events_func <- splice_func_df %>%
   dplyr::select(geneSymbol) %>% 
   unique()
 
-sign_targets_crispr_file <- file.path(results_dir,"sign-crispr-cbtn-lines.txt")
-sign_targets_crispr <- readLines(sign_targets_crispr_file) 
-
 # Define header names
 header_names <- c("geneSymbol")
 
-# Create a data frame with header names
-df_sign_targets_crispr <- data.frame(geneSymbol = sign_targets_crispr)
-
 ## plot venn diagram
-venn_diag<- ggVennDiagram(x=list(dex_comb_subset$geneSymbol, splice_func_df$geneSymbol,df_sign_targets_crispr$geneSymbol), 
+venn_diag<- ggVennDiagram(x=list(dex_comb_subset$geneSymbol, splice_func_df$geneSymbol), 
                           edge_lty = "dashed", 
                           edge_size = 1,
-                          label_size = 5,
-                          set_size = 4,
-                          category.names = c("DE" , "DS", "DG"),
+                          label_size = 6,
+                          set_size = 5,
+                          category.names = c("DE" , "DS"),
                           label_percent_digit = 1) +  
   scale_fill_distiller(palette = "Blues", direction = 1, name = expression(bold("Gene count"))) + 
   #labs(title = expression(bold("Differentially expressed and spliced genes and dependent genes"))) +
@@ -193,13 +188,14 @@ venn_diag<- ggVennDiagram(x=list(dex_comb_subset$geneSymbol, splice_func_df$gene
 
 ggplot2::ggsave(venn_output_func_file,
                 plot=venn_diag,
-                width=6.5,
-                height=5.5,
+                width=5.5,
+                height=4,
                 device="pdf",
                 dpi=300)
 
 
-common <- intersect(unique(dex_comb_subset$geneSymbol), unique(splice_func_df$geneSymbol), unique(df_sign_targets_crispr$geneSymbol)) %>%
+common <- intersect(unique(dex_comb_subset$geneSymbol), 
+                    unique(splice_func_df$geneSymbol)) %>%
   sort() %>%
   write_lines(file.path(results_dir, "common_genes_de_ds_functional.txt"))
 
