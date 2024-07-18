@@ -69,8 +69,8 @@ psi_comb <- splicing_df %>%
   filter(!is.na(Preference)) 
 
 dex_comb  <-  read_tsv(de_file) %>%
-  mutate(Preference = case_when(log2FoldChange > 2 & padj < 0.05 ~ "Up",
-                                log2FoldChange < 2 & padj < 0.05 ~ "Down",
+  mutate(Preference = case_when(log2FoldChange > 1 & padj < 0.05 ~ "Up",
+                                log2FoldChange < -1 & padj < 0.05 ~ "Down",
                                 TRUE ~ NA_character_)) %>%
   filter(!is.na(Preference)) %>%
   dplyr::rename(geneSymbol = Gene_Symbol) %>%
@@ -143,12 +143,12 @@ enrich_plot <- enrichplot::dotplot(ora_results,
     fill = guide_colorbar(title = "B-H p-value", label.position = "right", barwidth = 1, barheight = 4)
   )
 
-ggplot2::ggsave(ora_dotplot_path,
-                plot=enrich_plot,
-                width=7,
-                height=3,
-                device="pdf",
-                dpi=300)
+# ggplot2::ggsave(ora_dotplot_path,
+#                 plot=enrich_plot,
+#                 width=7,
+#                 height=3,
+#                 device="pdf",
+#                 dpi=300)
 
 ## venn for functional splice sites
 ## read table of recurrent functional splicing (skipping)
@@ -186,12 +186,12 @@ venn_diag<- ggVennDiagram(x=list(dex_comb_subset$geneSymbol, splice_func_df$gene
   #labs(title = expression(bold("Differentially expressed and spliced genes and dependent genes"))) +
   coord_flip()
 
-ggplot2::ggsave(venn_output_func_file,
-                plot=venn_diag,
-                width=5.5,
-                height=4,
-                device="pdf",
-                dpi=300)
+# ggplot2::ggsave(venn_output_func_file,
+#                 plot=venn_diag,
+#                 width=5.5,
+#                 height=4,
+#                 device="pdf",
+#                 dpi=300)
 
 
 common <- intersect(unique(dex_comb_subset$geneSymbol), 
@@ -233,10 +233,10 @@ enrich_plot_func <- enrichplot::dotplot(ora_results,
   )+
   xlim(0,0.20)
 
-ggplot2::ggsave(ora_dotplot_func_path,
-                plot=enrich_plot_func,
-                width=8,
-                height=4,
-                device="pdf",
-                dpi=300)
+# ggplot2::ggsave(ora_dotplot_func_path,
+#                 plot=enrich_plot_func,
+#                 width=8,
+#                 height=4,
+#                 device="pdf",
+#                 dpi=300)
 
