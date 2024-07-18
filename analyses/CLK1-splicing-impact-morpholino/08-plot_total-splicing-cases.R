@@ -3,7 +3,7 @@
 #
 # This script plots total splicing cases comparing treated vs ctrl
 #
-# usage: Rscript 09-plot_total-splicing-cases.R
+# usage: Rscript 08-plot_total-splicing-cases.R
 ################################################################################
 
 suppressPackageStartupMessages({
