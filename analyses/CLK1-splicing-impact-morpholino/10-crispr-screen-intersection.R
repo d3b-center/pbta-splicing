@@ -53,7 +53,7 @@ crispr_df <- read_csv(crispr_score)
 
 # filter for HGG cell lines only 
 crispr_dep <- crispr_df %>%
-  filter(wald_p_value < 0.05 & wald_fdr < 0.05 & z < -1.5) %>% 
+  filter(wald_p_value < 0.05 & wald_fdr < 0.05) %>% 
   mutate(sample_id = str_replace(sample, "_[^_]*$", "")) %>%
   mutate(sample_id = str_replace_all(sample_id, "_", "-")) %>%
   inner_join(clin_df, by="sample_id") %>%
@@ -64,18 +64,15 @@ crispr_dep <- crispr_df %>%
             beta = mean(beta)) %>%
   ungroup()
 
-
-
-
 clk1_targets_crispr <- intersect(clk1_targets, crispr$gene)
 
 unique(clk1_targets_crispr) %>%
   write_lines(clk1_targets_crispr_file)
 
 
-# Create swoosh plot (z with < 1.5 only)
+# Create swoosh plot (z with < -1.5 only)
 # Group by gene and calculate the mean z value
-mean_z_15 <- crispr %>%
+mean_z_15 <- crispr_dep %>%
   group_by(gene) %>%
   summarise(mean_z = mean(z, na.rm = TRUE)) %>%
   arrange(desc(mean_z)) %>% 
@@ -88,32 +85,37 @@ unique(mean_z_15$gene) %>%
 clk1_targets_scores_z15 <- mean_z_15 %>%
   filter(gene %in% clk1_targets_crispr)
 
+clk1_targets_scores_z15 <- crispr_dep %>%
+  filter(gene %in% clk1_targets_crispr)
+
 # Create the plot
-crispr_scores_z_plot <- ggplot(mean_z_15, aes(x = reorder(gene, mean_z), y = mean_z)) +
+crispr_scores_z_plot <- ggplot(crispr_dep, aes(x = reorder(gene, z), y = z)) +
   geom_point(size=3, colour="gray89") + 
   geom_point(size=3, colour = "gray50", pch = 21) + 
   geom_point(data=clk1_targets_scores_z15, colour="red", size = 3) +
   geom_point(data=clk1_targets_scores_z15, colour="black", size = 3, pch = 21) +
-  labs(title = "CRISPR Depedency Scores",
-       x = "Gene",
-       y = "Mean Z") +
+  geom_hline(yintercept = -1.5, linetype = "dashed") +
+  labs(x = "Gene",
+       y = "CRISPR Dependencey Z-score") +
   #geom_text_repel(data = mean_z_15 %>% filter(gene %in% clk1_targets_crispr), aes(label = gene), color = "black") +
-  geom_text_repel(data = mean_z_15 %>% filter(gene %in% clk1_targets_crispr), 
+  geom_text_repel(data = crispr_dep %>% filter(gene %in% clk1_targets_crispr), 
                   aes(label = gene), color = "black", 
-                  nudge_y = 0.5, # Adjust the nudging value to avoid overlap
+                  nudge_y = 0.7, # Adjust the nudging value to avoid overlap
                   box.padding = 0.5, # Add padding around the label
                   point.padding = 0.5, # Add padding around the point
                   segment.size = 0.2, # Set the size of the line segment connecting the label to the point
                   max.overlaps = Inf) + # Allow for infinite overlaps, which ggrepel will handle
-  
+  facet_wrap(~sample_id,nrow = 2, scales = "free_x") +
   theme_Publication() +
   theme(
-    panel.background = element_rect(fill = "white", colour = "black"),  # Set the background to white
     panel.grid.major = element_blank(),  # Remove major grid lines
     panel.grid.minor = element_blank(),  # Remove minor grid lines
     axis.text.x = element_blank(),  # Remove x-axis labels
     axis.ticks.x = element_blank()  # Remove x-axis ticks
-  )
+  ) +
+    annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, linewidth = 0.6)+
+    annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, linewidth = 0.5)
+crispr_scores_z_plot
 
 # Save plot as pdf
 pdf(crispr_score_sign_plot_file, height = 4, width = 7.5)
