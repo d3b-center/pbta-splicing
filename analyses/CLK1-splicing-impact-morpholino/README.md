@@ -10,25 +10,6 @@ The purpose of this module is to identify differential splicing and expression b
 bash run_module.sh
 ```
 
-### Input
-```
-data/ctrl-vs-morpholino-gene-counts-rsem-expected_count.tsv
-../../splicing_events_functional_sites/input/unip*bed
-
-input
-├── RBP_known.txt
-├── base_excision_repair.txt
-├── dna_repair_all.txt
-├── epi_known.txt
-├── homologous_recombination.txt
-├── mismatch_repair.txt
-├── morpholno.merged.rmats.tsv
-├── nonhomologous_end_joining.txt
-├── nucleotide_excision_repair.txt
-└── oncoprint-goi-lists-OpenPedCan-gencode-v39.csv
-
-```
-
 ## Folder content
 * `00-get-splice-transcripts.R` identifies the transcripts which are being spliced, using the rMATs morpholino results file
 * `01-diffExpr-ctrl_vs_morph.R` performs differential expression analysis on ctrl vs treated cells using DESeq2. It also subsets based on genes of interests (transcription factors, kinases, etc)
@@ -55,7 +36,6 @@ input
 ├── 07-run-gsva-comparisons.Rmd
 ├── 07-run-gsva-comparisons.html
 ├── 08-intersection-dex-des.R
-├── 09-crispr-screen-intersection.R
 ├── 09-plot_total-splicing-cases.R
 ├── 10-crispr-screen-intersection.R
 ├── README.md
@@ -76,8 +56,17 @@ input
 │   ├── CLK1_ds-dex-targets_ora_dotplot.pdf
 │   ├── CLK1_targets_ora_dotplot.func-sites.pdf
 │   ├── CLK1_targets_ora_dotplot.pdf
-│   ├── clk1-targets-crispr-cbtn-lines.pdf
-│   ├── clk1-targets-crispr_cbtn_lines-sign.pdf
+│   ├── clk1-crispr-swoosh-7316-1746.pdf
+│   ├── clk1-crispr-swoosh-7316-1763.pdf
+│   ├── clk1-crispr-swoosh-7316-1769.pdf
+│   ├── clk1-crispr-swoosh-7316-195.pdf
+│   ├── clk1-crispr-swoosh-7316-3058.pdf
+│   ├── clk1-crispr-swoosh-7316-388.pdf
+│   ├── clk1-crispr-swoosh-7316-5335.pdf
+│   ├── clk1-crispr-swoosh-7316-6349.pdf
+│   ├── clk1-crispr-swoosh-7316-6475.pdf
+│   ├── clk1-crispr-swoosh-7316-85.pdf
+│   ├── clk1-crispr-swoosh-pHGG.pdf
 │   ├── ctrl_vs_clk1-morp_volcano.pdf
 │   ├── dPSI-distr-func-goi.pdf
 │   ├── dPSI-distr-func.pdf
@@ -99,7 +88,7 @@ input
 │   ├── gsva_heatmap_kegg_sp_onc.pdf
 │   └── splice-types.pdf
 ├── results
-│   ├── clk1-targets-crispr-cbtn-lines.txt
+│   ├── clk1-de-ds-crispr-targets.txt
 │   ├── common_genes_de_ds_functional.txt
 │   ├── ctrl_vs_morpho.rsem.genes.collapsed.rds
 │   ├── ctrl_vs_treated.de.formatted.tsv
@@ -137,5 +126,5 @@ input
 │   ├── splicing_events.morpho.RI.intersectUnip.ggplot.txt
 │   ├── splicing_events.morpho.SE.intersectUnip.ggplot.txt
 │   └── splicing_events.morpho.intersectUnip.ggplot.txt
-├── run_module.sh
+└── run_module.sh
 ```
