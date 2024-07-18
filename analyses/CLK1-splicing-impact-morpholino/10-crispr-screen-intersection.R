@@ -1,5 +1,5 @@
 ################################################################################
-# 09-crispr-screen-intersection.R
+# 10-crispr-screen-intersection.R
 # Intersect CRISPR scores with CLK1 targets
 #
 # written by Ammar Naqvi, Jo Lynne Rokita

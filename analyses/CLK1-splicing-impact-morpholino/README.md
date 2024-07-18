@@ -21,8 +21,8 @@ bash run_module.sh
 * `07-run-gsva-comparisons.Rmd` performs CLK1 morpholino vs non targeting morpholino cell line treatment comparisons of GSVA scores HALLMARK, KEGG, and DNA repair pathways from https://pubmed.ncbi.nlm.nih.gov/29617664/.
 * `08-intersection-dex-des.R` intersects dysregulated genes to assess overlap between genes that are both differentially spliced and expressed. Generates Venn diagram and performs ORA of overlapping genes.
 * `08-plot_total-splicing-cases.R` plots number of splicing events per type per treatment.
-* `09-crispr-screen-intersection.R` plots the intersection of CLK1 targets and genes that are essential in HGGs (via CRISPR scores obtained from [CCMA](https://data.mendeley.com/datasets/rnfs539pfw/3), doi: 10.17632/rnfs539pfw.3)
-* `10-intersection-dex-des.R` intersects dysregulated genes to assess overlap between genes that are both differentially spliced and expressed. Generates Venn diagram and performs ORA of overlapping genes.
+* `09-intersection-dex-des.R` intersects dysregulated genes to assess overlap between genes that are both differentially spliced and expressed. Generates Venn diagram and performs ORA of overlapping genes.
+* `10-crispr-screen-intersection.R` plots the intersection of CLK1 targets and genes that are essential in HGGs (via CRISPR scores obtained from [CCMA](https://data.mendeley.com/datasets/rnfs539pfw/3), doi: 10.17632/rnfs539pfw.3)
 
 ## Directory structure
 ```
@@ -36,8 +36,8 @@ bash run_module.sh
 ├── 06-conduct-gsva-analysis.R
 ├── 07-run-gsva-comparisons.Rmd
 ├── 07-run-gsva-comparisons.html
-├── 08-intersection-dex-des.R
-├── 09-plot_total-splicing-cases.R
+├── 08-plot_total-splicing-cases.R
+├── 09-intersection-dex-des.R
 ├── 10-crispr-screen-intersection.R
 ├── README.md
 ├── input
@@ -91,10 +91,16 @@ bash run_module.sh
 ├── results
 │   ├── clk1-de-ds-crispr-targets.txt
 │   ├── common_genes_de_ds_functional.txt
+│   ├── crispr-dependencies.txt
 │   ├── ctrl_vs_morpho.rsem.genes.collapsed.rds
 │   ├── ctrl_vs_treated.de.formatted.tsv
 │   ├── ctrl_vs_treated.de.tsv
+│   ├── de_genes.tsv
 │   ├── differential_splice_by_goi_category.tsv
+│   ├── ds-de-crispr-events-direction.tsv
+│   ├── ds-de-crispr-events-functional-direction.tsv
+│   ├── ds-de-crispr-events-functional-full.tsv
+│   ├── ds-de-crispr-venn.pdf
 │   ├── expr_collapsed_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv
 │   ├── expr_collapsed_clk1_ctrl_morpho_hallmark_gsva_scores.tsv
 │   ├── expr_collapsed_clk1_ctrl_morpho_kegg_gsva_scores.tsv
