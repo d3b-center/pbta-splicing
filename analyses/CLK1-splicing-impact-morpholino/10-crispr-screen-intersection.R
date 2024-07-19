@@ -174,3 +174,18 @@ ggplot2::ggsave(venn_output_file,
                 height=4,
                 device="pdf",
                 dpi=300)
+
+# gather 3 way list to inspect
+mean_data_renamed <- mean_data %>%
+  dplyr::rename(geneSymbol = gene)
+  
+all_events <- ds_genes %>%
+  full_join(de_genes, by='geneSymbol', relationship = "many-to-many",
+            suffix = c("_psi", "_de")) %>%
+  dplyr::select(SpliceID, geneSymbol, dPSI, Preference_psi, Preference_de) %>% 
+  unique() %>%
+  left_join(mean_data_renamed) %>% 
+  filter(geneSymbol %in% c(clk1_targets_de, clk1_targets_ds)) %>%
+  arrange(geneSymbol) %>%
+  dplyr::rename(mean_z = z) %>%
+  write_tsv(file.path(results_dir, "ds-de-crispr-events.tsv"))
