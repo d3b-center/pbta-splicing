@@ -45,8 +45,8 @@ rmats_merged_file  <- file.path(data_dir,"morpholno.merged.rmats.tsv")
 file_psi_func <- file.path(results_dir,"differential_splice_by_goi_category.tsv")
 
 ## output file for plot
-ora_dotplot_path <- file.path(plots_dir, "CLK1_ds-dex-targets_ora_dotplot.pdf")
-ora_dotplot_func_path <- file.path(plots_dir, "CLK1_ds-dex-targets_ora_dotplot-func.pdf")
+ora_dex_dotplot_path <- file.path(plots_dir, "CLK1_dex-targets_ora_dotplot.pdf")
+ora_ds_dotplot_path <- file.path(plots_dir, "CLK1_ds-targets_ora_dotplot.pdf")
 
 venn_output_file <- file.path(plots_dir, "des-dex-venn.pdf")
 venn_output_func_file <- file.path(plots_dir, "des-dex-venn-func.pdf")
@@ -61,16 +61,17 @@ splicing_df  <-  vroom(rmats_merged_file, comment = "#", delim="\t") %>%
 splice_func_df <- read_tsv(file_psi_func)
 
 ## extract strong differential splicing cases (dPSI >= |.10|)
+# preference in relation to CLK1 exon 4 high
 psi_comb <- splicing_df %>% 
-  mutate(Preference = case_when(IncLevelDifference  >= .10 ~ "Skipping",
-                                IncLevelDifference <= -.10 ~ "Inclusion",
+  mutate(Preference = case_when(IncLevelDifference  >= .10 ~ "Inclusion",
+                                IncLevelDifference <= -.10 ~ "Skipping",
                                 TRUE ~ NA_character_),
          abs_IncLevelDifference = abs(IncLevelDifference)) %>%
   filter(!is.na(Preference)) 
 
 dex_comb  <-  read_tsv(de_file) %>%
-  mutate(Preference = case_when(log2FoldChange > 1 & padj < 0.05 ~ "Up",
-                                log2FoldChange < -1 & padj < 0.05 ~ "Down",
+  mutate(Preference = case_when(log2FoldChange > 1 & padj < 0.05 ~ "Down",
+                                log2FoldChange < -1 & padj < 0.05 ~ "Up",
                                 TRUE ~ NA_character_)) %>%
   filter(!is.na(Preference)) %>%
   dplyr::rename(geneSymbol = Gene_Symbol) %>%
@@ -89,7 +90,7 @@ total_events <- psi_comb %>%
   unique()
 
 ## plot venn diagram
-venn_diag<- ggVennDiagram(x=list(dex_comb$geneSymbol, psi_comb$geneSymbol), 
+venn_diag<- ggVennDiagram(x=list(unique(dex_comb$geneSymbol), unique(psi_comb$geneSymbol)), 
                           edge_lty = "dashed", 
                           edge_size = 1,
                           label_size = 6,
@@ -113,9 +114,9 @@ pathway_df <- hs_msigdb_df %>%
   dplyr::filter(gs_cat == "H" | gs_subcat %in% c("CP:KEGG"))
 
 
-## run enrichR to compute and identify significant over-repr pathways
+## run enrichR to compute and identify significant over-repr pathways in DEX genes
 ora_results <- enricher(
-  gene = unique(intersect$geneSymbol), # A vector of your genes of interest
+  gene = unique(dex_comb$geneSymbol), # A vector of your genes of interest
   pvalueCutoff = 0.05,
   qvalueCutoff = 0.1,
   pAdjustMethod = "BH", 
@@ -133,7 +134,7 @@ enrich_plot <- enrichplot::dotplot(ora_results,
                                         size = "Count",
                                         color = "p.adjust",
                                         label_format = 30,
-                                        showCategory = 20) +   
+                                        showCategory = 10) +   
   labs(y = "Pathway",
        x = "Gene Ratio") +
   theme_Publication() +
@@ -143,12 +144,12 @@ enrich_plot <- enrichplot::dotplot(ora_results,
     fill = guide_colorbar(title = "B-H p-value", label.position = "right", barwidth = 1, barheight = 4)
   )
 
-# ggplot2::ggsave(ora_dotplot_path,
-#                 plot=enrich_plot,
-#                 width=7,
-#                 height=3,
-#                 device="pdf",
-#                 dpi=300)
+ ggplot2::ggsave(ora_dex_dotplot_path,
+                 plot=enrich_plot,
+                 width=8,
+                 height=6,
+                 device="pdf",
+                 dpi=300)
 
 ## venn for functional splice sites
 ## read table of recurrent functional splicing (skipping)
@@ -186,12 +187,12 @@ venn_diag<- ggVennDiagram(x=list(dex_comb_subset$geneSymbol, splice_func_df$gene
   #labs(title = expression(bold("Differentially expressed and spliced genes and dependent genes"))) +
   coord_flip()
 
-# ggplot2::ggsave(venn_output_func_file,
-#                 plot=venn_diag,
-#                 width=5.5,
-#                 height=4,
-#                 device="pdf",
-#                 dpi=300)
+ ggplot2::ggsave(venn_output_func_file,
+                 plot=venn_diag,
+                 width=5.5,
+                 height=4,
+                 device="pdf",
+                 dpi=300)
 
 
 common <- intersect(unique(dex_comb_subset$geneSymbol), 
@@ -199,9 +200,9 @@ common <- intersect(unique(dex_comb_subset$geneSymbol),
   sort() %>%
   write_lines(file.path(results_dir, "common_genes_de_ds_functional.txt"))
 
-## run enrichR to compute and identify significant over-repr pathways
+## run enrichR to compute and identify significant over-repr pathways in all DS genes
 ora_results <- enricher(
-  gene = intersect_func, # A vector of your genes of interest
+  gene = unique(psi_comb$geneSymbol), # A vector of your genes of interest
   pvalueCutoff = 0.05, 
   qvalueCutoff = 0.1,
   pAdjustMethod = "BH", 
@@ -222,7 +223,7 @@ enrich_plot_func <- enrichplot::dotplot(ora_results,
                                        size = "Count",
                                        color = "p.adjust",
                                        label_format = 30,
-                                       showCategory = 20) +   
+                                       showCategory = 10) +   
   labs(y = "Pathway",
        x = "Gene Ratio") +
   theme_Publication() +
@@ -230,13 +231,12 @@ enrich_plot_func <- enrichplot::dotplot(ora_results,
   scale_fill_gradient(low = "darkorange", high = "blue", name = "B-H p-value") +
   guides(
     fill = guide_colorbar(title = "B-H p-value", label.position = "right", barwidth = 1, barheight = 4)
-  )+
-  xlim(0,0.20)
+  )
 
-# ggplot2::ggsave(ora_dotplot_func_path,
-#                 plot=enrich_plot_func,
-#                 width=8,
-#                 height=4,
-#                 device="pdf",
-#                 dpi=300)
+ ggplot2::ggsave(ora_ds_dotplot_path,
+                 plot=enrich_plot_func,
+                 width=8,
+                 height=5,
+                 device="pdf",
+                 dpi=300)
 

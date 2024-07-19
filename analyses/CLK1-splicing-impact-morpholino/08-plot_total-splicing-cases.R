@@ -73,3 +73,4 @@ lolliplot_plot <- ggplot(splice_case_counts_df, aes(x=splicing_case, y=n)) +
 pdf(plot_path, height = 3, width = 4.5)
 print(lolliplot_plot)
 dev.off()
+

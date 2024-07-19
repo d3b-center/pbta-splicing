@@ -36,7 +36,6 @@ clin_df <- file.path(data_dir,"histologies.tsv")
 crispr_score <- file.path(input_dir,"CCMA_crispr_genedependency_042024.csv")
 ds_genes_file <- file.path(results_dir,"differential_splice_by_goi_category.tsv")
 de_genes_file <- file.path(results_dir, "de_genes.tsv")
-clk1_target_file <- file.path(results_dir,"common_genes_de_ds_functional.txt")
 categories_file <- file.path(results_dir, "gene_categories.tsv")
 
 ## ouput files
@@ -50,12 +49,10 @@ clin_df <- read_tsv(clin_df, guess_max = 100000) %>%
                 cohort == "PBTA",
                 composition == "Solid Tissue")
 
-#clk1_targets <- read_lines(clk1_target_file)
-clk1_targets <- vroom(file.path(results_dir,"de_genes.tsv"))
-
 categories <- read_tsv(categories_file)
 
 crispr_df <- read_csv(crispr_score) 
+
 ds_genes <- read_tsv(ds_genes_file) %>%
   dplyr::rename(geneSymbol = gene) %>%
   filter(geneSymbol %in% categories$gene) %>%
@@ -83,12 +80,12 @@ crispr_dep_genes <- crispr_dep %>%
   unique() %>%
   write_lines(gene_dep_file)
 
-#clk1_targets_crispr <- intersect(clk1_targets$geneSymbol, crispr_dep$gene)
-clk1_targets_crispr <- intersect(clk1_targets$geneSymbol, crispr_dep$gene)
+clk1_targets_de <- sort(intersect(de_genes$geneSymbol, crispr_dep_genes))
+clk1_targets_ds <- sort(intersect(unique(ds_genes$geneSymbol), crispr_dep_genes))
 
 
 # write list of targets in any cell line
-unique(clk1_targets_crispr) %>%
+sort(c(clk1_targets_de, clk1_targets_ds)) %>%
   write_lines(clk1_crispr_file)
 
 # Create swoosh plot (z with < -1.5 only)
@@ -97,7 +94,7 @@ mean_data <- crispr_dep %>%
   group_by(gene) %>%
   summarise(z = mean(z, na.rm = TRUE)) %>%
   arrange(desc(z)) %>% 
-  filter(z < -1.5) %>%
+  #filter(z < -1.5) %>%
   mutate(sample_id = "pHGG")
 
 # add this to the full df to create an all hgg plot
@@ -109,20 +106,25 @@ crispr_dep_full <- crispr_dep %>%
 for (each in unique(crispr_dep_full$sample_id)) {
   crispr_dep_each <- crispr_dep_full %>%
     filter(sample_id == each)
+  clk1_targets_de_df <- crispr_dep_each %>%
+    filter(gene %in% clk1_targets_de)
+  clk1_targets_ds_df <-crispr_dep_each %>%
+    filter(gene %in% clk1_targets_ds)
   clk1_targets_crispr_intersect <- crispr_dep_each %>%
-    filter(gene %in% clk1_targets_crispr) 
+    filter(gene %in% c(clk1_targets_de, clk1_targets_ds)) 
   
   if (each == "pHGG") {
-    y_text <- "Dependency Mean Z-score"
+    y_text <- "Dependency mean z-score"
   }
   if (each != "pHGG") {
-    y_text <- "Dependency Z-score"
+    y_text <- "Dependency z-score"
   }
   
 crispr_scores_z_plot <- ggplot(crispr_dep_each, aes(x = reorder(gene, z), y = z)) +
   geom_point(size=3, colour="gray89") + 
   geom_point(size=3, colour = "gray50", pch = 21) + 
-  geom_point(data=clk1_targets_crispr_intersect, colour="red", size = 3) +
+  geom_point(data=clk1_targets_de_df, colour="red", size = 3) +
+  geom_point(data=clk1_targets_ds_df, colour="#0C7BDC", size = 3) +
   geom_point(data=clk1_targets_crispr_intersect, colour="black", size = 3, pch = 21) +
   geom_hline(yintercept = -1.5, linetype = "dashed", color = "gray50") +
   labs(title = paste0(each),
@@ -141,7 +143,10 @@ crispr_scores_z_plot <- ggplot(crispr_dep_each, aes(x = reorder(gene, z), y = z)
     panel.grid.minor = element_blank(),  # Remove minor grid lines
     axis.text.x = element_blank(),  # Remove x-axis labels
     axis.ticks.x = element_blank()  # Remove x-axis ticks
-  )
+  ) +
+  ylim(c(-6,0))+
+  scale_x_discrete(expand = expansion(mult = c(0.05, 0.05))) # Adjust the expansion of the x-axis
+
 
 # Save plot as pdf
 pdf(file.path(paste0(plots_dir, "/clk1-crispr-swoosh-", each, ".pdf")), height = 4, width = 6)
@@ -169,22 +174,3 @@ ggplot2::ggsave(venn_output_file,
                 height=4,
                 device="pdf",
                 dpi=300)
-
-# gather 3 way list to inspect
-mean_data_renamed <- mean_data %>%
-  dplyr::rename(geneSymbol = gene)
-  
-all_events <- ds_genes %>%
-  full_join(de_genes, by='geneSymbol', relationship = "many-to-many",
-            suffix = c("_psi", "_de")) %>%
-  dplyr::select(SpliceID, geneSymbol, dPSI, Preference_psi, Preference_de) %>% 
-  unique() %>%
-  left_join(mean_data_renamed) %>%
-  write_tsv(file.path(results_dir, "ds-de-crispr-events-functional-full.tsv"))
-
-all_intersected <- all_events %>%
-  filter(!is.na(z),
-         !is.na(Preference_de),
-         !is.na(Preference_psi)) %>%
-  write_tsv(file.path(results_dir, "ds-de-crispr-events-functional-direction.tsv"))
-
