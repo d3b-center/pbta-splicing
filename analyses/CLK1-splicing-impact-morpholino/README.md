@@ -25,7 +25,6 @@ bash run_module.sh
 * `10-crispr-screen-intersection.R` plots the intersection of CLK1 targets and genes that are essential in HGGs (via CRISPR scores obtained from [CCMA](https://data.mendeley.com/datasets/rnfs539pfw/3), doi: 10.17632/rnfs539pfw.3)
 
 ## Directory structure
-```
 .
 ├── 00-get-splice-transcripts.R
 ├── 01-diffExpr-ctrl_vs_morph.R
@@ -53,10 +52,9 @@ bash run_module.sh
 │   ├── nucleotide_excision_repair.txt
 │   └── oncoprint-goi-lists-OpenPedCan-gencode-v39.csv
 ├── plots
-│   ├── CLK1_ds-dex-targets_ora_dotplot-func.pdf
-│   ├── CLK1_ds-dex-targets_ora_dotplot.pdf
+│   ├── CLK1_dex-targets_ora_dotplot.pdf
+│   ├── CLK1_ds-targets_ora_dotplot.pdf
 │   ├── CLK1_targets_ora_dotplot.func-sites.pdf
-│   ├── CLK1_targets_ora_dotplot.pdf
 │   ├── clk1-crispr-swoosh-7316-1746.pdf
 │   ├── clk1-crispr-swoosh-7316-1763.pdf
 │   ├── clk1-crispr-swoosh-7316-1769.pdf
@@ -97,9 +95,7 @@ bash run_module.sh
 │   ├── ctrl_vs_treated.de.tsv
 │   ├── de_genes.tsv
 │   ├── differential_splice_by_goi_category.tsv
-│   ├── ds-de-crispr-events-direction.tsv
-│   ├── ds-de-crispr-events-functional-direction.tsv
-│   ├── ds-de-crispr-events-functional-full.tsv
+│   ├── ds-de-crispr-events.tsv
 │   ├── ds-de-crispr-venn.pdf
 │   ├── expr_collapsed_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv
 │   ├── expr_collapsed_clk1_ctrl_morpho_hallmark_gsva_scores.tsv
@@ -131,7 +127,6 @@ bash run_module.sh
 │   ├── splicing_events.morpho.A3SS.intersectUnip.ggplot.txt
 │   ├── splicing_events.morpho.A5SS.intersectUnip.ggplot.txt
 │   ├── splicing_events.morpho.RI.intersectUnip.ggplot.txt
-│   ├── splicing_events.morpho.SE.intersectUnip.ggplot.txt
-│   └── splicing_events.morpho.intersectUnip.ggplot.txt
+│   └── splicing_events.morpho.SE.intersectUnip.ggplot.txt
 └── run_module.sh
 ```
