@@ -32,12 +32,12 @@ Rscript --vanilla 06-conduct-gsva-analysis.R
 echo "GSVA comparisons and plots"
 Rscript -e "rmarkdown::render('07-run-gsva-comparisons.Rmd', clean = TRUE)"
 
-## intersect DE and DS
-Rscript --vanilla 08-intersection-dex-des.R
-rm Venn*.log
-
 ## lolliplot of splicing cases
-Rscript --vanilla 09-plot_total-splicing-cases.R
+Rscript --vanilla 08-plot_total-splicing-cases.R
+
+## intersect DE and DS
+Rscript --vanilla 09-intersection-dex-des.R
+rm Venn*.log
 
 ## intersect with crispr scores from CCMA
 Rscript --vanilla 10-crispr-screen-intersection.R
