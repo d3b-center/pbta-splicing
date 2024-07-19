@@ -99,11 +99,15 @@ venn_diag<- ggVennDiagram(x=list(unique(dex_comb$geneSymbol), unique(psi_comb$ge
                           label_percent_digit = 1) +  
   scale_fill_distiller(palette = "Blues", direction = 1, name = expression(bold("Gene count"))) + 
   labs(title = expression(bold("Differentially expressed and spliced genes"))) +
-  coord_flip()
+  coord_flip()  +
+  theme(
+    plot.margin = unit(c(0, 0.5, 0, 0), "cm")  # Adjust the margin values (top, right, bottom, left)
+  )
+
 
 ggplot2::ggsave(venn_output_file,
                 plot=venn_diag,
-                width=5,
+                width=5.5,
                 height=3.5,
                 device="pdf",
                 dpi=300)
@@ -142,12 +146,12 @@ enrich_plot <- enrichplot::dotplot(ora_results,
   scale_fill_gradient(low = "darkorange", high = "blue", name = "B-H p-value") +
   guides(
     fill = guide_colorbar(title = "B-H p-value", label.position = "right", barwidth = 1, barheight = 4)
-  )
+  ) 
 
  ggplot2::ggsave(ora_dex_dotplot_path,
                  plot=enrich_plot,
                  width=8,
-                 height=6,
+                 height=5.5,
                  device="pdf",
                  dpi=300)
 
@@ -185,11 +189,14 @@ venn_diag<- ggVennDiagram(x=list(dex_comb_subset$geneSymbol, splice_func_df$gene
                           label_percent_digit = 1) +  
   scale_fill_distiller(palette = "Blues", direction = 1, name = expression(bold("Gene count"))) + 
   labs(title = expression(bold("Differentially expressed and spliced genes (functional)"))) +
-  coord_flip()
+  coord_flip() +
+  theme(
+    plot.margin = unit(c(0, 0.5, 0, 0), "cm")  # Adjust the margin values (top, right, bottom, left)
+  )
 
  ggplot2::ggsave(venn_output_func_file,
                  plot=venn_diag,
-                 width=5,
+                 width=5.5,
                  height=3.5,
                  device="pdf",
                  dpi=300)
@@ -231,7 +238,7 @@ enrich_plot_func <- enrichplot::dotplot(ora_results,
   scale_fill_gradient(low = "darkorange", high = "blue", name = "B-H p-value") +
   guides(
     fill = guide_colorbar(title = "B-H p-value", label.position = "right", barwidth = 1, barheight = 4)
-  )
+  ) 
 
  ggplot2::ggsave(ora_ds_dotplot_path,
                  plot=enrich_plot_func,
