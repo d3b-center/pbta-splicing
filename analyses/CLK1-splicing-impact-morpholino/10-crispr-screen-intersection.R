@@ -41,7 +41,7 @@ categories_file <- file.path(results_dir, "gene_categories.tsv")
 ## ouput files
 clk1_crispr_file <- file.path(results_dir,"clk1-de-ds-crispr-targets.txt")
 gene_dep_file <- file.path(results_dir,"crispr-dependencies.txt")
-venn_output_file <- file.path(results_dir, "ds-de-crispr-venn.pdf")
+venn_output_file <- file.path(plots_dir, "ds-de-crispr-venn.pdf")
   
 # read in clinical
 clin_df <- read_tsv(clin_df, guess_max = 100000) %>%
