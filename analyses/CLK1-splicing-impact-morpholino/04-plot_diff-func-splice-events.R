@@ -70,7 +70,7 @@ psi_comb <- rbind(dpsi_unip_incl,dpsi_unip_skp) %>%
 ## ggstatplot across functional sites
 set.seed(123)
 counts_psi_comb <- psi_comb %>% 
-  count(Type, Uniprot_wrapped, Preference) %>%
+  dplyr::count(Type, Uniprot_wrapped, Preference) %>%
   # add n = for first n
   mutate(n = as.character(n),
          n = case_when(Type == "A3SS" & Uniprot_wrapped == "Disulfide\nBond" & Preference == "Inclusion" ~ paste0("n = ",n),
@@ -81,8 +81,8 @@ plot_dsp <- ggplot(psi_comb, aes(x = Uniprot_wrapped, y = dPSI * 100, fill = Pre
   geom_boxplot(aes(color = Preference), position = position_dodge(width = 0.9), outlier.shape = NA, size = 0.5, alpha = 0.4) +
   ggforce::geom_sina(aes(color = Preference), pch = 16, size = 3, position = position_dodge(width = 0.9), alpha = 0.4) +
   facet_wrap(~Type, nrow = 1) +
-  scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) +
-  scale_fill_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) +
+  scale_color_manual(name = "Preference (CLK1 exon 4 high)", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) +
+  scale_fill_manual(name = "Preference (CLK1 exon 4 high)", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) +
   theme_Publication() +
   labs(y = "Percent Spliced In (PSI)", x = "Uniprot-defined Functional Site") +
   geom_text(data = counts_psi_comb, aes(label = paste(n), x = Uniprot_wrapped, y = 10), vjust = 3, size = 3, position = position_dodge(width = 0.9)) +
@@ -194,14 +194,15 @@ plot_barplot_family <- ggplot(psi_comb_goi, aes(x = fct_rev(fct_infreq(plot_subt
   facet_wrap(~plot_type, scales = "free_y", ncol = 1) +
   xlab("Gene Family")     + 
   ylab("Number of Genes Signficantly Mis-spliced") + 
-  scale_fill_manual(name = "Preference",
+  scale_fill_manual(name = "Preference (CLK1 exon 4 high)",
                     values=c("#FFC20A","#0C7BDC")) + 
   geom_text(stat='count',aes(label=after_stat(count)), 
             position = position_dodge(width = 1),
             hjust = -0.5, size = 3.5) +
   theme_Publication() +
+  theme(legend.position = "top", legend.direction = "horizontal") +
   coord_flip() +
-  ylim(0,220)
+  ylim(0,230)
 
 # Save plot as PDF
 pdf(file_dpsi_goi_plot, height = 6, width = 8, useDingbats = FALSE) 

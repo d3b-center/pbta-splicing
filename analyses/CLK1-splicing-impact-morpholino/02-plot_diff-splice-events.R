@@ -1,3 +1,4 @@
+
 ################################################################################
 # 03-plot_diff-splice-events.R
 # written byAmmar Naqvi and Jo Lynne Rokita
@@ -51,8 +52,8 @@ splicing_df  <-  vroom(rmats_merged_file, comment = "#", delim="\t") %>%
                  filter(FDR < 0.05 & PValue < 0.05) 
 
 ## extract strong differential splicing cases (dPSI >= |.10|)
-splicing_df_ES <- splicing_df %>% filter(IncLevelDifference  >= .10) %>% mutate(Preference="Skipping")
-splicing_df_EI <- splicing_df %>% filter(IncLevelDifference <= -.10) %>% mutate(Preference="Inclusion",
+splicing_df_ES <- splicing_df %>% filter(IncLevelDifference  >= .10) %>% mutate(Preference="Inclusion")
+splicing_df_EI <- splicing_df %>% filter(IncLevelDifference <= -.10) %>% mutate(Preference="Skipping",
                                                                                 IncLevelDifference = abs(IncLevelDifference) )
 
 psi_comb <- rbind(splicing_df_EI,splicing_df_ES)
@@ -60,7 +61,7 @@ psi_comb <- rbind(splicing_df_EI,splicing_df_ES)
 ## ggstatplot across functional sites
 set.seed(123)
 counts_psi_comb <- psi_comb %>% 
-  count(splicing_case,Preference)
+  dplyr::count(splicing_case, Preference)
 
 ## ggstatplot across functional sites
 set.seed(123)
@@ -81,7 +82,7 @@ plot_dsp <-  ggplot(psi_comb,aes(splicing_case, IncLevelDifference*100) ) +
                                                                 c("SE", "A5SS"),
                                                                 c("SE", "A3SS"),
                                                                 c("SE", "RI"))) + 
-  scale_color_manual(name = "Preference", values = c(Inclusion = "#FFC20A", Skipping = "#0C7BDC"))  + 
+  scale_color_manual(name = "Preference (CLK1 exon 4 high)", values = c(Inclusion = "#FFC20A", Skipping = "#0C7BDC"))  + 
   theme_Publication() + 
   geom_text(data = counts_psi_comb, aes(label = paste("n =",n), x = splicing_case, y = 0), vjust = 2, size = 4, hjust=.5) +
   
@@ -119,3 +120,4 @@ psi_comb_select <- psi_comb %>%
 
 write_tsv(psi_comb_select, 
           file=file.path(results_dir,"splice-events-significant.tsv"))
+
