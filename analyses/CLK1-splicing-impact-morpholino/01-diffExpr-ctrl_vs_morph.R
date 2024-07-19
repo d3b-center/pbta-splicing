@@ -193,8 +193,8 @@ sign_regl_gene_df <- genes_to_plot %>%
   as.data.frame() %>%
   dplyr::filter(padj < 0.05,
          abs(log2FoldChange) >= 1) %>%
-  mutate(Direction= case_when(log2FoldChange<1 ~ 'Down',
-                              log2FoldChange>1 ~ 'Up')) 
+  mutate(Direction= case_when(log2FoldChange < -1 ~ 'Up',
+                              log2FoldChange > 1 ~ 'Down')) 
 
 # relevel the plot_type and subtype
 sign_regl_gene_df$plot_type <- factor(sign_regl_gene_df$plot_type, levels = c("Oncogene or Tumor Suppressor", "Other"))
@@ -208,13 +208,14 @@ plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(plot
                        geom_bar(stat="count", position='dodge', color="black") + 
                        facet_wrap(~plot_type, scales = "free_y", ncol = 1) +
                        xlab("Gene Family")     + 
-                       ylab("Number of Genes Signficantly Differentially Expressed") + 
-                       scale_fill_manual(name = "Direction",
+                       ylab("Number of Genes Signficantly DE") + 
+                       scale_fill_manual(name = "Direction (CLK1 exon 4 high)",
                                          values=c("#FFC20A","#0C7BDC")) + 
                        geom_text(stat='count',aes(label=after_stat(count)), 
                                  position = position_dodge(width = 1),
                                  hjust = -0.5, size = 3.5) +
                       theme_Publication() +
+                      theme(legend.position = "top", legend.direction = "horizontal") +
                       coord_flip() +
                       ylim(0,80)
 
