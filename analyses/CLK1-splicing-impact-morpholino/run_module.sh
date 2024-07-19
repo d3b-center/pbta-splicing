@@ -37,7 +37,6 @@ Rscript --vanilla 08-plot_total-splicing-cases.R
 
 ## intersect DE and DS
 Rscript --vanilla 09-intersection-dex-des.R
-rm Venn*.log
 
 ## intersect with crispr scores from CCMA
 Rscript --vanilla 10-crispr-screen-intersection.R
