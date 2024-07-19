@@ -50,7 +50,9 @@ clin_df <- read_tsv(clin_df, guess_max = 100000) %>%
                 cohort == "PBTA",
                 composition == "Solid Tissue")
 
-clk1_targets <- read_lines(clk1_target_file)
+#clk1_targets <- read_lines(clk1_target_file)
+clk1_targets <- vroom(file.path(results_dir,"de_genes.tsv"))
+
 categories <- read_tsv(categories_file)
 
 crispr_df <- read_csv(crispr_score) 
@@ -81,7 +83,9 @@ crispr_dep_genes <- crispr_dep %>%
   unique() %>%
   write_lines(gene_dep_file)
 
-clk1_targets_crispr <- intersect(clk1_targets, crispr_dep$gene)
+#clk1_targets_crispr <- intersect(clk1_targets$geneSymbol, crispr_dep$gene)
+clk1_targets_crispr <- intersect(clk1_targets$geneSymbol, crispr_dep$gene)
+
 
 # write list of targets in any cell line
 unique(clk1_targets_crispr) %>%
