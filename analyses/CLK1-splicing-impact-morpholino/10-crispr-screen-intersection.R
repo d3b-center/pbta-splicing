@@ -12,7 +12,8 @@ suppressPackageStartupMessages({
   library("vroom")
   library("tidyverse")
   library("ggrepel")
-  library('ggVennDiagram')
+  library("ggVennDiagram")
+  library("cowplot")
 })
 
 # Get `magrittr` pipe
@@ -115,9 +116,11 @@ for (each in unique(crispr_dep_full$sample_id)) {
   
   if (each == "pHGG") {
     y_text <- "Dependency mean z-score"
+    title_text <- ""
   }
   if (each != "pHGG") {
     y_text <- "Dependency z-score"
+    title_text <- each
   }
   
 crispr_scores_z_plot <- ggplot(crispr_dep_each, aes(x = reorder(gene, z), y = z)) +
@@ -127,7 +130,7 @@ crispr_scores_z_plot <- ggplot(crispr_dep_each, aes(x = reorder(gene, z), y = z)
   geom_point(data=clk1_targets_ds_df, colour="#0C7BDC", size = 3) +
   geom_point(data=clk1_targets_crispr_intersect, colour="black", size = 3, pch = 21) +
   geom_hline(yintercept = -1.5, linetype = "dashed", color = "gray50") +
-  labs(title = paste0(each),
+  labs(title = paste0(title_text),
        x = "Gene",
        y = paste0(y_text)) +
   geom_text_repel(data = crispr_dep_each %>% filter(gene %in% clk1_targets_crispr_intersect$gene), 
@@ -147,12 +150,47 @@ crispr_scores_z_plot <- ggplot(crispr_dep_each, aes(x = reorder(gene, z), y = z)
   ylim(c(-6,0))+
   scale_x_discrete(expand = expansion(mult = c(0.05, 0.05))) # Adjust the expansion of the x-axis
 
+# add a legend
+
+# Data frame for legend
+legend_data <- data.frame(
+  target = c("Differentially expressed", "Differentially spliced"),
+  color = c("red", "#0C7BDC")
+)
+
+plot_cols <- legend_data$color
+names(plot_cols) <- legend_data$target
+
+# Create a dummy plot just for the legend
+dummy_plot <- ggplot(legend_data, aes(x = target, y = 1, color = target)) + 
+  geom_point(size = 3) + 
+  scale_color_manual(values = plot_cols, name = "CLK1 targets") + 
+  theme_void() +
+  theme(
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 8.5)
+  ) +
+  guides(color = guide_legend(ncol = 2))
+
+# Extract the legend
+### recording this bug and temp fix
+# https://github.com/wilkelab/cowplot/issues/202
+display_group_legend = get_plot_component(dummy_plot, pattern = "guide-box-top", return_all = TRUE)
+
+# Combine the original plot and the legend using cowplot
+combined_plot <- cowplot::plot_grid(
+  display_group_legend,
+  crispr_scores_z_plot + theme(legend.position = "none"),
+  ncol = 1,
+  rel_heights = c(0.1, 1) # Adjust the relative heights as needed
+)
 
 # Save plot as pdf
 pdf(file.path(paste0(plots_dir, "/clk1-crispr-swoosh-", each, ".pdf")), height = 4, width = 6)
-print(crispr_scores_z_plot)
+print(combined_plot)
 dev.off()
-
 }
 
 
@@ -166,7 +204,10 @@ venn_diag<- ggVennDiagram(x=list(de_genes$geneSymbol, unique(ds_genes$geneSymbol
                           label_percent_digit = 1) +  
   scale_fill_distiller(palette = "Blues", direction = 1, name = expression(bold("Gene count"))) + 
   #labs(title = expression(bold("Differentially expressed and spliced genes and dependent genes"))) +
-  coord_flip()
+  coord_flip()  +
+  theme(
+    plot.margin = unit(c(0, 0.5, 0, 0), "cm")  # Adjust the margin values (top, right, bottom, left)
+  )
 
 ggplot2::ggsave(venn_output_file,
                 plot=venn_diag,
