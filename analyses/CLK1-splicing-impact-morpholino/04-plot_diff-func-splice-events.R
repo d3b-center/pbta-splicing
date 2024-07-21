@@ -47,7 +47,7 @@ file_psi_RI_func <- file.path(results_dir,"splicing_events.morpho.RI.intersectUn
 file_psi_A5SS_func <- file.path(results_dir,"splicing_events.morpho.A5SS.intersectUnip.ggplot.txt")
 file_psi_A3SS_func <- file.path(results_dir,"splicing_events.morpho.A3SS.intersectUnip.ggplot.txt")
 
-## combine all splice types together
+## combine all splice types together, everything relative to CLK1 exon 4 cells (untreated)
 dpsi_unip_incl <- vroom(c(file_psi_SE_func, file_psi_RI_func, file_psi_A5SS_func, file_psi_A3SS_func)) %>%
   mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) %>%
   filter(dPSI<0) %>% 
@@ -202,7 +202,7 @@ plot_barplot_family <- ggplot(psi_comb_goi, aes(x = fct_rev(fct_infreq(plot_subt
   theme_Publication() +
   theme(legend.position = "top", legend.direction = "horizontal") +
   coord_flip() +
-  ylim(0,230)
+  ylim(0,210)
 
 # Save plot as PDF
 pdf(file_dpsi_goi_plot, height = 6, width = 8, useDingbats = FALSE) 
