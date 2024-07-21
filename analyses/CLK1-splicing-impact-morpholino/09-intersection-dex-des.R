@@ -62,8 +62,8 @@ splice_func_df <- read_tsv(file_psi_func)
 ## extract strong differential splicing cases (dPSI >= |.10|)
 # preference in relation to CLK1 exon 4 high
 psi_comb <- splicing_df %>% 
-  mutate(Preference = case_when(IncLevelDifference  >= -.10 ~ "Inclusion",
-                                IncLevelDifference <= .10 ~ "Skipping",
+  mutate(Preference = case_when(IncLevelDifference  <= -.10 ~ "Inclusion",
+                                IncLevelDifference >= .10 ~ "Skipping",
                                 TRUE ~ NA_character_),
          abs_IncLevelDifference = abs(IncLevelDifference)) %>%
   filter(!is.na(Preference)) 
