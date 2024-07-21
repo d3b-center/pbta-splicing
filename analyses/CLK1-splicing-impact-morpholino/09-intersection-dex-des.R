@@ -1,7 +1,7 @@
 ################################################################################
 # 09-intersection-dex-des.R
-# Over-represenative analysis of mis-spliced genes that have splicing variants
-# impacting functional sitesmediated by CLK1
+# Venn diagram and over-represenative analysis of mis-spliced genes that have splicing variants
+# impacting functional sites mediated by CLK1
 #
 # authors: Ammar Naqvi, Jo Lynne Rokita
 ################################################################################
@@ -22,7 +22,6 @@ suppressPackageStartupMessages({
 
 # Get `magrittr` pipe
 `%>%` <- dplyr::`%>%`
-
 
 
 ## set up directories
@@ -63,8 +62,8 @@ splice_func_df <- read_tsv(file_psi_func)
 ## extract strong differential splicing cases (dPSI >= |.10|)
 # preference in relation to CLK1 exon 4 high
 psi_comb <- splicing_df %>% 
-  mutate(Preference = case_when(IncLevelDifference  >= .10 ~ "Inclusion",
-                                IncLevelDifference <= -.10 ~ "Skipping",
+  mutate(Preference = case_when(IncLevelDifference  >= -.10 ~ "Inclusion",
+                                IncLevelDifference <= .10 ~ "Skipping",
                                 TRUE ~ NA_character_),
          abs_IncLevelDifference = abs(IncLevelDifference)) %>%
   filter(!is.na(Preference)) 
