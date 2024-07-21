@@ -19,7 +19,7 @@ for event in "${events[@]}"; do
     fi
 
     # Generate the bed file
-    cat ../../data/morpholno.merged.rmats.tsv | grep "^$event" | awk -F "\t" '{if( ($36 < -.10) || ($36 >.10) ){ print $0}}' | awk -F "\t" '{if($33< 0.05){ print $0}}' |awk -F "\t" -v col1="$col1" -v col2="$col2" -v col3="$col3" '{print $col1"\t"$col2"\t"$col3"\t"$5":"$col2"-"$col3"\t"$36"\t"$7}' | perl -pe 's/\"//g' > input/morpho.diff.$event.bed
+    cat ../../data/morpholno.merged.rmats.tsv | grep "^$event" | awk -F "\t" '{if( ($36 < -.10) || ($36 >.10) ){ print $0}}' | awk -F "\t" '{if($32 < 0.05 && $33< 0.05){ print $0}}' |awk -F "\t" -v col1="$col1" -v col2="$col2" -v col3="$col3" '{print $col1"\t"$col2"\t"$col3"\t"$5":"$col2"-"$col3"\t"$36"\t"$7}' | perl -pe 's/\"//g' > input/morpho.diff.$event.bed
 
     # Intersect with functional site beds
     for functional_site in "Mod" "Other" "DisulfBond" "LocSignal" "Domain"; do
