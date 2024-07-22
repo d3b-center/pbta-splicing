@@ -47,7 +47,7 @@ pathway_df <- hs_msigdb_df %>%
   dplyr::filter(gs_cat == "H" | gs_subcat %in% c("CP:KEGG"))
 
 ## extract splicing changes 
-events_func_file <- file.path(results_dir,"splicing_events.morpho.intersectUnip.ggplot.txt")
+events_func_file <- file.path(results_dir,"splicing_events.morpho.SE.intersectUnip.ggplot.txt")
 
 ## ORA on functionally relevant splice variants
 events_func_df  <-  vroom(events_func_file, comment = "#", delim="\t") %>% 
@@ -86,7 +86,8 @@ enrich_plot_func <- enrichplot::dotplot(ora_results,
 
 ggplot2::ggsave(ora_dotplot_func_path,
                 plot=enrich_plot_func,
-                width=8,
-                height=4,
+                width=7.5,
+                height=3,
                 device="pdf",
                 dpi=300)
+
