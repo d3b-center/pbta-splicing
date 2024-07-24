@@ -43,6 +43,8 @@ func_sites_RI_morpho_tsv_file <- file.path(analysis_dir,"CLK1-splicing-impact-mo
 func_sites_goi_file <- file.path(analysis_dir,"CLK1-splicing-impact-morpholino","results", "differential_splice_by_goi_category.tsv")
 primers_file <-  file.path(input_dir,"primers.tsv")
 
+ds_de_crispr_events_file <-  file.path(analysis_dir,"CLK1-splicing-impact-morpholino","results", "ds-de-crispr-events.tsv")
+
 # define suppl output files and sheet names, when appropriate
 table_s1_file <- file.path(supp_tables_dir, "TableS1-histologies.xlsx")
 table_s2_file <- file.path(supp_tables_dir, "TableS2-histology-specific-splice-events.xlsx")
@@ -245,6 +247,10 @@ cancer_genes_func_df <- vroom(func_sites_goi_file)
 
 primers_df <- vroom(primers_file, delim = "\t")
 
+ds_de_crispr_df <-  vroom(ds_de_crispr_events_file) %>%
+  mutate(across(everything(), ~ replace_na(as.character(.), "-")))
+
+
 list_s5_table <- list(deseq2_morp = deseq2_morpholino_df,
                       rmats = rmats_df,
                       ds_SE = ds_events_SE_df,
@@ -252,7 +258,8 @@ list_s5_table <- list(deseq2_morp = deseq2_morpholino_df,
                       ds_A3SS = ds_events_A3SS_df,
                       ds_RI = ds_events_RI_df,
                       ds_cancer_genes = cancer_genes_func_df,
-                      primers = primers_df)
+                      primers = primers_df,
+                      intersection_de_ds_crispr = ds_de_crispr_df)
 
 write.xlsx(list_s5_table,
            table_s5_file,
