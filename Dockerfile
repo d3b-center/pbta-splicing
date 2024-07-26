@@ -1,5 +1,5 @@
 FROM rocker/tidyverse:4.4.0
-LABEL maintainer = "Ammar S. Naqvi (naqvia@chop.edu)"
+LABEL maintainer="Ammar S. Naqvi (naqvia@chop.edu)"
 WORKDIR /rocker-build/
 
 
@@ -19,6 +19,7 @@ RUN apt-get -y update && apt-get install -y bedtools \
         libhdf5-dev \
 	libgmp-dev \
 	liblzma-dev \
+	libmagick++-dev \
 	libmpfr-dev \
 	libncurses5-dev \
 	libproj-dev \
@@ -27,7 +28,7 @@ RUN apt-get -y update && apt-get install -y bedtools \
 	libv8-dev \
 	libxt-dev \
 	libudunits2-dev \
-	zlib1g-dev
+	zlib1g-dev 
 
 # Install java
 RUN apt-get update && apt-get -y --no-install-recommends install \
@@ -43,6 +44,7 @@ RUN R -e "BiocManager::install(version = '3.19')"
 
 # Install packages
 RUN R -e 'BiocManager::install(c( \
+  "AnnotationDbi", \
   "Biobase", \
   "broom", \
   "circlize", \
@@ -66,24 +68,30 @@ RUN R -e 'BiocManager::install(c( \
   "ggthemes", \
   "ggVennDiagram", \
   "gridExtra", \
+  "GO.db", \
   "GSVA", \
   "Hmisc", \
   "hrbrthemes", \
+  "impute", \
   "limma", \
   "lspline", \
   "maftools",\
   "msigdbr", \
+  "NOISeq", \
   "optparse", \
   "org.Hs.eg.db", \
   "PMCMRplus", \
   "pheatmap", \
+  "preprocessCore", \
   "reshape2", \
   "rstatix", \
   "rtracklayer", \
   "R.utils", \
   "sva", \
   "survival", \
-  "survminer", \
+	"survminer", \
+	"sva", \
+	"WGCNA", \
   "VennDiagram",\	
   "UpSetR" \
 ))'
@@ -93,8 +101,8 @@ RUN R -e 'BiocManager::install(c( \
 RUN R -e "remotes::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
 RUN R -e "remotes::install_github('d3b-center/annoFuseData', ref = '321bc4f6db6e9a21358f0d09297142f6029ac7aa', dependencies = TRUE)"
 RUN R -e "remotes::install_github('thomasp85/patchwork', ref = '1cb732b129ed6a65774796dc1f618558c7498b66', dependencies = TRUE)"
-RUN R -e "remotes::install_github('rcastelo/GSVA', ref = 'df9001cfd07017001dfba07a3099e6b7dc5ce324')"
-
+#RUN R -e "remotes::install_github('rcastelo/GSVA', ref = 'df9001cfd07017001dfba07a3099e6b7dc5ce324', dependencies = TRUE)"
+RUN R -e "remotes::install_github('andymckenzie/DGCA', ref = '075fc79a32df3955e75e262b8269c257d8ffac9c', dependencies = TRUE)"
 # install perl packages
 RUN cpanm install Statistics::Lite
 
