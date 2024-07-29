@@ -65,7 +65,7 @@ echo "----------------------------------"
 echo "splicing events functional sites"
 echo "----------------------------------"
 cd ${analyses_dir}/splicing_events_functional_sites
-#bash run_module.sh
+bash run_module.sh
 
 ## CLK1 splicing correlations
 echo "----------------------------------"
@@ -79,7 +79,7 @@ echo "----------------------------------"
 echo "oncoprint"
 echo "----------------------------------"
 cd ${analyses_dir}/oncoprint
-bash 01-oncoprint.R
+bash run-oncoprint.sh
 
 ## long-read-CLK1-validation
 echo "----------------------------------"
