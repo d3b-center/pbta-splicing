@@ -1541,10 +1541,10 @@ phos_df &lt;- read_tsv(phos_file) %&gt;%
                 `NF1 pS864` = `NF1-S864`,
                 `NF1 pS2796` = `NF1-S2796`)</code></pre>
 <pre><code>## Rows: 1434 Columns: 48
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ──────────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
 ## chr  (1): match_id
-## dbl (47): CLK1-201, NF1-201_PC, NF1-202, NF1-203_NMD, NF1-204_PC, NF1-205_PC...
+## dbl (47): CLK1-201, NF1-201, NF1-202, NF1-203_NMD, NF1-204_PC, NF1-205_PC, N...
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
@@ -1552,7 +1552,7 @@ phos_df &lt;- read_tsv(phos_file) %&gt;%
 indep_file &lt;- file.path(data_dir, &quot;independent-specimens.rnaseqpanel.primary.tsv&quot;)
 indep_df &lt;- read_tsv(indep_file)</code></pre>
 <pre><code>## Rows: 12772 Columns: 6
-## ── Column specification ───────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ──────────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
 ## chr (6): Kids_First_Participant_ID, Kids_First_Biospecimen_ID, cohort, cance...
 ## 
@@ -1582,7 +1582,6 @@ nf1_gtf &lt;- gtf %&gt;%
                                           transcript_type == &quot;retained_intron&quot; ~ paste0(transcript_name, &quot;_RI&quot;),
                                           transcript_type == &quot;nonsense_mediated_decay&quot; ~ paste0(transcript_name, &quot;_NMD&quot;),
                                           TRUE ~ NA_character_)) 
-
 
 # read in rmats file once with genes of interest
 rmats_nf1  &lt;- fread(rmats_nf1_file)
@@ -1772,6 +1771,7 @@ transcript_tpm_df &lt;- readRDS(rsem_transc_counts) %&gt;%
   left_join(phos_df) %&gt;%
   column_to_rownames(var = &quot;match_id&quot;) %&gt;%
   dplyr::rename(`CLK1-201 (Exon4) PSI` = `CLK1-Exon4_PSI`,
+                `NF1-201` = `NF1-201_PC`,
                 `NF1-202` = `NF1-202_PC`,
                 `NF1-215 PSI` = `NF1-215_PSI`,
                 `NF1-215` = `NF1-215_RI`,
@@ -1808,11 +1808,11 @@ dev.off()</code></pre>
 ##   2</code></pre>
 <pre class="r"><code># subset for transcripts of interest
 # for HGG
-items_of_interest_hgg &lt;- c(&quot;Total CLK1&quot;, &quot;CLK1-201&quot;, &quot;CLK1-201 (Exon4) PSI&quot;, &quot;Total NF1&quot;, &quot;NF1-202&quot;, &quot;NF1-215 PSI&quot;, &quot;NF1-215&quot;,
+items_of_interest_hgg &lt;- c(&quot;Total CLK1&quot;, &quot;CLK1-201&quot;, &quot;CLK1-201 (Exon4) PSI&quot;, &quot;Total NF1&quot;, &quot;NF1-201&quot;, &quot;NF1-202&quot;, &quot;NF1-215 PSI&quot;, &quot;NF1-215&quot;,
          &quot;NF1-202 (Exon23a) PSI&quot;, &quot;NF1 pS864&quot;, &quot;NF1 pS2796&quot;, &quot;Total NF1 Protein&quot;)
 
 # for other 
-items_of_interest_other &lt;- c(&quot;Total CLK1&quot;, &quot;CLK1-201&quot;, &quot;CLK1-201 (Exon4) PSI&quot;, &quot;Total NF1&quot;, &quot;NF1-202&quot;, &quot;NF1-215 PSI&quot;, &quot;NF1-215&quot;,
+items_of_interest_other &lt;- c(&quot;Total CLK1&quot;, &quot;CLK1-201&quot;, &quot;CLK1-201 (Exon4) PSI&quot;, &quot;Total NF1&quot;, &quot;NF1-201&quot;, &quot;NF1-202&quot;, &quot;NF1-215 PSI&quot;, &quot;NF1-215&quot;,
          &quot;NF1-202 (Exon23a) PSI&quot;)
 
 
@@ -1922,6 +1922,30 @@ table(histologies_df_plus$plot_group)</code></pre>
   dev.off()
 }</code></pre>
 <pre><code>## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
+## exact p-value with ties
+## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
+## exact p-value with ties
+## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
+## exact p-value with ties
+## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
+## exact p-value with ties
+## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
+## exact p-value with ties
+## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
+## exact p-value with ties
+## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
+## exact p-value with ties
+## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
+## exact p-value with ties
+## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
+## exact p-value with ties
+## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
+## exact p-value with ties
+## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
+## exact p-value with ties
+## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
+## exact p-value with ties
+## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
 ## exact p-value with ties
 ## Warning in cor.test.default(x = mat[, i], y = mat[, j], ...): Cannot compute
 ## exact p-value with ties

@@ -10,7 +10,7 @@ suppressPackageStartupMessages({
   library(tidyverse)
   library(maftools)
   library(vroom)
-  library('data.table')
+  library(data.table)
   library(ComplexHeatmap)
   library(circlize)
   
@@ -99,11 +99,15 @@ splice_df <-  readRDS(psi_exp_file) %>%
   filter(match_id %in% indep_rna_df$match_id) %>%
   # z-score
   dplyr::mutate(`CLK1-201 (Exon4) PSI` = as.numeric(scale(`CLK1-201 (Exon4) PSI`)),
-                `NF1-215 PSI` = as.numeric(scale(`NF1-215 PSI`)),
                 `CLK1-201` = as.numeric(scale(`CLK1-201`)),
+<<<<<<< HEAD
                 `Total CLK1` = as.numeric(scale(`Total CLK1`)),
                 `Total NF1` = as.numeric(scale(`Total NF1`))
   )
+=======
+                `Total CLK1` = as.numeric(scale(`Total CLK1`))
+                )
+>>>>>>> main
 
 # read in cnv file and reformat to add to maf
 cnv_df <- read_tsv(cnv_file) %>%
@@ -204,7 +208,12 @@ gene_matrix <- reshape2::acast(collapse_snv_dat,
   mutate(across(everything(), ~if_else(str_detect(., ","), "Multi_Hit", .))) %>%
   rownames_to_column(var = "Hugo_Symbol") %>%
   mutate(Sort_Order = match(Hugo_Symbol, gene_row_order$Hugo_Symbol)) %>%
+<<<<<<< HEAD
   arrange(Sort_Order)
+=======
+  arrange(Sort_Order)  %>%
+  write_tsv(file.path(results_dir, "onco_matrix.tsv"))
+>>>>>>> main
 
 rownames(gene_matrix) <- gene_matrix$Hugo_Symbol 
 
@@ -215,10 +224,17 @@ gene_matrix <- gene_matrix %>%
 histologies_df_sorted <- splice_df %>%
   left_join(histologies_df, by = "match_id", relationship = "many-to-many") %>%
   select(match_id, plot_group, cancer_predisposition, reported_gender, molecular_subtype, CNS_region, `CLK1-201 (Exon4) PSI`,
+<<<<<<< HEAD
          `NF1-215 PSI`, `CLK1-201`, `Total CLK1`, `Total NF1`, `NF1 pS864`, `NF1 pS2796`, `Total NF1 Protein`) %>%
   unique() %>%
   group_by(match_id, plot_group, cancer_predisposition, reported_gender, molecular_subtype, `CLK1-201 (Exon4) PSI`,
            `NF1-215 PSI`, `CLK1-201`, `Total CLK1`, `Total NF1`, `NF1 pS864`, `NF1 pS2796`, `Total NF1 Protein`) %>%
+=======
+         `CLK1-201`, `Total CLK1`) %>%
+  unique() %>%
+  group_by(match_id, plot_group, cancer_predisposition, reported_gender, molecular_subtype, `CLK1-201 (Exon4) PSI`,
+            `CLK1-201`, `Total CLK1`) %>%
+>>>>>>> main
   summarise(CNS_region = str_c(unique(na.omit(CNS_region)), collapse = ","),
             CLK1_PSI = mean(`CLK1-201 (Exon4) PSI`),
             .groups = "drop") %>%
@@ -249,18 +265,29 @@ histologies_df_sorted <- histologies_df_sorted %>%
 
 histologies_df_sorted2 <- histologies_df_sorted %>%
   select(reported_gender,  cancer_predisposition, plot_group, molecular_subtype, CNS_region, tmb_status, 
+<<<<<<< HEAD
          CLK1_PSI, `CLK1-201`, `Total CLK1`, `NF1-215 PSI`, `Total NF1`, `NF1 pS864`, `NF1 pS2796`, `Total NF1 Protein`) %>%
+=======
+         CLK1_PSI, `CLK1-201`, `Total CLK1`) %>%
+>>>>>>> main
   dplyr::rename("Gender"=reported_gender,
                 "Histology" = plot_group,
                 "Predisposition" = cancer_predisposition,
                 "Molecular Subtype"=molecular_subtype,
                 "CNS Region"=CNS_region, 
                 "Mutation Status"=tmb_status,
+<<<<<<< HEAD
                 # "CLK1 status" = clk1_status,
                 "CLK1 Ex4 PSI"= CLK1_PSI,
                 "CLK1-201" =`CLK1-201`,
                 "Total CLK1 RNA" = `Total CLK1`,
                 "Total NF1 RNA" = `Total NF1`) 
+=======
+               # "CLK1 status" = clk1_status,
+                "CLK1 Ex4 PSI"= CLK1_PSI,
+                "CLK1-201" =`CLK1-201`,
+                "Total CLK1 RNA" = `Total CLK1`) 
+>>>>>>> main
 
 # write out metadata
 histologies_df_sorted2 %>%
@@ -280,7 +307,11 @@ ha = HeatmapAnnotation(name = "annotation",
                                       "Female" = "pink",
                                       "Unknown" = "whitesmoke"),
                          "Histology" = c("DIPG or DMG" = "#ff40d9",
+<<<<<<< HEAD
                                          "Other high-grade glioma" = "#ffccf5"),
+=======
+                                            "Other high-grade glioma" = "#ffccf5"),
+>>>>>>> main
                          "Predisposition" = c("LFS" = "red",
                                               "NF-1" = "black",
                                               "Other" = "grey"),
@@ -298,6 +329,7 @@ ha = HeatmapAnnotation(name = "annotation",
                                                "Hypermutant" = "orange",
                                                "Ultra-hypermutant" = "red",
                                                "Unknown" = "whitesmoke"),
+<<<<<<< HEAD
                          #"CLK1 status" = c("High" = "red", "Middle" = "grey", "Low" = "darkblue"),
                          "CLK1 Ex4 PSI" = colorRamp2(c(-4, 0, 2), c("darkblue","white", "red")),
                          "CLK1-201" = colorRamp2(c(-3, 0, 3), c("darkblue", "white",  "red")),
@@ -308,6 +340,12 @@ ha = HeatmapAnnotation(name = "annotation",
                          "NF1 pS2796" = colorRamp2(c(-2, 0, 2), c("darkblue", "white",  "red")),
                          "Total NF1 Protein" = colorRamp2(c(-2, 0, 2), c("darkblue", "white",  "red"))
                        ),
+=======
+                         "CLK1 Ex4 PSI" = colorRamp2(c(-4, 0, 2), c("darkblue","white", "red")),
+                         "CLK1-201" = colorRamp2(c(-3, 0, 3), c("darkblue", "white",  "red")),
+                         "Total CLK1 RNA" = colorRamp2(c(-3, 0, 3), c("darkblue", "white",  "red"))
+                         ),
+>>>>>>> main
                        annotation_name_side = "right", 
                        annotation_name_gp = gpar(fontsize = 9),
                        na_col = "whitesmoke")
