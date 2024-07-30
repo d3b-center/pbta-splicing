@@ -20,7 +20,7 @@ bash download_data.sh
 ```
 ### Generate paper figures
 ```
-bash scripts/run_code.sh
+bash scripts/run_analyses.sh
 ```
 ### Contact
 For questions, please submit an issue or send an email to Ammar S. Naqvi (@naqvia): naqvia@chop.edu
