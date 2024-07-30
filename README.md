@@ -14,13 +14,13 @@ docker run --platform linux/amd64 --name <CONTAINER_NAME> -d -e PASSWORD=pass -p
 ```
 docker exec -ti pbta-splicing bash
 ```
-### Get project data files
+## Get project data files
 ```
 bash download_data.sh
 ```
-### Generate paper figures
+## Generate paper figures
 ```
 bash scripts/run_analyses.sh
 ```
-### Contact
+## Contact
 For questions, please submit an issue or send an email to Ammar S. Naqvi (@naqvia): naqvia@chop.edu
