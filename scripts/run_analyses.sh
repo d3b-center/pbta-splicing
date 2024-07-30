@@ -52,6 +52,7 @@ echo "survival"
 echo "----------------------------------"
 cd ${analyses_dir}/survival
 bash run-survival-module.sh
+rm Rplots.pdf 
 
 ## splicing-factor_dysregulation
 echo "----------------------------------"
