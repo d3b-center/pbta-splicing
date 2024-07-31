@@ -26,9 +26,10 @@ splice_mat <- read_tsv(matrix_file) %>%
   column_to_rownames("Splice_ID") %>%
   dplyr::select(any_of(indep_file$Kids_First_Biospecimen_ID))
   
-# filter to OncoKB Cancer Gene List
+# filter to Oncogenes and TSGs from OncoKB Cancer Gene List 
 oncokb_genelist <- file.path(analysis_dir, "input", "cancerGeneList.tsv")
 oncokb_genelist <- read_tsv(oncokb_genelist)
+oncokb_genelist <- oncokb_genelist %>% filter(`Is Oncogene` == "Yes" | `Is Tumor Suppressor Gene` == "Yes")
 splice_mat <- splice_mat %>%
   rownames_to_column("Splice_ID") %>%
   mutate(gene = gsub(":.*", "", Splice_ID)) %>%
