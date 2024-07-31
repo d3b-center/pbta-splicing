@@ -3,34 +3,36 @@
 
 # load libraries
 suppressPackageStartupMessages({
-  library(optparse)
-  library(tidyverse)
+library(optparse)
+library(tidyverse)
 })
 
 # parse parameters     
 option_list <- list(
-  make_option(c("--input_mat"), type = "character",
-              help = "Input matrix collapsed to unique features (.rds)"),
-  make_option(c("--hist_file"), type = "character", default = NULL,
-              help = "histology file (.tsv)"),
-  make_option(c("--cluster_algorithm"), type = "character",
-              help = "comma separated list of CCP clustering algorithms"),
-  make_option(c("--cluster_distance"), type = "character",
-              help = "comma separated list of CCP clustering distances"),
-  make_option(c("--filter_expr"), type = "logical",
-              help = "filter expression (TRUE or FALSE)"),
-  make_option(c("--protein_coding_only"), type = "logical",
-              help = "filter to protein coding genes only (TRUE or FALSE)"),
-  make_option(c("--gencode_version"), type = "numeric", default = NULL,
-              help = "gencode version used for protein coding genes filter (>=27)"),
-  make_option(c("--feature_selection"), type = "character", 
-              help = "feature selection type (dip.test or variance)"),
-  make_option(c("--var_prop"), type = "numeric", default = NULL,
-              help = "% of variable features (> 0)"),
-  make_option(c("--transformation_type"), type = "character",
-              help = "transformation type (none, tmm, vst, uq, log2, rank)"),
-  make_option(c("--max_k"), type = "numeric",
-              help = "maximum k-values to evaluate (>= 2)")
+make_option(c("--input_mat"), type = "character",
+            help = "Input matrix collapsed to unique features (.rds)"),
+make_option(c("--hist_file"), type = "character", default = NULL,
+            help = "histology file (.tsv)"),
+make_option(c("--cluster_algorithm"), type = "character",
+            help = "comma separated list of CCP clustering algorithms"),
+make_option(c("--cluster_distance"), type = "character",
+            help = "comma separated list of CCP clustering distances"),
+make_option(c("--filter_expr"), type = "logical",
+            help = "filter expression (TRUE or FALSE)"),
+make_option(c("--protein_coding_only"), type = "logical",
+            help = "filter to protein coding genes only (TRUE or FALSE)"),
+make_option(c("--gencode_version"), type = "numeric", default = NULL,
+            help = "gencode version used for protein coding genes filter (>=27)"),
+make_option(c("--feature_selection"), type = "character", 
+            help = "feature selection type (dip.test or variance)"),
+make_option(c("--var_prop"), type = "numeric", default = NULL,
+            help = "% of variable features (> 0)"),
+make_option(c("--transformation_type"), type = "character",
+            help = "transformation type (none, tmm, vst, uq, log2, rank)"),
+make_option(c("--max_k"), type = "numeric",
+            help = "maximum k-values to evaluate (>= 2)"),
+make_option(c("--output_dir"), type = "character",
+            help = "path to output directory")
 )
 opt <- parse_args(OptionParser(option_list = option_list))
 # input matrix
@@ -64,9 +66,9 @@ print(protein_coding_only)
 # gencode version for protein coding genes
 gencode_version <- opt$gencode_version 
 if(!is.null(gencode_version)){
-  # if gencode version is not NULL, it should be at least at version 27 
-  # gencode_version <- gencode_version %>% as.numeric()
-  stopifnot(gencode_version >= 27) 
+# if gencode version is not NULL, it should be at least at version 27 
+# gencode_version <- gencode_version %>% as.numeric()
+stopifnot(gencode_version >= 27) 
 }
 print(gencode_version)
 
@@ -79,8 +81,8 @@ print(feature_selection)
 var_prop <- opt$var_prop
 # if feature selection is variance, var_prop cannot be NULL and should be > 0
 if(feature_selection == "variance"){
-  stopifnot(!is.null(var_prop) & var_prop > 0)
-  var_prop <- var_prop %>% as.numeric()
+stopifnot(!is.null(var_prop) & var_prop > 0)
+var_prop <- var_prop %>% as.numeric()
 }
 print(var_prop)
 
@@ -96,22 +98,23 @@ print(max_k)
 # set directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses", "clustering_analysis")
-output_dir <- file.path(analysis_dir, "output", "optimal_clustering")
+output_dir <- opt$output_dir
+# output_dir <- file.path(analysis_dir, "output", "optimal_clustering")
 dir.create(output_dir, showWarnings = F, recursive = T)
 
 # source functions
 source(file.path(analysis_dir, 'util', 'lspline_clustering.R'))
 
 # compute optimal clustering across all combinations of algorithms, distances and input k-values
-  lspline_clustering(expr_mat = input_mat,
-                     hist_file = hist_file,
-                     algorithms = cluster_algorithm,
-                     distances = cluster_distance,
-                     filter_expr = filter_expr,
-                     protein_coding_only = protein_coding_only,
-                     gencode_version = gencode_version,
-                     feature_selection = feature_selection,
-                     var_prop = var_prop,
-                     transformation_type = transformation_type,
-                     max_k = max_k,
-                     output_dir = output_dir)
+lspline_clustering(expr_mat = input_mat,
+                   hist_file = hist_file,
+                   algorithms = cluster_algorithm,
+                   distances = cluster_distance,
+                   filter_expr = filter_expr,
+                   protein_coding_only = protein_coding_only,
+                   gencode_version = gencode_version,
+                   feature_selection = feature_selection,
+                   var_prop = var_prop,
+                   transformation_type = transformation_type,
+                   max_k = max_k,
+                   output_dir = output_dir)

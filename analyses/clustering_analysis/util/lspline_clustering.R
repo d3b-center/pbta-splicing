@@ -9,6 +9,7 @@
 #' @param hist_file path to histology file
 #' @param algorithms algorithms to be evaluated
 #' @param distances distances to be evaluated
+#' @param filter_expr filter genes by expession. logical TRUE or FALSE
 #' @param dispersion_percentile_val value for DGCA::filterGenes dispersion_percentile parameter
 #' @param protein_coding_only filter genes to protein coding only. logical TRUE or FALSE
 #' @param gencode_version gencode version to fetch gtf. Default is 27
@@ -71,6 +72,7 @@ source(file.path(analysis_dir, "util", "get_cdf_datapoints.R"))
 lspline_clustering <- function(expr_mat, hist_file, 
                                algorithms = c("hc", "pam", "km"), 
                                distances = c("pearson", "spearman", "euclidean", "manhattan", "binary", "maximum", "canberra", "minkowski"),
+                               filter_expr = FALSE, dispersion_percentile_val = 0.2,
                                protein_coding_only = TRUE, gencode_version = 27,
                                feature_selection = c("variance", "dip.test"),
                                var_prop = NULL, min_n = NULL, transformation_type = c("none", "tmm", "vst", "uq", "log2", "rank"),
@@ -102,8 +104,19 @@ lspline_clustering <- function(expr_mat, hist_file,
   expr_mat <- expr_mat[, apply(expr_mat, MARGIN = 2, function(x) {
     sd(x) != 0
   })]
-  }
 
+  # do some filtering based on expression
+  if (filter_expr) {
+    print("filter by expression")
+    expr_mat <- DGCA::filterGenes(
+      inputMat = expr_mat,
+      filterTypes = c("central", "dispersion"),
+      filterDispersionType = "cv",
+      filterDispersionPercentile = dispersion_percentile_val,
+      sequential = TRUE
+    )
+  }
+  
   # filter to protein coding genes only
   if (protein_coding_only) {
     print("filter to protein coding genes")

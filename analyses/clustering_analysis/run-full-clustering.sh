@@ -13,7 +13,8 @@ Rscript code/03-optimal-clustering.R \
 --protein_coding_only FALSE \
 --feature_selection "dip.test" \
 --transformation_type "none" \
---max_k 17
+--max_k 17 \
+--output_dir "output/optimal_clustering"
 
 # 1) PBTA splicing data
 # get ccp clustering output for a specific combination of distance + algorithm + % variable genes
