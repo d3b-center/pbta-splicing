@@ -26,6 +26,16 @@ splice_mat <- read_tsv(matrix_file) %>%
   column_to_rownames("Splice_ID") %>%
   dplyr::select(any_of(indep_file$Kids_First_Biospecimen_ID))
   
+# filter to OncoKB Cancer Gene List
+oncokb_genelist <- file.path(analysis_dir, "input", "cancerGeneList.tsv")
+oncokb_genelist <- read_tsv(oncokb_genelist)
+splice_mat <- splice_mat %>%
+  rownames_to_column("Splice_ID") %>%
+  mutate(gene = gsub(":.*", "", Splice_ID)) %>%
+  filter(gene %in% oncokb_genelist$`Hugo Symbol`) %>%
+  dplyr::select(-c(gene)) %>%
+  column_to_rownames("Splice_ID")
+
 # save
 rds_out <- file.path(results_dir,"pan_cancer_splicing_SE.gene.rds")
 saveRDS(splice_mat, rds_out)
