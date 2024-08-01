@@ -100,33 +100,33 @@ print (plot_dsp)
 dev.off()
 
 # gene list file
-oncokb_gene_file <-file.path(input_dir,'cancerGeneList.tsv')
+oncokb_gene_file <-file.path(input_dir,'genelistreference.txt')
 
 ## oncoKB gene list
-oncokb_gene_ref <- vroom(oncokb_gene_file) %>% 
-  dplyr::rename('gene' = `Hugo Symbol`) %>%
-  mutate(
-    type = case_when(
-      `Is Oncogene` == "Yes" & `Is Tumor Suppressor Gene` == "Yes" ~ "Both",
-      `Is Oncogene` == "Yes" ~ "Oncogene",
-      `Is Tumor Suppressor Gene` == "Yes" ~ "Tumor Suppressor",
-      TRUE ~ NA_character_
-    )) %>%
-  select(gene,type) %>% 
-  filter(!is.na(type))
+oncokb_gene_ref <- read_tsv(oncokb_gene_file) %>%
+  dplyr::rename(gene = Gene_Symbol) %>%
+  filter(grepl("Oncogene|TumorSuppressor", type)) %>%
+  # collapse
+  mutate(classification = case_when(grepl("Onco", type) & grepl("Tumor", type) ~ "Both",
+                                    grepl("Onco", type) & !grepl("Tumor", type) ~ "Oncogene",
+                                    grepl("Tumor", type) & !grepl("Onco", type) ~ "Tumor Suppressor",
+                                    TRUE ~ NA_character_)) %>%
+  select(gene, classification)
 
 
 psi_comb_goi <- psi_comb %>% inner_join(oncokb_gene_ref, by="gene") %>% 
-  select(gene,Preference,type) %>%
+  select(gene,Preference,classification) %>%
   unique()
+# relevel to plot
+psi_comb_goi$classification <- factor(psi_comb_goi$classification, levels = c("Oncogene", "Tumor Suppressor", "Both"))
 
 # write for supplemental 
 write_tsv(psi_comb_goi, file.path(results_dir, "differential_splice_by_goi_category.tsv"))
 
 ## plot num of hits per gene fam
-plot_barplot_family <- ggplot(psi_comb_goi, aes(x = fct_rev(fct_infreq(type)), fill= Preference)) +
+plot_barplot_family <- ggplot(psi_comb_goi, aes(x = classification, fill= Preference)) +
   geom_bar(stat="count", position='dodge', color="black") + 
-  facet_wrap(~type, scales = "free_y", ncol = 1) +
+  facet_wrap(~classification, scales = "free_y", ncol = 1) +
   xlab("Cancer Gene Type")     + 
   ylab("Number of Genes Signficantly Mis-spliced") + 
   scale_fill_manual(name = "Preference (CLK1 exon 4 high)",
