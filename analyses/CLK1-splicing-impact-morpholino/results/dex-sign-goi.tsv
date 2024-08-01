@@ -1,0 +1,130 @@
+gene	Preference	type
+ARID5B	Inclusion	Tumor Suppressor
+CD74	Inclusion	Oncogene
+CDK4	Inclusion	Oncogene
+DNMT1	Inclusion	Oncogene
+EWSR1	Inclusion	Oncogene
+FGFR3	Inclusion	Oncogene
+FGFR4	Inclusion	Oncogene
+IKBKE	Inclusion	Oncogene
+KAT7	Inclusion	Oncogene
+MGA	Inclusion	Tumor Suppressor
+MIDEAS	Inclusion	Tumor Suppressor
+MRE11	Inclusion	Tumor Suppressor
+NUP214	Inclusion	Oncogene
+PAK1	Inclusion	Oncogene
+PBRM1	Inclusion	Tumor Suppressor
+PML	Inclusion	Tumor Suppressor
+PTPN13	Inclusion	Tumor Suppressor
+QKI	Inclusion	Tumor Suppressor
+RAF1	Inclusion	Oncogene
+RASA1	Inclusion	Tumor Suppressor
+SPEN	Inclusion	Tumor Suppressor
+TET2	Inclusion	Tumor Suppressor
+TP53BP1	Inclusion	Tumor Suppressor
+ATXN2	Inclusion	Tumor Suppressor
+AXIN1	Inclusion	Tumor Suppressor
+CBFB	Inclusion	Tumor Suppressor
+ECSIT	Inclusion	Oncogene
+EED	Inclusion	Tumor Suppressor
+ELF4	Inclusion	Oncogene
+ELN	Inclusion	Oncogene
+ETV6	Inclusion	Tumor Suppressor
+FAT1	Inclusion	Tumor Suppressor
+HDAC2	Inclusion	Oncogene
+HIRA	Inclusion	Tumor Suppressor
+IRF1	Inclusion	Tumor Suppressor
+JAK2	Inclusion	Oncogene
+KMT2D	Inclusion	Tumor Suppressor
+MLH1	Inclusion	Tumor Suppressor
+MLLT10	Inclusion	Oncogene
+MTHFD2	Inclusion	Oncogene
+MYD88	Inclusion	Oncogene
+NT5C2	Inclusion	Oncogene
+RAD51D	Inclusion	Tumor Suppressor
+RUNX1	Inclusion	Tumor Suppressor
+SDHC	Inclusion	Tumor Suppressor
+SS18	Inclusion	Oncogene
+TAF1	Inclusion	Oncogene
+TCF3	Inclusion	Tumor Suppressor
+LRP1B	Inclusion	Tumor Suppressor
+NOTCH3	Inclusion	Both
+ABL2	Inclusion	Oncogene
+EZH2	Inclusion	Both
+MAP3K14	Inclusion	Oncogene
+SMAD3	Inclusion	Tumor Suppressor
+SMARCE1	Inclusion	Both
+CIITA	Inclusion	Tumor Suppressor
+FANCA	Inclusion	Tumor Suppressor
+HDAC7	Inclusion	Oncogene
+ERBB2	Inclusion	Oncogene
+CHEK2	Inclusion	Tumor Suppressor
+GPS2	Inclusion	Tumor Suppressor
+MAP3K13	Inclusion	Oncogene
+DDX5	Inclusion	Oncogene
+LMNA	Inclusion	Oncogene
+SCG5	Inclusion	Oncogene
+CYLD	Inclusion	Tumor Suppressor
+RPS6KA4	Inclusion	Oncogene
+TERT	Inclusion	Oncogene
+AKT2	Skipping	Oncogene
+ATXN2	Skipping	Tumor Suppressor
+CASP8	Skipping	Tumor Suppressor
+ELN	Skipping	Oncogene
+EP400	Skipping	Tumor Suppressor
+FGFR1	Skipping	Oncogene
+FGFR2	Skipping	Oncogene
+KMT2A	Skipping	Tumor Suppressor
+MKI67	Skipping	Oncogene
+MLLT10	Skipping	Oncogene
+NTRK2	Skipping	Oncogene
+PAK1	Skipping	Oncogene
+RPTOR	Skipping	Oncogene
+SAMHD1	Skipping	Tumor Suppressor
+TSC2	Skipping	Tumor Suppressor
+ABRAXAS1	Skipping	Tumor Suppressor
+ASXL1	Skipping	Tumor Suppressor
+ATM	Skipping	Tumor Suppressor
+BCL2L11	Skipping	Tumor Suppressor
+CHEK2	Skipping	Tumor Suppressor
+DCUN1D1	Skipping	Oncogene
+DDB2	Skipping	Tumor Suppressor
+DNMT1	Skipping	Oncogene
+EMSY	Skipping	Oncogene
+ERCC1	Skipping	Tumor Suppressor
+EWSR1	Skipping	Oncogene
+EZH2	Skipping	Both
+FANCE	Skipping	Tumor Suppressor
+FYN	Skipping	Oncogene
+GLI1	Skipping	Oncogene
+HDAC2	Skipping	Oncogene
+HDAC7	Skipping	Oncogene
+IRF2	Skipping	Tumor Suppressor
+KDM6A	Skipping	Tumor Suppressor
+MAP4K4	Skipping	Oncogene
+MEF2C	Skipping	Both
+MGA	Skipping	Tumor Suppressor
+MYB	Skipping	Oncogene
+MYO5A	Skipping	Oncogene
+NPM1	Skipping	Tumor Suppressor
+PMS1	Skipping	Tumor Suppressor
+POU2F2	Skipping	Oncogene
+SS18	Skipping	Oncogene
+TCF7L2	Skipping	Tumor Suppressor
+TP53BP1	Skipping	Tumor Suppressor
+NOTCH2	Skipping	Both
+SMARCA2	Skipping	Tumor Suppressor
+HDAC1	Skipping	Oncogene
+NF1	Skipping	Tumor Suppressor
+PML	Skipping	Tumor Suppressor
+SLX4	Skipping	Tumor Suppressor
+STK11	Skipping	Tumor Suppressor
+ECSIT	Skipping	Oncogene
+MBD6	Skipping	Tumor Suppressor
+CD74	Skipping	Oncogene
+PIGA	Skipping	Tumor Suppressor
+RAD51C	Skipping	Tumor Suppressor
+LMNA	Skipping	Oncogene
+ROBO1	Skipping	Tumor Suppressor
+NUP214	Skipping	Oncogene
+TFE3	Skipping	Oncogene

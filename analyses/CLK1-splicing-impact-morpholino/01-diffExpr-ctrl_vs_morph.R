@@ -144,6 +144,12 @@ sign_regl_gene_df <- genes_to_plot %>%
   mutate(Direction= case_when(log2FoldChange < -1 ~ 'Up',
                               log2FoldChange > 1 ~ 'Down')) 
 
+dex_comb_goi <- sign_regl_gene_df  %>% 
+  select(gene,Direction,type) %>%
+  unique()
+
+# write for supplemental 
+write_tsv(psi_comb_goi, file.path(results_dir, "dex-sign-goi"))
 
 ## plot num of hits per gene fam
 plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(type)), fill= Direction)) +
