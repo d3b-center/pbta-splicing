@@ -222,8 +222,8 @@ foreach $hist (@broad_hist_uniq)
         if($splice_event_per_pos_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_pos_hist_count{$event}{$hist};
           #print $event,"\t",$hist,"\t",$total_hist_count,"\n";
-          if( ($event_count/$total_hist_count) >= .17 )
-          #if( ($event_count) >= 2 )
+          #if( ($event_count/$total_hist_count) >= .10 )
+          if( ($event_count) >= 2 )
 
 
           {
@@ -245,8 +245,8 @@ foreach $hist (@broad_hist_uniq)
         if($splice_event_per_neg_hist_count{$event}{$hist}){
           my $event_count = $splice_event_per_neg_hist_count{$event}{$hist};
           #print $event,"\t",$hist,"\t",$total_hist_count,"*\n";
-          if( ($event_count/$total_hist_count) >= .17 )
-          #if( ($event_count) >= 2 )
+          #if( ($event_count/$total_hist_count) >= .10 )
+          if( ($event_count) >= 2 )
 
           {
             print TAB $event,"\t",$hist,"\tskipping\t";
