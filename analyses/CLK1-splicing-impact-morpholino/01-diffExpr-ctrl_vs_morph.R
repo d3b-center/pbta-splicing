@@ -116,20 +116,18 @@ write_tsv(de_results, de_output)
 
 ## subset with gene lists
 # gene list file
-oncokb_gene_file <-file.path(input_dir,'cancerGeneList.tsv')
+oncokb_gene_file <-file.path(input_dir,'genelistreference.txt')
 
 ## oncoKB gene list
-oncokb_gene_ref <- vroom(oncokb_gene_file) %>% 
-  dplyr::rename('gene' = `Hugo Symbol`) %>%
-  mutate(
-    type = case_when(
-      `Is Oncogene` == "Yes" & `Is Tumor Suppressor Gene` == "Yes" ~ "Both",
-      `Is Oncogene` == "Yes" ~ "Oncogene",
-      `Is Tumor Suppressor Gene` == "Yes" ~ "Tumor Suppressor",
-      TRUE ~ NA_character_
-    )) %>%
-  select(gene,type) %>% 
-  filter(!is.na(type))
+oncokb_gene_ref <- read_tsv(oncokb_gene_file) %>%
+  dplyr::rename(gene = Gene_Symbol) %>%
+  filter(grepl("Oncogene|TumorSuppressor", type)) %>%
+  # collapse
+  mutate(classification = case_when(grepl("Onco", type) & grepl("Tumor", type) ~ "Both",
+                                    grepl("Onco", type) & !grepl("Tumor", type) ~ "Oncogene",
+                                    grepl("Tumor", type) & !grepl("Onco", type) ~ "Tumor Suppressor",
+         TRUE ~ NA_character_)) %>%
+  select(gene, classification)
 
 # combine with the DE results
 genes_to_plot <- as.data.frame(res) %>% 
@@ -145,16 +143,20 @@ sign_regl_gene_df <- genes_to_plot %>%
                               log2FoldChange > 1 ~ 'Down')) 
 
 dex_comb_goi <- sign_regl_gene_df  %>% 
-  select(gene,Direction,type) %>%
+  select(gene, Direction,classification) %>%
+  arrange(gene) %>%
   unique()
 
+# relevel to plot
+dex_comb_goi$classification <- factor(dex_comb_goi$classification, levels = c("Oncogene", "Tumor Suppressor", "Both"))
+
 # write for supplemental 
-write_tsv(psi_comb_goi, file.path(results_dir, "dex-sign-goi"))
+write_tsv(dex_comb_goi, file.path(results_dir, "dex-sign-goi.tsv"))
 
 ## plot num of hits per gene fam
-plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(type)), fill= Direction)) +
+plot_barplot_family <- ggplot(dex_comb_goi, aes(x = classification, fill= Direction)) +
                        geom_bar(stat="count", position='dodge', color="black") + 
-                       facet_wrap(~type, scales = "free_y", ncol = 1) +
+                       facet_wrap(~classification, scales = "free_y", ncol = 1) +
                        xlab("Cancer Gene Type")     + 
                        ylab("Number of Genes Signficantly DE") + 
                        scale_fill_manual(name = "Direction (CLK1 exon 4 high)",
@@ -164,7 +166,8 @@ plot_barplot_family <- ggplot(sign_regl_gene_df, aes(x = fct_rev(fct_infreq(type
                                  hjust = -0.5, size = 3.5) +
                       theme_Publication() +
                       theme(legend.position = "top", legend.direction = "horizontal") +
-                      coord_flip() 
+                      coord_flip() +
+  ylim(c(0,40))
 
   
 
