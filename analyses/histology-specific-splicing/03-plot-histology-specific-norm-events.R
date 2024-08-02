@@ -90,10 +90,12 @@ avg_uniq_plot <- ggplot(combined_df, aes(x = fct_relevel(plot_group, group_order
   geom_bar(stat = "identity", position = position_dodge()) +
   scale_fill_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A"))+ 
   labs(x = "Histology",
-       y = "Unique Recurrent Splice Events per Patient") +
+       y = "Unique Recurrent\nSplice Events per Patient") +
   theme_Publication() + 
   ylim(c(0,max(combined_df$norm_unique)+2))+
-  coord_flip()
+  coord_flip()+
+  theme(legend.position = "top",
+        legend.direction = "horizontal")
   
 # Save plot
 pdf(file.path(plots_dir,"avg-uniq-hits.pdf"), height = 7, width = 7)
