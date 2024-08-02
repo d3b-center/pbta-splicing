@@ -59,13 +59,13 @@ de_results<- read_tsv(de_results_file) %>%
 # read in sig splice events
 splice_res_func <- read_tsv(splice_func_file) %>%
   dplyr::rename(Gene_Symbol = gene) %>%
-  select(Gene_Symbol, Uniprot, plot_type) %>%
+  select(Gene_Symbol, Uniprot, classification) %>%
   unique()
 
 # filter for onco/tsg
 splice_res_onco <- splice_res_func %>%
   # filter for onc/tsg
-  filter(plot_type %in% c("Oncogene", "Oncogene or Tumor Suppressor", "Tumor Suppressor"))
+  filter(classification %in% c("Oncogene", "Both", "Tumor Suppressor"))
 
 # remove all genes with no expression
 expr <- expression_data[which(rowSums(expression_data[,2:ncol(expression_data)]) > 0),] 
