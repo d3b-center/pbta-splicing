@@ -77,8 +77,11 @@ combined_df <- bind_rows(
 )
 
 # Sort the data frame in descending order by avg_unique of Skipping events
-sorted_df <- combined_df %>%
-  arrange(desc(norm_unique * (Preference == "Skipping")))
+group_order <- combined_df %>%
+  group_by(plot_group) %>%
+  summarise(norm_unique_total = sum(norm_unique)) %>%
+  arrange(desc(norm_unique_total)) %>%
+  pull(plot_group)
 
 
 # Create the side-by-side bar plot with custom colors
