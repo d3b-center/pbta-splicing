@@ -85,7 +85,7 @@ group_order <- combined_df %>%
 
 
 # Create the side-by-side bar plot with custom colors
-avg_uniq_plot <- ggplot(sorted_df, aes(x = reorder(plot_group, -norm_unique * (Preference == "Skipping")), y = norm_unique, fill = Preference)) +
+avg_uniq_plot <- ggplot(sorted_df, aes(x = fct_relevel(plot_group, group_order), y = norm_unique, fill = Preference)) +
   geom_bar(stat = "identity", position = position_dodge()) +
   scale_fill_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A"))+ 
   labs(x = "Histology",
