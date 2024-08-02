@@ -1,0 +1,1803 @@
+gene	classification
+ABCG2	Tumor Suppressor
+ABI2	Tumor Suppressor
+ABL1	Oncogene
+ABL2	Oncogene
+ABRAXAS1	Tumor Suppressor
+ACHE	Tumor Suppressor
+ACKR3	Both
+ACTG1	Tumor Suppressor
+ACVR1	Oncogene
+ACVR1B	Tumor Suppressor
+ACVR1C	Tumor Suppressor
+ACY1	Tumor Suppressor
+ADAMTS18	Tumor Suppressor
+ADAMTS8	Tumor Suppressor
+ADAMTS9	Tumor Suppressor
+ADAMTS9-AS2	Tumor Suppressor
+ADARB1	Tumor Suppressor
+ADHFE1	Oncogene
+ADPRH	Tumor Suppressor
+AFAP1L2	Tumor Suppressor
+AFF4	Oncogene
+AGO1	Oncogene
+AGTR1	Tumor Suppressor
+AHCYL1	Tumor Suppressor
+AHNAK	Tumor Suppressor
+AHR	Tumor Suppressor
+AHRR	Tumor Suppressor
+AIF1	Tumor Suppressor
+AIM2	Tumor Suppressor
+AIMP1	Tumor Suppressor
+AIMP2	Tumor Suppressor
+AIP	Tumor Suppressor
+AJAP1	Tumor Suppressor
+AJUBA	Tumor Suppressor
+AKAP12	Tumor Suppressor
+AKR1B1	Tumor Suppressor
+AKT1	Oncogene
+AKT2	Oncogene
+AKT3	Oncogene
+ALDH1A2	Tumor Suppressor
+ALDH1L2	Oncogene
+ALDH2	Tumor Suppressor
+ALK	Oncogene
+ALOX12B	Both
+ALOX15	Tumor Suppressor
+ALOX15B	Tumor Suppressor
+ALPL	Tumor Suppressor
+AMER1	Tumor Suppressor
+AMH	Tumor Suppressor
+ANAPC1	Tumor Suppressor
+ANGPTL4	Tumor Suppressor
+ANKRD11	Tumor Suppressor
+ANKRD26	Oncogene
+ANP32A	Tumor Suppressor
+ANXA1	Tumor Suppressor
+ANXA7	Tumor Suppressor
+APAF1	Tumor Suppressor
+APC	Tumor Suppressor
+APITD1	Tumor Suppressor
+APLNR	Both
+AR	Oncogene
+ARAF	Oncogene
+ARF1	Tumor Suppressor
+ARG1	Tumor Suppressor
+ARHGAP26	Both
+ARHGAP29	Tumor Suppressor
+ARHGAP35	Both
+ARHGEF12	Both
+ARHGEF28	Oncogene
+ARID1A	Tumor Suppressor
+ARID1B	Tumor Suppressor
+ARID2	Tumor Suppressor
+ARID3A	Tumor Suppressor
+ARID3B	Oncogene
+ARID4A	Tumor Suppressor
+ARID4B	Tumor Suppressor
+ARID5B	Tumor Suppressor
+ARL11	Tumor Suppressor
+ARL6IP5	Tumor Suppressor
+ARMC10	Tumor Suppressor
+ARMC5	Tumor Suppressor
+ARNTL	Tumor Suppressor
+ASCL1	Tumor Suppressor
+ASS1	Tumor Suppressor
+ASXL1	Tumor Suppressor
+ASXL2	Tumor Suppressor
+ATF1	Oncogene
+ATF3	Tumor Suppressor
+ATIC	Oncogene
+ATM	Tumor Suppressor
+ATMIN	Tumor Suppressor
+ATP1A1	Both
+ATP6V1B2	Tumor Suppressor
+ATR	Tumor Suppressor
+ATRIP	Tumor Suppressor
+ATRX	Tumor Suppressor
+ATXN2	Tumor Suppressor
+ATXN7	Oncogene
+AURKA	Oncogene
+AURKB	Oncogene
+AXIN1	Tumor Suppressor
+AXIN2	Tumor Suppressor
+AXL	Oncogene
+AZGP1	Tumor Suppressor
+B2M	Tumor Suppressor
+BAALC	Oncogene
+BACH2	Tumor Suppressor
+BANP	Tumor Suppressor
+BAP1	Tumor Suppressor
+BARD1	Tumor Suppressor
+BASP1	Tumor Suppressor
+BATF2	Tumor Suppressor
+BAX	Tumor Suppressor
+BBC3	Tumor Suppressor
+BCL10	Tumor Suppressor
+BCL11B	Tumor Suppressor
+BCL2	Oncogene
+BCL2L11	Tumor Suppressor
+BCL3	Oncogene
+BCL6	Oncogene
+BCL6B	Tumor Suppressor
+BCL7A	Tumor Suppressor
+BCL9	Oncogene
+BCOR	Tumor Suppressor
+BCORL1	Tumor Suppressor
+BCR	Both
+BECN1	Tumor Suppressor
+BEX2	Tumor Suppressor
+BHLHE41	Tumor Suppressor
+BICRA	Tumor Suppressor
+BIK	Tumor Suppressor
+BIN1	Tumor Suppressor
+BLCAP	Tumor Suppressor
+BLID	Tumor Suppressor
+BLM	Tumor Suppressor
+BLNK	Tumor Suppressor
+BMAL1	Tumor Suppressor
+BMF	Tumor Suppressor
+BMP10	Tumor Suppressor
+BMP2	Tumor Suppressor
+BMP4	Tumor Suppressor
+BMPR1A	Tumor Suppressor
+BMPR2	Tumor Suppressor
+BNIP3L	Tumor Suppressor
+BRAF	Oncogene
+BRCA1	Tumor Suppressor
+BRCA2	Tumor Suppressor
+BRD3	Oncogene
+BRD4	Oncogene
+BRD7	Tumor Suppressor
+BRF1	Tumor Suppressor
+BRINP1	Tumor Suppressor
+BRIP1	Tumor Suppressor
+BRMS1	Tumor Suppressor
+BRMS1L	Tumor Suppressor
+BRSK1	Tumor Suppressor
+BTG1	Tumor Suppressor
+BTG2	Tumor Suppressor
+BTG3	Tumor Suppressor
+BTG4	Tumor Suppressor
+BTK	Both
+C2orf40	Tumor Suppressor
+CABLES1	Tumor Suppressor
+CACNA1D	Oncogene
+CACNA2D3	Tumor Suppressor
+CAD	Oncogene
+CADM1	Tumor Suppressor
+CADM2	Tumor Suppressor
+CADM3	Tumor Suppressor
+CADM4	Tumor Suppressor
+CALR	Oncogene
+CAMK2N1	Tumor Suppressor
+CAMTA1	Tumor Suppressor
+CANT1	Oncogene
+CAPG	Tumor Suppressor
+CARD11	Oncogene
+CASC1	Tumor Suppressor
+CASC2	Tumor Suppressor
+CASP2	Tumor Suppressor
+CASP5	Tumor Suppressor
+CASP8	Tumor Suppressor
+CAT	Tumor Suppressor
+CAV1	Tumor Suppressor
+CAVIN3	Tumor Suppressor
+CBFA2T3	Tumor Suppressor
+CBFB	Tumor Suppressor
+CBL	Tumor Suppressor
+CBX5	Tumor Suppressor
+CCAR1	Tumor Suppressor
+CCAR2	Tumor Suppressor
+CCDC136	Tumor Suppressor
+CCDC154	Tumor Suppressor
+CCDC67	Tumor Suppressor
+CCN2	Tumor Suppressor
+CCN3	Tumor Suppressor
+CCN6	Tumor Suppressor
+CCNB3	Oncogene
+CCNC	Tumor Suppressor
+CCND1	Oncogene
+CCND2	Oncogene
+CCND3	Oncogene
+CCNDBP1	Tumor Suppressor
+CCNE1	Oncogene
+CCNQ	Tumor Suppressor
+CD19	Oncogene
+CD274	Oncogene
+CD276	Oncogene
+CD28	Oncogene
+CD4	Tumor Suppressor
+CD44	Tumor Suppressor
+CD58	Tumor Suppressor
+CD70	Oncogene
+CD74	Oncogene
+CD79A	Oncogene
+CD79B	Oncogene
+CD82	Tumor Suppressor
+CDC42	Oncogene
+CDC73	Tumor Suppressor
+CDCP1	Tumor Suppressor
+CDH1	Tumor Suppressor
+CDH11	Both
+CDH13	Tumor Suppressor
+CDH17	Tumor Suppressor
+CDH2	Oncogene
+CDH4	Both
+CDH5	Tumor Suppressor
+CDK12	Tumor Suppressor
+CDK2	Tumor Suppressor
+CDK2AP1	Tumor Suppressor
+CDK4	Oncogene
+CDK6	Both
+CDK8	Oncogene
+CDKN1A	Tumor Suppressor
+CDKN1B	Tumor Suppressor
+CDKN1C	Tumor Suppressor
+CDKN2A	Tumor Suppressor
+CDKN2B	Tumor Suppressor
+CDKN2C	Tumor Suppressor
+CDO1	Tumor Suppressor
+CDX2	Tumor Suppressor
+CEACAM1	Tumor Suppressor
+CEBPA	Tumor Suppressor
+CEBPD	Tumor Suppressor
+CENPS	Tumor Suppressor
+CFTR	Tumor Suppressor
+CHD1	Tumor Suppressor
+CHD2	Tumor Suppressor
+CHD4	Oncogene
+CHD5	Tumor Suppressor
+CHEK1	Tumor Suppressor
+CHEK2	Tumor Suppressor
+CHFR	Tumor Suppressor
+CHST10	Tumor Suppressor
+CHTF8	Tumor Suppressor
+CHUK	Tumor Suppressor
+CIC	Tumor Suppressor
+CIITA	Tumor Suppressor
+CITED2	Tumor Suppressor
+CIZ1	Tumor Suppressor
+CLDN1	Tumor Suppressor
+CLDN23	Tumor Suppressor
+CLU	Tumor Suppressor
+CMTM3	Tumor Suppressor
+CMTM5	Tumor Suppressor
+CMTR2	Tumor Suppressor
+CNDP2	Tumor Suppressor
+CNN1	Tumor Suppressor
+CNOT3	Tumor Suppressor
+CNTNAP2	Tumor Suppressor
+COL1A1	Oncogene
+COL2A1	Tumor Suppressor
+COP1	Both
+COPS2	Tumor Suppressor
+CPNE7	Tumor Suppressor
+CRBN	Tumor Suppressor
+CREB1	Oncogene
+CREB3L1	Tumor Suppressor
+CREBBP	Tumor Suppressor
+CREM	Tumor Suppressor
+CRKL	Oncogene
+CRLF2	Oncogene
+CRNN	Tumor Suppressor
+CSF2	Tumor Suppressor
+CSF3R	Oncogene
+CSMD1	Tumor Suppressor
+CSNK1A1	Tumor Suppressor
+CSRNP1	Tumor Suppressor
+CST5	Tumor Suppressor
+CST6	Tumor Suppressor
+CTCF	Tumor Suppressor
+CTCFL	Tumor Suppressor
+CTDSPL	Tumor Suppressor
+CTGF	Tumor Suppressor
+CTLA4	Oncogene
+CTNNA1	Tumor Suppressor
+CTNNA2	Tumor Suppressor
+CTNNA3	Tumor Suppressor
+CTNNB1	Oncogene
+CTNNBIP1	Tumor Suppressor
+CTNND1	Tumor Suppressor
+CTR9	Tumor Suppressor
+CUL1	Tumor Suppressor
+CUL2	Tumor Suppressor
+CUL3	Tumor Suppressor
+CUL4A	Oncogene
+CUL5	Tumor Suppressor
+CUX1	Tumor Suppressor
+CXCL10	Tumor Suppressor
+CXCL12	Tumor Suppressor
+CXCL14	Tumor Suppressor
+CXCR2	Tumor Suppressor
+CXCR4	Oncogene
+CXXC4	Tumor Suppressor
+CXXC5	Tumor Suppressor
+CYB561D2	Tumor Suppressor
+CYB5A	Tumor Suppressor
+CYB5R2	Tumor Suppressor
+CYGB	Tumor Suppressor
+CYLD	Tumor Suppressor
+CYP19A1	Oncogene
+CYSLTR2	Oncogene
+DAB2	Tumor Suppressor
+DAB2IP	Tumor Suppressor
+DACH1	Tumor Suppressor
+DACT1	Tumor Suppressor
+DAPK1	Tumor Suppressor
+DAPK2	Tumor Suppressor
+DAPK3	Tumor Suppressor
+DAXX	Tumor Suppressor
+DCC	Tumor Suppressor
+DCDC2	Tumor Suppressor
+DCLRE1A	Tumor Suppressor
+DCN	Tumor Suppressor
+DCUN1D1	Oncogene
+DCUN1D3	Tumor Suppressor
+DDB2	Tumor Suppressor
+DDR2	Both
+DDX3X	Tumor Suppressor
+DDX4	Oncogene
+DDX41	Tumor Suppressor
+DDX5	Oncogene
+DDX58	Tumor Suppressor
+DEFB1	Tumor Suppressor
+DEK	Oncogene
+DENND2B	Tumor Suppressor
+DENND2D	Tumor Suppressor
+DEUP1	Tumor Suppressor
+DFFA	Tumor Suppressor
+DFNA5	Tumor Suppressor
+DIABLO	Tumor Suppressor
+DICER1	Tumor Suppressor
+DIDO1	Tumor Suppressor
+DIRAS1	Tumor Suppressor
+DIRAS3	Tumor Suppressor
+DIS3	Tumor Suppressor
+DKK1	Tumor Suppressor
+DKK3	Tumor Suppressor
+DLC1	Tumor Suppressor
+DLEC1	Tumor Suppressor
+DLEU1	Tumor Suppressor
+DLEU2	Tumor Suppressor
+DLG1	Tumor Suppressor
+DLK1	Tumor Suppressor
+DMBT1	Tumor Suppressor
+DMD	Tumor Suppressor
+DMTF1	Tumor Suppressor
+DNAI7	Tumor Suppressor
+DNAJA3	Tumor Suppressor
+DNAJB1	Tumor Suppressor
+DNAJB4	Tumor Suppressor
+DNAJC11	Tumor Suppressor
+DND1	Tumor Suppressor
+DNM2	Oncogene
+DNMT1	Both
+DNMT3A	Tumor Suppressor
+DNMT3B	Tumor Suppressor
+DOK1	Tumor Suppressor
+DOK2	Tumor Suppressor
+DOK3	Tumor Suppressor
+DOT1L	Oncogene
+DPH1	Tumor Suppressor
+DPP4	Tumor Suppressor
+DSC2	Tumor Suppressor
+DSC3	Tumor Suppressor
+DSP	Tumor Suppressor
+DTX1	Tumor Suppressor
+DUSP1	Tumor Suppressor
+DUSP22	Tumor Suppressor
+DUSP26	Tumor Suppressor
+DUSP4	Tumor Suppressor
+DUSP5	Tumor Suppressor
+DUSP6	Tumor Suppressor
+DUSP9	Tumor Suppressor
+Dec-01	Tumor Suppressor
+E2F1	Tumor Suppressor
+E2F2	Tumor Suppressor
+E2F3	Both
+EAF1	Tumor Suppressor
+EAF2	Tumor Suppressor
+EBF3	Tumor Suppressor
+ECRG4	Tumor Suppressor
+ECSIT	Oncogene
+ECT2	Tumor Suppressor
+ECT2L	Tumor Suppressor
+EDA2R	Tumor Suppressor
+EDNRB	Tumor Suppressor
+EED	Tumor Suppressor
+EEF1A1	Tumor Suppressor
+EEF1E1	Tumor Suppressor
+EFNA5	Tumor Suppressor
+EGFL7	Oncogene
+EGFR	Oncogene
+EGLN1	Tumor Suppressor
+EGLN3	Tumor Suppressor
+EGR1	Tumor Suppressor
+EGR2	Tumor Suppressor
+EHD3	Tumor Suppressor
+EHF	Tumor Suppressor
+EI24	Tumor Suppressor
+EIF2B1	Tumor Suppressor
+EIF3F	Tumor Suppressor
+EIF4A2	Oncogene
+EIF4E	Oncogene
+ELF3	Both
+ELF4	Oncogene
+ELK4	Oncogene
+ELL	Oncogene
+ELN	Oncogene
+ELOA	Tumor Suppressor
+EMP1	Tumor Suppressor
+EMP2	Tumor Suppressor
+EMSY	Oncogene
+EP300	Tumor Suppressor
+EP400	Tumor Suppressor
+EPAS1	Tumor Suppressor
+EPB41	Tumor Suppressor
+EPB41L3	Tumor Suppressor
+EPCAM	Tumor Suppressor
+EPHA1	Tumor Suppressor
+EPHA2	Tumor Suppressor
+EPHA3	Tumor Suppressor
+EPHA7	Both
+EPHB1	Both
+EPHB2	Tumor Suppressor
+EPHB3	Tumor Suppressor
+EPHB4	Both
+EPHB6	Tumor Suppressor
+EPOR	Oncogene
+ERBB2	Oncogene
+ERBB3	Oncogene
+ERBB4	Both
+ERC1	Oncogene
+ERCC1	Tumor Suppressor
+ERCC2	Tumor Suppressor
+ERCC3	Tumor Suppressor
+ERCC4	Tumor Suppressor
+ERCC5	Tumor Suppressor
+ERF	Tumor Suppressor
+ERG	Oncogene
+ERRFI1	Tumor Suppressor
+ESCO2	Tumor Suppressor
+ESR1	Both
+ESR2	Tumor Suppressor
+ESRP1	Tumor Suppressor
+ESRRB	Tumor Suppressor
+ETAA1	Tumor Suppressor
+ETF1	Tumor Suppressor
+ETS1	Both
+ETS2	Tumor Suppressor
+ETV1	Oncogene
+ETV4	Oncogene
+ETV5	Oncogene
+ETV6	Tumor Suppressor
+EWSR1	Oncogene
+EXT1	Tumor Suppressor
+EXT2	Tumor Suppressor
+EXTL1	Tumor Suppressor
+EXTL2	Tumor Suppressor
+EXTL3	Tumor Suppressor
+EYA4	Tumor Suppressor
+EZH1	Both
+EZH2	Both
+EZHIP	Oncogene
+FABP3	Tumor Suppressor
+FADD	Tumor Suppressor
+FAM172A	Tumor Suppressor
+FAM188A	Tumor Suppressor
+FANCA	Tumor Suppressor
+FANCC	Tumor Suppressor
+FANCD2	Tumor Suppressor
+FANCE	Tumor Suppressor
+FANCF	Tumor Suppressor
+FANCG	Tumor Suppressor
+FANCL	Tumor Suppressor
+FANCM	Tumor Suppressor
+FAS	Tumor Suppressor
+FAT1	Tumor Suppressor
+FAT4	Tumor Suppressor
+FBLN1	Tumor Suppressor
+FBP1	Tumor Suppressor
+FBXL13	Tumor Suppressor
+FBXO11	Tumor Suppressor
+FBXO25	Tumor Suppressor
+FBXO31	Tumor Suppressor
+FBXO32	Tumor Suppressor
+FBXW7	Tumor Suppressor
+FER1L4	Tumor Suppressor
+FES	Oncogene
+FGF1	Oncogene
+FGF10	Oncogene
+FGF14	Tumor Suppressor
+FGF19	Oncogene
+FGF2	Oncogene
+FGF23	Oncogene
+FGF3	Oncogene
+FGF4	Oncogene
+FGF5	Oncogene
+FGF6	Oncogene
+FGF7	Oncogene
+FGF8	Oncogene
+FGF9	Oncogene
+FGFR1	Oncogene
+FGFR2	Oncogene
+FGFR3	Oncogene
+FGFR4	Oncogene
+FH	Tumor Suppressor
+FHIT	Tumor Suppressor
+FHL1	Tumor Suppressor
+FLCN	Tumor Suppressor
+FLI1	Oncogene
+FLNA	Tumor Suppressor
+FLT1	Oncogene
+FLT3	Both
+FLT4	Oncogene
+FOLH1	Oncogene
+FOLR1	Oncogene
+FOXA1	Both
+FOXA2	Tumor Suppressor
+FOXC1	Tumor Suppressor
+FOXD3	Tumor Suppressor
+FOXF1	Both
+FOXL2	Both
+FOXN4	Oncogene
+FOXO1	Tumor Suppressor
+FOXO3	Tumor Suppressor
+FOXO4	Tumor Suppressor
+FOXO6	Tumor Suppressor
+FOXP1	Both
+FOXP3	Tumor Suppressor
+FRK	Tumor Suppressor
+FRS2	Oncogene
+FRS3	Tumor Suppressor
+FSTL1	Oncogene
+FUBP1	Tumor Suppressor
+FURIN	Oncogene
+FUS	Both
+FXN	Tumor Suppressor
+FYN	Oncogene
+FZR1	Both
+G0S2	Tumor Suppressor
+GAB1	Oncogene
+GAB2	Oncogene
+GABARAP	Tumor Suppressor
+GABRA6	Oncogene
+GADD45A	Tumor Suppressor
+GADD45B	Tumor Suppressor
+GADD45G	Tumor Suppressor
+GADD45GIP1	Tumor Suppressor
+GALR1	Tumor Suppressor
+GANAB	Tumor Suppressor
+GAS1	Tumor Suppressor
+GAS5	Tumor Suppressor
+GATA2	Both
+GATA3	Both
+GATA4	Tumor Suppressor
+GATA5	Tumor Suppressor
+GATA6	Oncogene
+GBP1	Tumor Suppressor
+GGNBP2	Tumor Suppressor
+GJA1	Tumor Suppressor
+GJB2	Tumor Suppressor
+GKN1	Tumor Suppressor
+GKN2	Tumor Suppressor
+GLI1	Both
+GLIPR1	Tumor Suppressor
+GLS2	Tumor Suppressor
+GLTSCR1	Tumor Suppressor
+GLTSCR2	Tumor Suppressor
+GNA11	Oncogene
+GNA12	Oncogene
+GNA13	Both
+GNAQ	Oncogene
+GNAS	Oncogene
+GNAT1	Tumor Suppressor
+GNB1	Oncogene
+GNB2L1	Tumor Suppressor
+GNMT	Tumor Suppressor
+GORAB	Tumor Suppressor
+GPC3	Both
+GPC5	Tumor Suppressor
+GPRC5A	Tumor Suppressor
+GPS2	Tumor Suppressor
+GPX3	Tumor Suppressor
+GRB7	Oncogene
+GREM1	Both
+GRIN2A	Tumor Suppressor
+GSDME	Tumor Suppressor
+GSK3B	Both
+GSN	Tumor Suppressor
+GSTP1	Tumor Suppressor
+GSTT1	Tumor Suppressor
+GTF2I	Oncogene
+GTPBP4	Tumor Suppressor
+GUCY2C	Tumor Suppressor
+H1-3	Tumor Suppressor
+H1-4	Oncogene
+H1-5	Tumor Suppressor
+H19	Tumor Suppressor
+H2AC17	Oncogene
+H2AFX	Tumor Suppressor
+H2AX	Tumor Suppressor
+H3-3A	Oncogene
+HACD4	Tumor Suppressor
+HACE1	Tumor Suppressor
+HBP1	Tumor Suppressor
+HCAR2	Tumor Suppressor
+HDAC1	Both
+HDAC2	Oncogene
+HDAC3	Tumor Suppressor
+HDAC4	Both
+HDAC7	Oncogene
+HECA	Tumor Suppressor
+HEPACAM	Tumor Suppressor
+HFE	Oncogene
+HGF	Oncogene
+HIC1	Tumor Suppressor
+HIF1A	Both
+HINT1	Tumor Suppressor
+HIPK2	Tumor Suppressor
+HIRA	Tumor Suppressor
+HIVEP1	Tumor Suppressor
+HIVEP3	Tumor Suppressor
+HLA-A	Tumor Suppressor
+HLA-B	Tumor Suppressor
+HLA-C	Tumor Suppressor
+HLTF	Tumor Suppressor
+HMGA1	Oncogene
+HMGA2	Oncogene
+HNF1A	Tumor Suppressor
+HNF4A	Tumor Suppressor
+HOMER2	Tumor Suppressor
+HOPX	Tumor Suppressor
+HOTS	Tumor Suppressor
+HOXA11	Tumor Suppressor
+HOXB13	Both
+HPGD	Tumor Suppressor
+HRAS	Oncogene
+HRASLS2	Tumor Suppressor
+HRG	Tumor Suppressor
+HSD17B2	Tumor Suppressor
+HSD3B1	Oncogene
+HSP90AA1	Oncogene
+HSP90B1	Tumor Suppressor
+HSPB7	Tumor Suppressor
+HSPD1	Tumor Suppressor
+HTATIP2	Tumor Suppressor
+HTRA1	Tumor Suppressor
+HTRA2	Tumor Suppressor
+HTRA3	Tumor Suppressor
+ICOSLG	Oncogene
+ID1	Oncogene
+ID3	Tumor Suppressor
+ID4	Tumor Suppressor
+IDH1	Both
+IDH2	Oncogene
+IER3	Tumor Suppressor
+IFI16	Tumor Suppressor
+IFNGR1	Tumor Suppressor
+IFT88	Tumor Suppressor
+IGF1	Both
+IGF1R	Oncogene
+IGF2	Oncogene
+IGF2R	Tumor Suppressor
+IGFALS	Tumor Suppressor
+IGFBP3	Tumor Suppressor
+IGFBP4	Tumor Suppressor
+IGFBP5	Tumor Suppressor
+IGFBP7	Tumor Suppressor
+IGFBPL1	Tumor Suppressor
+IGH	Oncogene
+IGH-@	Oncogene
+IGH@	Oncogene
+IGL	Oncogene
+IGL-@	Oncogene
+IGL@	Oncogene
+IKBKE	Oncogene
+IKZF1	Tumor Suppressor
+IKZF2	Tumor Suppressor
+IKZF3	Both
+IL17A	Tumor Suppressor
+IL17RD	Tumor Suppressor
+IL24	Tumor Suppressor
+IL3	Oncogene
+IL6ST	Oncogene
+IL7R	Oncogene
+ILK	Tumor Suppressor
+ING1	Tumor Suppressor
+ING2	Tumor Suppressor
+ING3	Tumor Suppressor
+ING4	Tumor Suppressor
+ING5	Tumor Suppressor
+INGX	Tumor Suppressor
+INHA	Tumor Suppressor
+INHBA	Both
+INPP4B	Tumor Suppressor
+INPPL1	Tumor Suppressor
+INSR	Oncogene
+INTS6	Tumor Suppressor
+IQGAP1	Oncogene
+IQGAP2	Tumor Suppressor
+IRAG1	Tumor Suppressor
+IRAG2	Tumor Suppressor
+IRF1	Tumor Suppressor
+IRF2	Tumor Suppressor
+IRF3	Tumor Suppressor
+IRF4	Both
+IRF5	Tumor Suppressor
+IRF8	Tumor Suppressor
+IRS1	Oncogene
+IRS2	Oncogene
+IRX1	Tumor Suppressor
+ISG15	Tumor Suppressor
+ITGA5	Tumor Suppressor
+ITGA7	Tumor Suppressor
+ITGAV	Tumor Suppressor
+ITGB1	Tumor Suppressor
+ITGB3	Tumor Suppressor
+ITPKB	Oncogene
+JAK1	Both
+JAK2	Oncogene
+JAK3	Oncogene
+JARID2	Both
+JDP2	Tumor Suppressor
+JUN	Oncogene
+JUP	Tumor Suppressor
+KANK1	Tumor Suppressor
+KAT5	Tumor Suppressor
+KAT7	Oncogene
+KCNRG	Tumor Suppressor
+KDM3A	Tumor Suppressor
+KDM3B	Tumor Suppressor
+KDM5A	Both
+KDM5C	Tumor Suppressor
+KDM5D	Both
+KDM6A	Tumor Suppressor
+KDM8	Tumor Suppressor
+KDR	Oncogene
+KEAP1	Tumor Suppressor
+KEL	Oncogene
+KIF1B	Tumor Suppressor
+KIF7	Tumor Suppressor
+KISS1	Tumor Suppressor
+KIT	Oncogene
+KL	Tumor Suppressor
+KLF10	Tumor Suppressor
+KLF2	Tumor Suppressor
+KLF3	Tumor Suppressor
+KLF4	Both
+KLF5	Both
+KLF6	Tumor Suppressor
+KLHL6	Both
+KLK10	Tumor Suppressor
+KLK6	Tumor Suppressor
+KMT2A	Tumor Suppressor
+KMT2B	Tumor Suppressor
+KMT2C	Tumor Suppressor
+KMT2D	Tumor Suppressor
+KRAS	Oncogene
+KRIT1	Tumor Suppressor
+KRT19	Tumor Suppressor
+KSR2	Oncogene
+L3MBTL4	Tumor Suppressor
+LAT2	Tumor Suppressor
+LATS1	Tumor Suppressor
+LATS2	Tumor Suppressor
+LCK	Oncogene
+LEF1	Oncogene
+LEFTY1	Tumor Suppressor
+LEFTY2	Tumor Suppressor
+LGALS7	Tumor Suppressor
+LGR5	Oncogene
+LHX4	Tumor Suppressor
+LHX6	Tumor Suppressor
+LIFR	Tumor Suppressor
+LIMA1	Tumor Suppressor
+LIMD1	Tumor Suppressor
+LIN9	Tumor Suppressor
+LINC-PINT	Tumor Suppressor
+LITAF	Tumor Suppressor
+LLGL1	Tumor Suppressor
+LMNA	Oncogene
+LMNTD1	Tumor Suppressor
+LMO1	Oncogene
+LMO2	Oncogene
+LOC401317	Tumor Suppressor
+LOX	Tumor Suppressor
+LRIG1	Tumor Suppressor
+LRIG3	Tumor Suppressor
+LRMP	Tumor Suppressor
+LRP1B	Tumor Suppressor
+LRP5	Both
+LRP6	Oncogene
+LRRC3B	Tumor Suppressor
+LRRC4	Tumor Suppressor
+LSAMP	Tumor Suppressor
+LTB	Both
+LTF	Tumor Suppressor
+LTK	Oncogene
+LXN	Tumor Suppressor
+LYN	Oncogene
+LZTR1	Tumor Suppressor
+LZTS1	Tumor Suppressor
+MAD1L1	Tumor Suppressor
+MAD2L2	Both
+MADD	Tumor Suppressor
+MAFB	Oncogene
+MAL	Tumor Suppressor
+MAL2	Tumor Suppressor
+MAP2K1	Oncogene
+MAP2K2	Oncogene
+MAP2K4	Tumor Suppressor
+MAP3K1	Tumor Suppressor
+MAP3K13	Oncogene
+MAP3K14	Oncogene
+MAP3K21	Oncogene
+MAP3K4	Tumor Suppressor
+MAP3K7	Oncogene
+MAP3K8	Tumor Suppressor
+MAP4K1	Tumor Suppressor
+MAP4K4	Oncogene
+MAPK1	Oncogene
+MAPK10	Tumor Suppressor
+MAPK3	Oncogene
+MAPK9	Tumor Suppressor
+MARCKS	Tumor Suppressor
+MARVELD1	Tumor Suppressor
+MAT2A	Tumor Suppressor
+MAX	Tumor Suppressor
+MBD4	Tumor Suppressor
+MBD6	Tumor Suppressor
+MCC	Tumor Suppressor
+MCL1	Oncogene
+MCM9	Tumor Suppressor
+MCPH1	Tumor Suppressor
+MDC1	Tumor Suppressor
+MDM2	Oncogene
+MDM4	Oncogene
+MECOM	Oncogene
+MED12	Both
+MEF2B	Oncogene
+MEF2C	Both
+MEF2D	Oncogene
+MEG3	Tumor Suppressor
+MEN1	Tumor Suppressor
+MERTK	Oncogene
+MET	Oncogene
+MFSD2A	Tumor Suppressor
+MGA	Tumor Suppressor
+MGAM	Oncogene
+MIA	Tumor Suppressor
+MIA2	Tumor Suppressor
+MIDEAS	Tumor Suppressor
+MINDY3	Tumor Suppressor
+MIR1-1	Tumor Suppressor
+MIR1-2	Tumor Suppressor
+MIR100	Tumor Suppressor
+MIR101-1	Tumor Suppressor
+MIR101-2	Tumor Suppressor
+MIR106A	Tumor Suppressor
+MIR107	Tumor Suppressor
+MIR10A	Tumor Suppressor
+MIR122	Tumor Suppressor
+MIR1226	Tumor Suppressor
+MIR124-1	Tumor Suppressor
+MIR124-2	Tumor Suppressor
+MIR124-3	Tumor Suppressor
+MIR1247	Tumor Suppressor
+MIR125A	Tumor Suppressor
+MIR125B1	Tumor Suppressor
+MIR125B2	Tumor Suppressor
+MIR126	Tumor Suppressor
+MIR127	Tumor Suppressor
+MIR129-1	Tumor Suppressor
+MIR129-2	Tumor Suppressor
+MIR1291	Tumor Suppressor
+MIR1297	Tumor Suppressor
+MIR130A	Tumor Suppressor
+MIR132	Tumor Suppressor
+MIR133A1	Tumor Suppressor
+MIR133A2	Tumor Suppressor
+MIR134	Tumor Suppressor
+MIR135A1	Tumor Suppressor
+MIR135A2	Tumor Suppressor
+MIR136	Tumor Suppressor
+MIR137	Tumor Suppressor
+MIR138-1	Tumor Suppressor
+MIR138-2	Tumor Suppressor
+MIR140	Tumor Suppressor
+MIR141	Tumor Suppressor
+MIR142	Tumor Suppressor
+MIR143	Tumor Suppressor
+MIR145	Tumor Suppressor
+MIR146A	Tumor Suppressor
+MIR147A	Tumor Suppressor
+MIR148A	Tumor Suppressor
+MIR148B	Tumor Suppressor
+MIR149	Tumor Suppressor
+MIR150	Tumor Suppressor
+MIR152	Tumor Suppressor
+MIR155	Tumor Suppressor
+MIR15A	Tumor Suppressor
+MIR16-1	Tumor Suppressor
+MIR16-2	Tumor Suppressor
+MIR17	Tumor Suppressor
+MIR181A1	Tumor Suppressor
+MIR181A2	Tumor Suppressor
+MIR181B1	Tumor Suppressor
+MIR181B2	Tumor Suppressor
+MIR181C	Tumor Suppressor
+MIR182	Tumor Suppressor
+MIR183	Tumor Suppressor
+MIR185	Tumor Suppressor
+MIR186	Tumor Suppressor
+MIR187	Tumor Suppressor
+MIR18A	Tumor Suppressor
+MIR18B	Tumor Suppressor
+MIR192	Tumor Suppressor
+MIR193A	Tumor Suppressor
+MIR193B	Tumor Suppressor
+MIR194-1	Tumor Suppressor
+MIR194-2	Tumor Suppressor
+MIR195	Tumor Suppressor
+MIR196A2	Tumor Suppressor
+MIR196B	Tumor Suppressor
+MIR198	Tumor Suppressor
+MIR199A1	Tumor Suppressor
+MIR200A	Tumor Suppressor
+MIR200B	Tumor Suppressor
+MIR200C	Tumor Suppressor
+MIR203A	Tumor Suppressor
+MIR204	Tumor Suppressor
+MIR205	Tumor Suppressor
+MIR206	Tumor Suppressor
+MIR20A	Tumor Suppressor
+MIR210	Tumor Suppressor
+MIR211	Tumor Suppressor
+MIR214	Tumor Suppressor
+MIR215	Tumor Suppressor
+MIR217	Tumor Suppressor
+MIR218-1	Tumor Suppressor
+MIR218-2	Tumor Suppressor
+MIR219A1	Tumor Suppressor
+MIR22	Tumor Suppressor
+MIR222	Tumor Suppressor
+MIR223	Tumor Suppressor
+MIR23A	Tumor Suppressor
+MIR23B	Tumor Suppressor
+MIR24-1	Tumor Suppressor
+MIR25	Tumor Suppressor
+MIR26A1	Tumor Suppressor
+MIR26A2	Tumor Suppressor
+MIR26B	Tumor Suppressor
+MIR27A	Tumor Suppressor
+MIR27B	Tumor Suppressor
+MIR28	Tumor Suppressor
+MIR296	Tumor Suppressor
+MIR29A	Tumor Suppressor
+MIR29B1	Tumor Suppressor
+MIR29C	Tumor Suppressor
+MIR302B	Tumor Suppressor
+MIR30A	Tumor Suppressor
+MIR30C1	Tumor Suppressor
+MIR31	Tumor Suppressor
+MIR320A	Tumor Suppressor
+MIR326	Tumor Suppressor
+MIR329-1	Tumor Suppressor
+MIR335	Tumor Suppressor
+MIR338	Tumor Suppressor
+MIR33A	Tumor Suppressor
+MIR340	Tumor Suppressor
+MIR34A	Tumor Suppressor
+MIR34B	Tumor Suppressor
+MIR34C	Tumor Suppressor
+MIR367	Tumor Suppressor
+MIR370	Tumor Suppressor
+MIR375	Tumor Suppressor
+MIR378A	Tumor Suppressor
+MIR383	Tumor Suppressor
+MIR409	Tumor Suppressor
+MIR410	Tumor Suppressor
+MIR422A	Tumor Suppressor
+MIR424	Tumor Suppressor
+MIR449A	Tumor Suppressor
+MIR449B	Tumor Suppressor
+MIR451A	Tumor Suppressor
+MIR483	Tumor Suppressor
+MIR486-1	Tumor Suppressor
+MIR487B	Tumor Suppressor
+MIR490	Tumor Suppressor
+MIR493	Tumor Suppressor
+MIR494	Tumor Suppressor
+MIR495	Tumor Suppressor
+MIR497	Tumor Suppressor
+MIR502	Tumor Suppressor
+MIR503	Tumor Suppressor
+MIR504	Tumor Suppressor
+MIR505	Tumor Suppressor
+MIR508	Tumor Suppressor
+MIR509-3	Tumor Suppressor
+MIR511	Tumor Suppressor
+MIR517A	Tumor Suppressor
+MIR519D	Tumor Suppressor
+MIR520B	Tumor Suppressor
+MIR520C	Tumor Suppressor
+MIR551A	Tumor Suppressor
+MIR574	Tumor Suppressor
+MIR615	Tumor Suppressor
+MIR636	Tumor Suppressor
+MIR7-1	Tumor Suppressor
+MIR7-2	Tumor Suppressor
+MIR7-3	Tumor Suppressor
+MIR708	Tumor Suppressor
+MIR874	Tumor Suppressor
+MIR888	Tumor Suppressor
+MIR9-1	Tumor Suppressor
+MIR9-2	Tumor Suppressor
+MIR9-3	Tumor Suppressor
+MIR941-1	Tumor Suppressor
+MIR98	Tumor Suppressor
+MIR99A	Tumor Suppressor
+MIRLET7A1	Tumor Suppressor
+MIRLET7A2	Tumor Suppressor
+MIRLET7A3	Tumor Suppressor
+MIRLET7B	Tumor Suppressor
+MIRLET7C	Tumor Suppressor
+MIRLET7D	Tumor Suppressor
+MIRLET7E	Tumor Suppressor
+MIRLET7F1	Tumor Suppressor
+MIRLET7F2	Tumor Suppressor
+MIRLET7G	Tumor Suppressor
+MIRLET7I	Tumor Suppressor
+MITF	Both
+MKI67	Oncogene
+MLH1	Tumor Suppressor
+MLH3	Tumor Suppressor
+MLLT10	Oncogene
+MLLT3	Oncogene
+MME	Tumor Suppressor
+MN1	Oncogene
+MNT	Tumor Suppressor
+MOB1A	Tumor Suppressor
+MOB1B	Tumor Suppressor
+MOB3B	Tumor Suppressor
+MPL	Oncogene
+MRE11	Tumor Suppressor
+MRVI1	Tumor Suppressor
+MSH2	Tumor Suppressor
+MSH3	Tumor Suppressor
+MSH6	Tumor Suppressor
+MSI1	Oncogene
+MSI2	Oncogene
+MSMB	Tumor Suppressor
+MST1	Tumor Suppressor
+MST1R	Both
+MT1DP	Tumor Suppressor
+MT1F	Tumor Suppressor
+MT1G	Tumor Suppressor
+MT1M	Tumor Suppressor
+MT2A	Tumor Suppressor
+MTAP	Tumor Suppressor
+MTHFD2	Oncogene
+MTOR	Oncogene
+MTSS1	Tumor Suppressor
+MTUS1	Tumor Suppressor
+MUS81	Tumor Suppressor
+MUTYH	Tumor Suppressor
+MXI1	Tumor Suppressor
+MYB	Oncogene
+MYBBP1A	Tumor Suppressor
+MYBL1	Oncogene
+MYC	Oncogene
+MYCL	Oncogene
+MYCN	Oncogene
+MYD88	Oncogene
+MYH11	Tumor Suppressor
+MYH9	Tumor Suppressor
+MYO18B	Tumor Suppressor
+MYO1A	Tumor Suppressor
+MYO5A	Oncogene
+MYOD1	Tumor Suppressor
+MZB1	Tumor Suppressor
+NADK	Oncogene
+NAPEPLD	Tumor Suppressor
+NBN	Tumor Suppressor
+NCOA3	Oncogene
+NCOA4	Tumor Suppressor
+NCOA5	Tumor Suppressor
+NCOR1	Tumor Suppressor
+NCSTN	Oncogene
+NDN	Tumor Suppressor
+NDRG1	Tumor Suppressor
+NDRG2	Tumor Suppressor
+NDRG4	Tumor Suppressor
+NDST4	Tumor Suppressor
+NEDD4	Tumor Suppressor
+NEDD4L	Tumor Suppressor
+NEURL1	Tumor Suppressor
+NF1	Tumor Suppressor
+NF2	Tumor Suppressor
+NFATC2	Tumor Suppressor
+NFE2	Oncogene
+NFE2L2	Oncogene
+NFKB1	Tumor Suppressor
+NFKBIA	Tumor Suppressor
+NGFR	Tumor Suppressor
+NHERF1	Both
+NINJ1	Tumor Suppressor
+NIT2	Tumor Suppressor
+NKX2-1	Oncogene
+NKX2-8	Tumor Suppressor
+NKX3-1	Tumor Suppressor
+NME1	Tumor Suppressor
+NNAT	Tumor Suppressor
+NOL7	Tumor Suppressor
+NOP53	Tumor Suppressor
+NOTCH1	Both
+NOTCH2	Both
+NOTCH3	Both
+NOTCH4	Both
+NOV	Tumor Suppressor
+NPAS2	Tumor Suppressor
+NPM1	Tumor Suppressor
+NPRL2	Tumor Suppressor
+NQO1	Oncogene
+NR0B2	Tumor Suppressor
+NR1I2	Tumor Suppressor
+NR2C2	Tumor Suppressor
+NR4A1	Tumor Suppressor
+NR4A3	Both
+NRAS	Oncogene
+NRBP1	Tumor Suppressor
+NRCAM	Tumor Suppressor
+NRF1	Tumor Suppressor
+NRG1	Oncogene
+NRSN2	Tumor Suppressor
+NSD1	Both
+NSD2	Oncogene
+NSD3	Tumor Suppressor
+NT5C2	Oncogene
+NTHL1	Tumor Suppressor
+NTRK1	Oncogene
+NTRK2	Oncogene
+NTRK3	Both
+NUAK1	Tumor Suppressor
+NUF2	Oncogene
+NUMB	Tumor Suppressor
+NUP214	Oncogene
+NUP98	Both
+NUPR1	Tumor Suppressor
+OLFM4	Tumor Suppressor
+ONECUT1	Tumor Suppressor
+ONECUT2	Oncogene
+OPCML	Tumor Suppressor
+OSCP1	Tumor Suppressor
+OSGIN1	Tumor Suppressor
+P2RY8	Tumor Suppressor
+PACRG	Tumor Suppressor
+PAEP	Tumor Suppressor
+PAFAH1B1	Tumor Suppressor
+PAIP2	Tumor Suppressor
+PAK1	Oncogene
+PAK5	Oncogene
+PALB2	Tumor Suppressor
+PANO1	Tumor Suppressor
+PANX2	Tumor Suppressor
+PARK2	Tumor Suppressor
+PARK7	Tumor Suppressor
+PARP1	Tumor Suppressor
+PAWR	Tumor Suppressor
+PAX3	Oncogene
+PAX4	Tumor Suppressor
+PAX5	Both
+PAX6	Tumor Suppressor
+PAX7	Oncogene
+PAX8	Oncogene
+PBRM1	Tumor Suppressor
+PCDH10	Tumor Suppressor
+PCDH17	Tumor Suppressor
+PCDH8	Tumor Suppressor
+PCDH9	Tumor Suppressor
+PCDHGC3	Tumor Suppressor
+PCGF2	Tumor Suppressor
+PDCD1	Oncogene
+PDCD1LG2	Oncogene
+PDCD4	Tumor Suppressor
+PDCD5	Tumor Suppressor
+PDGFB	Oncogene
+PDGFRA	Oncogene
+PDGFRB	Oncogene
+PDGFRL	Tumor Suppressor
+PDK1	Oncogene
+PDLIM4	Tumor Suppressor
+PDS5B	Tumor Suppressor
+PDSS2	Tumor Suppressor
+PDX1	Tumor Suppressor
+PEA15	Tumor Suppressor
+PEBP1	Tumor Suppressor
+PEG3	Tumor Suppressor
+PER2	Tumor Suppressor
+PF4	Tumor Suppressor
+PFN1	Tumor Suppressor
+PGBD5	Oncogene
+PGR	Both
+PGRMC2	Tumor Suppressor
+PHACTR4	Tumor Suppressor
+PHB	Tumor Suppressor
+PHB1	Tumor Suppressor
+PHC3	Tumor Suppressor
+PHF19	Oncogene
+PHF6	Tumor Suppressor
+PHIP	Tumor Suppressor
+PHLDA2	Tumor Suppressor
+PHLDA3	Tumor Suppressor
+PHLPP1	Tumor Suppressor
+PHLPP2	Tumor Suppressor
+PHOX2A	Tumor Suppressor
+PHOX2B	Tumor Suppressor
+PIAS1	Tumor Suppressor
+PIGA	Tumor Suppressor
+PIK3C2B	Oncogene
+PIK3CA	Oncogene
+PIK3CB	Oncogene
+PIK3CD	Oncogene
+PIK3CG	Oncogene
+PIK3R1	Tumor Suppressor
+PIK3R2	Tumor Suppressor
+PIK3R3	Tumor Suppressor
+PIN1	Tumor Suppressor
+PINX1	Tumor Suppressor
+PIWIL2	Tumor Suppressor
+PKD1	Tumor Suppressor
+PKNOX1	Tumor Suppressor
+PLA2G16	Tumor Suppressor
+PLA2G2A	Tumor Suppressor
+PLA2G7	Tumor Suppressor
+PLA2R1	Tumor Suppressor
+PLAAT2	Tumor Suppressor
+PLAAT3	Tumor Suppressor
+PLAAT4	Tumor Suppressor
+PLAGL1	Tumor Suppressor
+PLCB3	Tumor Suppressor
+PLCD1	Tumor Suppressor
+PLCE1	Tumor Suppressor
+PLCG1	Oncogene
+PLCG2	Oncogene
+PLD1	Tumor Suppressor
+PLEKHO1	Tumor Suppressor
+PLK1	Tumor Suppressor
+PLK2	Tumor Suppressor
+PLK5	Tumor Suppressor
+PLXNC1	Tumor Suppressor
+PMAIP1	Tumor Suppressor
+PML	Tumor Suppressor
+PMS1	Tumor Suppressor
+PMS2	Tumor Suppressor
+PNN	Tumor Suppressor
+POLD1	Tumor Suppressor
+POLE	Tumor Suppressor
+POT1	Tumor Suppressor
+POU2F2	Oncogene
+POU2F3	Tumor Suppressor
+POU3F2	Oncogene
+POU3F4	Oncogene
+POU6F2	Tumor Suppressor
+PPARA	Tumor Suppressor
+PPARG	Both
+PPM1A	Tumor Suppressor
+PPM1D	Oncogene
+PPM1L	Tumor Suppressor
+PPP1CA	Tumor Suppressor
+PPP1R1B	Tumor Suppressor
+PPP2CA	Tumor Suppressor
+PPP2CB	Tumor Suppressor
+PPP2R1A	Tumor Suppressor
+PPP2R1B	Tumor Suppressor
+PPP2R2A	Tumor Suppressor
+PPP2R2C	Tumor Suppressor
+PPP2R4	Tumor Suppressor
+PPP2R5C	Tumor Suppressor
+PPP3CC	Tumor Suppressor
+PPP6C	Tumor Suppressor
+PRCC	Oncogene
+PRDM1	Tumor Suppressor
+PRDM11	Tumor Suppressor
+PRDM2	Tumor Suppressor
+PRDM4	Tumor Suppressor
+PRDM5	Tumor Suppressor
+PRICKLE1	Tumor Suppressor
+PRKAA1	Tumor Suppressor
+PRKAA2	Tumor Suppressor
+PRKACA	Oncogene
+PRKAR1A	Tumor Suppressor
+PRKCB	Tumor Suppressor
+PRKCD	Tumor Suppressor
+PRKCDBP	Tumor Suppressor
+PRKCE	Tumor Suppressor
+PRKCI	Oncogene
+PRKCSH	Tumor Suppressor
+PRKDC	Both
+PRKN	Tumor Suppressor
+PRODH	Tumor Suppressor
+PROX1	Tumor Suppressor
+PRPF8	Tumor Suppressor
+PRR5	Tumor Suppressor
+PSMB2	Oncogene
+PTCH1	Tumor Suppressor
+PTCH2	Tumor Suppressor
+PTCSC3	Tumor Suppressor
+PTEN	Tumor Suppressor
+PTENP1	Tumor Suppressor
+PTGDR	Tumor Suppressor
+PTPA	Tumor Suppressor
+PTPN1	Both
+PTPN11	Both
+PTPN12	Tumor Suppressor
+PTPN13	Tumor Suppressor
+PTPN14	Tumor Suppressor
+PTPN2	Tumor Suppressor
+PTPN23	Tumor Suppressor
+PTPN6	Tumor Suppressor
+PTPRC	Tumor Suppressor
+PTPRD	Tumor Suppressor
+PTPRJ	Tumor Suppressor
+PTPRK	Tumor Suppressor
+PTPRS	Tumor Suppressor
+PTPRT	Tumor Suppressor
+PWAR4	Tumor Suppressor
+PYCARD	Tumor Suppressor
+PYHIN1	Tumor Suppressor
+QKI	Tumor Suppressor
+RAB25	Tumor Suppressor
+RAB35	Oncogene
+RAB7A	Tumor Suppressor
+RAC1	Oncogene
+RAC2	Oncogene
+RACK1	Tumor Suppressor
+RAD17	Tumor Suppressor
+RAD21	Tumor Suppressor
+RAD23B	Tumor Suppressor
+RAD50	Tumor Suppressor
+RAD51	Tumor Suppressor
+RAD51B	Tumor Suppressor
+RAD51C	Tumor Suppressor
+RAD51D	Tumor Suppressor
+RAF1	Oncogene
+RANBP2	Oncogene
+RANBP9	Tumor Suppressor
+RAP1A	Tumor Suppressor
+RAP1GAP	Tumor Suppressor
+RARB	Tumor Suppressor
+RARRES3	Tumor Suppressor
+RASA1	Tumor Suppressor
+RASAL1	Tumor Suppressor
+RASAL2	Tumor Suppressor
+RASL10A	Tumor Suppressor
+RASL10B	Tumor Suppressor
+RASL11A	Tumor Suppressor
+RASSF1	Tumor Suppressor
+RASSF10	Tumor Suppressor
+RASSF2	Tumor Suppressor
+RASSF3	Tumor Suppressor
+RASSF4	Tumor Suppressor
+RASSF5	Tumor Suppressor
+RASSF8	Tumor Suppressor
+RB1	Tumor Suppressor
+RB1CC1	Tumor Suppressor
+RBBP7	Tumor Suppressor
+RBBP8	Tumor Suppressor
+RBL1	Tumor Suppressor
+RBL2	Tumor Suppressor
+RBM10	Tumor Suppressor
+RBM14	Tumor Suppressor
+RBM15	Both
+RBM38	Tumor Suppressor
+RBM4	Tumor Suppressor
+RBM5	Tumor Suppressor
+RBM6	Tumor Suppressor
+RBMS3	Tumor Suppressor
+RBMX	Tumor Suppressor
+RBP1	Tumor Suppressor
+RCHY1	Tumor Suppressor
+RECK	Tumor Suppressor
+RECQL	Tumor Suppressor
+RECQL4	Tumor Suppressor
+REL	Oncogene
+REST	Tumor Suppressor
+RET	Oncogene
+REV3L	Oncogene
+RFWD2	Tumor Suppressor
+RHEB	Oncogene
+RHOA	Both
+RHOB	Tumor Suppressor
+RHOBTB2	Tumor Suppressor
+RICTOR	Oncogene
+RIGI	Tumor Suppressor
+RINT1	Tumor Suppressor
+RIOK2	Oncogene
+RIT1	Oncogene
+RITA1	Tumor Suppressor
+RNASEH2A	Oncogene
+RNASEH2B	Tumor Suppressor
+RNASEL	Tumor Suppressor
+RNASET2	Tumor Suppressor
+RND3	Tumor Suppressor
+RNF111	Tumor Suppressor
+RNF144A	Tumor Suppressor
+RNF180	Tumor Suppressor
+RNF43	Tumor Suppressor
+RNF8	Tumor Suppressor
+RNH1	Tumor Suppressor
+ROBO1	Tumor Suppressor
+ROR2	Tumor Suppressor
+ROS1	Oncogene
+RPA1	Tumor Suppressor
+RPL10	Tumor Suppressor
+RPL11	Tumor Suppressor
+RPL5	Tumor Suppressor
+RPRM	Tumor Suppressor
+RPS15	Oncogene
+RPS6KA2	Tumor Suppressor
+RPS6KA4	Oncogene
+RPS6KA6	Tumor Suppressor
+RPS6KB2	Oncogene
+RPTOR	Oncogene
+RRAGC	Oncogene
+RRAS	Oncogene
+RRAS2	Oncogene
+RTEL1	Tumor Suppressor
+RTN4	Tumor Suppressor
+RTN4IP1	Tumor Suppressor
+RUNX1	Tumor Suppressor
+RUNX1T1	Oncogene
+RUNX2	Tumor Suppressor
+RUNX3	Tumor Suppressor
+RYBP	Tumor Suppressor
+S100A11	Tumor Suppressor
+S100A2	Tumor Suppressor
+SAA1	Tumor Suppressor
+SAFB	Tumor Suppressor
+SAFB2	Tumor Suppressor
+SALL2	Tumor Suppressor
+SALL4	Tumor Suppressor
+SAMD9L	Tumor Suppressor
+SAMHD1	Tumor Suppressor
+SASH1	Tumor Suppressor
+SCG5	Oncogene
+SCGB3A1	Tumor Suppressor
+SCRIB	Tumor Suppressor
+SCUBE2	Tumor Suppressor
+SCYL1	Tumor Suppressor
+SDHA	Tumor Suppressor
+SDHAF2	Tumor Suppressor
+SDHB	Tumor Suppressor
+SDHC	Tumor Suppressor
+SDHD	Tumor Suppressor
+SEC14L2	Tumor Suppressor
+SELENBP1	Tumor Suppressor
+SEMA3B	Tumor Suppressor
+SEMA3F	Tumor Suppressor
+SEPT4	Tumor Suppressor
+SEPTIN4	Tumor Suppressor
+SERPINB3	Both
+SERPINB5	Tumor Suppressor
+SERPINI2	Tumor Suppressor
+SESN1	Tumor Suppressor
+SESN2	Tumor Suppressor
+SESN3	Tumor Suppressor
+SET	Oncogene
+SETBP1	Oncogene
+SETD1A	Oncogene
+SETD2	Tumor Suppressor
+SETDB1	Both
+SETDB2	Tumor Suppressor
+SF3B1	Oncogene
+SF3B2	Oncogene
+SFN	Tumor Suppressor
+SFRP1	Tumor Suppressor
+SFRP2	Both
+SFRP4	Tumor Suppressor
+SFRP5	Tumor Suppressor
+SGK1	Oncogene
+SGMS1	Tumor Suppressor
+SH2B3	Tumor Suppressor
+SH2D1A	Tumor Suppressor
+SH3GLB1	Tumor Suppressor
+SHISA3	Tumor Suppressor
+SHOC2	Oncogene
+SHPRH	Tumor Suppressor
+SHQ1	Tumor Suppressor
+SIAH1	Tumor Suppressor
+SIK1	Tumor Suppressor
+SIRT1	Tumor Suppressor
+SIRT2	Tumor Suppressor
+SIRT3	Tumor Suppressor
+SIRT4	Tumor Suppressor
+SIRT6	Tumor Suppressor
+SKIL	Tumor Suppressor
+SKP2	Tumor Suppressor
+SLC39A1	Tumor Suppressor
+SLC39A4	Tumor Suppressor
+SLC5A8	Tumor Suppressor
+SLC9A3R1	Tumor Suppressor
+SLFN11	Tumor Suppressor
+SLIT2	Tumor Suppressor
+SLIT3	Tumor Suppressor
+SLX4	Tumor Suppressor
+SMAD2	Tumor Suppressor
+SMAD3	Tumor Suppressor
+SMAD4	Tumor Suppressor
+SMARCA2	Tumor Suppressor
+SMARCA4	Tumor Suppressor
+SMARCB1	Tumor Suppressor
+SMARCC1	Tumor Suppressor
+SMARCE1	Both
+SMC1A	Tumor Suppressor
+SMC3	Tumor Suppressor
+SMCHD1	Tumor Suppressor
+SMG1	Tumor Suppressor
+SMO	Oncogene
+SMYD3	Oncogene
+SMYD4	Tumor Suppressor
+SNCAIP	Oncogene
+SNORD50A	Tumor Suppressor
+SOCS1	Tumor Suppressor
+SOCS3	Tumor Suppressor
+SOD2	Tumor Suppressor
+SOS1	Oncogene
+SOX1	Tumor Suppressor
+SOX10	Oncogene
+SOX11	Tumor Suppressor
+SOX15	Tumor Suppressor
+SOX17	Tumor Suppressor
+SOX2	Oncogene
+SOX7	Tumor Suppressor
+SOX9	Both
+SP100	Tumor Suppressor
+SP140	Tumor Suppressor
+SPARC	Tumor Suppressor
+SPARCL1	Tumor Suppressor
+SPEN	Tumor Suppressor
+SPI1	Tumor Suppressor
+SPINK7	Tumor Suppressor
+SPINT2	Tumor Suppressor
+SPOP	Tumor Suppressor
+SPRED1	Tumor Suppressor
+SPRTN	Tumor Suppressor
+SPRY2	Tumor Suppressor
+SPRY4	Tumor Suppressor
+SPTBN1	Tumor Suppressor
+SQSTM1	Oncogene
+SRC	Oncogene
+SRGAP3	Tumor Suppressor
+SRP72	Oncogene
+SRPX	Tumor Suppressor
+SS18	Oncogene
+SSBP2	Tumor Suppressor
+ST13	Tumor Suppressor
+ST20	Tumor Suppressor
+ST5	Tumor Suppressor
+ST7	Tumor Suppressor
+STAG1	Tumor Suppressor
+STAG2	Tumor Suppressor
+STARD13	Tumor Suppressor
+STAT1	Tumor Suppressor
+STAT3	Both
+STAT4	Oncogene
+STAT5A	Both
+STAT5B	Oncogene
+STAT6	Oncogene
+STK10	Tumor Suppressor
+STK11	Tumor Suppressor
+STK19	Oncogene
+STRADA	Tumor Suppressor
+STUB1	Tumor Suppressor
+SUFU	Tumor Suppressor
+SUZ12	Tumor Suppressor
+SYK	Both
+SYNM	Tumor Suppressor
+SYNPO2	Tumor Suppressor
+SYT13	Tumor Suppressor
+TAF1	Oncogene
+TAGLN	Tumor Suppressor
+TAL1	Oncogene
+TANK	Tumor Suppressor
+TAT	Tumor Suppressor
+TBL1XR1	Oncogene
+TBL2	Tumor Suppressor
+TBRG1	Tumor Suppressor
+TBX3	Tumor Suppressor
+TBX5	Tumor Suppressor
+TCEAL7	Tumor Suppressor
+TCEB3	Tumor Suppressor
+TCF3	Tumor Suppressor
+TCF4	Tumor Suppressor
+TCF7L1	Tumor Suppressor
+TCF7L2	Tumor Suppressor
+TCHP	Tumor Suppressor
+TCL1A	Oncogene
+TCL1B	Oncogene
+TDGF1	Tumor Suppressor
+TDRG1	Tumor Suppressor
+TENT5C	Tumor Suppressor
+TERT	Oncogene
+TES	Tumor Suppressor
+TET1	Tumor Suppressor
+TET2	Tumor Suppressor
+TET3	Tumor Suppressor
+TFAP2A	Tumor Suppressor
+TFE3	Oncogene
+TFPI2	Tumor Suppressor
+TGFB1	Tumor Suppressor
+TGFBI	Tumor Suppressor
+TGFBR1	Tumor Suppressor
+TGFBR2	Tumor Suppressor
+TGFBR3	Tumor Suppressor
+TGM3	Tumor Suppressor
+THBD	Tumor Suppressor
+THBS1	Tumor Suppressor
+THRA	Tumor Suppressor
+THRB	Tumor Suppressor
+THSD1	Tumor Suppressor
+THY1	Tumor Suppressor
+TIGAR	Oncogene
+TIMP3	Tumor Suppressor
+TLX1	Oncogene
+TLX3	Oncogene
+TMEFF1	Tumor Suppressor
+TMEFF2	Tumor Suppressor
+TMEM127	Tumor Suppressor
+TMPRSS11A	Tumor Suppressor
+TMPRSS6	Tumor Suppressor
+TNFAIP3	Tumor Suppressor
+TNFAIP8L2	Tumor Suppressor
+TNFRSF10A	Tumor Suppressor
+TNFRSF10B	Tumor Suppressor
+TNFRSF12A	Tumor Suppressor
+TNFRSF14	Tumor Suppressor
+TNFRSF17	Oncogene
+TNFRSF18	Tumor Suppressor
+TNFSF12	Tumor Suppressor
+TNFSF13	Oncogene
+TNFSF9	Tumor Suppressor
+TNK1	Tumor Suppressor
+TOM1L2	Tumor Suppressor
+TOP1	Oncogene
+TOP2A	Oncogene
+TOPORS	Tumor Suppressor
+TP53	Tumor Suppressor
+TP53BP1	Tumor Suppressor
+TP53BP2	Tumor Suppressor
+TP53COR1	Tumor Suppressor
+TP53INP1	Tumor Suppressor
+TP63	Both
+TP73	Tumor Suppressor
+TPTE2	Tumor Suppressor
+TRA	Oncogene
+TRAF3	Tumor Suppressor
+TRAF5	Tumor Suppressor
+TRB	Oncogene
+TRD	Oncogene
+TREX2	Tumor Suppressor
+TRG	Oncogene
+TRIB3	Oncogene
+TRIM13	Tumor Suppressor
+TRIM15	Tumor Suppressor
+TRIM24	Tumor Suppressor
+TRIM27	Oncogene
+TRIM3	Tumor Suppressor
+TRIM31	Tumor Suppressor
+TRIM32	Tumor Suppressor
+TRIM35	Tumor Suppressor
+TRIM62	Tumor Suppressor
+TRIP13	Both
+TRIT1	Tumor Suppressor
+TSC1	Tumor Suppressor
+TSC2	Tumor Suppressor
+TSC22D1	Tumor Suppressor
+TSG101	Tumor Suppressor
+TSHR	Oncogene
+TSLP	Tumor Suppressor
+TSPAN13	Tumor Suppressor
+TSPAN32	Tumor Suppressor
+TSSC4	Tumor Suppressor
+TTC4	Tumor Suppressor
+TTF1	Tumor Suppressor
+TTYH1	Oncogene
+TUSC1	Tumor Suppressor
+TUSC2	Tumor Suppressor
+TUSC7	Tumor Suppressor
+TWIST2	Tumor Suppressor
+TXNIP	Tumor Suppressor
+TYK2	Oncogene
+U2AF1	Oncogene
+UBA1	Oncogene
+UBE2A	Oncogene
+UBE2QL1	Tumor Suppressor
+UBE4B	Tumor Suppressor
+UBIAD1	Tumor Suppressor
+UBR5	Oncogene
+UBTF	Oncogene
+UCHL1	Both
+UFL1	Tumor Suppressor
+UHRF2	Tumor Suppressor
+UIMC1	Tumor Suppressor
+UNC5A	Tumor Suppressor
+UNC5B	Tumor Suppressor
+UNC5C	Tumor Suppressor
+UNC5D	Tumor Suppressor
+USP12	Tumor Suppressor
+USP12P1	Tumor Suppressor
+USP33	Tumor Suppressor
+USP8	Oncogene
+UVRAG	Tumor Suppressor
+VAV1	Oncogene
+VAV2	Oncogene
+VDR	Tumor Suppressor
+VEGFA	Both
+VEZT	Tumor Suppressor
+VHL	Tumor Suppressor
+VIL1	Tumor Suppressor
+VIM	Tumor Suppressor
+VPS53	Tumor Suppressor
+VSNL1	Tumor Suppressor
+VTRNA2-1	Tumor Suppressor
+VWA5A	Tumor Suppressor
+WDR11	Tumor Suppressor
+WDR48	Tumor Suppressor
+WFDC1	Tumor Suppressor
+WHSC1L1	Tumor Suppressor
+WIF1	Tumor Suppressor
+WISP3	Tumor Suppressor
+WNK2	Tumor Suppressor
+WNT11	Tumor Suppressor
+WNT5A	Tumor Suppressor
+WNT7A	Tumor Suppressor
+WT1	Both
+WWOX	Tumor Suppressor
+WWP1	Oncogene
+WWTR1	Oncogene
+XAF1	Tumor Suppressor
+XBP1	Oncogene
+XIAP	Oncogene
+XIST	Tumor Suppressor
+XPC	Tumor Suppressor
+XPO1	Oncogene
+XPO5	Tumor Suppressor
+XRCC1	Tumor Suppressor
+XRCC2	Tumor Suppressor
+XRCC5	Tumor Suppressor
+YAP1	Both
+YES1	Oncogene
+YPEL3	Tumor Suppressor
+YY1	Oncogene
+ZBTB16	Tumor Suppressor
+ZBTB18	Tumor Suppressor
+ZBTB20	Both
+ZBTB4	Tumor Suppressor
+ZBTB48	Tumor Suppressor
+ZBTB7A	Both
+ZBTB7C	Tumor Suppressor
+ZC3H10	Tumor Suppressor
+ZDHHC2	Tumor Suppressor
+ZFAS1	Tumor Suppressor
+ZFHX3	Tumor Suppressor
+ZFP36	Tumor Suppressor
+ZFP36L1	Tumor Suppressor
+ZFP36L2	Tumor Suppressor
+ZFP82	Tumor Suppressor
+ZHX2	Tumor Suppressor
+ZIC1	Tumor Suppressor
+ZMYM3	Tumor Suppressor
+ZMYND10	Tumor Suppressor
+ZMYND11	Tumor Suppressor
+ZNF185	Tumor Suppressor
+ZNF217	Oncogene
+ZNF292	Tumor Suppressor
+ZNF366	Tumor Suppressor
+ZNF382	Tumor Suppressor
+ZNF668	Tumor Suppressor
+ZNF750	Tumor Suppressor
+ZNRF3	Tumor Suppressor
+ZYX	Tumor Suppressor
