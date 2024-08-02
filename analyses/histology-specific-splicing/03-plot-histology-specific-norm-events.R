@@ -65,7 +65,7 @@ hist_indep_df <- histology_df %>%
   rename(Total = n)
 
 avg_unique_es_histology <-inner_join(es_events, hist_indep_df, by='plot_group') %>%
-  mutate(norm_unique = Total / unique_hits)
+  mutate(norm_unique = unique_hits / Total)
 
 avg_unique_ei_histology <-inner_join(ei_events, hist_indep_df, by='plot_group') %>%
   mutate(norm_unique = Total / unique_hits)
