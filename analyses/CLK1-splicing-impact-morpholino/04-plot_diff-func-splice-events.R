@@ -129,17 +129,18 @@ plot_barplot_family <- ggplot(psi_comb_goi, aes(x = classification, fill= Prefer
   facet_wrap(~classification, scales = "free_y", ncol = 1) +
   xlab("Cancer Gene Type")     + 
   ylab("Number of Genes Signficantly Mis-spliced") + 
-  scale_fill_manual(name = "Preference (CLK1 exon 4 high)",
+  scale_fill_manual(name = "Preference\n(CLK1 exon 4 high)",
                     values=c("#FFC20A","#0C7BDC")) + 
   geom_text(stat='count',aes(label=after_stat(count)), 
             position = position_dodge(width = 1),
             hjust = -0.5, size = 3.5) +
   theme_Publication() +
   theme(legend.position = "top", legend.direction = "horizontal") +
+  ylim(c(0,85))+
   coord_flip() 
 
 # Save plot as PDF
-pdf(file_dpsi_goi_plot, height = 6, width = 8, useDingbats = FALSE) 
+pdf(file_dpsi_goi_plot, height = 5.5, width = 6.6, useDingbats = FALSE) 
 plot_barplot_family
 dev.off()
 

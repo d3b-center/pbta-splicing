@@ -149,6 +149,7 @@ dex_comb_goi <- sign_regl_gene_df  %>%
 
 # relevel to plot
 dex_comb_goi$classification <- factor(dex_comb_goi$classification, levels = c("Oncogene", "Tumor Suppressor", "Both"))
+dex_comb_goi$Direction <- factor(dex_comb_goi$Direction, levels = c("Up", "Down"))
 
 # write for supplemental 
 write_tsv(dex_comb_goi, file.path(results_dir, "dex-sign-goi.tsv"))
@@ -159,19 +160,21 @@ plot_barplot_family <- ggplot(dex_comb_goi, aes(x = classification, fill= Direct
                        facet_wrap(~classification, scales = "free_y", ncol = 1) +
                        xlab("Cancer Gene Type")     + 
                        ylab("Number of Genes Signficantly DE") + 
-                       scale_fill_manual(name = "Direction (CLK1 exon 4 high)",
+                       scale_fill_manual(name = "Direction\n(CLK1 exon 4 high)",
                                          values=c("#FFC20A","#0C7BDC")) + 
                        geom_text(stat='count',aes(label=after_stat(count)), 
                                  position = position_dodge(width = 1),
                                  hjust = -0.5, size = 3.5) +
                       theme_Publication() +
-                      theme(legend.position = "top", legend.direction = "horizontal") +
+  theme(legend.position = "top",
+        legend.direction = "horizontal") +
                       coord_flip() +
   ylim(c(0,40))
 
   
 
 # print and save plot
-pdf(file_gene_family_plot, height = 6, width = 8, useDingbats = FALSE) 
+pdf(file_gene_family_plot, height = 5, width = 5.5, useDingbats = FALSE) 
 print(plot_barplot_family)
 dev.off()
+
