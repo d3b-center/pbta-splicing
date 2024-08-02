@@ -42,7 +42,7 @@ uniq_ei_tsv_out <- file.path(results_dir, "unique_events-ei.tsv")
 
 # Load the data using vroom
 palette_df <- read_tsv(palette_file)
-splice_event_df <- vroom::vroom(file.path(results_dir, "splicing_events.hist-labeled_list.thr2freq.txt"), delim = "\t", trim_ws = TRUE, col_names = TRUE)
+splice_event_df <- vroom::vroom(file.path(results_dir, "recurrent_splice_events_by_histology.tsv"), delim = "\t", trim_ws = TRUE, col_names = TRUE)
 
 ## make list out of all skipping events
 list_for_skipping_upsetR <- splice_event_df %>%
@@ -194,4 +194,5 @@ for (Histology in names(unique_items_list)) {
   unique_events_ei_df <- rbind(unique_events_ei_df,df)
   
 }
+
 write_tsv(unique_events_ei_df, uniq_ei_tsv_out)

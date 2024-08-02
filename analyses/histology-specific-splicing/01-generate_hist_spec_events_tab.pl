@@ -207,7 +207,7 @@ print "report results...".localtime(time)."\n";
 my @ab_splicing_events_pos_uniq = do { my %seen; grep { !$seen{$_}++ } @ab_splicing_events_pos };
 my @ab_splicing_events_neg_uniq = do { my %seen; grep { !$seen{$_}++ } @ab_splicing_events_neg };
 
-my $output_file = "results/splicing_events.hist-labeled_list.thr2freq.txt";
+my $output_file = "results/recurrent_splice_events_by_histology.tsv";
 open(TAB,">".$output_file) || die("Cannot Open File");
 
 print TAB "splicing_event\thistology\ttype\tfreq\n";
