@@ -127,7 +127,8 @@ oncokb_gene_ref <- read_tsv(oncokb_gene_file) %>%
                                     grepl("Onco", type) & !grepl("Tumor", type) ~ "Oncogene",
                                     grepl("Tumor", type) & !grepl("Onco", type) ~ "Tumor Suppressor",
          TRUE ~ NA_character_)) %>%
-  select(gene, classification)
+  select(gene, classification) %>%
+  write_tsv(file.path(results_dir, "gene_categories.tsv"))
 
 # combine with the DE results
 genes_to_plot <- as.data.frame(res) %>% 

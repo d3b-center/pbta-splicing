@@ -47,6 +47,9 @@ file_psi_RI_func <- file.path(results_dir,"splicing_events.morpho.RI.intersectUn
 file_psi_A5SS_func <- file.path(results_dir,"splicing_events.morpho.A5SS.intersectUnip.ggplot.txt")
 file_psi_A3SS_func <- file.path(results_dir,"splicing_events.morpho.A3SS.intersectUnip.ggplot.txt")
 
+## gene categories file 
+oncokb_gene_ref <- read_tsv(file.path(results_dir, "gene_categories.tsv"))
+
 ## combine all splice types together, everything relative to CLK1 exon 4 cells (untreated)
 dpsi_unip_incl <- vroom(c(file_psi_SE_func, file_psi_RI_func, file_psi_A5SS_func, file_psi_A3SS_func)) %>%
   mutate(gene=str_match(SpliceID, "(\\w+[\\.\\d]*)\\:")[, 2]) %>%
@@ -99,32 +102,22 @@ pdf(file_dpsi_plot,
 print (plot_dsp)
 dev.off()
 
-# gene list file
-oncokb_gene_file <-file.path(input_dir,'genelistreference.txt')
 
-## oncoKB gene list
-oncokb_gene_ref <- read_tsv(oncokb_gene_file) %>%
-  dplyr::rename(gene = Gene_Symbol) %>%
-  filter(grepl("Oncogene|TumorSuppressor", type)) %>%
-  # collapse
-  mutate(classification = case_when(grepl("Onco", type) & grepl("Tumor", type) ~ "Both",
-                                    grepl("Onco", type) & !grepl("Tumor", type) ~ "Oncogene",
-                                    grepl("Tumor", type) & !grepl("Onco", type) ~ "Tumor Suppressor",
-                                    TRUE ~ NA_character_)) %>%
-  select(gene, classification)
-
-
-psi_comb_goi <- psi_comb %>% inner_join(oncokb_gene_ref, by="gene") %>% 
-  select(gene,Preference,classification) %>%
-  unique()
-# relevel to plot
-psi_comb_goi$classification <- factor(psi_comb_goi$classification, levels = c("Oncogene", "Tumor Suppressor", "Both"))
-
+psi_comb_goi <- psi_comb %>% 
+  inner_join(oncokb_gene_ref, by="gene") %>% 
+  unique() %>%
 # write for supplemental 
-write_tsv(psi_comb_goi, file.path(results_dir, "differential_splice_by_goi_category.tsv"))
+write_tsv(file.path(results_dir, "differential_splice_by_goi_category.tsv"))
+
+psi_comb_goi_subset_for_plot <- psi_comb_goi %>%
+  select(gene, Preference, classification) %>%
+  unique()
+
+# relevel to plot
+psi_comb_goi_subset_for_plot$classification <- factor(psi_comb_goi_subset_for_plot$classification, levels = c("Oncogene", "Tumor Suppressor", "Both"))
 
 ## plot num of hits per gene fam
-plot_barplot_family <- ggplot(psi_comb_goi, aes(x = classification, fill= Preference)) +
+plot_barplot_family <- ggplot(psi_comb_goi_subset_for_plot, aes(x = classification, fill= Preference)) +
   geom_bar(stat="count", position='dodge', color="black") + 
   facet_wrap(~classification, scales = "free_y", ncol = 1) +
   xlab("Cancer Gene Type")     + 
