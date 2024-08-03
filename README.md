@@ -1,5 +1,4 @@
-# pbta-splicing
-The splicing modulator CLK1 is a candidate oncogenic dependency in pediatric high-grade gliomas
+# The splicing modulator CLK1 is a candidate oncogenic dependency in pediatric high-grade gliomas
 
 Ammar S. Naqvi, Ryan J. Corbett, Priyanka Seghal, Karina L. Conkrite, Komal S. Rathi, Brian M. Ennis, Katharina E Hayer, Bo Zhang, Miguel A. Brown, Daniel P. Miller, Adam A. Kraya, Joseph M. Dybas, Zhuangzhuang Geng, Christopher Blackden, Shehbeel Arif, Antonia Chroni, Aditya Lahiri, Madison L. Hollawell, Phillip B. Storm, Jessica B. Foster, Mateusz Koptyra, Peter J. Madsen, Sharon J. Diskin, Andrei Thomas-Tikhonenko, Adam C. Resnick, Jo Lynne Rokita
 
