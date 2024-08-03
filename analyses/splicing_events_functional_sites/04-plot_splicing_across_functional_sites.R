@@ -114,7 +114,7 @@ kinase_dpsi_plot <- ggplot(psi_unip_kinase,aes(Preference,dPSI*100) ) +
   geom_boxplot(outlier.shape = NA, color = "black", size = 0.5, coef = 0, aes(alpha = 0.4)) +
   geom_label_repel(box.padding = 0.5, min.segment.length = 0.5,max.overlaps =Inf, aes(label = gene), data=psi_unip_kinase %>% 
                      subset(gene %in% c("CLK1")), size=2) +
-  scale_color_manual(name = "Preference", values = c(Skipping = "#0C7BDC", Inclusion = "#FFC20A")) + 
+  scale_color_manual(name = "Preference", values = c(Skipping = "black", Inclusion = "black")) + 
   theme_Publication() +
   labs(y="Percent Spliced In (PSI)") + 
   geom_text(data = counts_psi_unip_kinase, aes(label = paste("n =",n), x = Preference, y = 0), vjust = 3, size = 4, hjust=.5) +
