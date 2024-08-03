@@ -90,7 +90,7 @@ plot_sbi <- function(sbi_df, plot_file) {
     # remove "Other" cancer group
    # filter(Histology != "Other") %>%
     # Order cancer groups by median TMB
-    mutate(Histology = str_wrap(Histology, 18),
+    mutate(Histology = str_wrap(Histology, 22),
            Histology = fct_reorder(Histology, SI, .fun = median)
     ) 
   
@@ -121,7 +121,7 @@ plot_sbi <- function(sbi_df, plot_file) {
     ) +
     
     # add labels
-    labs(x = expression(bold("Histology")),
+    labs(x = "",
          y = expression(bold("Splicing Burden Index (SBI)"))
          ) +
 
@@ -130,17 +130,16 @@ plot_sbi <- function(sbi_df, plot_file) {
       axis.text.x = element_blank(),
       axis.ticks.x = element_blank(),
       strip.placement = "outside",
-      strip.text = element_text(size = 12, angle = 90, hjust = 1),
+      strip.text = element_text(size = 11, angle = 90, hjust = 1),
       strip.background = element_rect(fill = NA, color = NA),
-      legend.position = "none"
-    ) +
+      legend.position = "none") +
     
     facet_wrap(~Histology + sample_size, nrow = 1, strip.position = "bottom")  +
     scale_fill_manual(values = plot_colors) 
 
   # Save plot
   ggsave(filename = plot_file, path = plots_dir, plot = p,
-         height = 6, width = 10, useDingbats = FALSE)
+         height = 8, width = 8.75, useDingbats = FALSE)
 }
 
 ## plot SBI for each splicing case
