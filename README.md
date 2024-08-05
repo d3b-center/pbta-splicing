@@ -23,4 +23,4 @@ bash download_data.sh
 bash scripts/run_analyses.sh
 ```
 ### Contact
-For questions, please submit an issue or send an email to Ammar S. Naqvi (@naqvia): naqvia@chop.edu
+For questions, please submit an issue or send an email to Jo Lynne Rokita (@jharenza): rokita@chop.edu and Ammar S. Naqvi (@naqvia): naqvia@chop.edu.

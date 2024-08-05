@@ -54,10 +54,12 @@ categories <- read_tsv(categories_file)
 
 crispr_df <- read_csv(crispr_score) 
 
-ds_genes <- read_tsv(ds_genes_file) %>%
-  dplyr::rename(geneSymbol = gene) %>%
+ds_genes_df <- read_tsv(ds_genes_file) %>%
+  dplyr::rename(geneSymbol = gene)
+
+ds_genes <- ds_genes_df %>%
   filter(geneSymbol %in% categories$gene) %>%
-  dplyr::select(SpliceID, geneSymbol, dPSI, Preference)
+  dplyr::select(geneSymbol, Preference)
 de_genes <- read_tsv(de_genes_file) %>%
   filter(geneSymbol %in% categories$gene) %>%
   dplyr::select(geneSymbol, baseMean, Preference)
@@ -220,7 +222,7 @@ ggplot2::ggsave(venn_output_file,
 mean_data_renamed <- mean_data %>%
   dplyr::rename(geneSymbol = gene)
   
-all_events <- ds_genes %>%
+all_events <- ds_genes_df %>%
   full_join(de_genes, by='geneSymbol', relationship = "many-to-many",
             suffix = c("_psi", "_de")) %>%
   dplyr::select(SpliceID, geneSymbol, dPSI, Preference_psi, Preference_de) %>% 
@@ -230,3 +232,4 @@ all_events <- ds_genes %>%
   arrange(geneSymbol) %>%
   dplyr::rename(mean_z = z) %>%
   write_tsv(file.path(results_dir, "ds-de-crispr-events.tsv"))
+
