@@ -278,6 +278,7 @@ ha = HeatmapAnnotation(name = "annotation",
                                       "Female" = "pink",
                                       "Unknown" = "whitesmoke"),
                          "Histology" = c("DIPG or DMG" = "#ff40d9",
+
                                             "Other high-grade glioma" = "#ffccf5"),
                          "Predisposition" = c("LFS" = "red",
                                               "NF-1" = "black",

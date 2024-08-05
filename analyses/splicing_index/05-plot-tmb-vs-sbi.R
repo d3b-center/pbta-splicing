@@ -23,6 +23,7 @@ data_dir <- file.path(root_dir, "data")
 tmb_dir <- file.path(root_dir, "analyses", "oncoprint", "input")
 results_dir <- file.path(analysis_dir, "results")
 plots_dir <- file.path(analysis_dir, "plots")
+figures_dir <- file.path(root_dir, "figures")
 
 ## Call plot publication theme script 
 source(file.path(root_dir, "figures", "theme_for_plots.R"))
