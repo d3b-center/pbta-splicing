@@ -43,8 +43,10 @@ bash run_module.sh
 │   ├── CCMA_crispr_genedependency_042024.csv
 │   ├── RBP_known.txt
 │   ├── base_excision_repair.txt
+│   ├── cancerGeneList.tsv
 │   ├── dna_repair_all.txt
 │   ├── epi_known.txt
+│   ├── genelistreference.txt
 │   ├── homologous_recombination.txt
 │   ├── mismatch_repair.txt
 │   ├── morpholno.merged.rmats.tsv
@@ -72,6 +74,7 @@ bash run_module.sh
 │   ├── dPSI_distr.pdf
 │   ├── des-dex-venn-func.pdf
 │   ├── des-dex-venn.pdf
+│   ├── ds-de-crispr-venn.pdf
 │   ├── gene-fam-DE-plot.pdf
 │   ├── gsva_heatmap_dna_repair.pdf
 │   ├── gsva_heatmap_dna_repair_de.pdf
@@ -94,9 +97,9 @@ bash run_module.sh
 │   ├── ctrl_vs_treated.de.formatted.tsv
 │   ├── ctrl_vs_treated.de.tsv
 │   ├── de_genes.tsv
+│   ├── dex-sign-goi.tsv
 │   ├── differential_splice_by_goi_category.tsv
 │   ├── ds-de-crispr-events.tsv
-│   ├── ds-de-crispr-venn.pdf
 │   ├── expr_collapsed_clk1_ctrl_morpho_dna_repair_gsva_scores.tsv
 │   ├── expr_collapsed_clk1_ctrl_morpho_hallmark_gsva_scores.tsv
 │   ├── expr_collapsed_clk1_ctrl_morpho_kegg_gsva_scores.tsv

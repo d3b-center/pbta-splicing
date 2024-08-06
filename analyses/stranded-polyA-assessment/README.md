@@ -5,7 +5,7 @@ This module correlates polyA and stranded PSIs from patient samples known to hav
 ## Usage
 `bash run_module`
 
-## Folder content 
+## Folder content
 `01-plot-str-vs-polyA.Rmd` runs correlation analysis on samples with both stranded and polyA RNA-seq and generates scatter plots.
 
 ```
@@ -18,3 +18,13 @@ This module correlates polyA and stranded PSIs from patient samples known to hav
 │   └── PT_W5GP3F6B_polyA_v_stranded_psi.pdf
 └── run_module.sh
 ```
+
+## Directory structure
+.
+├── 01-plot-str-vs-polyA.Rmd
+├── 01-plot-str-vs-polyA.html
+├── README.md
+├── plots
+│   ├── PT_RYMG3M91_polyA_v_stranded_psi.pdf
+│   └── PT_W5GP3F6B_polyA_v_stranded_psi.pdf
+└── run_module.sh
