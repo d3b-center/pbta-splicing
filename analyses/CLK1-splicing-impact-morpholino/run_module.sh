@@ -36,11 +36,7 @@ Rscript -e "rmarkdown::render('07-run-gsva-comparisons.Rmd', clean = TRUE)"
 Rscript --vanilla 08-plot_total-splicing-cases.R
 
 ## intersect DE and DS
-<<<<<<< HEAD
-Rscript --vanilla 08-intersection-dex-des.R
-=======
 Rscript --vanilla 09-intersection-dex-des.R
->>>>>>> main
 
 ## intersect with crispr scores from CCMA
 Rscript --vanilla 10-crispr-screen-intersection.R
