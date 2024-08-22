@@ -24,3 +24,6 @@ Rscript -e "rmarkdown::render('07-run-survival-nf1-psi.Rmd')"
 
 # plot survival by NF1-215 PSI
 Rscript 08-plot-survival-nf1-psi.R
+
+# remove unnecc plots
+rm Rplots.pdf
