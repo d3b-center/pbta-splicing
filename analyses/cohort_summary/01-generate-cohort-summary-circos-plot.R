@@ -70,6 +70,9 @@ hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %
                                   is.na(cancer_group) & broad_histology == "Tumor of cranial and paraspinal nerves" ~ "Neurofibroma/Plexiform",
                                   TRUE ~ cancer_group))
 
+# remove under 40
+hist_df <- hist_df %>% filter(age_at_diagnosis_days < 14610)
+
 # add cancer/plot group mapping file 
 map_file <- read_tsv(file.path(input_dir, "plot-mapping.tsv"))
 
@@ -90,7 +93,7 @@ combined_hist_map <- combined_hist_map %>%
   filter(experimental_strategy == "RNA-Seq",
          !is.na(pathology_diagnosis))
 
-## filter using independent specimens file
+## filter using independent specimens file 
 independent_specimens_df <- read_tsv(file.path(data_dir,"independent-specimens.rnaseqpanel.primary.tsv")) %>%
   filter(cohort == "PBTA",
          experimental_strategy == "RNA-Seq")
@@ -99,7 +102,7 @@ independent_specimens_df <- read_tsv(file.path(data_dir,"independent-specimens.r
 hist_indep_df <- combined_hist_map %>%
   right_join(independent_specimens_df, by="Kids_First_Biospecimen_ID") %>% 
   unique()
-  
+
 uniq_plot_cols <- combined_plot_map %>%
   select(plot_group, plot_group_hex) %>%
   unique()
