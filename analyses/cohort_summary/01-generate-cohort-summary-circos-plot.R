@@ -70,8 +70,15 @@ hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %
                                   is.na(cancer_group) & broad_histology == "Tumor of cranial and paraspinal nerves" ~ "Neurofibroma/Plexiform",
                                   TRUE ~ cancer_group))
 
-# remove under 40
-hist_df <- hist_df %>% filter(age_at_diagnosis_days < 14610)
+
+# find and store all NAs in "age_at_diagnosis_days" that are not PNOC
+hist_NAs_df <- hist_df %>%
+  filter(is.na(age_at_diagnosis_days) & sub_cohort != "PNOC")
+
+# Apply the filter only when sub_cohort is not "PNOC" and remove under 40
+hist_df <- hist_df %>%
+  filter(sub_cohort != "PNOC" | (sub_cohort == "PNOC" & age_at_diagnosis_days < 14610))
+
 
 # add cancer/plot group mapping file 
 map_file <- read_tsv(file.path(input_dir, "plot-mapping.tsv"))
