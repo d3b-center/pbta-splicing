@@ -37,7 +37,13 @@ file_circos_plot <- file.path(analysis_dir, "plots", "cohort_circos.pdf")
 
 
 # Load datasets and pre-process
-hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %>% 
+hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %>%
+  # mutate ages at dx (7316-851 is 17)
+  mutate(age_at_diagnosis_days = case_when(Kids_First_Participant_ID == "PT_AEDWCP8Z" ~
+                                             as.integer(365.25*17),
+                                           Kids_First_Participant_ID == "PT_6PYNBA9C" ~ as.integer(365.25*5/12),
+                                           TRUE ~ age_at_diagnosis_days)
+  ) %>%
   # filter
   filter(cohort == "PBTA",
          !broad_histology %in% c("Eye tumor", "Hematologic malignancy", "Mixed tumor"),
@@ -106,6 +112,8 @@ independent_specimens_df <- read_tsv(file.path(data_dir,"independent-specimens.r
   filter(cohort == "PBTA",
          experimental_strategy == "RNA-Seq",
          Kids_First_Biospecimen_ID %in% combined_hist_map$Kids_First_Biospecimen_ID)
+
+intersect(hist_NAs_df$Kids_First_Biospecimen_ID, independent_specimens_df$Kids_First_Biospecimen_ID)
 
 # Merge both meta datasets
 hist_indep_df <- combined_hist_map %>%
