@@ -51,7 +51,7 @@ echo "----------------------------------"
 echo "survival"
 echo "----------------------------------"
 cd ${analyses_dir}/survival
-bash run-survival-module.sh
+#bash run-survival-module.sh
 
 ## splicing-factor_dysregulation
 echo "----------------------------------"
