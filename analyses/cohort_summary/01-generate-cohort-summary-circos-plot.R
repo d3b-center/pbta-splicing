@@ -37,7 +37,13 @@ file_circos_plot <- file.path(analysis_dir, "plots", "cohort_circos.pdf")
 
 
 # Load datasets and pre-process
-hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %>% 
+hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %>%
+  # mutate ages at dx (7316-851 is 17)
+  mutate(age_at_diagnosis_days = case_when(Kids_First_Participant_ID == "PT_AEDWCP8Z" ~
+                                             as.integer(365.25*17),
+                                           Kids_First_Participant_ID == "PT_6PYNBA9C" ~ as.integer(365.25*5/12),
+                                           TRUE ~ age_at_diagnosis_days)
+  ) %>%
   # filter
   filter(cohort == "PBTA",
          !broad_histology %in% c("Eye tumor", "Hematologic malignancy", "Mixed tumor"),
@@ -70,11 +76,22 @@ hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %
                                   is.na(cancer_group) & broad_histology == "Tumor of cranial and paraspinal nerves" ~ "Neurofibroma/Plexiform",
                                   TRUE ~ cancer_group))
 
+# find and store all NAs in "age_at_diagnosis_days" that are not PNOC
+hist_NAs_df <- hist_df %>%
+  filter(is.na(age_at_diagnosis_days) & sub_cohort != "PNOC")
+
+# Apply the filter only when sub_cohort is not "PNOC" and remove under 40
+under40_df <- hist_df %>%
+  dplyr::filter(sub_cohort == "PNOC" | 
+           (sub_cohort != "PNOC" & age_at_diagnosis_days < (365.25*40)) |
+              (sub_cohort != "PNOC" & is.na(age_at_diagnosis_days) & age_at_event_days < (365.25*40))
+  )
+
 # add cancer/plot group mapping file 
 map_file <- read_tsv(file.path(input_dir, "plot-mapping.tsv"))
 
 # add plot mapping file and old plot groups, export this.
-combined_plot_map <- hist_df %>%
+combined_plot_map <- under40_df %>%
   full_join(map_file, by = c("broad_histology", "cancer_group")) %>%
   select(names(map_file)) %>%
   unique() %>%
@@ -82,7 +99,7 @@ combined_plot_map <- hist_df %>%
   write_tsv(file.path(results_dir, "plot_mapping.tsv"))
 
 # add plot mapping to histlogy df
-combined_hist_map <- hist_df %>%
+combined_hist_map <- under40_df %>%
   left_join(map_file, by = c("broad_histology", "cancer_group")) %>%
   write_tsv(file.path(results_dir, "histologies-plot-group.tsv"))
 
@@ -90,16 +107,19 @@ combined_hist_map <- combined_hist_map %>%
   filter(experimental_strategy == "RNA-Seq",
          !is.na(pathology_diagnosis))
 
-## filter using independent specimens file
+## filter using independent specimens file 
 independent_specimens_df <- read_tsv(file.path(data_dir,"independent-specimens.rnaseqpanel.primary.tsv")) %>%
   filter(cohort == "PBTA",
-         experimental_strategy == "RNA-Seq")
+         experimental_strategy == "RNA-Seq",
+         Kids_First_Biospecimen_ID %in% combined_hist_map$Kids_First_Biospecimen_ID)
+
+intersect(hist_NAs_df$Kids_First_Biospecimen_ID, independent_specimens_df$Kids_First_Biospecimen_ID)
 
 # Merge both meta datasets
 hist_indep_df <- combined_hist_map %>%
   right_join(independent_specimens_df, by="Kids_First_Biospecimen_ID") %>% 
   unique()
-  
+
 uniq_plot_cols <- combined_plot_map %>%
   select(plot_group, plot_group_hex) %>%
   unique()
