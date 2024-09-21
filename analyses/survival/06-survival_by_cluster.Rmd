@@ -70,7 +70,7 @@ metadata <- metadata %>%
                                        cluster_assigned)) %>%
   dplyr::mutate(cluster_assigned = glue::glue("cluster{cluster_assigned}")) %>%
   dplyr::mutate(cluster_assigned = fct_relevel(cluster_assigned,
-                                               paste0("cluster", 1:12))) %>%
+                                               paste0("cluster", 1:15))) %>%
   dplyr::mutate(lgg_group = case_when(
     Histology == "Low-grade glioma" ~ "LGG",
     TRUE ~ "non-LGG"
@@ -259,7 +259,15 @@ ggsave(file.path(plot_dir, "forest_add_OS_LGG_resection_subtype_cluster_assignme
        width = 10, height = 6, units = "in",
        device = "pdf")
 
-add_model_lgg_efs <- fit_save_model(lgg[!lgg$cluster_assigned %in% c(2,5,8,11),],
+# identify LGG clusters
+lgg_clusters <- metadata %>%
+  filter(lgg_group == "LGG") %>%
+  mutate(cluster_assigned = as.integer(gsub("cluster", "", cluster_assigned))) %>%
+  pull(cluster_assigned) %>%
+  sort() %>%
+  unique()
+
+add_model_lgg_efs <- fit_save_model(lgg[!lgg$cluster_assigned %in% lgg_clusters,],
                               terms = "extent_of_tumor_resection+mol_sub_group+cluster_assigned",
                                file.path(results_dir, "cox_lgg_EFS_additive_terms_resection_subtype_cluster.RDS"),
                                "multivariate",

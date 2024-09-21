@@ -14,9 +14,9 @@ Sys.setlocale("LC_ALL","en_US.UTF-8")
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
 
-efs_palette <- c("#E69F01", "#56B4E8", "#009E74", "#F0E442",
-                 "#0072B3", "#D55E01", "#CC79A6", "#999998",
-                 "black", "#b08ccf", "#a340ff", "#685815")
+efs_palette <- c("#B2DF8A","#E31A1C","#33A02C","#A6CEE3","#FB9A99","#FDBF6F",
+                 "#CAB2D6","#FFFF99","#1F78B4","#B15928","#6A3D9A","#FF7F00",
+                 "#2ef4ca","#f4cced","#bd18ea")
 
 survival_analysis <- function(metadata,
                               ind_var,

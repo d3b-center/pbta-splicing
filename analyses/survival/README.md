@@ -25,8 +25,6 @@ Input files:
 * `04-plot-survival.R` plot SBI survival models
 * `05-survival-hgg-clk1-status.Rmd` Assess survival by CLK1 exon 4 PSI in HGG tumors
 * `06-survival_by_cluster.Rmd` Assess survival by splicing cluster assingment in all histologies, LGG, and HGG
-* `07-run-survival-nf1-psi.Rmd` Generate survival models in histologies and subtypes by NF1-215 PSI
-* `08-plot-survival-nf1-psi.Rmd` Plot survival models by NF1-215 PSI
 
 
 ## Directory structure
@@ -42,9 +40,6 @@ Input files:
 ├── 05-survival-hgg-clk1-status.nb.html
 ├── 06-survival_by_cluster.Rmd
 ├── 06-survival_by_cluster.nb.html
-├── 07-run-survival-nf1-psi.Rmd
-├── 07-run-survival-nf1-psi.nb.html
-├── 08-plot-survival-nf1-psi.Rmd
 ├── input
 ├── plots
 │   ├── ATRT/
