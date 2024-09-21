@@ -7,7 +7,7 @@
 - status: available
 
 Modifications:
--`histologies-plot_group.tsv` was re-generated to remove samples corresponding to patients >= 40 years of age
+-`histologies-plot_group.tsv` was re-generated to remove samples corresponding to patients >= 40 years of age and updated PNOC with pathology dx of DIPG to have DIPG cancer_group
 v10
 .
 ├── CLK1-CRISPR-DepMap-score.csv
