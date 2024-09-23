@@ -13,45 +13,45 @@ Rscript code/03-optimal-clustering.R \
 --protein_coding_only FALSE \
 --feature_selection "dip.test" \
 --transformation_type "none" \
---max_k 17
+--max_k 15
 
 # 1) PBTA splicing data
 # get ccp clustering output for a specific combination of distance + algorithm + % variable genes
-# for the splicing dataset, pam + canberra k = 12, 0% based on optimal clustering
+# for the splicing dataset, pam + binary k = 12, 0% based on optimal clustering
 Rscript code/04-get-clustering-output.R \
 --input_mat "input/pan_cancer_splicing_SE.gene.rds" \
 --data_type "non_expr" \
 --var_genes "0" \
 --cluster_algorithm "pam" \
---cluster_distance "canberra" \
+--cluster_distance "binary" \
 --prefix "non_expr_pan_cancer_splice_subset"
 
 # get differential genes per cluster and perform pre-ranked gsea using those genes
-# this was done for k = 12 with pam  + canberra + 0% genes
+# this was done for k = 12 with pam + binary + 0% genes
 Rscript code/05-diff-genes-per-clusters.R \
---input_mat "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_matrix.rds" \
---cluster_output "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_ccp.rds" \
---n_cluster "canberra" \
+--input_mat "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_binary_0_matrix.rds" \
+--cluster_output "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_binary_0_ccp.rds" \
+--n_cluster "binary" \
 --gene_set "input/hallmark_splice_geneset_mrna.rds" \
---prefix "non_expr_pan_cancer_splice_subset_pam_canberra_0" \
+--prefix "non_expr_pan_cancer_splice_subset_pam_binary_0" \
 --output_dir "output/diff_genes"
 
 # get differential pathways per cluster using GSVA
-# this was done for k = 3 with pam  + pearson + 0% genes
+# this was done for k = 2 with pam  + binary + 0% genes
 Rscript code/06-diff-pathways-per-clusters.R \
---input_mat "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_matrix.rds" \
+--input_mat "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_binary_0_matrix.rds" \
 --input_clin "../../data/histologies-plot-group.tsv" \
---cluster_output "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_ccp.rds" \
---n_cluster "15" \
+--cluster_output "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_binary_0_ccp.rds" \
+--n_cluster "12" \
 --gene_set "input/hallmark_splice_geneset_mrna.rds" \
---prefix "non_expr_pan_cancer_splice_subset_pam_canberra_0" \
+--prefix "non_expr_pan_cancer_splice_subset_pam_binary_0" \
 --output_dir "output/diff_pathways"
 
 # get heatmap of the CCP matrix
 Rscript code/07-plot-clustering-heatmap.R \
---ccp_output "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_ccp.rds" \
+--ccp_output "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_binary_0_ccp.rds" \
 --input_clin "../../data/histologies-plot-group.tsv" \
---n_cluster "15" \
+--n_cluster "12" \
 --prefix "non_expr_pan_cancer_splice_subset"
 
 ##plot cluster members categorized by SBI high vs low
