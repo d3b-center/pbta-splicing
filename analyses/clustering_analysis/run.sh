@@ -13,7 +13,7 @@ Rscript code/03-optimal-clustering.R \
 --protein_coding_only FALSE \
 --feature_selection "dip.test" \
 --transformation_type "none" \
---max_k 17
+--max_k 15
 
 # 1) PBTA splicing data
 # get ccp clustering output for a specific combination of distance + algorithm + % variable genes
@@ -27,17 +27,17 @@ Rscript code/04-get-clustering-output.R \
 --prefix "non_expr_pan_cancer_splice_subset"
 
 # get differential genes per cluster and perform pre-ranked gsea using those genes
-# this was done for k = 12 with pam  + canberra + 0% genes
+# this was done for k = 12 with pam + binary + 0% genes
 Rscript code/05-diff-genes-per-clusters.R \
 --input_mat "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_binary_0_matrix.rds" \
 --cluster_output "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_binary_0_ccp.rds" \
---n_cluster "canberra" \
+--n_cluster "binary" \
 --gene_set "input/hallmark_splice_geneset_mrna.rds" \
 --prefix "non_expr_pan_cancer_splice_subset_pam_binary_0" \
 --output_dir "output/diff_genes"
 
 # get differential pathways per cluster using GSVA
-# this was done for k = 3 with pam  + pearson + 0% genes
+# this was done for k = 2 with pam  + binary + 0% genes
 Rscript code/06-diff-pathways-per-clusters.R \
 --input_mat "output/ccp_output/non_expr_pan_cancer_splice_subset_pam_binary_0_matrix.rds" \
 --input_clin "../../data/histologies-plot-group.tsv" \

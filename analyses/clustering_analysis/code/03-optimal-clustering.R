@@ -64,9 +64,9 @@ print(protein_coding_only)
 # gencode version for protein coding genes
 gencode_version <- opt$gencode_version 
 if(!is.null(gencode_version)){
-  # if gencode version is not NULL, it should be at least at version 27 
+  # if gencode version is not NULL, it should be at least at version 39 
   # gencode_version <- gencode_version %>% as.numeric()
-  stopifnot(gencode_version >= 27) 
+  stopifnot(gencode_version >= 39) 
 }
 print(gencode_version)
 

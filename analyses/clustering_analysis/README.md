@@ -213,7 +213,7 @@ This script generates heatmap based on the CCP matrix from above
 
 ```
 input
-├── ../cohort_summary/results/histologies-plot-group.tsv ## histology file with plot groups
+├── ../../data/histologies-plot-group.tsv ## histology file with plot groups
 └── output/ccp_output/non_expr_pan_cancer_splice_subset_pam_canberra_0_ccp.rds ## results from CCP run
 ```
 
