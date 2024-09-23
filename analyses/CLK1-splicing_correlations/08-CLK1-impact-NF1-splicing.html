@@ -1540,8 +1540,8 @@ phos_df &lt;- read_tsv(phos_file) %&gt;%
   dplyr::rename(`Total NF1 Protein` = NF1,
                 `NF1 pS864` = `NF1-S864`,
                 `NF1 pS2796` = `NF1-S2796`)</code></pre>
-<pre><code>## Rows: 1434 Columns: 48
-## ── Column specification ──────────────────────────────────────────────────────────────────────────────────
+<pre><code>## Rows: 1415 Columns: 48
+## ── Column specification ─────────────────────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
 ## chr  (1): match_id
 ## dbl (47): CLK1-201, NF1-201, NF1-202, NF1-203_NMD, NF1-204_PC, NF1-205_PC, N...
@@ -1552,7 +1552,7 @@ phos_df &lt;- read_tsv(phos_file) %&gt;%
 indep_file &lt;- file.path(data_dir, &quot;independent-specimens.rnaseqpanel.primary.tsv&quot;)
 indep_df &lt;- read_tsv(indep_file)</code></pre>
 <pre><code>## Rows: 12772 Columns: 6
-## ── Column specification ──────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ─────────────────────────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
 ## chr (6): Kids_First_Participant_ID, Kids_First_Biospecimen_ID, cohort, cance...
 ## 
@@ -1667,17 +1667,17 @@ table(plot_df$plot_group, plot_df$event_type)</code></pre>
 ##                                    CLK1-201 (Exon 4) NF1-202 (Exon23a)
 ##   Schwannoma                                      13                13
 ##   Neurofibroma plexiform                          10                10
-##   Other high-grade glioma                        113               113
+##   Other high-grade glioma                         94                94
 ##   Medulloblastoma                                105               105
-##   Mesenchymal tumor                               18                17
 ##   Other tumor                                     17                17
+##   Mesenchymal tumor                               17                17
 ##   Non-neoplastic tumor                            26                26
 ##   Low-grade glioma                               199               200
 ##   Atypical Teratoid Rhabdoid Tumor                24                24
+##   DIPG or DMG                                     32                32
 ##   Germ cell tumor                                  8                 8
 ##   Other CNS embryonal tumor                        8                 8
 ##   Mixed neuronal-glial tumor                      63                63
-##   DIPG or DMG                                     31                31
 ##   Choroid plexus tumor                            20                20
 ##   Craniopharyngioma                               29                29
 ##   Meningioma                                      17                17
@@ -1686,17 +1686,17 @@ table(plot_df$plot_group, plot_df$event_type)</code></pre>
 ##                                    NF1-215 (RI) NF1-208 (NMD)
 ##   Schwannoma                                 13             2
 ##   Neurofibroma plexiform                      9             0
-##   Other high-grade glioma                   112            20
+##   Other high-grade glioma                    93            19
 ##   Medulloblastoma                           105            10
-##   Mesenchymal tumor                          16             1
 ##   Other tumor                                15             1
+##   Mesenchymal tumor                          16             1
 ##   Non-neoplastic tumor                       26             4
 ##   Low-grade glioma                          197            15
 ##   Atypical Teratoid Rhabdoid Tumor           24             1
+##   DIPG or DMG                                32             1
 ##   Germ cell tumor                             7             1
 ##   Other CNS embryonal tumor                   8             0
 ##   Mixed neuronal-glial tumor                 62             5
-##   DIPG or DMG                                31             1
 ##   Choroid plexus tumor                       20             1
 ##   Craniopharyngioma                          29             3
 ##   Meningioma                                 17             0
@@ -1850,19 +1850,19 @@ table(histologies_df_plus$plot_group)</code></pre>
 ## Atypical Teratoid Rhabdoid Tumor             Choroid plexus tumor 
 ##                               56                               32 
 ##                Craniopharyngioma                      DIPG or DMG 
-##                               51                              131 
+##                               51                              135 
 ##                       Ependymoma                  Germ cell tumor 
 ##                              110                               16 
 ##                High-grade glioma                 Low-grade glioma 
-##                              343                              337 
+##                              325                              337 
 ##                  Medulloblastoma                       Meningioma 
 ##                              200                               29 
 ##                Mesenchymal tumor       Mixed neuronal-glial tumor 
-##                               27                              112 
+##                               26                              112 
 ##           Neurofibroma plexiform             Non-neoplastic tumor 
 ##                               12                               45 
 ##        Other CNS embryonal tumor          Other high-grade glioma 
-##                               16                              212 
+##                               16                              190 
 ##                      Other tumor                       Schwannoma 
 ##                               27                               21</code></pre>
 <pre class="r"><code>for (group in plot_groups) {
