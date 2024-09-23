@@ -12,8 +12,8 @@ Choroid plexus tumor	Choroid plexus cyst	Choroid plexus tumor	Choroid plexus tum
 Diffuse astrocytic and oligodendroglial tumor	High-grade glioma/astrocytoma	High-grade glioma	Other high-grade glioma	#ffccf5	Other HGG	#ffccf5	3	High-grade glioma
 Diffuse astrocytic and oligodendroglial tumor	Diffuse midline glioma	High-grade glioma	DIPG or DMG	#ff40d9	DMG	#ff40d9	3	High-grade glioma
 Diffuse astrocytic and oligodendroglial tumor	Pleomorphic xanthoastrocytoma	High-grade glioma	Other high-grade glioma	#ffccf5	PXA	#ffccf5	3	High-grade glioma
-Diffuse astrocytic and oligodendroglial tumor	Congenital malignant brain tumor	Other tumor	Other tumor	#b5b5b5	Other tumor	#b5b5b5	13	Other tumor
 Diffuse astrocytic and oligodendroglial tumor	Diffuse intrinsic pontine glioma	High-grade glioma	DIPG or DMG	#ff40d9	DIPG	#ff40d9	3	High-grade glioma
+Diffuse astrocytic and oligodendroglial tumor	Congenital malignant brain tumor	Other tumor	Other tumor	#b5b5b5	Other tumor	#b5b5b5	13	Other tumor
 Diffuse astrocytic and oligodendroglial tumor	Gliosarcoma	High-grade glioma	Other high-grade glioma	#ffccf5	Other HGG	#ffccf5	3	High-grade glioma
 Embryonal tumor	Atypical Teratoid Rhabdoid Tumor	Embryonal tumor	Atypical Teratoid Rhabdoid Tumor	#220040	ATRT	#4d0d85	5	Embryonal tumor
 Embryonal tumor	Medulloblastoma	Embryonal tumor	Medulloblastoma	#220040	MB	#a340ff	5	Embryonal tumor

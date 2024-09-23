@@ -75,13 +75,19 @@ hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %
                                   cancer_group == "Perineuroma" ~ "Neurofibroma/Plexiform",
                                   is.na(cancer_group) & broad_histology == "Tumor of cranial and paraspinal nerves" ~ "Neurofibroma/Plexiform",
                                   TRUE ~ cancer_group))
+hist_update <- hist_df %>%
+  # update PNOC DIPGs
+  mutate(cancer_group = case_when(pathology_diagnosis == "Brainstem glioma- Diffuse intrinsic pontine glioma" & 
+                                    sub_cohort == "PNOC" & 
+                                    cancer_group == "High-grade glioma/astrocytoma" ~ "Diffuse intrinsic pontine glioma", 
+         TRUE ~ cancer_group))
 
 # find and store all NAs in "age_at_diagnosis_days" that are not PNOC
-hist_NAs_df <- hist_df %>%
+hist_NAs_df <- hist_update %>%
   filter(is.na(age_at_diagnosis_days) & sub_cohort != "PNOC")
 
 # Apply the filter only when sub_cohort is not "PNOC" and remove under 40
-under40_df <- hist_df %>%
+under40_df <- hist_update %>%
   dplyr::filter(sub_cohort == "PNOC" | 
            (sub_cohort != "PNOC" & age_at_diagnosis_days < (365.25*40)) |
               (sub_cohort != "PNOC" & is.na(age_at_diagnosis_days) & age_at_event_days < (365.25*40))
