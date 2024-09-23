@@ -19,5 +19,3 @@ Rscript -e "rmarkdown::render('05-survival-hgg-clk1-status.Rmd')"
 # survival analyses by splicing cluster
 Rscript -e "rmarkdown::render('06-survival_by_cluster.Rmd')"
 
-# remove unnecc plots
-rm Rplots.pdf

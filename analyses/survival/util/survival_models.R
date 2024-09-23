@@ -15,8 +15,7 @@ Sys.setlocale("LC_ALL","en_US.UTF-8")
 `%>%` <- dplyr::`%>%`
 
 efs_palette <- c("#B2DF8A","#E31A1C","#33A02C","#A6CEE3","#FB9A99","#FDBF6F",
-                 "#CAB2D6","#FFFF99","#1F78B4","#B15928","#6A3D9A","#FF7F00",
-                 "#2ef4ca","#f4cced","#bd18ea")
+                 "#CAB2D6","#FFFF99","#1F78B4","#B15928","#6A3D9A","#FF7F00")
 
 survival_analysis <- function(metadata,
                               ind_var,
