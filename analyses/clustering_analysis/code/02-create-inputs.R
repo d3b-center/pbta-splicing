@@ -19,12 +19,12 @@ data_dir <- file.path(root_dir, "data")
 
 results_dir <- file.path(analysis_dir, "results")
 plots_dir <- file.path(analysis_dir, "plots")
-hist_dir <- file.path(root_dir, "analyses", "cohort_summary", "results")
+data_dir <- file.path(root_dir, "data")
 input_dir <- file.path(analysis_dir, "input")
 
 
 # read histologies file
-clin_file <- read_tsv(file.path(hist_dir, "histologies-plot-group.tsv")) %>% 
+clin_file <- read_tsv(file.path(data_dir, "histologies-plot-group.tsv")) %>% 
   filter(experimental_strategy == "RNA-Seq")
 
 # read in genesets to keep
