@@ -44,7 +44,7 @@ sbi_A5SS_file <- file.path(root_dir, "analyses", "splicing_index", "results", "s
 sbi_RI_file <- file.path(root_dir, "analyses", "splicing_index", "results", "splicing_index.RI.txt")
 sbi_SE_file <- file.path(root_dir, "analyses", "splicing_index", "results", "splicing_index.SE.txt")
 
-histologies_file <- file.path(data_dir, "histologies.tsv")
+histologies_file <- file.path(data_dir, "histologies-plot-group.tsv")
 
 ```
 
@@ -77,10 +77,12 @@ splice_index <- si_A3SS %>%
 Use `diagnoses` to code in `EFS_status` (event-free status) column indicating event/no event
 
 ```{r}
-hist <- read_tsv(histologies_file)
+hist <- read_tsv(histologies_file) %>%
+  filter(experimental_strategy == "RNA-Seq")
 
 # Add histology columns to splice index, and code EFS_status using following logic
 splice_index <- splice_index %>%
+  filter(Kids_First_Biospecimen_ID %in% hist$Kids_First_Biospecimen_ID) %>%
   left_join(hist[,c("Kids_First_Biospecimen_ID", "Kids_First_Participant_ID", 
                     "molecular_subtype",
                     "extent_of_tumor_resection", 
