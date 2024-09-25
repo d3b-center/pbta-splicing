@@ -76,11 +76,15 @@ hist_df <- read_tsv(file.path(data_dir,"histologies.tsv"), guess_max = 100000) %
                                   is.na(cancer_group) & broad_histology == "Tumor of cranial and paraspinal nerves" ~ "Neurofibroma/Plexiform",
                                   TRUE ~ cancer_group))
 hist_update <- hist_df %>%
-  # update PNOC DIPGs
+  # update PNOC and mioncoseq DIPGs
   mutate(cancer_group = case_when(pathology_diagnosis == "Brainstem glioma- Diffuse intrinsic pontine glioma" & 
-                                    sub_cohort == "PNOC" & 
+                                    sub_cohort %in% c("PNOC", "Mioncoseq") &
+                                    !grepl("IDH", molecular_subtype) &
                                     cancer_group == "High-grade glioma/astrocytoma" ~ "Diffuse intrinsic pontine glioma", 
-         TRUE ~ cancer_group))
+         TRUE ~ cancer_group)) %>%
+  mutate(molecular_subtype = case_when(cancer_group == "Diffuse intrinsic pontine glioma" ~ 
+                                    gsub("HGG", "DIPG", molecular_subtype),
+                                  TRUE ~ molecular_subtype))
 
 # find and store all NAs in "age_at_diagnosis_days" that are not PNOC
 hist_NAs_df <- hist_update %>%
