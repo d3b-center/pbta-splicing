@@ -50,7 +50,7 @@ gsva_file <- file.path(root_dir,
                        "clustering_analysis",
                        "output",
                        "diff_pathways",
-                       "non_expr_pan_cancer_splice_subset_pam_canberra_0_gsva_output.tsv")
+                       "non_expr_pan_cancer_splice_subset_pam_binary_0_gsva_output.tsv")
 
 ## load histologies info for HGG subty  
 histologies_df  <-  read_tsv(clin_file, guess_max = 100000) %>%
