@@ -94,7 +94,6 @@ nf1_gtf <- gtf %>%
                                           transcript_type == "nonsense_mediated_decay" ~ paste0(transcript_name, "_NMD"),
                                           TRUE ~ NA_character_)) 
 
-
 # read in rmats file once with genes of interest
 rmats_nf1  <- fread(rmats_nf1_file)
 
@@ -236,6 +235,7 @@ reformat <- transcript_tpm_df %>%
   left_join(phos_df) %>%
   column_to_rownames(var = "match_id") %>%
   dplyr::rename(`CLK1-201 (Exon4) PSI` = `CLK1-Exon4_PSI`,
+                `NF1-201` = `NF1-201_PC`,
                 `NF1-202` = `NF1-202_PC`,
                 `NF1-215 PSI` = `NF1-215_PSI`,
                 `NF1-215` = `NF1-215_RI`,
@@ -264,11 +264,11 @@ dev.off()
 
 # subset for transcripts of interest
 # for HGG
-items_of_interest_hgg <- c("Total CLK1", "CLK1-201", "CLK1-201 (Exon4) PSI", "Total NF1", "NF1-202", "NF1-215 PSI", "NF1-215",
+items_of_interest_hgg <- c("Total CLK1", "CLK1-201", "CLK1-201 (Exon4) PSI", "Total NF1", "NF1-201", "NF1-202", "NF1-215 PSI", "NF1-215",
          "NF1-202 (Exon23a) PSI", "NF1 pS864", "NF1 pS2796", "Total NF1 Protein")
 
 # for other 
-items_of_interest_other <- c("Total CLK1", "CLK1-201", "CLK1-201 (Exon4) PSI", "Total NF1", "NF1-202", "NF1-215 PSI", "NF1-215",
+items_of_interest_other <- c("Total CLK1", "CLK1-201", "CLK1-201 (Exon4) PSI", "Total NF1", "NF1-201", "NF1-202", "NF1-215 PSI", "NF1-215",
          "NF1-202 (Exon23a) PSI")
 
 

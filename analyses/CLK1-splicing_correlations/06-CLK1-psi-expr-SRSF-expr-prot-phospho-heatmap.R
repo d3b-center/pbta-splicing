@@ -102,7 +102,7 @@ hist_proteo <- hist_proteo %>%
     Kids_First_Biospecimen_ID_proteo %in% colnames(hope_proteo) ~ "Hope",
     Kids_First_Biospecimen_ID_proteo %in% colnames(cptac_proteo) ~ "CPTAC"
   )) %>%
-  dplyr::arrange(proteo_cohort) %>%
+  dplyr::arrange(desc(proteo_cohort)) %>%
   distinct(match_id, .keep_all = T)
 
 # filter phosphoproteomics samples

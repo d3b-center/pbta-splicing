@@ -14,6 +14,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r load libraries}
 library(tidyverse)
 library(data.table)
+library(ggplot2)
+library(ggpubr)
 ```
 
 # Directory set up and process input data
@@ -38,7 +40,8 @@ PT_W5GP3F6B_scatter_path <- file.path(plots_dir, "PT_W5GP3F6B_polyA_v_stranded_p
 clin_df <- read_tsv(clin_file, guess_max = 100000) %>% 
   filter(experimental_strategy=='RNA-Seq')
 
-rmats_df <- fread(rmats_file)
+rmats_df <- fread(rmats_file) %>% 
+  filter(splicing_case=='SE')
 
 # Load custom theme for plots
 source(file.path(figures_dir, "theme_for_plots.R"))
@@ -60,8 +63,7 @@ stranded_id <- "BS_D7XRFE0R"
 
 # Filter data for selected sample IDs
 psi_PT_RYMG3M91 <- rmats_df %>% 
-  filter(sample_id %in% c(polya_id, stranded_id)) %>% 
-  filter(splicing_case=='SE') %>%
+  filter(sample_id %in% c(polya_id, stranded_id)) %>%
   dplyr::mutate(SpliceID = paste(geneSymbol, exonStart_0base, exonEnd, upstreamES,upstreamEE,downstreamES,downstreamEE, sep = ":")) %>%
   dplyr::select(sample_id,SpliceID,IncLevel1)
 
@@ -72,24 +74,29 @@ sample2_data <- psi_PT_RYMG3M91 %>%
   filter(sample_id == stranded_id)
 
 # Merge data for the same SpliceID
-merged_data <- merge(sample1_data, sample2_data, by = "SpliceID", suffixes = c("_polya", "_stranded"))
+PT_RYMG3M91_mer <- merge(sample1_data, sample2_data, by = "SpliceID", suffixes = c("_polya", "_stranded"))
 
 # Create scatterplot using ggscatter
 library(ggplot2)
 
-# Scatter plot with outlined circles
-PT_RYMG3M91_scatter <- ggplot(merged_data, aes(x = IncLevel1_polya, y = IncLevel1_stranded)) +
-  geom_point(aes(color = "black"), shape = 21, size = 2, fill = NA) + # Outlined circles
-  geom_smooth(method = "lm", aes(color = "red"), se = TRUE) + # Regression line with confidence interval in red
-  labs(x = paste(polya_id, "PSI (poly-A)"), y = paste(stranded_id, "PSI (stranded)")) +
-  theme_Publication() + # Use a minimal theme; replace with theme_Publication() if you have it
-  scale_color_identity() # To ensure colors specified in aes() are used directly
-
-# Print the plot
-print(PT_RYMG3M91_scatter)
+# Scatter plot
+PT_RYMG3M91_scatter <- ggscatter(PT_RYMG3M91_mer, 
+                         y= "IncLevel1_stranded", 
+                         x= "IncLevel1_polya", 
+                         add = "reg.line", 
+                         conf.int = TRUE, 
+                         cor.coef = TRUE, 
+                         cor.method = "pearson",
+                         add.params = list(color = "red",
+                                           fill = "NA"),
+                         ticks = TRUE,
+                 alpha = 0.2) + 
+    labs(x = paste(polya_id, "PSI (poly-A)"), 
+         y = paste(stranded_id, "PSI (stranded)")) +
+  theme_Publication()  
 
 # Save
-pdf(PT_RYMG3M91_scatter_path, height = 4, width = 4, useDingbats = FALSE)
+pdf(PT_RYMG3M91_scatter_path, height = 4, width = 4.25, useDingbats = FALSE)
 print(PT_RYMG3M91_scatter)
 dev.off()
 ```
@@ -117,21 +124,26 @@ sample2_data <- psi_PT_W5GP3F6B %>%
   filter(sample_id == stranded_id2)
 
 # Merge data for the same SpliceID
-merged_data <- merge(sample1_data, sample2_data, by = "SpliceID", suffixes = c("_polya", "_stranded"))
+PT_W5GP3F6B_mer <- merge(sample1_data, sample2_data, by = "SpliceID", suffixes = c("_polya", "_stranded"))
 
 # Scatter plot with outlined circles
-PT_W5GP3F6B_scatter <- ggplot(merged_data, aes(x = IncLevel1_polya, y = IncLevel1_stranded)) +
-  geom_point(aes(color = "black"), shape = 21, size = 2, fill = NA) + # Outlined circles
-  geom_smooth(method = "lm", aes(color = "red"), se = TRUE) + # Regression line with confidence interval in red
-  labs(x = paste(polya_id, "PSI (poly-A)"), y = paste(stranded_id, "PSI (stranded)")) +
-  theme_Publication() + # Use a minimal theme; replace with theme_Publication() if you have it
-  scale_color_identity() # To ensure colors specified in aes() are used directly
-
-# Print the plot
-print(PT_W5GP3F6B_scatter)
+PT_W5GP3F6B_scatter <- ggscatter(PT_W5GP3F6B_mer, 
+                         y= "IncLevel1_stranded", 
+                         x= "IncLevel1_polya", 
+                         add = "reg.line", 
+                         conf.int = TRUE, 
+                         cor.coef = TRUE, 
+                         cor.method = "pearson",
+                         add.params = list(color = "red",
+                                           fill = NA),
+                         ticks = TRUE,
+                 alpha = 0.2) + 
+    labs(x = paste(polya_id2, "PSI (poly-A)"), 
+         y = paste(stranded_id2, "PSI (stranded)")) +
+  theme_Publication()  
 
 # Save
-pdf(PT_W5GP3F6B_scatter_path, height = 4, width = 4, useDingbats = FALSE)
+pdf(PT_W5GP3F6B_scatter_path, height = 4, width = 4.25, useDingbats = FALSE)
 print(PT_W5GP3F6B_scatter)
 dev.off()
 ```

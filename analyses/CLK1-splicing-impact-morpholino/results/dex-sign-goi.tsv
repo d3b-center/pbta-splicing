@@ -1,0 +1,79 @@
+gene	Direction	classification
+ACKR3	Up	Both
+AGTR1	Up	Tumor Suppressor
+ALDH1L2	Up	Oncogene
+ALPL	Up	Tumor Suppressor
+ARG1	Up	Tumor Suppressor
+ATF3	Down	Tumor Suppressor
+BHLHE41	Down	Tumor Suppressor
+BLNK	Up	Tumor Suppressor
+CCN3	Down	Tumor Suppressor
+CDKN2B	Down	Tumor Suppressor
+CEACAM1	Up	Tumor Suppressor
+CSRNP1	Down	Tumor Suppressor
+DKK1	Down	Tumor Suppressor
+DLC1	Up	Tumor Suppressor
+DMBT1	Down	Tumor Suppressor
+DUSP1	Down	Tumor Suppressor
+DUSP4	Down	Tumor Suppressor
+EPHB1	Down	Both
+FGF5	Down	Oncogene
+FOXF1	Down	Both
+G0S2	Up	Tumor Suppressor
+GAS1	Up	Tumor Suppressor
+GATA4	Up	Tumor Suppressor
+GJB2	Up	Tumor Suppressor
+GLS2	Up	Tumor Suppressor
+GPRC5A	Down	Tumor Suppressor
+GRB7	Down	Oncogene
+HNF4A	Up	Tumor Suppressor
+HPGD	Up	Tumor Suppressor
+HRG	Up	Tumor Suppressor
+IER3	Down	Tumor Suppressor
+IGF1	Up	Both
+IGF2	Up	Oncogene
+IGFBP3	Down	Tumor Suppressor
+IKBKE	Up	Oncogene
+IL7R	Down	Oncogene
+INHBA	Down	Both
+IRF1	Down	Tumor Suppressor
+JAK3	Up	Oncogene
+JUN	Down	Oncogene
+KDM3B	Down	Tumor Suppressor
+KLF6	Down	Tumor Suppressor
+LAT2	Down	Tumor Suppressor
+LEFTY2	Up	Tumor Suppressor
+LIMA1	Down	Tumor Suppressor
+LINC-PINT	Down	Tumor Suppressor
+LMNTD1	Down	Tumor Suppressor
+MST1R	Down	Both
+MT1G	Up	Tumor Suppressor
+MTUS1	Up	Tumor Suppressor
+MYCL	Up	Oncogene
+NDRG1	Up	Tumor Suppressor
+NDRG2	Up	Tumor Suppressor
+OLFM4	Up	Tumor Suppressor
+ONECUT1	Up	Tumor Suppressor
+PAX8	Down	Oncogene
+PHOX2B	Down	Tumor Suppressor
+PLA2G2A	Up	Tumor Suppressor
+PLD1	Up	Tumor Suppressor
+RASSF4	Up	Tumor Suppressor
+RNF144A	Up	Tumor Suppressor
+ROBO1	Up	Tumor Suppressor
+SAA1	Up	Tumor Suppressor
+SELENBP1	Up	Tumor Suppressor
+SNCAIP	Up	Oncogene
+SRC	Up	Oncogene
+STAT6	Up	Oncogene
+TAT	Up	Tumor Suppressor
+TGFBI	Up	Tumor Suppressor
+THSD1	Down	Tumor Suppressor
+TMPRSS6	Up	Tumor Suppressor
+TNFAIP3	Down	Tumor Suppressor
+TNFRSF12A	Down	Tumor Suppressor
+TSHR	Up	Oncogene
+TSLP	Down	Tumor Suppressor
+UBE2QL1	Up	Tumor Suppressor
+XAF1	Up	Tumor Suppressor
+ZBTB16	Up	Tumor Suppressor

@@ -10,7 +10,7 @@ suppressPackageStartupMessages({
   library(tidyverse)
   library(maftools)
   library(vroom)
-  library('data.table')
+  library(data.table)
   library(ComplexHeatmap)
   library(circlize)
   
@@ -44,7 +44,7 @@ clin_file <- file.path(root_dir, "analyses", "cohort_summary", "results", "histo
 indep_rna_file <- file.path(data_dir, "independent-specimens.rnaseqpanel.primary.tsv")
 goi_file <- file.path(input_dir,"oncoprint-goi-lists-OpenPedCan-gencode-v39.csv")
 tmb_file <- file.path(input_dir, "snv-mutation-tmb-coding.tsv")
-cnv_file <- file.path(data_dir, "consensus_wgs_plus_cnvkit_wxs_plus_freec_tumor_only.tsv.gz")
+cnv_file <- file.path(data_dir, "consensus_wgs_plus_freec_wxs_plus_freec_tumor_only.tsv.gz")
 psi_exp_file <- file.path(root_dir, "analyses", "CLK1-splicing_correlations", "results", "clk1-nf1-psi-exp-phos-df.rds")
 fus_file <- file.path(data_dir, "fusion-putative-oncogenic.tsv")
 
@@ -99,10 +99,8 @@ splice_df <-  readRDS(psi_exp_file) %>%
   filter(match_id %in% indep_rna_df$match_id) %>%
   # z-score
   dplyr::mutate(`CLK1-201 (Exon4) PSI` = as.numeric(scale(`CLK1-201 (Exon4) PSI`)),
-                `NF1-215 PSI` = as.numeric(scale(`NF1-215 PSI`)),
                 `CLK1-201` = as.numeric(scale(`CLK1-201`)),
-                `Total CLK1` = as.numeric(scale(`Total CLK1`)),
-                `Total NF1` = as.numeric(scale(`Total NF1`))
+                `Total CLK1` = as.numeric(scale(`Total CLK1`))
                 )
 
 # read in cnv file and reformat to add to maf
@@ -110,14 +108,14 @@ cnv_df <- read_tsv(cnv_file) %>%
   # select only goi, DNA samples of interest
   filter(gene_symbol %in% goi,
          biospecimen_id %in% matched_dna_samples$Kids_First_Biospecimen_ID) %>%
-  mutate(Variant_Classification = case_when(status == "amplification" ~ "Amp",
-                                            status == "deep deletion" ~ "Del",
-                                            status %in% c("loss", "Loss") & copy_number < 2 ~ "Loss",
+  mutate(Variant_Classification = case_when(status %in% c("amplification", "Amplification") ~ "Amp",
+                                            copy_number > 2*ploidy ~ "Amp",
+                                            status %in% c("deep deletion", "Deep deletion") ~ "Del",
+                                            copy_number == 0 ~ "Del",
                                             TRUE ~ NA_character_)) %>%
   filter(!is.na(Variant_Classification)) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id,
-                Hugo_Symbol = gene_symbol) %>%
-  select(Kids_First_Biospecimen_ID, Hugo_Symbol, Variant_Classification)
+                Hugo_Symbol = gene_symbol) 
 
 # read in fusion file and reformat to add to maf
 fus_df <- read_tsv(fus_file) %>%
@@ -140,7 +138,8 @@ fus_df <- read_tsv(fus_file) %>%
 maf_cols <- c("Hugo_Symbol", 
               "Chromosome", 
               "Start_Position", 
-              "End_Position", 
+              "End_Position",
+              "HGVSg",
               "HGVSp_Short",
               "Reference_Allele", 
               "Tumor_Seq_Allele2", 
@@ -148,7 +147,12 @@ maf_cols <- c("Hugo_Symbol",
               "Variant_Type",
               "Tumor_Sample_Barcode",
               "t_ref_count",
-              "t_alt_count")
+              "t_alt_count",
+              "Transcript_ID",
+              "EXON",
+              "PolyPhen",
+              "SIFT",
+              "gnomad_3_1_1_splice_ai_consequence")
 
 # read in and combine MAFs
 cons_maf <- data.table::fread(cons_maf_file, data.table = FALSE) %>%
@@ -165,7 +169,12 @@ maf <- cons_maf %>%
 maf_filtered <- maf %>%
   dplyr::filter(Hugo_Symbol %in% goi,
                 Tumor_Sample_Barcode  %in% matched_dna_samples$Kids_First_Biospecimen_ID,
-                Variant_Classification %in% names(colors))
+                Variant_Classification %in% names(colors)) %>%
+  dplyr::mutate(keep = case_when(Variant_Classification == "Missense_Mutation" & (grepl("dam", PolyPhen) | grepl("deleterious\\(", SIFT)) ~ "yes",
+                                 Variant_Classification == "Missense_Mutation" & PolyPhen == "" & SIFT == "" ~ "yes",
+                                 Variant_Classification != "Missense_Mutation" ~ "yes",
+                                 TRUE ~ "no")) %>%
+  dplyr::filter(keep == "yes")
 
 collapse_snv_dat <- maf_filtered %>%
   select(Tumor_Sample_Barcode,Hugo_Symbol,Variant_Classification) %>%
@@ -177,7 +186,7 @@ collapse_snv_dat <- maf_filtered %>%
   left_join(histologies_df[,c("Kids_First_Biospecimen_ID", "match_id")]) %>%
   select(-Kids_First_Biospecimen_ID)
 
-# get genes in order of most to least mutations
+# get genes in order of most to least mutations and are in enrichment results
 gene_row_order <- collapse_snv_dat %>%
   count(Hugo_Symbol) %>%
   arrange(-n)
@@ -193,7 +202,8 @@ gene_matrix <- reshape2::acast(collapse_snv_dat,
   mutate(across(everything(), ~if_else(str_detect(., ","), "Multi_Hit", .))) %>%
   rownames_to_column(var = "Hugo_Symbol") %>%
   mutate(Sort_Order = match(Hugo_Symbol, gene_row_order$Hugo_Symbol)) %>%
-  arrange(Sort_Order)
+  arrange(Sort_Order)  %>%
+  write_tsv(file.path(results_dir, "onco_matrix.tsv"))
 
 rownames(gene_matrix) <- gene_matrix$Hugo_Symbol 
 
@@ -204,10 +214,10 @@ gene_matrix <- gene_matrix %>%
 histologies_df_sorted <- splice_df %>%
   left_join(histologies_df, by = "match_id", relationship = "many-to-many") %>%
   select(match_id, plot_group, cancer_predisposition, reported_gender, molecular_subtype, CNS_region, `CLK1-201 (Exon4) PSI`,
-         `NF1-215 PSI`, `CLK1-201`, `Total CLK1`, `Total NF1`, `NF1 pS864`, `NF1 pS2796`, `Total NF1 Protein`) %>%
+         `CLK1-201`, `Total CLK1`) %>%
   unique() %>%
   group_by(match_id, plot_group, cancer_predisposition, reported_gender, molecular_subtype, `CLK1-201 (Exon4) PSI`,
-           `NF1-215 PSI`, `CLK1-201`, `Total CLK1`, `Total NF1`, `NF1 pS864`, `NF1 pS2796`, `Total NF1 Protein`) %>%
+            `CLK1-201`, `Total CLK1`) %>%
   summarise(CNS_region = str_c(unique(na.omit(CNS_region)), collapse = ","),
             CLK1_PSI = mean(`CLK1-201 (Exon4) PSI`),
             .groups = "drop") %>%
@@ -229,6 +239,8 @@ quantiles_clk1 <- quantile(histologies_df_sorted$CLK1_PSI, probs=c(.25, .75), na
 lower_sbi <- quantiles_clk1[1]
 upper_sbi <- quantiles_clk1[2]
 
+
+
 histologies_df_sorted <- histologies_df_sorted %>%
   mutate(clk1_status = case_when(CLK1_PSI > upper_sbi ~ "High",
                                  CLK1_PSI < lower_sbi ~ "Low",
@@ -236,7 +248,7 @@ histologies_df_sorted <- histologies_df_sorted %>%
 
 histologies_df_sorted2 <- histologies_df_sorted %>%
   select(reported_gender,  cancer_predisposition, plot_group, molecular_subtype, CNS_region, tmb_status, 
-         CLK1_PSI, `CLK1-201`, `Total CLK1`, `NF1-215 PSI`, `Total NF1`, `NF1 pS864`, `NF1 pS2796`, `Total NF1 Protein`) %>%
+         CLK1_PSI, `CLK1-201`, `Total CLK1`) %>%
   dplyr::rename("Gender"=reported_gender,
                 "Histology" = plot_group,
                 "Predisposition" = cancer_predisposition,
@@ -246,8 +258,7 @@ histologies_df_sorted2 <- histologies_df_sorted %>%
                # "CLK1 status" = clk1_status,
                 "CLK1 Ex4 PSI"= CLK1_PSI,
                 "CLK1-201" =`CLK1-201`,
-                "Total CLK1 RNA" = `Total CLK1`,
-                "Total NF1 RNA" = `Total NF1`) 
+                "Total CLK1 RNA" = `Total CLK1`) 
 
 # write out metadata
 histologies_df_sorted2 %>%
@@ -267,6 +278,7 @@ ha = HeatmapAnnotation(name = "annotation",
                                       "Female" = "pink",
                                       "Unknown" = "whitesmoke"),
                          "Histology" = c("DIPG or DMG" = "#ff40d9",
+
                                             "Other high-grade glioma" = "#ffccf5"),
                          "Predisposition" = c("LFS" = "red",
                                               "NF-1" = "black",
@@ -285,15 +297,9 @@ ha = HeatmapAnnotation(name = "annotation",
                                                "Hypermutant" = "orange",
                                                "Ultra-hypermutant" = "red",
                                                "Unknown" = "whitesmoke"),
-                         #"CLK1 status" = c("High" = "red", "Middle" = "grey", "Low" = "darkblue"),
                          "CLK1 Ex4 PSI" = colorRamp2(c(-4, 0, 2), c("darkblue","white", "red")),
                          "CLK1-201" = colorRamp2(c(-3, 0, 3), c("darkblue", "white",  "red")),
-                         "Total NF1 RNA" = colorRamp2(c(-3, 0, 3), c("darkblue", "white",  "red")),
-                         "Total CLK1 RNA" = colorRamp2(c(-3, 0, 3), c("darkblue", "white",  "red")),
-                         "NF1-215 PSI" = colorRamp2(c(-2, 0, 4), c("darkblue", "white",  "red")),
-                         "NF1 pS864" = colorRamp2(c(-2, 0, 2), c("darkblue", "white",  "red")),
-                         "NF1 pS2796" = colorRamp2(c(-2, 0, 2), c("darkblue", "white",  "red")),
-                         "Total NF1 Protein" = colorRamp2(c(-2, 0, 2), c("darkblue", "white",  "red"))
+                         "Total CLK1 RNA" = colorRamp2(c(-3, 0, 3), c("darkblue", "white",  "red"))
                          ),
                        annotation_name_side = "right", 
                        annotation_name_gp = gpar(fontsize = 9),
@@ -377,4 +383,3 @@ alteration_counts <- collapse_snv_dat %>%
   ungroup() %>%
   arrange(P_Value) %>%
   write_tsv(file.path(results_dir, "clk1_high_low_mutation_counts.tsv"))
-

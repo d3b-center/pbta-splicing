@@ -63,7 +63,7 @@ depMap_transcr_expr <- vroom(tpm_file,show_col_types = FALSE) %>%
 
 ## load and store patient tumor cell line data
 histology_file <- file.path(data_dir,'histologies.tsv')
-rmats_file     <- file.path(data_dir, 'rMATS_merged.comparison.tsv.gz')
+rmats_file     <- file.path(data_dir, 'clk1-splice-events-rmats.tsv')
 
 histology_df <- vroom(histology_file) %>%
   dplyr::filter(sample_id=='7316-1763' | sample_id=='7316-1769',
@@ -79,8 +79,8 @@ rmats_df <- vroom(rmats_file) %>%
                    exonEnd=="200860215",
                    row_number() <= n()-1
             ) 
-psi_1763 <- rmats_df %>% dplyr::filter(sample_id =='BS_DRY58DTF') %>% dplyr::select(IncLevel2)
-psi_1769 <- rmats_df %>% dplyr::filter(sample_id =='BS_40MP5BWR') %>% dplyr::select(IncLevel2)
+psi_1763 <- rmats_df %>% dplyr::filter(sample_id =='BS_DRY58DTF') %>% dplyr::select(IncLevel1)
+psi_1769 <- rmats_df %>% dplyr::filter(sample_id =='BS_40MP5BWR') %>% dplyr::select(IncLevel1)
 
 
 ## get psi for KNS42, 7316-1763, and 7316-1769  
@@ -104,8 +104,8 @@ cl_7316_1763_df <- vroom(cl_7316_1763_file,comment = "#",
                   dplyr::mutate(type="long") %>% 
                   dplyr::mutate(PSI = (tpm / sum(tpm)) * 100 ) %>% 
                   # manual add rMATs results for short reads
-                  add_row( cell_line = "7316-1763", type = "short", Isoform="Inclusion", PSI = psi_1763$IncLevel2 * 100 ) %>%
-                  add_row( cell_line = "7316-1763", type = "short", Isoform="Skipping", PSI = (1-psi_1763$IncLevel2) * 100  ) 
+                  add_row( cell_line = "7316-1763", type = "short", Isoform="Inclusion", PSI = psi_1763$IncLevel1 * 100 ) %>%
+                  add_row( cell_line = "7316-1763", type = "short", Isoform="Skipping", PSI = (1-psi_1763$IncLevel1) * 100  ) 
 
 # STRG.2.2 is Ex.4 transcript by manual inspection
 cl_7316_1769_df <- vroom(cl_7316_1769_file,comment = "#", 
@@ -119,8 +119,8 @@ cl_7316_1769_df <- vroom(cl_7316_1769_file,comment = "#",
                     dplyr::mutate(type="long") %>% 
                     dplyr::mutate(PSI = (tpm / sum(tpm)) * 100 ) %>% 
                     # manual add rMATs results for short reads
-                    add_row( cell_line = "7316-1769", type = "short", Isoform="Inclusion", PSI = psi_1769$IncLevel2 * 100 ) %>%
-                    add_row( cell_line = "7316-1769", type = "short", Isoform="Skipping", PSI = (1-psi_1769$IncLevel2) *100  )
+                    add_row( cell_line = "7316-1769", type = "short", Isoform="Inclusion", PSI = psi_1769$IncLevel1 * 100 ) %>%
+                    add_row( cell_line = "7316-1769", type = "short", Isoform="Skipping", PSI = (1-psi_1769$IncLevel1) *100  )
 
 ## STRG 1.1 is Ex 4 transcript
 cl_KNS42_df <- vroom(cl_KNS42_file,comment = "#", 
