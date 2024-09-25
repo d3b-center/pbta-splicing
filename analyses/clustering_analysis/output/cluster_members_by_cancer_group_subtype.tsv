@@ -590,7 +590,7 @@ BS_DEHJF4C7	Low-grade glioma/astrocytoma	Low-grade glioma	LGG, BRAF V600E, CDKN2
 BS_DFWFBYSN	Medulloblastoma	Medulloblastoma	MB, Group4	MB, Group4	4
 BS_DGWXNSPK	Ganglioglioma	Mixed neuronal-glial tumor	GNG, RTK	GNG, RTK	2
 BS_DHA5FMVW	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor	ATRT, MYC	ATRT, MYC	1
-BS_DK87G2MP	Diffuse intrinsic pontine glioma	DIPG or DMG	HGG, To be classified	To be classified	6
+BS_DK87G2MP	Diffuse intrinsic pontine glioma	DIPG or DMG	DIPG, To be classified	To be classified	6
 BS_DMJHAG9X	Low-grade glioma/astrocytoma	Low-grade glioma	LGG, KIAA1549-BRAF	KIAA1549--BRAF	11
 BS_DMZP9G1H	Ganglioglioma	Mixed neuronal-glial tumor	GNG, BRAF V600E	GNG, BRAF V600E	7
 BS_DNZVP92S	High-grade glioma/astrocytoma	Other high-grade glioma	HGG, H3 wildtype	H3 wildtype	6
@@ -654,7 +654,7 @@ BS_EXYHZ6D4	Low-grade glioma/astrocytoma	Low-grade glioma	LGG, BRAF/MAPK	Other M
 BS_EYSS0ZDS	Low-grade glioma/astrocytoma	Low-grade glioma	LGG, BRAF V600E	BRAF V600E	9
 BS_EYYMKWB7	Subependymal Giant Cell Astrocytoma	Low-grade glioma	SEGA, To be classified	To be classified	9
 BS_EZ3147MX	Diffuse midline glioma	DIPG or DMG	DMG, H3 K28, TP53	H3 K28	4
-BS_F0JB4EAK	Diffuse intrinsic pontine glioma	DIPG or DMG	HGG, H3 wildtype, TP53	H3 wildtype	11
+BS_F0JB4EAK	Diffuse intrinsic pontine glioma	DIPG or DMG	DIPG, H3 wildtype, TP53	DIPG	11
 BS_F1K9QTBS	Low-grade glioma/astrocytoma	Low-grade glioma	LGG, KIAA1549-BRAF	KIAA1549--BRAF	8
 BS_F21R36MM	High-grade glioma/astrocytoma	Other high-grade glioma	HGG, H3 wildtype	H3 wildtype	6
 BS_F4E8R9VY	Ganglioglioma	Mixed neuronal-glial tumor	GNG, FGFR	GNG, FGFR	9
@@ -684,7 +684,7 @@ BS_FV820J38	Medulloblastoma	Medulloblastoma	MB, Group4	MB, Group4	12
 BS_FWMJPKCV	Dysembryoplastic neuroepithelial tumor	Mixed neuronal-glial tumor	NA	NA	9
 BS_FX2P2WEG	High-grade glioma/astrocytoma	Other high-grade glioma	HGG, H3 wildtype, TP53	H3 wildtype	3
 BS_FX4WKR2R	Glial-neuronal tumor NOS	Mixed neuronal-glial tumor	GNT, BRAF V600E	GNT, BRAF V600E	11
-BS_FXJY0MNH	Diffuse intrinsic pontine glioma	DIPG or DMG	HGG, H3 wildtype	H3 wildtype	7
+BS_FXJY0MNH	Diffuse intrinsic pontine glioma	DIPG or DMG	DIPG, H3 wildtype	DIPG	7
 BS_FYP2B298	High-grade glioma/astrocytoma	Other high-grade glioma	DHG, H3 G35, TP53	H3 G35	10
 BS_FYRDYBMZ	Pleomorphic xanthoastrocytoma	Other high-grade glioma	HGG, PXA	PXA	9
 BS_FZ62GZGV	NA	Mixed neuronal-glial tumor	GNT, KIAA1549-BRAF	KIAA1549--BRAF	6
@@ -1059,7 +1059,7 @@ BS_R5SNFB5B	High-grade glioma/astrocytoma	Other high-grade glioma	HGG, H3 wildty
 BS_R634WKN7	Subependymal Giant Cell Astrocytoma	Low-grade glioma	SEGA, To be classified	To be classified	1
 BS_R6WNEEE4	Medulloblastoma	Medulloblastoma	MB, SHH	MB, SHH	4
 BS_R7HZCZ8B	Craniopharyngioma	Craniopharyngioma	CRANIO, To be classified	To be classified	7
-BS_R7NTZR4C	Diffuse intrinsic pontine glioma	DIPG or DMG	HGG, IDH, TP53	IDH	2
+BS_R7NTZR4C	High-grade glioma/astrocytoma	Other high-grade glioma	HGG, IDH, TP53	IDH	2
 BS_R7V8BC98	Low-grade glioma/astrocytoma	Low-grade glioma	LGG, other MAPK	Other MAPK	2
 BS_R81XA0F9	Low-grade glioma/astrocytoma	Low-grade glioma	LGG, wildtype	Wildtype	8
 BS_R9B92M75	Diffuse midline glioma	DIPG or DMG	DMG, H3 K28	H3 K28	2
@@ -1084,7 +1084,7 @@ BS_RN0VAY51	Diffuse midline glioma	DIPG or DMG	DMG, H3 K28, TP53	H3 K28	6
 BS_RN36XFYH	Medulloblastoma	Medulloblastoma	MB, SHH	MB, SHH	12
 BS_RNANA568	Low-grade glioma/astrocytoma	Low-grade glioma	LGG, KIAA1549-BRAF	KIAA1549--BRAF	2
 BS_RPF3Z9P9	Medulloblastoma	Medulloblastoma	MB, Group4	MB, Group4	12
-BS_RPH4DCMK	Diffuse intrinsic pontine glioma	DIPG or DMG	HGG, To be classified	To be classified	11
+BS_RPH4DCMK	Diffuse intrinsic pontine glioma	DIPG or DMG	DIPG, To be classified	To be classified	11
 BS_RPJ1EPHA	Low-grade glioma/astrocytoma	Low-grade glioma	LGG, KIAA1549-BRAF	KIAA1549--BRAF	11
 BS_RPKA4GF9	Ganglioglioma	Mixed neuronal-glial tumor	GNG, RTK	GNG, RTK	8
 BS_RPMPW9QA	Choroid plexus tumor	Choroid plexus tumor	NA	NA	5
@@ -1248,7 +1248,7 @@ BS_W568T9CS	Ependymoma	Ependymoma	EPN, PF A	EPN, PF A	10
 BS_W6AC5J3C	Meningioma	Meningioma	NA	NA	9
 BS_W7379M7V	Medulloblastoma	Medulloblastoma	MB, SHH	MB, SHH	6
 BS_W7FP2G3F	Dysembryoplastic neuroepithelial tumor	Mixed neuronal-glial tumor	NA	NA	9
-BS_W7MFJZ5A	Diffuse intrinsic pontine glioma	DIPG or DMG	HGG, H3 wildtype	H3 wildtype	9
+BS_W7MFJZ5A	Diffuse intrinsic pontine glioma	DIPG or DMG	DIPG, H3 wildtype	DIPG	9
 BS_W80TJC27	Ependymoma	Ependymoma	EPN, ST ZFTA	EPN, ST ZFTA	3
 BS_W9AT0MR7	Medulloblastoma	Medulloblastoma	MB, Group4	MB, Group4	4
 BS_W9N9844Q	High-grade glioma/astrocytoma	Other high-grade glioma	HGG, H3 wildtype, TP53	H3 wildtype	9
@@ -1276,7 +1276,7 @@ BS_WRQHPSXQ	Ganglioglioma	Mixed neuronal-glial tumor	GNG, BRAF V600E, CDKN2A/B	G
 BS_WSQMAA33	Germinoma	Germ cell tumor	NA	NA	1
 BS_WTJEDTZC	High-grade glioma/astrocytoma	Other high-grade glioma	HGG, H3 wildtype, TP53	H3 wildtype	8
 BS_WV0S8N4M	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor	ATRT, To be classified	To be classified	1
-BS_WVRX4C9Z	High-grade glioma/astrocytoma	Other high-grade glioma	HGG, H3 wildtype, TP53	H3 wildtype	6
+BS_WVRX4C9Z	Diffuse intrinsic pontine glioma	DIPG or DMG	DIPG, H3 wildtype, TP53	DIPG	6
 BS_WVW3W6ZB	Atypical Teratoid Rhabdoid Tumor	Atypical Teratoid Rhabdoid Tumor	ATRT, To be classified	To be classified	1
 BS_WXT1VK25	Glial-neuronal tumor NOS	Mixed neuronal-glial tumor	GNT, RTK	GNT, RTK	8
 BS_WYERXS4G	Ependymoma	Ependymoma	EPN, ST YAP1	EPN, ST YAP1	10
