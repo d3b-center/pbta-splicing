@@ -364,11 +364,11 @@ lspline_clustering <- function(expr_mat, hist_file,
       # assign the output to corresponding algorithm and distance
       tmp_df <- data.frame(algorithm = ccp_algorithm, distance = ccp_distance, feature_selection = suffix, k_flat)
       readr::write_tsv(tmp_df, file = results_file)
-    } else {
-      # read file if already exists
-      print("File exists")
-      tmp_df <- readr::read_tsv(file = results_file) %>% as.data.frame()
-    }
+   # } else {
+  #    # read file if already exists
+  #    print("File exists")
+   #   tmp_df <- readr::read_tsv(file = results_file) %>% as.data.frame()
+  #  }
     
     # this dataframe with contain output for all combinations of distance + algorithm + k
     output_df <- rbind(output_df, tmp_df)
