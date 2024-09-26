@@ -208,11 +208,9 @@ group_ht <- plot_enr(histologies_w_fusion_df,
                      padjust = TRUE)
 
 # plot enrichment results
-pdf(file.path(plot_dir, "breakpoint_group_ancestry_ct_enr_heatmap.pdf"),
-    height = 3, width = 4)
+pdf(file.path(plots_dir, "breakpoint_group_clusters_LGGs_heatmap.pdf"),
+    height = 4, width = 5)
 
 draw(group_ht)
 
 invisible(dev.off())
-
-draw(group_ht)
