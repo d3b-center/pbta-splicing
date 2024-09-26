@@ -109,6 +109,30 @@ hist_subset %>%
   scale_fill_manual(name = "Molecular Subtype", values = cols) 
 dev.off()
 
+# 
+fusion_info_df <- vroom(file.path("/Users/naqvia/d3b_coding/pbta-splicing/analyses/lgg-clusters/input/lgg-braf-fusion-breakpoint-annotation.tsv"))
+histologies_w_fusion_df <- histologies_df %>%
+  left_join(fusion_info_df, by = 'Kids_First_Biospecimen_ID') %>%
+  # Replace NA values in 'breakpoint_group' and 'breakpoint_type' with 'non-fusion'
+  mutate(breakpoint_group = ifelse(is.na(breakpoint_group), "non-fusion", breakpoint_group),
+         breakpoint_type = ifelse(is.na(breakpoint_type), "non-fusion", breakpoint_type)) %>% 
+
+  dplyr::select(Kids_First_Biospecimen_ID, plot_group, molecular_subtype_display, cluster_assigned,breakpoint_group, breakpoint_type) %>%
+  filter(plot_group=="Low-grade glioma")
+
+
+## plot LGGs with fusion
+histologies_w_fusion_df <- histologies_w_fusion_df %>%  group_by(cluster_assigned, breakpoint_group) %>%
+       summarise(count = n()) %>%
+       mutate(total_in_cluster = sum(count), 
+              percentage = (count / total_in_cluster) * 100) %>%
+              arrange(cluster_assigned, desc(percentage))
+
+ggplot(histologies_w_fusion_df, aes(x = factor(cluster_assigned), y = percentage, fill = breakpoint_group)) +
+  geom_bar(stat = "identity", position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Cluster Assigned", y = "Percentage", fill = "Breakpoint Group") +
+  theme_Publication()
 
 # write out bs id with cancer group, subtype, and cluster
 histologies_df %>%
