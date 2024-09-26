@@ -114,8 +114,6 @@ histologies_df %>%
   dplyr::select(Kids_First_Biospecimen_ID, cancer_group, plot_group, molecular_subtype, molecular_subtype_display, cluster_assigned) %>%
   write_tsv(cluster_membership_tsv)
 
-
-# 
 fusion_info_df <- vroom(file.path(input_dir,"lgg-braf-fusion-breakpoint-annotation.tsv"))
 histologies_w_fusion_df <- histologies_df %>%
   left_join(fusion_info_df, by = 'Kids_First_Biospecimen_ID') %>%
