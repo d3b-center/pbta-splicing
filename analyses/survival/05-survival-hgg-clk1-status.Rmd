@@ -59,8 +59,14 @@ hgg_hist <- read_tsv(histologies_file) %>%
   dplyr::filter(Histology %in% c("DIPG or DMG", "Other high-grade glioma"),
                 !is.na(OS_days) | !is.na(EFS_days)) %>%
   dplyr::select(Kids_First_Biospecimen_ID, Histology, mol_sub_group,
+                extent_of_tumor_resection,
                 OS_days, OS_years, OS_status,
-                EFS_days, EFS_years, EFS_status)
+                EFS_days, EFS_years, EFS_status) %>%
+  dplyr::mutate(extent_of_tumor_resection = fct_relevel(extent_of_tumor_resection,
+                                                      c("Gross/Near total resection",
+                                                        "Partial resection",
+                                                        "Biopsy only", "Not Reported",
+                                                        "Unavailable")))
 ```
 
 Load rMATs file and subset for CLK1 exon 4 PSI values
@@ -230,7 +236,7 @@ add_model_efs <- fit_save_model(survival_df,
 
 add_efs_forest_plot <- plotForest(readRDS(add_efs_surv_result))
 
-ggsave(file.path(plot_dir, "forest_HGG_EFS_add_subtype_clk1_status.pdf"), 
+ggsave(file.path(plot_dir, "forest_HGG_DMG_EFS_add_subtype_clk1_status.pdf"), 
        add_efs_forest_plot, width = 7.5, height = 3)
 ```
 
@@ -368,8 +374,8 @@ Generate and plot coxph models in HGG:
 add_hgg_os_surv_result <- file.path(results_dir, 
                      "cox_HGG_OS_additive_terms_subtype_clk1_status.RDS")
 
-add_model_os_hgg <- fit_save_model(survival_df[!grepl("DMG", survival_df$mol_sub_group),],
-                               terms = "mol_sub_group+clk1_status",
+add_model_os_hgg <- fit_save_model(survival_df[!grepl("DMG", survival_df$mol_sub_group) & !is.na(survival_df$extent_of_tumor_resection) & !survival_df$extent_of_tumor_resection %in% c("Not Reported", "Unavailable"),],
+                               terms = "extent_of_tumor_resection+mol_sub_group+clk1_status",
                                add_hgg_os_surv_result,
                                "multivariate",
                                years_col = "OS_years",
@@ -386,8 +392,8 @@ ggsave(file.path(plot_dir, "forest_HGG_OS_add_subtype_clk1_status.pdf"),
 add_hgg_efs_surv_result <- file.path(results_dir, 
                      "cox_HGG_EFS_additive_terms_subtype_clk1_status.RDS")
 
-add_model_efs_hgg <- fit_save_model(survival_df[!grepl("DMG", survival_df$mol_sub_group),],
-                               terms = "mol_sub_group+clk1_status",
+add_model_efs_hgg <- fit_save_model(survival_df[!grepl("DMG", survival_df$mol_sub_group) & !is.na(survival_df$extent_of_tumor_resection) & !survival_df$extent_of_tumor_resection %in% c("Not Reported", "Unavailable"),],
+                               terms = "extent_of_tumor_resection+mol_sub_group+clk1_status",
                                add_hgg_efs_surv_result,
                                "multivariate",
                                years_col = "EFS_years",

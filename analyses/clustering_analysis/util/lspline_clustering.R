@@ -72,7 +72,7 @@ source(file.path(analysis_dir, "util", "get_cdf_datapoints.R"))
 lspline_clustering <- function(expr_mat, hist_file, 
                                algorithms = c("hc", "pam", "km"), 
                                distances = c("pearson", "spearman", "euclidean", "manhattan", "binary", "maximum", "canberra", "minkowski"),
-                               filter_expr = TRUE, dispersion_percentile_val = 0.2,
+                               filter_expr = FALSE, dispersion_percentile_val = 0.2,
                                protein_coding_only = TRUE, gencode_version = 27,
                                feature_selection = c("variance", "dip.test"),
                                var_prop = NULL, min_n = NULL, transformation_type = c("none", "tmm", "vst", "uq", "log2", "rank"),
@@ -105,7 +105,7 @@ lspline_clustering <- function(expr_mat, hist_file,
     sd(x) != 0
   })]
 
-  # filter based on expression
+  # do some filtering based on expression
   if (filter_expr) {
     print("filter by expression")
     expr_mat <- DGCA::filterGenes(
@@ -116,7 +116,7 @@ lspline_clustering <- function(expr_mat, hist_file,
       sequential = TRUE
     )
   }
-
+  
   # filter to protein coding genes only
   if (protein_coding_only) {
     print("filter to protein coding genes")
@@ -364,11 +364,11 @@ lspline_clustering <- function(expr_mat, hist_file,
       # assign the output to corresponding algorithm and distance
       tmp_df <- data.frame(algorithm = ccp_algorithm, distance = ccp_distance, feature_selection = suffix, k_flat)
       readr::write_tsv(tmp_df, file = results_file)
-    } else {
-      # read file if already exists
-      print("File exists")
-      tmp_df <- readr::read_tsv(file = results_file) %>% as.data.frame()
-    }
+   # } else {
+  #    # read file if already exists
+  #    print("File exists")
+   #   tmp_df <- readr::read_tsv(file = results_file) %>% as.data.frame()
+  #  }
     
     # this dataframe with contain output for all combinations of distance + algorithm + k
     output_df <- rbind(output_df, tmp_df)
