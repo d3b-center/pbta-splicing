@@ -243,7 +243,7 @@ ggsave(file.path(plot_dir, "km_lgg_EFS_cluster_assignment.pdf"),
 Generate coxph models including covariates `extent_of_tumor_resection`, `mol_sub_group`, and `cluster_assigned`, and plot
 
 ```{r}
-add_model_lgg_os <- fit_save_model(lgg,
+add_model_lgg_os <- fit_save_model(lgg[!lgg$extent_of_tumor_resection %in% c("Not Reported", "Unavailable"),],
                               terms = "extent_of_tumor_resection+mol_sub_group+cluster_assigned",
                                file.path(results_dir, "cox_lgg_OS_additive_terms_resection_subtype_cluster.RDS"),
                                "multivariate",
@@ -268,7 +268,7 @@ lgg_clusters <- metadata %>%
   unique()
 
 
-add_model_lgg_efs <- fit_save_model(lgg[!lgg$cluster_assigned %in% lgg_clusters,],
+add_model_lgg_efs <- fit_save_model(lgg[!lgg$cluster_assigned %in% lgg_clusters & !lgg$extent_of_tumor_resection %in% c("Not Reported", "Unavailable"),],
                               terms = "extent_of_tumor_resection+mol_sub_group+cluster_assigned",
                                file.path(results_dir, "cox_lgg_EFS_additive_terms_resection_subtype_cluster.RDS"),
                                "multivariate",
