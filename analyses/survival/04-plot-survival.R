@@ -86,7 +86,7 @@ for (group in groups){
   input_dir <- file.path(analysis_dir, "results", dir_names[group])
   plots_dir <- file.path(analysis_dir, "plots", dir_names[group])
   
-  if (grepl("GNG|LGG", group)){
+  if (grepl("GNG|LGG|HGG|ATRT|MB", group)){
     os_survival_result <- read_rds(
       file.path(input_dir,
                 glue::glue("cox_{file_names[group]}_OS_additive_terms_subtype_resection_SIburden.RDS")
@@ -109,7 +109,7 @@ for (group in groups){
   
   # Forest plots for EFS
   
-  if (grepl("GNG|LGG", group)){
+  if (grepl("GNG|LGG|HGG|ATRT|MB", group)){
     efs_survival_result <- read_rds(
       file.path(input_dir,
                 glue::glue("cox_{file_names[group]}_EFS_additive_terms_subtype_resection_SIburden.RDS")
@@ -141,7 +141,7 @@ for (group in groups){
   
   # Forest plots for OS
   
-  if (grepl("GNG|LGG", group)){
+  if (grepl("GNG|LGG|HGG|ATRT|MB", group)){
     os_survival_result <- read_rds(
       file.path(input_dir,
                 glue::glue("cox_{file_names[group]}_OS_additive_terms_subtype_resection_SI.RDS")
@@ -164,7 +164,7 @@ for (group in groups){
   
   # Forest plots for PFS
   
-  if (grepl("GNG|LGG", group)){
+  if (grepl("GNG|LGG|HGG|ATRT|MB", group)){
     efs_survival_result <- read_rds(
       file.path(input_dir,
                 glue::glue("cox_{file_names[group]}_EFS_additive_terms_subtype_resection_SI.RDS")

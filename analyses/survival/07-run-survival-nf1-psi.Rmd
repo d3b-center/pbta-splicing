@@ -65,7 +65,12 @@ histologies <- read_tsv(histologies_file, guess_max = 10000)
 
 metadata <- read_tsv(metadata_file) %>%
   left_join(histologies %>% dplyr::select(Kids_First_Biospecimen_ID,
-                                          match_id))
+                                          match_id)) %>%
+  dplyr::mutate(extent_of_tumor_resection = fct_relevel(extent_of_tumor_resection,
+                                                        c("Gross/Near total resection",
+                                                          "Partial resection",
+                                                          "Biopsy only", "Not Reported",
+                                                          "Unavailable")))
 
 nf1_psi <- readRDS(nf1_psi_file) %>%
   rownames_to_column("match_id")
@@ -111,7 +116,9 @@ for (group in groups){
   km_os_model_file <- file.path(results_dir, 
                                     glue::glue("logrank_{plot_names[group]}_OS_nf1_psi_group.RDS"))
   
-  coxph_os_model_file <- ifelse(group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"),
+  coxph_os_model_file <- ifelse(group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                             "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                             "Medulloblastoma"),
                              file.path(results_dir,
                                        glue::glue("cox_{plot_names[group]}_OS_additive_terms_subtype_resection_nf1_psi_group.RDS")),
                              file.path(results_dir,
@@ -121,7 +128,9 @@ for (group in groups){
   km_efs_model_file <- file.path(results_dir, 
                                     glue::glue("logrank_{plot_names[group]}_EFS_nf1_psi_group.RDS"))
   
-  coxph_efs_model_file <- ifelse(group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"),
+  coxph_efs_model_file <- ifelse(group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                             "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                             "Medulloblastoma"),
                              file.path(results_dir,
                                        glue::glue("cox_{plot_names[group]}_EFS_additive_terms_subtype_resection_nf1_psi_group.RDS")),
                              file.path(results_dir,
@@ -190,7 +199,9 @@ for (group in groups){
   
   #Define high and low NF1-215 PSI samples using quartiles in ONLY samples with survival data and resection (LGG/GNT only)
   
-  if (group %in% c("Low-grade glioma", "Mixed neuronal-glial tumor")){
+  if (group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                   "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                   "Medulloblastoma")){
     
     group_hist <- group_hist %>%
       filter(!is.na(mol_sub_group) & (!is.na(OS_days) | !is.na(EFS_days)) & !is.na(extent_of_tumor_resection) & !extent_of_tumor_resection %in% c("Unavailable", "Not Applicable")) %>%
@@ -241,9 +252,15 @@ for (group in groups){
   # Run cox proprtional hazards models for OS, including appropriate covariates per histology
   add_model_os <- suppressWarnings(fit_save_model(group_hist,
                                   terms = ifelse(
-                                      group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"), "mol_sub_group+extent_of_tumor_resection+NF1_psi_group",
-                                      ifelse(group %in% c("Atypical Teratoid Rhabdoid Tumor", "Ependymoma", "DIPG or DMG", "Other high-grade glioma", "Medulloblastoma"), "mol_sub_group+NF1_psi_group", "NF1_psi_group")
-                                      ),
+                                      group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                             "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                             "Medulloblastoma"),
+                                      "mol_sub_group+extent_of_tumor_resection+NF1_psi_group",
+                                      ifelse(group %in% c("Ependymoma",
+                                                          "DIPG or DMG"),
+                                             "mol_sub_group+NF1_psi_group",
+                                              "NF1_psi_group"
+                                  )),
              coxph_os_model_file,
              "multivariate",
              years_col = "OS_years",
@@ -253,11 +270,15 @@ for (group in groups){
   # Run cox proprtional hazards models for EFS, including appropriate covariates per histology
   add_model_efs <- suppressWarnings(fit_save_model(group_hist,
                                   terms = ifelse(
-                                      group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"), "mol_sub_group+extent_of_tumor_resection+NF1_psi_group",
-                                      ifelse(group %in% c("Atypical Teratoid Rhabdoid Tumor", "Ependymoma", "DIPG or DMG", "Other high-grade glioma", "Medulloblastoma"),
+                                      group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                             "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                             "Medulloblastoma"),
+                                      "mol_sub_group+extent_of_tumor_resection+NF1_psi_group",
+                                      ifelse(group %in% c("Ependymoma",
+                                                          "DIPG or DMG"),
                                              "mol_sub_group+NF1_psi_group",
-                                             "NF1_psi_group")
-                                      ),
+                                              "NF1_psi_group"
+                                  )),
              coxph_efs_model_file,
              "multivariate",
              years_col = "EFS_years",
@@ -285,7 +306,9 @@ for (i in 1:nrow(subtype_df)) {
   km_os_model_file <- file.path(results_dir, 
                                     glue::glue("logrank_{subtype_df$names[i]}_{subtype_df$subtype_name[i]}_OS_nf1_psi_group.RDS"))
   
-  coxph_os_model_file <- ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"),
+  coxph_os_model_file <- ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                             "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                             "Medulloblastoma"),
                              file.path(results_dir,
                                       glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype_name[i]}_OS_additive_terms_subtype_resection_nf1_psi_group.RDS")),
                              file.path(results_dir,
@@ -295,7 +318,9 @@ for (i in 1:nrow(subtype_df)) {
   km_efs_model_file <- file.path(results_dir, 
                                     glue::glue("logrank_{subtype_df$names[i]}_{subtype_df$subtype_name[i]}_EFS_nf1_psi_group.RDS"))
   
-  coxph_efs_model_file <- ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"),
+  coxph_efs_model_file <- ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                             "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                             "Medulloblastoma"),
                              file.path(results_dir,
                                        glue::glue("cox_{subtype_df$names[i]}_{subtype_df$subtype_name[i]}_EFS_additive_terms_subtype_resection_nf1_psi_group.RDS")),
                              file.path(results_dir,
@@ -311,7 +336,9 @@ for (i in 1:nrow(subtype_df)) {
     
     #Define high and low NF1-215 PSI samples using quartiles in ONLY samples with survival data and resection known (LGG/GNT only)
     
-    if(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma")){
+    if(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                             "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                             "Medulloblastoma")){
       
       subtype_hist <- subtype_hist %>%
         dplyr::filter(!is.na(extent_of_tumor_resection) & !extent_of_tumor_resection %in% c("Not Applicable", "Unavailable") & (!is.na(OS_days) | !is.na(EFS_days))) %>%
@@ -362,12 +389,12 @@ for (i in 1:nrow(subtype_df)) {
     
     # Run coxph models and save to output
   add_model_os <- suppressWarnings(fit_save_model(subtype_hist,
-                                terms = ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"),
-                                               "extent_of_tumor_resection+NF1_psi_group",
-                                               ifelse(subtype_df$hist[i] == "Other high-grade glioma", 
-                                                      "mol_sub_group+NF1_psi_group",
-                                                      "NF1_psi_group"
-                                                      )),
+                                  terms = ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                                                           "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                                                           "Medulloblastoma"),
+                                                 "extent_of_tumor_resection+NF1_psi_group",
+                                                        "NF1_psi_group"
+                                                        ),
                                  coxph_os_model_file,
                                  "multivariate",
                                  years_col = "OS_years",
@@ -375,12 +402,12 @@ for (i in 1:nrow(subtype_df)) {
                                 )
   
   add_model_efs <- suppressWarnings(fit_save_model(subtype_hist,
-                                 terms = ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma"),
-                                               "extent_of_tumor_resection+NF1_psi_group",
-                                               ifelse(subtype_df$hist[i] == "Other high-grade glioma", 
-                                                      "mol_sub_group+NF1_psi_group",
-                                                      "NF1_psi_group"
-                                                      )),
+                                  terms = ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                                                           "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                                                           "Medulloblastoma"),
+                                                 "extent_of_tumor_resection+NF1_psi_group",
+                                                        "NF1_psi_group"
+                                                        ),
                                    coxph_efs_model_file,
                                    "multivariate",
                                    years_col = "EFS_years",
