@@ -21,12 +21,12 @@ Rscript --vanilla 06-CLK1-psi-expr-SRSF-expr-prot-phospho-heatmap.R
 Rscript --vanilla 07-plot-clk1ex4-hgg-normals.R   
 
 ## run correlation analyses for CLK1 and NF1 transcripts
-Rscript -e "rmarkdown::render('08-CLK1-impact-NF1-splicing.Rmd', clean = TRUE)" 
+#Rscript -e "rmarkdown::render('08-CLK1-impact-NF1-splicing.Rmd', clean = TRUE)" 
 
 # run CLK1-NF1 protein/phosphoprotein expression correlation script
-Rscript --vanilla 09-clk1-nf1-protein-correlations.R
+#Rscript --vanilla 09-clk1-nf1-protein-correlations.R
 
 # plot DMG clk1/nf1 rna, protein, splicing z-scores
-Rscript --vanilla 10-clk1-nf1-single-sample-heatmap.R
+#Rscript --vanilla 10-clk1-nf1-single-sample-heatmap.R
 
 rm ./Rplots.pdf
