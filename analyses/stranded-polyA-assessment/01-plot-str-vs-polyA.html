@@ -360,13 +360,13 @@ display: none;
 <div id="load-required-libraries" class="section level1">
 <h1>Load required libraries</h1>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching core tidyverse packages ────────────────────────────────────────────────── tidyverse 2.0.0 ──
+<pre><code>## ── Attaching core tidyverse packages ────────────────────────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
 ## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
 ## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
 ## ✔ purrr     1.0.2     
-## ── Conflicts ──────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ── Conflicts ──────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
@@ -408,7 +408,7 @@ PT_W5GP3F6B_scatter_path &lt;- file.path(plots_dir, &quot;PT_W5GP3F6B_polyA_v_st
 clin_df &lt;- read_tsv(clin_file, guess_max = 100000) %&gt;% 
   filter(experimental_strategy==&#39;RNA-Seq&#39;)</code></pre>
 <pre><code>## Rows: 47633 Columns: 58
-## ── Column specification ──────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ──────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
 ## chr (41): Kids_First_Participant_ID, Kids_First_Biospecimen_ID, sample_id, a...
 ## dbl (17): cell_line_passage, OS_days, EFS_days, age_at_diagnosis_days, age_a...
@@ -597,16 +597,16 @@ or non-coding.</p>
 ## [13] tidyverse_2.0.0  
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] gtable_0.3.5      xfun_0.45         bslib_0.7.0       rstatix_0.7.2    
+##  [1] gtable_0.3.5      xfun_0.44         bslib_0.7.0       rstatix_0.7.2    
 ##  [5] lattice_0.22-6    tzdb_0.4.0        vctrs_0.6.5       tools_4.4.0      
 ##  [9] generics_0.1.3    parallel_4.4.0    fansi_1.0.6       pkgconfig_2.0.3  
 ## [13] R.oo_1.26.0       Matrix_1.7-0      lifecycle_1.0.4   farver_2.1.2     
 ## [17] compiler_4.4.0    munsell_0.5.1     carData_3.0-5     htmltools_0.5.8.1
 ## [21] sass_0.4.9        yaml_2.3.8        pillar_1.9.0      car_3.1-2        
-## [25] crayon_1.5.3      jquerylib_0.1.4   R.utils_2.12.3    cachem_1.1.0     
-## [29] abind_1.4-5       nlme_3.1-164      tidyselect_1.2.1  digest_0.6.36    
+## [25] crayon_1.5.2      jquerylib_0.1.4   R.utils_2.12.3    cachem_1.1.0     
+## [29] abind_1.4-5       nlme_3.1-164      tidyselect_1.2.1  digest_0.6.35    
 ## [33] stringi_1.8.4     labeling_0.4.3    splines_4.4.0     rprojroot_2.0.4  
-## [37] fastmap_1.2.0     colorspace_2.1-0  cli_3.6.3         magrittr_2.0.3   
+## [37] fastmap_1.2.0     colorspace_2.1-0  cli_3.6.2         magrittr_2.0.3   
 ## [41] utf8_1.2.4        broom_1.0.6       withr_3.0.0       scales_1.3.0     
 ## [45] backports_1.5.0   bit64_4.0.5       timechange_0.3.0  rmarkdown_2.27   
 ## [49] bit_4.0.5         ggsignif_0.6.4    R.methodsS3_1.8.2 hms_1.1.3        
