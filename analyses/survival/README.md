@@ -24,10 +24,14 @@ Input files:
 * `03-run-survival-SI.Rmd` Assess histology specific survival including SBI as a continuous variable
 * `04-plot-survival.R` plot SBI survival models
 * `05-survival-hgg-clk1-status.Rmd` Assess survival by CLK1 exon 4 PSI in HGG tumors
-* `06-survival_by_cluster.Rmd` Assess survival by splicing cluster assingment in all histologies, LGG, and HGG
+* `06-survival_by_cluster.Rmd` Assess survival by splicing cluster assignment in all histologies, LGG, and HGG
+* `07-run-survival-nf1-psi.Rmd` Assess survival by NF1 PSI
+* `08-plot-survival-nf1-psi.R` Plot survival by NF1 PSI
+* `09-survival-clk1-psi.Rmd` Assess and plot survival by CLK1 exon 4 PSI
 
 ## Directory structure
 ```
+.
 ├── 01-prepare-survival.Rmd
 ├── 01-prepare-survival.nb.html
 ├── 02-run-survival-SIgroup.Rmd
@@ -39,7 +43,12 @@ Input files:
 ├── 05-survival-hgg-clk1-status.nb.html
 ├── 06-survival_by_cluster.Rmd
 ├── 06-survival_by_cluster.nb.html
-├── input
+├── 07-run-survival-nf1-psi.Rmd
+├── 07-run-survival-nf1-psi.nb.html
+├── 08-plot-survival-nf1-psi.R
+├── 09-survival-clk1-psi.Rmd
+├── 09-survival-clk1-psi.nb.html
+├── README.md
 ├── plots
 │   ├── ATRT/
 │   ├── CPG/
@@ -51,6 +60,7 @@ Input files:
 │   ├── MB/
 │   ├── forest_DMG_EFS_add_subtype_clk1_status.pdf
 │   ├── forest_DMG_OS_add_subtype_clk1_status.pdf
+│   ├── forest_HGG_DMG_EFS_add_subtype_clk1_status.pdf
 │   ├── forest_HGG_DMG_EFS_int_subtype_clk1_status.pdf
 │   ├── forest_HGG_DMG_OS_add_subtype_clk1_status.pdf
 │   ├── forest_HGG_DMG_OS_int_subtype_clk1_status.pdf
@@ -63,7 +73,6 @@ Input files:
 │   ├── forest_add_OS_LGG_resection_subtype_cluster_assignment.pdf
 │   ├── forest_add_OS_resection_lgg_group_cluster_assignment.pdf
 │   ├── km_DMG_OS_EFS_CLK1_status.pdf
-│   ├── km_EFS_LGG_cluster_assignment.pdf
 │   ├── km_EFS_cluster_assignment.pdf
 │   ├── km_HGG_DMG_OS_EFS_CLK1_status.pdf
 │   ├── km_HGG_OS_EFS_CLK1_status.pdf
@@ -90,7 +99,6 @@ Input files:
 │   ├── cox_HGG_OS_interaction_terms_subtype_clk1_status.RDS
 │   ├── cox_OS_additive_terms_resection_lgg_group_cluster.RDS
 │   ├── cox_hgg_EFS_additive_terms_subtype_cluster.RDS
-│   ├── cox_hgg_OS_additive_terms_resection_subtype_cluster.RDS
 │   ├── cox_hgg_OS_additive_terms_subtype_cluster.RDS
 │   ├── cox_lgg_EFS_additive_terms_resection_subtype_cluster.RDS
 │   ├── cox_lgg_OS_additive_terms_resection_subtype_cluster.RDS
