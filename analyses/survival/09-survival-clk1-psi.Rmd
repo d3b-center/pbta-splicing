@@ -1,0 +1,363 @@
+---
+title: "CLK1 PSI-associated survival analyses"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Ryan Corbett
+date: 2024
+params:
+  plot_ci: TRUE
+---
+
+**Purpose:** 
+
+- Generate survival models with CLK1 exon 4 PSI as covariate
+
+## Setup
+
+#### Packages and functions
+
+load libraries and set directories
+
+```{r Set up library}
+library(survival)
+library(ggpubr)
+library(tidyverse)
+library(data.table)
+library(patchwork)
+
+# Set directories
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses", "survival")
+results_dir <- file.path(analysis_dir, "results")
+plot_dir <- file.path(analysis_dir, "plots")
+
+# Load survival functions
+source(file.path(analysis_dir, "util", "survival_models.R"))
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+Set file paths
+
+```{r}
+histologies_file <- file.path(results_dir, "splicing_indices_with_survival.tsv")
+
+diff_psi_file <- file.path(root_dir, "analyses",
+                           "CLK1-splicing_correlations", "results",
+                           "clk1-splice-events-rmats.tsv")
+```
+
+Load histologies
+
+```{r}
+hist <- read_tsv(histologies_file) %>%
+  # there are several MB samples we have confirmed had partial resection; update these:
+  dplyr::mutate(extent_of_tumor_resection = case_when(
+    Kids_First_Participant_ID %in% c("PT_KNJDVV4K",
+                                     "PT_M0AP3Z15",
+                                     "PT_26V72ZXB") ~ "Partial resection",
+    TRUE ~ extent_of_tumor_resection
+    )) %>%
+  dplyr::mutate(extent_of_tumor_resection = fct_relevel(extent_of_tumor_resection,
+                                                      c("Gross/Near total resection",
+                                                        "Partial resection",
+                                                        "Biopsy only", "Not Reported",
+                                                        "Unavailable")))
+```
+
+Load rMATs file and subset for CLK1 exon 4 PSI values
+
+```{r}
+splice_CLK1_df <-  fread(diff_psi_file) %>%
+   dplyr::filter(geneSymbol=="CLK1",
+                 exonStart_0base=="200860124", exonEnd=="200860215") %>%
+  dplyr::rename('Kids_First_Biospecimen_ID'=sample_id,
+                clk1_PSI = IncLevel1) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, clk1_PSI)
+
+# join PSI value to hgg_hist
+hist <- hist %>%
+  left_join(splice_CLK1_df)
+```
+
+Define histology groups to run survival analyses on 
+
+```{r}
+subtype_df <- read_tsv(file.path(results_dir, "subtypes-for-survival.tsv"))
+
+groups <- unique(subtype_df$hist)
+
+# folder names
+folder <- unique(subtype_df$foldername)
+names(folder) <- groups
+  
+# create names vector for output files
+plot_names <- unique(subtype_df$names)
+names(plot_names) <- groups
+```
+
+Loop through histology groups and perform the following: 
+
+- Filter hist by histology
+- Run cox proportional hazard models, including CLK1 exon 4 PSI as covariate along with subtype (when applicable) and extent of tumor resection
+
+```{r}
+for (group in groups){
+  
+  results_dir <- file.path(analysis_dir, "results", folder[[group]])
+  
+  plot_dir <- file.path(analysis_dir, "plots", folder[[group]])
+
+  coxph_os_model_file <- ifelse(group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                             "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                             "Medulloblastoma"),
+                             file.path(results_dir,
+                                       glue::glue("cox_{plot_names[group]}_OS_additive_terms_subtype_resection_clk1_psi.RDS")),
+                             file.path(results_dir,
+                                       glue::glue("cox_{plot_names[group]}_OS_additive_terms_subtype_clk1_psi.RDS"))
+  )
+
+  coxph_efs_model_file <- ifelse(group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                             "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                             "Medulloblastoma"),
+                             file.path(results_dir,
+                                       glue::glue("cox_{plot_names[group]}_EFS_additive_terms_subtype_resection_clk1_psi.RDS")),
+                             file.path(results_dir,
+                                       glue::glue("cox_{plot_names[group]}_EFS_additive_terms_subtype_clk1_psi.RDS"))
+  )
+  
+    # Subset histology
+  group_hist <- hist %>%
+    filter(grepl(group, Histology))
+  
+  # Subset histology and transform SI 
+  
+    if (group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                     "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                     "Medulloblastoma")){
+      
+      group_hist <- group_hist %>%
+        filter(!is.na(mol_sub_group) & !is.na(OS_days) & !is.na(EFS_days) & !is.na(extent_of_tumor_resection) & !extent_of_tumor_resection %in% c("Unavailable", "Not Reported")) %>%
+        dplyr::mutate(clk1_PSI = clk1_PSI * 10)
+      
+    } else {
+      
+      group_hist <- group_hist %>%
+        filter(!is.na(mol_sub_group) & !is.na(OS_days) & !is.na(EFS_days)) %>%
+        dplyr::mutate(clk1_PSI = clk1_PSI * 10)
+      
+    }
+  
+    if (group == "DIPG or DMG"){
+      group_hist <- group_hist %>%
+       # dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
+       dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, 
+                                                 c("DMG, H3 K28", 
+                                                   "DMG, H3 K28, TP53"))) %>%
+        arrange(molecular_subtype)
+    }
+  
+  # consolidate HGG subtypes into broader groups
+  if (group == "Other high-grade glioma"){
+    group_hist <- group_hist %>%
+     # dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
+     dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("HGG, H3 wildtype", "HGG, H3 wildtype, TP53",
+                                                                "DHG, H3 G35", "DHG, H3 G35, TP53",
+                                                                "HGG, IDH, TP53", "IHG, ALK-altered", 
+                                                                "IHG, NTRK-altered", "IHG, ROS1-altered"
+                                                                ))) %>%
+      arrange(molecular_subtype)
+  }
+  
+  if (group == "Low-grade glioma"){
+    group_hist <- group_hist %>%
+     # dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
+     dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("Wildtype", "BRAF V600E", "BRAF fusion",
+                                                                "Other alteration", "SEGA"
+                                                                )))
+  }
+  
+  if (group == "Ependymoma"){
+    group_hist <- group_hist %>%
+     # dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
+     dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("EPN, PF A", "EPN, PF B",
+                                                                "EPN, ST ZFTA", "EPN, ST YAP1",
+                                                                "EPN, MPE", "EPN, SP", "EPN, SP-MYCN"
+                                                                ))) %>%
+   arrange(molecular_subtype)
+  }
+  
+  if (group == "Mixed neuronal-glial tumor"){
+    group_hist <- group_hist %>%
+     # dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
+     dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("Wildtype", "BRAF V600E", "BRAF fusion",
+                                                                "Other alteration"
+                                                                )))
+  }
+  
+  if (group == "Medulloblastoma"){
+    group_hist <- group_hist %>%
+     # dplyr::mutate(mol_sub_group = factor(mol_sub_group)) %>% 
+     dplyr::mutate(mol_sub_group = fct_relevel(mol_sub_group, c("MB, WNT", "MB, Group3",
+                                                                "MB, Group4", "MB, SHH"
+                                                                )))
+    }
+  
+  # Run cox proprtional hazards models for OS, including appropriate covariates per histology
+  add_model_os <- suppressWarnings(
+                                fit_save_model(group_hist,
+                                  terms = ifelse(
+                                      group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                             "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                             "Medulloblastoma"),
+                                      "mol_sub_group+extent_of_tumor_resection+clk1_PSI",
+                                      ifelse(group %in% c("Ependymoma",
+                                                          "DIPG or DMG"),
+                                             "mol_sub_group+clk1_PSI",
+                                              "clk1_PSI"
+                                  )),
+             coxph_os_model_file,
+             "multivariate",
+             years_col = "OS_years",
+             status_col = "OS_status"
+            ))
+  
+  if (!is.na(add_model_os$p.value[add_model_os$term == "clk1_PSI"])){
+  
+    add_os_forest_plot <- plotForest(readRDS(coxph_os_model_file))
+  
+    ggsave(file.path(plot_dir, glue::glue("forest_{plot_names[group]}_OS_add_subtype_clk1_psi.pdf")), 
+           add_os_forest_plot, width = 7.5, height = 3)
+    
+  }
+  
+  # Run cox proprtional hazards models for PFS, including appropriate covariates per histology
+  add_model_efs <- suppressWarnings(
+                            fit_save_model(group_hist,
+                                  terms = ifelse(
+                                      group %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                             "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                             "Medulloblastoma"),
+                                      "mol_sub_group+extent_of_tumor_resection+clk1_PSI",
+                                      ifelse(group %in% c("Ependymoma",
+                                                          "DIPG or DMG"),
+                                             "mol_sub_group+clk1_PSI",
+                                              "clk1_PSI"
+                                  )),
+             coxph_efs_model_file,
+             "multivariate",
+             years_col = "EFS_years",
+             status_col = "EFS_status"
+            ))
+  
+  if (!is.na(add_model_os$p.value[add_model_os$term == "clk1_PSI"])){
+  
+    add_efs_forest_plot <- plotForest(readRDS(coxph_efs_model_file))
+  
+    ggsave(file.path(plot_dir, glue::glue("forest_{plot_names[group]}_EFS_add_subtype_clk1_psi.pdf")), 
+           add_efs_forest_plot, width = 7.5, height = 3)
+    
+  }
+  
+}
+```
+
+
+```{r}
+# Define identifiers for model files
+file_names <- c(glue::glue("{subtype_df$names}_{subtype_df$subtype_name}"))
+
+# Loop through subtypes and run survival analyses
+for (i in 1:nrow(subtype_df)) {
+  
+  results_dir <- file.path(analysis_dir, "results", subtype_df$foldername[i])
+  
+  plot_dir <- file.path(analysis_dir, "plots", subtype_df$foldername[i])
+  
+  # define output files
+
+  coxph_os_model_file <- ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                                           "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                                           "Medulloblastoma"),
+                             file.path(results_dir,
+                                      glue::glue("cox_{file_names[i]}_OS_additive_terms_subtype_resection_clk1_psi.RDS")),
+                             file.path(results_dir,
+                                       glue::glue("cox_{file_names[i]}_OS_additive_terms_subtype_clk1_psi.RDS"))
+  )
+
+  coxph_efs_model_file <- ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                                           "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                                           "Medulloblastoma"),
+                             file.path(results_dir,
+                                       glue::glue("cox_{file_names[i]}_EFS_additive_terms_subtype_resection_clk1_psi.RDS")),
+                             file.path(results_dir,
+                                       glue::glue("cox_{file_names[i]}_EFS_additive_terms_subtype_clk1_psi.RDS"))
+  )
+  
+    #Subset hist for histology subtype
+    subtype_hist <- hist %>%
+      filter(Histology == subtype_df$hist[i] & grepl(subtype_df$subtype[i], mol_sub_group)) %>%
+      dplyr::mutate(clk1_PSI = clk1_PSI * 10)
+    
+    if (subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                 "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                 "Medulloblastoma")){
+
+      subtype_hist <- subtype_hist %>%
+        filter(!is.na(extent_of_tumor_resection) & !extent_of_tumor_resection %in% c("Unavailable", "Not Reported"))
+      
+    }
+
+
+    # Run coxph models and save to output
+    add_model_os <- suppressWarnings(
+                              fit_save_model(subtype_hist,
+                                  terms = ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                                                           "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                                                           "Medulloblastoma"),
+                                                 "extent_of_tumor_resection+clk1_PSI",
+                                                        "clk1_PSI"
+                                                        ),
+                                   coxph_os_model_file,
+                                   "multivariate",
+                                   years_col = "OS_years",
+                                   status_col = "OS_status"))
+    
+    if (!is.na(add_model_os$p.value[add_model_os$term == "clk1_PSI"])){
+    
+      add_os_forest_plot <- plotForest(readRDS(coxph_os_model_file))
+  
+      ggsave(file.path(plot_dir, glue::glue("forest_{file_names[i]}_OS_add_subtype_clk1_psi.pdf")), 
+             add_os_forest_plot, width = 7.5, height = 3)
+      
+    }
+    
+    add_model_efs <- suppressWarnings(
+                              fit_save_model(subtype_hist,
+                                  terms = ifelse(subtype_df$hist[i] %in% c("Mixed neuronal-glial tumor", "Low-grade glioma",
+                                                                           "Other high-grade glioma", "Atypical Teratoid Rhabdoid Tumor",
+                                                                           "Medulloblastoma"),
+                                                 "extent_of_tumor_resection+clk1_PSI",
+                                                        "clk1_PSI"
+                                                        ),
+                                     coxph_efs_model_file,
+                                     "multivariate",
+                                     years_col = "EFS_years",
+                                     status_col = "EFS_status"
+                                    ))
+    
+    if (!is.na(add_model_efs$p.value[add_model_efs$term == "clk1_PSI"])){
+    
+      add_efs_forest_plot <- plotForest(readRDS(coxph_efs_model_file))
+  
+      ggsave(file.path(plot_dir, glue::glue("forest_{file_names[i]}_EFS_add_subtype_clk1_psi.pdf")), 
+             add_efs_forest_plot, width = 7.5, height = 3)
+      
+    }
+
+}
+```

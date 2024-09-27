@@ -11,7 +11,7 @@ Rscript -e "rmarkdown::render('02-run-survival-SIgroup.Rmd')"
 Rscript -e "rmarkdown::render('03-run-survival-SI.Rmd')"
 
 # run plot-survival script
-Rscript 04-plot-survival.R
+Rscript --vanilla 04-plot-survival.R
 
 # run HGG survival by CLK1 status
 Rscript -e "rmarkdown::render('05-survival-hgg-clk1-status.Rmd')"
@@ -23,4 +23,7 @@ Rscript -e "rmarkdown::render('06-survival_by_cluster.Rmd')"
 Rscript -e "rmarkdown::render('07-run-survival-nf1-psi.Rmd')"
 
 # plot survival by NF1 PSI status
-Rscript 08-plot-survival-nf1-psi.R
+Rscript --vanilla 08-plot-survival-nf1-psi.R
+
+# run survival by CLK1 exon 4 PSI
+Rscript -e "rmarkdown::render('09-survival-clk1-psi.Rmd')"
